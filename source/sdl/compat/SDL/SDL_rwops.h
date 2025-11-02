@@ -1,0 +1,6 @@
+#ifndef ASC_SDL_COMPAT_LEGACY_RWOPS_H
+#define ASC_SDL_COMPAT_LEGACY_RWOPS_H
+
+#include "../SDL_rwops.h"
+
+#endif /* ASC_SDL_COMPAT_LEGACY_RWOPS_H */

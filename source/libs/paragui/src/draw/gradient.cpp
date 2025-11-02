@@ -78,10 +78,10 @@ void PG_Draw::DrawGradient(SDL_Surface * surface, const PG_Rect& rect, const PG_
 	if (w > surface->w || h > surface->h)
 		return;
 
-	Uint32 c1 = ul.MapRGB(surface->format);
-	Uint32 c2 = ur.MapRGB(surface->format);
-	Uint32 c3 = dl.MapRGB(surface->format);
-	Uint32 c4 = dr.MapRGB(surface->format);
+	Uint32 c1 = ul.MapRGB(surface);
+	Uint32 c2 = ur.MapRGB(surface);
+	Uint32 c3 = dl.MapRGB(surface);
+	Uint32 c4 = dr.MapRGB(surface);
 
 	// solid color gradient ?
 	if((c1 == c2) && (c2 == c3) && (c3 == c4)) {
@@ -134,17 +134,17 @@ void PG_Draw::DrawGradient(SDL_Surface * surface, const PG_Rect& rect, const PG_
 	g2 += v11 * ox;
 	b2 += v12 * ox;
 
-	SDL_PixelFormat* format = surface->format;
-	Uint8 Rloss = 8+format->Rloss;
-	Uint8 Gloss = 8+format->Gloss;
-	Uint8 Bloss = 8+format->Bloss;
-	Uint8 Rshift = format->Rshift;
-	Uint8 Gshift = format->Gshift;
-	Uint8 Bshift = format->Bshift;
-	Uint32 Amask = format->Amask;
-	Uint8 Ashift = format->Ashift;
+	SDL_CompatPixelFormat fmt = SDLCompat_GetSurfaceFormat(surface);
+	Uint8 Rloss = 8 + fmt.Rloss;
+	Uint8 Gloss = 8 + fmt.Gloss;
+	Uint8 Bloss = 8 + fmt.Bloss;
+	Uint8 Rshift = fmt.Rshift;
+	Uint8 Gshift = fmt.Gshift;
+	Uint8 Bshift = fmt.Bshift;
+	Uint32 Amask = fmt.Amask;
+	Uint8 Ashift = fmt.Ashift;
 
-	Uint8 bpp = format->BytesPerPixel;
+	Uint8 bpp = fmt.BytesPerPixel;
 	Uint32 pitch = surface->pitch;
 	Uint8* bits = ((Uint8 *) surface->pixels) + (rect.y + oy)* pitch + (rect.x + ox)* bpp;
 	Uint32 y_pitch = pitch*drawrect.h - bpp;
@@ -168,7 +168,7 @@ void PG_Draw::DrawGradient(SDL_Surface * surface, const PG_Rect& rect, const PG_
 			/* Set the pixel */
 			switch (bpp) {
 				case 1:
-					pixel = SDL_MapRGB ( surface->format, r>>8, g>>8, b>>8 );
+					pixel = SDL_MapSurfaceRGB(surface, r >> 8, g >> 8, b >> 8);
 					*((Uint8 *) (bits)) = (Uint8) pixel;
 					break;
 
@@ -184,13 +184,12 @@ void PG_Draw::DrawGradient(SDL_Surface * surface, const PG_Rect& rect, const PG_
 						pixel =  (r>>Rloss) << Rshift
 						         | (g>>Gloss) << Gshift
 						         | (b>>Bloss) << Bshift;
-
-						Uint8 ri = (pixel >> surface->format->Rshift) & 0xFF;
-						Uint8 gi = (pixel >> surface->format->Gshift) & 0xFF;
-						Uint8 bi = (pixel >> surface->format->Bshift) & 0xFF;
-						*((bits) + surface->format->Rshift / 8) = ri;
-						*((bits) + surface->format->Gshift / 8) = gi;
-						*((bits) + surface->format->Bshift / 8) = bi;
+						Uint8 ri = (pixel >> fmt.Rshift) & 0xFF;
+						Uint8 gi = (pixel >> fmt.Gshift) & 0xFF;
+						Uint8 bi = (pixel >> fmt.Bshift) & 0xFF;
+						*((bits) + fmt.Rshift / 8) = ri;
+						*((bits) + fmt.Gshift / 8) = gi;
+						*((bits) + fmt.Bshift / 8) = bi;
 					}
 					break;
 

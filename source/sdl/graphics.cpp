@@ -50,7 +50,8 @@ void initASCGraphicSubsystem ( SDL_Surface* _screen )
   agmp->bitperpix = 8;
   agmp->directscreenaccess = 0;
   delete agmp->surface;
-  if ( _screen->format->BitsPerPixel == 8 ) {
+  SDL_CompatPixelFormat screenFmt = SDLCompat_BuildSurfacePixelFormat(_screen);
+  if ( screenFmt.BitsPerPixel == 8 ) {
      agmp->surface = new Surface ( _screen );
      dummyScreenPaletteSetup = true;
   } else {
@@ -98,7 +99,8 @@ int copy2screen( void )
       dummyScreenPaletteSetup = true;
    }   
   
-   if ( screen->format->BitsPerPixel > 8 ) 
+   SDL_CompatPixelFormat screenFmt = SDLCompat_BuildSurfacePixelFormat(screen);
+   if ( screenFmt.BitsPerPixel > 8 ) 
       SDL_BlitSurface( hgmp->surface->getBaseSurface() , NULL, screen, NULL );
    SDL_UpdateRect ( screen , 0,0,0,0 );
   #ifdef _WIN32_  
@@ -116,7 +118,8 @@ int copy2screen( int x1, int y1, int x2, int y2 )
       dummyScreenPaletteSetup = true;
    }   
    
-   if ( screen->format->BitsPerPixel > 8 ) {
+   SDL_CompatPixelFormat screenFmt = SDLCompat_BuildSurfacePixelFormat(screen);
+   if ( screenFmt.BitsPerPixel > 8 ) {
       SDL_Rect r;
       r.x = min(x1,x2);
       r.y = min(y1,y2);
@@ -142,17 +145,17 @@ int copy2screen( int x1, int y1, int x2, int y2 )
 
 MouseHider::MouseHider() : locked(true)
 {
-  #ifdef _WIN32_  
+#ifdef _WIN32_  
    SDL_GetMouseState(&x, &y);
-   SDL_ShowCursor(0);
-  #endif 
+   SDL_HideCursor();
+#endif 
 }
 
 void MouseHider::unlock()
 {
-  #ifdef _WIN32_  
+#ifdef _WIN32_  
    SDL_WarpMouse(x, y);
-   SDL_ShowCursor(1);
+   SDL_ShowCursor();
    // SDL_WarpMouse(x, y);
    locked = false;
   #endif 

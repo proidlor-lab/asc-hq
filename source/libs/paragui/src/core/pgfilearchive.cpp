@@ -316,7 +316,11 @@ SDL_Surface* PG_FileArchive::LoadSurface(const std::string& filename, bool useke
 	}
 
 	surface = NULL;
+	fprintf(stderr, "[ASC SDL3] OpenFileRWops('%s')...\n", filename.c_str());
+	fflush(stderr);
 	SDL_RWops *rw = OpenFileRWops(filename);
+	fprintf(stderr, "[ASC SDL3] OpenFileRWops -> %p\n", (void*)rw);
+	fflush(stderr);
 
 	if(rw == NULL) {
 		PG_LogWRN("Unable to open '%s' !", filename.c_str());
@@ -324,10 +328,16 @@ SDL_Surface* PG_FileArchive::LoadSurface(const std::string& filename, bool useke
 	}
 
 	if(IMG_Load_RW_FUNC != NULL) {
+		fprintf(stderr, "[ASC SDL3] calling IMG_Load_RW_FUNC for '%s'\n", filename.c_str());
+		fflush(stderr);
 		surface = IMG_Load_RW_FUNC(rw, 1);
 	} else {
+		fprintf(stderr, "[ASC SDL3] calling SDL_LoadBMP_RW for '%s'\n", filename.c_str());
+		fflush(stderr);
 		surface = SDL_LoadBMP_RW(rw, 1);
 	}
+	fprintf(stderr, "[ASC SDL3] IMG_Load_RW_FUNC returned %p\n", (void*)surface);
+	fflush(stderr);
 
 	if(surface == NULL) {
 		PG_LogWRN("Failed to load imagedata from '%s' !", filename.c_str());
@@ -341,10 +351,14 @@ SDL_Surface* PG_FileArchive::LoadSurface(const std::string& filename, bool useke
 	}
 
 	if(usekey == true) {
+		fprintf(stderr, "[ASC SDL3] applying color key\n");
+		fflush(stderr);
 		SDL_SetColorKey(surface, SDL_SRCCOLORKEY, colorkey);
 	}
 
 	if(convert) {
+		fprintf(stderr, "[ASC SDL3] converting surface (flags=0x%x)\n", surface ? surface->flags : 0u);
+		fflush(stderr);
 		SDL_Surface* tmpsrf = NULL;
 		if (surface->flags & SDL_SRCALPHA)
 			tmpsrf = SDL_DisplayFormatAlpha(surface);
@@ -355,6 +369,8 @@ SDL_Surface* PG_FileArchive::LoadSurface(const std::string& filename, bool useke
 			SDL_FreeSurface(surface);
 			surface = tmpsrf;
 		}
+		fprintf(stderr, "[ASC SDL3] after convert surface=%p\n", (void*)surface);
+		fflush(stderr);
 	}
 
 	// add the loaded surface to the cache and return result

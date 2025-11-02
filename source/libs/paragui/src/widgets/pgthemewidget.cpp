@@ -197,7 +197,7 @@ bool PG_ThemeWidget::SetBackground(const std::string& filename, PG_Draw::BkMode 
 		return false;
 	}
 
-	Uint32 c = colorkey.MapRGB(my_background->format);
+	Uint32 c = colorkey.MapRGB(my_background);
 	SDL_SetColorKey(my_background, SDL_SRCCOLORKEY, c);
 
 	if(my_srfObject == NULL) {
@@ -367,7 +367,7 @@ void PG_ThemeWidget::eventBlit(SDL_Surface* srf, const PG_Rect& src, const PG_Re
 	} else if (_mid->simplebackground) {
 		if(GetTransparency() < 255) {
 			Uint32 c = _mid->backgroundcolor.MapRGBA(
-			               PG_Application::GetScreen()->format,
+			               PG_Application::GetScreen(),
 			               255-GetTransparency());
 			SDL_FillRect(PG_Application::GetScreen(), const_cast<PG_Rect*>(&dst), c);
 		}
@@ -433,21 +433,23 @@ SDL_Surface* PG_ThemeWidget::CreateThemedSurface(const PG_Rect& r, PG_Gradient* 
 		return cache_surface;
 	}
 
-	Uint8 bpp = screen->format->BitsPerPixel;
-	Uint32 Rmask = screen->format->Rmask;
-	Uint32 Gmask = screen->format->Gmask;
-	Uint32 Bmask = screen->format->Bmask;
-	Uint32 Amask = 0;
+    SDL_CompatPixelFormat screenFmt = SDLCompat_BuildSurfacePixelFormat(screen);
+    Uint8 bpp = screenFmt.BitsPerPixel;
+    Uint32 Rmask = screenFmt.Rmask;
+    Uint32 Gmask = screenFmt.Gmask;
+    Uint32 Bmask = screenFmt.Bmask;
+    Uint32 Amask = 0;
 
-	if(background != NULL) {
-		if((background->format->Amask != 0) || ((bpp < background->format->BitsPerPixel) && (bpp <= 8))) {
-			bpp = background->format->BitsPerPixel;
-			Rmask = background->format->Rmask;
-			Gmask = background->format->Gmask;
-			Bmask = background->format->Bmask;
-			Amask = background->format->Amask;
-		}
-	}
+    if(background != NULL) {
+        SDL_CompatPixelFormat bgFmt = SDLCompat_BuildSurfacePixelFormat(background);
+        if((bgFmt.Amask != 0) || ((bpp < bgFmt.BitsPerPixel) && (bpp <= 8))) {
+            bpp = bgFmt.BitsPerPixel;
+            Rmask = bgFmt.Rmask;
+            Gmask = bgFmt.Gmask;
+            Bmask = bgFmt.Bmask;
+            Amask = bgFmt.Amask;
+        }
+    }
 
 	SDL_Surface *surface = SDL_CreateRGBSurface(
 	                           SDL_HWSURFACE,
@@ -465,8 +467,8 @@ SDL_Surface* PG_ThemeWidget::CreateThemedSurface(const PG_Rect& r, PG_Gradient* 
 		SDL_LockSurface(surface);
 	}
 
-	if ( bpp == 8 )
-		SDL_SetPalette ( surface, SDL_LOGPAL, screen->format->palette->colors, 0, 256 );
+    if ( bpp == 8 && screenFmt.palette && screenFmt.palette->ncolors > 0 )
+        SDL_SetPalette ( surface, SDL_LOGPAL, screenFmt.palette->colors, 0, screenFmt.palette->ncolors );
 
 	if(surface) {
 		if(background || gradient) {

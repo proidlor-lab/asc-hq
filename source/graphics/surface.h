@@ -40,12 +40,16 @@ public:
 
 	// operator Uint32() const;
 
-	inline Uint32 MapRGB(SDL_PixelFormat* format) const {
-		return SDL_MapRGB(format, r, g, b);
+	inline Uint32 MapRGB(const SDL_Surface* surface) const {
+		if (!surface)
+			return 0;
+		return SDL_MapSurfaceRGB(const_cast<SDL_Surface*>(surface), r, g, b);
 	}
 
-	inline Uint32 MapRGBA(SDL_PixelFormat* format, Uint8 a) const {
-		return SDL_MapRGBA(format, r, g, b, a);
+	inline Uint32 MapRGBA(const SDL_Surface* surface, Uint8 a) const {
+		if (!surface)
+			return 0;
+		return SDL_MapSurfaceRGBA(const_cast<SDL_Surface*>(surface), r, g, b, a);
 	}
 
 	inline bool operator!=(const DI_Color& c) const {
@@ -177,4 +181,3 @@ class SurfaceLock {
  
  
 #endif
-

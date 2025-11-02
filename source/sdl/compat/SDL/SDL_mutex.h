@@ -1,0 +1,6 @@
+#ifndef ASC_SDL_COMPAT_LEGACY_MUTEX_H
+#define ASC_SDL_COMPAT_LEGACY_MUTEX_H
+
+#include "../SDL_mutex.h"
+
+#endif /* ASC_SDL_COMPAT_LEGACY_MUTEX_H */

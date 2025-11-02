@@ -421,13 +421,13 @@ void queueOperation( GraphicsQueueOperation* gqo, bool wait, bool forceAsync )
 void UpdateRectOp::execute()
 { 
    if ( *mouseUpdateFlag )
-      SDL_ShowCursor( 0 );
+      SDL_HideCursor();
 
    SDL_UpdateRect( screen, x,y,w,h); 
    postScreenUpdate( screen );
 
    if ( *mouseUpdateFlag )
-      SDL_ShowCursor( 1 );
+      SDL_ShowCursor();
 };
 
 
@@ -448,20 +448,20 @@ UpdateRectsOp::~UpdateRectsOp()
 void UpdateRectsOp::execute() 
 { 
    if ( *mouseUpdateFlag )
-      SDL_ShowCursor( 0 );
+      SDL_HideCursor();
 
    SDL_UpdateRects( screen, numrects, rects); 
    postScreenUpdate( screen );
 
    if ( *mouseUpdateFlag )
-      SDL_ShowCursor( 1 );
+      SDL_ShowCursor();
 }
 
 
 void InitScreenOp::execute() 
 { 
    if ( *mouseUpdateFlag )
-      SDL_ShowCursor( 0 );
+      SDL_HideCursor();
 
    SDL_Surface* screen = SDL_SetVideoMode(x, y, depth, flags);
    if (screen == NULL) 
@@ -471,7 +471,7 @@ void InitScreenOp::execute()
    initASCGraphicSubsystem( screen );
 
    if ( *mouseUpdateFlag )
-      SDL_ShowCursor( 1 );
+      SDL_ShowCursor();
 };
 
 
@@ -559,6 +559,8 @@ SDL_Thread* secondThreadHandle = NULL;
 
 int initializeEventHandling ( int (*gamethread)(void *) , void *data )
 {
+   fprintf(stderr, "[ASC SDL3] initializeEventHandling start\n");
+   fflush(stderr);
 
    mouseparams.xsize = 10;
    mouseparams.ysize = 10;
@@ -588,22 +590,32 @@ int initializeEventHandling ( int (*gamethread)(void *) , void *data )
       exit(1);
    }
 
-   SDL_EnableUNICODE ( 1 );
-   SDL_EnableKeyRepeat ( 250, 30 );
+   int unicode = SDL_EnableUNICODE ( 1 );
+   fprintf(stderr, "[ASC SDL3] SDL_EnableUNICODE -> %d\n", unicode);
+   fflush(stderr);
+   int keyrepeat = SDL_EnableKeyRepeat ( 250, 30 );
+   fprintf(stderr, "[ASC SDL3] SDL_EnableKeyRepeat -> %d\n", keyrepeat);
+   fflush(stderr);
 
    
 #ifdef FirstThreadEvents 
    _gamethread = gamethread;
-   secondThreadHandle = SDL_CreateThread ( gameThreadWrapper, data );
+   secondThreadHandle = SDL_CreateThread ( gameThreadWrapper, "gameThread", data );
    int res = eventthread( NULL );
 #else
-   secondThreadHandle = SDL_CreateThread ( eventthread, NULL );
+   secondThreadHandle = SDL_CreateThread ( eventthread, "eventThread", NULL );
+   fprintf(stderr, "[ASC SDL3] spawning event thread result handle=%p\n", (void*)secondThreadHandle);
+   fflush(stderr);
    int res = gamethread( data );
+   fprintf(stderr, "[ASC SDL3] gamethread returned %d\n", res);
+   fflush(stderr);
    closeEventThread = 1;
 #endif
 
 
    SDL_WaitThread ( secondThreadHandle, NULL );
+   fprintf(stderr, "[ASC SDL3] initializeEventHandling finished\n");
+   fflush(stderr);
    return res;
 }
 
@@ -678,5 +690,3 @@ bool peekEvent ( SDL_Event& event )
    SDL_mutexV( eventQueueMutex );
    return false;
 }
-
-

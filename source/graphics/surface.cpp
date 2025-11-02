@@ -77,8 +77,8 @@ DI_Color::operator Uint32() const {
 
 void Surface::SetScreen( SDL_Surface* screen )
 {
-  if ( screen && screen->format->BitsPerPixel == 32 )    
-     default32bit = new SDLmm::PixelFormat ( screen->format );
+  if ( screen && SDLCompat_BuildSurfacePixelFormat(screen).BitsPerPixel == 32 )    
+     default32bit = new SDLmm::PixelFormat ( screen );
 }
 
 
@@ -114,29 +114,35 @@ Surface Surface::Duplicate() const
     stream.writeInt(pf.alpha()) ;
  }
 
- SDL_PixelFormat* readSDLPixelFormat( tnstream& stream )
+ SDL_CompatPixelFormat readSDLCompatPixelFormat( tnstream& stream )
  {
-    SDL_PixelFormat* pf = new SDL_PixelFormat;
+    SDL_CompatPixelFormat pf = {};
     int version = stream.readInt();
     if ( version != 1 )
        throw tinvalidversion( stream.getLocation(), 1, version );
-       
-    pf->BitsPerPixel = stream.readInt();
-    pf->BytesPerPixel = stream.readInt();
-    pf->Rmask = stream.readInt();
-    pf->Gmask = stream.readInt();
-    pf->Bmask = stream.readInt();
-    pf->Amask = stream.readInt();
-    pf->Rshift = stream.readInt();
-    pf->Gshift = stream.readInt();
-    pf->Bshift = stream.readInt();
-    pf->Ashift = stream.readInt();
-    pf->Rloss = stream.readInt();
-    pf->Gloss = stream.readInt();
-    pf->Bloss = stream.readInt();
-    pf->Aloss = stream.readInt();
-    pf->colorkey = stream.readInt();
-    pf->alpha = stream.readInt();
+
+    pf.BitsPerPixel = static_cast<Uint8>(stream.readInt());
+    pf.BytesPerPixel = static_cast<Uint8>(stream.readInt());
+    pf.Rmask = static_cast<Uint32>(stream.readInt());
+    pf.Gmask = static_cast<Uint32>(stream.readInt());
+    pf.Bmask = static_cast<Uint32>(stream.readInt());
+    pf.Amask = static_cast<Uint32>(stream.readInt());
+    pf.Rshift = static_cast<Uint8>(stream.readInt());
+    pf.Gshift = static_cast<Uint8>(stream.readInt());
+    pf.Bshift = static_cast<Uint8>(stream.readInt());
+    pf.Ashift = static_cast<Uint8>(stream.readInt());
+    pf.Rloss = static_cast<Uint8>(stream.readInt());
+    pf.Gloss = static_cast<Uint8>(stream.readInt());
+    pf.Bloss = static_cast<Uint8>(stream.readInt());
+    pf.Aloss = static_cast<Uint8>(stream.readInt());
+    pf.colorkey = static_cast<Uint32>(stream.readInt());
+    int alpha = stream.readInt();
+    if ( alpha < 0 )
+       alpha = 0;
+    if ( alpha > 255 )
+       alpha = 255;
+    pf.alpha = static_cast<Uint8>(alpha);
+    pf.palette = NULL;
     return pf;
  }
 
@@ -204,9 +210,11 @@ Surface::Surface(const SDLmm::Surface& other) : SDLmm::Surface ( other ), pixelD
  
  void Surface::readDefaultPixelFormat ( tnstream& stream )
  {
-     default8bit = new SDLmm::PixelFormat( readSDLPixelFormat( stream ) );
-     default32bit = new SDLmm::PixelFormat( readSDLPixelFormat( stream ) );
- }
+     delete default8bit;
+     delete default32bit;
+     default8bit = new SDLmm::PixelFormat( readSDLCompatPixelFormat( stream ) );
+     default32bit = new SDLmm::PixelFormat( readSDLCompatPixelFormat( stream ) );
+}
 
  void Surface::writeDefaultPixelFormat ( tnstream& stream )
  {
@@ -720,11 +728,11 @@ int Surface::getMemoryFootprint() const
    const SDL_Surface* s = getBaseSurface();
    if ( s ) {
       size += sizeof( SDL_Surface );
-      if ( s->format ) {
-         size += sizeof( SDL_PixelFormat );
-         if ( s->format->palette )
-            size += sizeof ( SDL_Palette ) + s->format->palette->ncolors * sizeof(SDL_Color);
-      }
+      SDL_CompatPixelFormat fmt = SDLCompat_BuildSurfacePixelFormat(s);
+      if ( fmt.BitsPerPixel || fmt.BytesPerPixel )
+         size += sizeof( SDL_CompatPixelFormat );
+      if ( fmt.palette )
+         size += sizeof ( SDL_Palette ) + fmt.palette->ncolors * sizeof(SDL_Color);
       size += s->h * s->pitch;
    }
    return size;
@@ -745,4 +753,3 @@ void Surface::ColorKey2AlphaChannel()
    GetSurface()->flags &= ~SDL_SRCCOLORKEY;
    Unlock();
 }
-

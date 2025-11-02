@@ -135,7 +135,7 @@ PG_Application::PG_Application()
 	// -- see above
 
 	/* Initialize the SDL library */
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) < 0) {
+	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		std::cerr << "Could not initialize SDL: " << SDL_GetError() << std::endl;
 		exit(-1);
 	}
@@ -176,8 +176,8 @@ bool PG_Application::InitScreen(int w, int h, int depth, Uint32 flags) {
 
 	if(depth == 0) {
 		const SDL_VideoInfo* info = SDL_GetVideoInfo();
-		if ( info->vfmt->BitsPerPixel > 8 ) {
-			depth = info->vfmt->BitsPerPixel;
+		if (info && info->vfmt.BitsPerPixel > 8) {
+			depth = info->vfmt.BitsPerPixel;
 		}
 	}
 
@@ -287,9 +287,9 @@ void PG_Application::DrawCursor(bool update) {
 		return;
 	}
 
-	if(SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE) {
+	if (SDL_CursorVisible()) {
 		// Hide hardware cursor if visible
-		SDL_ShowCursor(SDL_DISABLE);
+		SDL_HideCursor();
 	}
 
 	my_eventSupplier->GetMouseState(x, y);
@@ -396,10 +396,17 @@ bool PG_Application::eventResize(const SDL_ResizeEvent* event) {
 	if (!event)
 		return false;
 
-	screen = SDL_SetVideoMode(
-	             event->w, event->h,
-	             screen->format->BitsPerPixel,
-	             screen->flags);
+    Uint8 bitsPerPixel = 0;
+    Uint32 currentFlags = 0;
+    if (screen) {
+        SDL_CompatPixelFormat fmt = SDLCompat_BuildSurfacePixelFormat(screen);
+        bitsPerPixel = fmt.BitsPerPixel;
+        currentFlags = screen->flags;
+    }
+    screen = SDL_SetVideoMode(
+                 event->w, event->h,
+                 bitsPerPixel,
+                 currentFlags);
 
 	PG_Widget::UpdateRect(PG_Rect(0,0,event->w,event->h));
 	UpdateRect(screen,0,0,event->w,event->h);
@@ -419,7 +426,7 @@ void PG_Application::SetCursor(SDL_Surface *image) {
 		my_mouse_pointer = NULL;
 		ClearOldMousePosition();
 		UpdateRects(screen, 1, &my_mouse_position);
-		SDL_ShowCursor(SDL_ENABLE);
+		SDL_ShowCursor();
 		return;
 	}
 	if(!my_mouse_pointer) {
@@ -438,10 +445,10 @@ void PG_Application::SetCursor(SDL_Surface *image) {
 PG_Application::CursorMode PG_Application::ShowCursor(CursorMode mode) {
 	switch(mode) {
 		case NONE:
-			SDL_ShowCursor(SDL_DISABLE);
+			SDL_HideCursor();
 			break;
 		case HARDWARE:
-			SDL_ShowCursor(SDL_ENABLE);
+			SDL_ShowCursor();
 			break;
 		case SOFTWARE:
 			DrawCursor();
@@ -538,7 +545,7 @@ void PG_Application::RedrawBackground(const PG_Rect& rect) {
 	PG_Rect fillrect = rect;
 
 	if(!my_background || !enableBackground) {
-		SDL_FillRect(screen, const_cast<PG_Rect*>(&fillrect), my_backcolor.MapRGB(screen->format));
+		SDL_FillRect(screen, const_cast<PG_Rect*>(&fillrect), my_backcolor.MapRGB(screen));
 		return;
 	}
 	if(my_backmode == PG_Draw::STRETCH &&
@@ -592,13 +599,17 @@ void PG_Application::PrintVideoTest() {
 	SDL_Rect **modes;
 
 	info = SDL_GetVideoInfo();
-	PG_LogDBG("Current display: %d bits-per-pixel", info->vfmt->BitsPerPixel);
+	const SDL_PixelFormatDetails* fmt = SDL_GetPixelFormatDetails(info ? info->vfmt : SDL_PIXELFORMAT_UNKNOWN);
+	int bits = fmt ? fmt->bits_per_pixel : 0;
+	PG_LogDBG("Current display: %d bits-per-pixel", bits);
 
-	if ( info->vfmt->palette == NULL ) {
+	SDL_Surface* currentSurface = SDL_GetVideoSurface();
+	SDL_Palette* palette = currentSurface ? SDL_GetSurfacePalette(currentSurface) : nullptr;
+	if ( palette == nullptr && fmt ) {
 		// FIXME: did I screw this up? :) -Dave
-		PG_LogDBG(" - Red Mask = 0x%x", info->vfmt->Rmask);
-		PG_LogDBG(" - Green Mask = 0x%x", info->vfmt->Gmask);
-		PG_LogDBG(" - Blue Mask = 0x%x", info->vfmt->Bmask);
+		PG_LogDBG(" - Red Mask = 0x%x", fmt->Rmask);
+		PG_LogDBG(" - Green Mask = 0x%x", fmt->Gmask);
+		PG_LogDBG(" - Blue Mask = 0x%x", fmt->Bmask);
 	}
 	/* Print available fullscreen video modes */
 	modes = SDL_ListModes(NULL, SDL_FULLSCREEN);
@@ -761,7 +772,7 @@ bool PG_Application::eventQuit(int id, PG_MessageObject* widget, unsigned long d
 	if(my_mouse_pointer) {
 		UnloadSurface(my_mouse_pointer);
 		my_mouse_pointer = 0;
-		SDL_ShowCursor(SDL_ENABLE);
+		SDL_ShowCursor();
 	}
 
 	return true;
@@ -824,11 +835,12 @@ void PG_Application::SetIcon(const std::string& filename) {
 	}
 
 	//Check the palette
-	if ( icon->format->palette == NULL ) {
-		PG_LogWRN("Icon must have a palette!");
-		UnloadSurface(icon);
-		return;
-	}
+    SDL_CompatPixelFormat iconFmt = SDLCompat_BuildSurfacePixelFormat(icon);
+    if ( iconFmt.palette == NULL ) {
+        PG_LogWRN("Icon must have a palette!");
+        UnloadSurface(icon);
+        return;
+    }
 
 	// Set the colorkey
 	SDL_SetColorKey(icon, SDL_SRCCOLORKEY, *((Uint8 *)icon->pixels));
@@ -1076,43 +1088,43 @@ void PG_Application::TranslateNumpadKeys(SDL_KeyboardEvent *key) {
 		if (key->keysym.mod & KMOD_NUM) {
 			// numeric keypad is enabled
 			switch (key->keysym.sym) {
-				case SDLK_KP0       :
+				case SDLK_KP_0       :
 					key->keysym.sym = SDLK_0;
 					key->keysym.unicode = SDLK_0;
 					break;
-				case SDLK_KP1       :
+				case SDLK_KP_1       :
 					key->keysym.sym = SDLK_1;
 					key->keysym.unicode = SDLK_1;
 					break;
-				case SDLK_KP2       :
+				case SDLK_KP_2       :
 					key->keysym.sym = SDLK_2;
 					key->keysym.unicode = SDLK_2;
 					break;
-				case SDLK_KP3       :
+				case SDLK_KP_3       :
 					key->keysym.sym = SDLK_3;
 					key->keysym.unicode = SDLK_3;
 					break;
-				case SDLK_KP4       :
+				case SDLK_KP_4       :
 					key->keysym.sym = SDLK_4;
 					key->keysym.unicode = SDLK_4;
 					break;
-				case SDLK_KP5       :
+				case SDLK_KP_5       :
 					key->keysym.sym = SDLK_5;
 					key->keysym.unicode = SDLK_5;
 					break;
-				case SDLK_KP6       :
+				case SDLK_KP_6       :
 					key->keysym.sym = SDLK_6;
 					key->keysym.unicode = SDLK_6;
 					break;
-				case SDLK_KP7       :
+				case SDLK_KP_7       :
 					key->keysym.sym = SDLK_7;
 					key->keysym.unicode = SDLK_7;
 					break;
-				case SDLK_KP8       :
+				case SDLK_KP_8       :
 					key->keysym.sym = SDLK_8;
 					key->keysym.unicode = SDLK_8;
 					break;
-				case SDLK_KP9       :
+				case SDLK_KP_9       :
 					key->keysym.sym = SDLK_9;
 					key->keysym.unicode = SDLK_9;
 					break;
@@ -1151,39 +1163,39 @@ void PG_Application::TranslateNumpadKeys(SDL_KeyboardEvent *key) {
 		} else {
 			// numeric keypad is disabled
 			switch (key->keysym.sym) {
-				case SDLK_KP0       :
+				case SDLK_KP_0       :
 					key->keysym.sym = SDLK_INSERT;
 					key->keysym.unicode = 0;
 					break;
-				case SDLK_KP1       :
+				case SDLK_KP_1       :
 					key->keysym.sym = SDLK_END;
 					key->keysym.unicode = 0;
 					break;
-				case SDLK_KP2       :
+				case SDLK_KP_2       :
 					key->keysym.sym = SDLK_DOWN;
 					key->keysym.unicode = 0;
 					break;
-				case SDLK_KP3       :
+				case SDLK_KP_3       :
 					key->keysym.sym = SDLK_PAGEDOWN;
 					key->keysym.unicode = 0;
 					break;
-				case SDLK_KP4       :
+				case SDLK_KP_4       :
 					key->keysym.sym = SDLK_LEFT;
 					key->keysym.unicode = 0;
 					break;
-				case SDLK_KP6       :
+				case SDLK_KP_6       :
 					key->keysym.sym = SDLK_RIGHT;
 					key->keysym.unicode = 0;
 					break;
-				case SDLK_KP7       :
+				case SDLK_KP_7       :
 					key->keysym.sym = SDLK_HOME;
 					key->keysym.unicode = 0;
 					break;
-				case SDLK_KP8       :
+				case SDLK_KP_8       :
 					key->keysym.sym = SDLK_UP;
 					key->keysym.unicode = 0;
 					break;
-				case SDLK_KP9       :
+				case SDLK_KP_9       :
 					key->keysym.sym = SDLK_PAGEUP;
 					key->keysym.unicode = 0;
 					break;

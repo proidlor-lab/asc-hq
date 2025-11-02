@@ -1,0 +1,6 @@
+#ifndef ASC_SDL_COMPAT_LEGACY_ENDIAN_H
+#define ASC_SDL_COMPAT_LEGACY_ENDIAN_H
+
+#include "../SDL_endian.h"
+
+#endif /* ASC_SDL_COMPAT_LEGACY_ENDIAN_H */

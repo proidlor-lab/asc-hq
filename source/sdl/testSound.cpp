@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include <stdio.h>
-#include <SDL/SDL.h>
+#include <SDL.h>
 #include <unistd.h>
 #include <sound.h>
 
@@ -35,4 +35,3 @@ int main( int argc, char **argv ) {
   }
   closeSound();
 }
-

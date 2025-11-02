@@ -1,0 +1,6 @@
+#ifndef ASC_SDL_COMPAT_LEGACY_THREAD_H
+#define ASC_SDL_COMPAT_LEGACY_THREAD_H
+
+#include "../SDL_thread.h"
+
+#endif /* ASC_SDL_COMPAT_LEGACY_THREAD_H */

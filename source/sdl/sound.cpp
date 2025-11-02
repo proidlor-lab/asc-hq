@@ -296,9 +296,6 @@ SoundSystem::~SoundSystem()
    if( mix_initialized )
       Mix_CloseAudio();
 
-   if( sdl_initialized )
-      SDL_CloseAudio();
-
    delete internalData;
 
    instance = NULL;
@@ -525,5 +522,4 @@ Sound::~Sound(void)
 
    delete internalData;
 }
-
 

@@ -31,6 +31,20 @@
 #include "pgdraw.h"
 #include "pglog.h"
 
+namespace {
+
+SDL_Rect ToSDLRect(const PG_Rect& rect)
+{
+	SDL_Rect r;
+	r.x = rect.x;
+	r.y = rect.y;
+	r.w = rect.w;
+	r.h = rect.h;
+	return r;
+}
+
+}
+
 SDL_Surface* PG_Draw::CreateRGBSurface(Uint16 w, Uint16 h, int flags) {
 	SDL_Surface* screen = SDL_GetVideoSurface();
 
@@ -40,14 +54,15 @@ SDL_Surface* PG_Draw::CreateRGBSurface(Uint16 w, Uint16 h, int flags) {
 		return NULL;
 	}
 
+	SDL_CompatPixelFormat screenFmt = SDLCompat_GetSurfaceFormat(screen);
 	return SDL_CreateRGBSurface (
 	           flags,
 	           w, h,
-	           screen->format->BitsPerPixel,
-	           screen->format->Rmask,
-	           screen->format->Gmask,
-	           screen->format->Bmask,
-	           0);
+	           screenFmt.BitsPerPixel,
+	           screenFmt.Rmask,
+	           screenFmt.Gmask,
+	           screenFmt.Bmask,
+	           screenFmt.Amask);
 }
 
 static void Draw3TileH(SDL_Surface* src, const PG_Rect& r, SDL_Surface* dst, Uint8 blend = 0) {
@@ -91,7 +106,8 @@ static void Draw3TileH(SDL_Surface* src, const PG_Rect& r, SDL_Surface* dst, Uin
 	// blit part 2 (middle)
 
 	dstrect.SetRect(r.x+w, r.y, r.w-w*2, h);
-	SDL_SetClipRect(dst, &dstrect);
+	SDL_Rect clipRect = ToSDLRect(dstrect);
+	SDL_SetClipRect(dst, &clipRect);
 
 	// blit it
 	srcrect.SetRect(w, 0, w, h);
@@ -156,7 +172,8 @@ static void Draw3TileV(SDL_Surface* src, const PG_Rect& r, SDL_Surface* dst, Uin
 
 	// set cliprect
 	dstrect.SetRect(r.x,r.y+h,w,r.h-h*2);
-	SDL_SetClipRect(dst, &dstrect);
+	SDL_Rect clipRect = ToSDLRect(dstrect);
+	SDL_SetClipRect(dst, &clipRect);
 
 	// blit it
 	srcrect.SetRect(0, h, w, h);
@@ -202,7 +219,8 @@ static void DrawTileSurface(SDL_Surface* src, const PG_Rect& r, SDL_Surface* dst
 	dstrect.my_width = src->w;
 	dstrect.my_height = src->h;
 
-	SDL_SetClipRect(dst, &r);
+	SDL_Rect clipRect = ToSDLRect(r);
+	SDL_SetClipRect(dst, &clipRect);
 	for(int y=0; y<yc; y++) {
 		for(int x=0; x<xc; x++) {
 			dstrect.x = r.my_xpos + src->w * x;
@@ -239,6 +257,7 @@ static void Draw9Tile(SDL_Surface* src, const PG_Rect& r, SDL_Surface* dst, Uint
 	// 3 source stripes (ABC, DEF, HGI)
 	SDL_Surface* src_stripe[3];
 	int h_src_stripe = src->h / 3;
+	SDL_CompatPixelFormat srcFmt = SDLCompat_GetSurfaceFormat(src);
 
 	// copy source stripes
 	dstrect.SetRect(0, 0, src->w, h_src_stripe);
@@ -251,11 +270,11 @@ static void Draw9Tile(SDL_Surface* src, const PG_Rect& r, SDL_Surface* dst, Uint
 		                    SDL_SWSURFACE,
 		                    srcrect.w,
 		                    srcrect.h,
-		                    32, //src->format->BitsPerPixel,
-		                    0, //src->format->Rmask,
-		                    0, //src->format->Gmask,
-		                    0, //src->format->Bmask,
-		                    0 //src->format->Amask
+		                    srcFmt.BitsPerPixel ? srcFmt.BitsPerPixel : 32,
+		                    srcFmt.Rmask,
+		                    srcFmt.Gmask,
+		                    srcFmt.Bmask,
+		                    srcFmt.Amask
 		                );
 
 		// copy stripe
@@ -274,11 +293,11 @@ static void Draw9Tile(SDL_Surface* src, const PG_Rect& r, SDL_Surface* dst, Uint
 		                    SDL_SWSURFACE,
 		                    dstrect.w,
 		                    dstrect.h,
-		                    32, //src->format->BitsPerPixel,
-		                    0, //src->format->Rmask,
-		                    0, //src->format->Gmask,
-		                    0, //src->format->Bmask,
-		                    0 //src->format->Amask
+		                    srcFmt.BitsPerPixel ? srcFmt.BitsPerPixel : 32,
+		                    srcFmt.Rmask,
+		                    srcFmt.Gmask,
+		                    srcFmt.Bmask,
+		                    srcFmt.Amask
 		                );
 
 		// 3TILEH the source to the dest. stripe
@@ -313,126 +332,84 @@ static void Draw9Tile(SDL_Surface* src, const PG_Rect& r, SDL_Surface* dst, Uint
 
 }
 
-void PG_Draw::DrawThemedSurface(SDL_Surface* surface, const PG_Rect& r, PG_Gradient* gradient,SDL_Surface* background, BkMode bkmode, Uint8 blend) {
-	static PG_Rect srcrect;
-	static PG_Rect dstrect;
-	//int x,y;
-	bool bColorKey = false;
-	PG_Color uColorKey;
-	Uint32 c;
-	PG_Rect oldclip;
+namespace PG_Draw {
 
-	// check if we have anything to do
+void DrawThemedSurface(SDL_Surface* surface, const PG_Rect& r, PG_Gradient* gradient, SDL_Surface* background, BkMode bkmode, Uint8 blend)
+{
+	bool hadBackgroundColorKey = false;
+	Uint32 backgroundColorKey = 0;
+	bool hadSurfaceColorKey = false;
+	Uint32 surfaceColorKey = 0;
+	SDL_Rect oldclip;
+
 	if (!surface || !r.h || !r.w)
 		return;
 
-	// draw the gradient first
-	if((background == NULL) || (background && (blend > 0))) {
-		if(gradient != NULL) {
-			if(SDL_MUSTLOCK(surface)) {
+	if ((background == NULL) || (background && (blend > 0))) {
+		if (gradient != NULL) {
+			if (SDL_MUSTLOCK(surface)) {
 				SDL_LockSurface(surface);
 			}
 			DrawGradient(surface, r, *gradient);
-			if(SDL_MUSTLOCK(surface)) {
+			if (SDL_MUSTLOCK(surface)) {
 				SDL_UnlockSurface(surface);
 			}
 		}
 	}
 
-	if(!background)
+	if (!background || !background->w || !background->h)
 		return;
 
-	if (!background->w || !background->h)
-		return;
+	hadBackgroundColorKey = SDL_SurfaceHasColorKey(background);
+	if (hadBackgroundColorKey)
+		SDL_GetSurfaceColorKey(background, &backgroundColorKey);
+	hadSurfaceColorKey = SDL_SurfaceHasColorKey(surface);
+	if (hadSurfaceColorKey)
+		SDL_GetSurfaceColorKey(surface, &surfaceColorKey);
 
-	//int yc;
-	//int xc;
-	SDL_Surface* temp;
-	//int w,h;
-
-	bColorKey = (background->flags & SDL_SRCCOLORKEY) != 0;
-	Uint8 rc,gc,bc;
-
-	SDL_GetRGB(background->format->colorkey, background->format, &rc, &gc, &bc);
-	uColorKey = (Uint32)((rc << 16) | (gc << 8) | bc);
-
-	if(((gradient == NULL) || (blend == 0)) && bColorKey) {
-		SDL_SetColorKey(background, 0, 0);
+	if (((gradient == NULL) || (blend == 0)) && hadBackgroundColorKey) {
+		SDL_SetSurfaceColorKey(background, SDL_FALSE, 0);
 	}
 
 	SDL_GetClipRect(surface, &oldclip);
 
-   // prevent any aliasing if the sizes match
-   if ( bkmode == STRETCH && r.w==background->w && r.h == background->h )
-      bkmode = TILE;
-   
-	switch(bkmode) {
+	if (bkmode == STRETCH && r.w == background->w && r.h == background->h)
+		bkmode = TILE;
 
-			//
-			// BKMODE_TILE
-			//
-
-		case TILE:
-			DrawTileSurface(background, r, surface, blend);
-			break;
-
-			//
-			// BKMODE_STRETCH
-			//
-
-		case STRETCH:
-			// stretch the background to fit the surface
-
-			// Scale the background to fit this widget, using
-			// anti-aliasing
-			temp = PG_Draw::ScaleSurface(background, r);
-
-			// set per surface alpha
-			if(blend > 0) {
-				SDL_SetAlpha(temp, SDL_SRCALPHA, 255-blend);
-			} else {
-				SDL_SetAlpha(temp, 0, 0);
-			}
-
-			// blit it
-			SDL_BlitSurface(temp, NULL, surface, (PG_Rect*)&r);
-
-			// free the temp surface
-			SDL_FreeSurface(temp);
-			break;
-
-			//
-			// BKMODE_3TILEH
-			//
-
-		case TILE3H:
-			Draw3TileH(background, r, surface, blend);
-			break;
-
-			//
-			// BKMODE_3TILEV
-			//
-
-		case TILE3V:
-			Draw3TileV(background, r, surface, blend);
-			break;
-
-			//
-			// BKMODE_9TILE
-			//
-
-		case TILE9:
-			Draw9Tile(background, r, surface, blend);
-			break;
-
+	switch (bkmode) {
+	case TILE:
+		DrawTileSurface(background, r, surface, blend);
+		break;
+	case STRETCH:
+	{
+		SDL_Surface* temp = PG_Draw::ScaleSurface(background, r);
+		if (blend > 0)
+			SDL_SetAlpha(temp, SDL_SRCALPHA, 255 - blend);
+		else
+			SDL_SetAlpha(temp, 0, 0);
+		SDL_Rect dstRect = ToSDLRect(r);
+		SDL_BlitSurface(temp, NULL, surface, &dstRect);
+		SDL_FreeSurface(temp);
+		break;
+	}
+	case TILE3H:
+		Draw3TileH(background, r, surface, blend);
+		break;
+	case TILE3V:
+		Draw3TileV(background, r, surface, blend);
+		break;
+	case TILE9:
+		Draw9Tile(background, r, surface, blend);
+		break;
 	}
 
-	SDL_SetClipRect(surface, const_cast<PG_Rect*>(&oldclip));
+	SDL_SetClipRect(surface, &oldclip);
 
-	if((/*(gradient == NULL) ||*/ (blend == 0)) && bColorKey) {
-		c = uColorKey.MapRGB(background->format);
-		SDL_SetColorKey(background, SDL_SRCCOLORKEY, c);
-		c = uColorKey.MapRGB(surface->format);
-		SDL_SetColorKey(surface, SDL_SRCCOLORKEY, c);
+	if (((gradient == NULL) || (blend == 0)) && hadBackgroundColorKey) {
+		SDL_SetSurfaceColorKey(background, SDL_TRUE, backgroundColorKey);
+		if (hadSurfaceColorKey)
+			SDL_SetSurfaceColorKey(surface, SDL_TRUE, surfaceColorKey);
 	}
 }
+
+} // namespace PG_Draw

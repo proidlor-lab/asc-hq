@@ -66,7 +66,7 @@ void PG_MultiLineEdit::DrawText(const PG_Rect& dst) {
 	PG_Color color(GetFontColor());
 	PG_Color inv_color(255 - color.r, 255 - color.g, 255 - color.b);
 	SDL_Surface* screen = PG_Application::GetScreen();
-	Uint32 highlightColor = SDL_MapRGB(screen->format, color.r, color.g, color.b);
+	Uint32 highlightColor = SDL_MapSurfaceRGB(screen, color.r, color.g, color.b);
 	PG_String s, middlepart;
 
 	for (unsigned int i = my_firstLine; i < (unsigned int)my_firstLine + maxLines && i < my_textdata.size(); ++i) {

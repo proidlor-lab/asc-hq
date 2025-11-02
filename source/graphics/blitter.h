@@ -1781,7 +1781,7 @@ class TargetPixelSelector_Rect {
         
         void setClippingRect( SDL_Surface*  srv  ) 
         { 
-           setTargetRect( srv->clip_rect );
+           setTargetRect( SDLCompat_GetClipRect(srv) );
         };
         
         TargetPixelSelector_Rect ( NullParamType npt = nullParam ) :w(0xffffff),h(0xffffff) {};   
@@ -1803,4 +1803,3 @@ class TargetPixelSelector_Rect {
 */
 
 #endif
-

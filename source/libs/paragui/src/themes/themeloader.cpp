@@ -183,9 +183,13 @@ void parseObjectProps(PARSE_INFO* info, const XML_Char* prop, const XML_Char** a
 				std::cerr << "UNKNOWN FILENAME ATTRIBUTE: " << atts[i] << std::endl;
 			}
 		}
+		fprintf(stderr, "[ASC SDL3] LoadSurface request value='%s' name='%s'\n", filename->value.c_str(), filename->name.c_str());
+		fflush(stderr);
 
 		// load the image file
 		filename->surface = PG_FileArchive::LoadSurface(filename->value, true);
+		fprintf(stderr, "[ASC SDL3] LoadSurface result=%p\n", (void*)filename->surface);
+		fflush(stderr);
 
 		if(filename->surface == NULL) {
 			delete filename;
@@ -195,7 +199,7 @@ void parseObjectProps(PARSE_INFO* info, const XML_Char* prop, const XML_Char** a
 		// set the colorkey (if there is any)
 		if(filename->hasColorKey && filename->surface) {
 			PG_Color c = filename->colorkey;
-			Uint32 key = c.MapRGB(filename->surface->format);
+			Uint32 key = c.MapRGB(filename->surface);
 			SDL_SetColorKey(filename->surface, SDL_SRCCOLORKEY, key);
 		}
 		object->filename[filename->name] = filename;
@@ -349,9 +353,11 @@ void parseObjectProps(PARSE_INFO* info, const XML_Char* prop, const XML_Char** a
 
 
 void handlerStart(void* userData, const XML_Char *name, const XML_Char** atts) {
-	PARSE_INFO* info = (PARSE_INFO*)userData;
+    PARSE_INFO* info = (PARSE_INFO*)userData;
+    fprintf(stderr, "[ASC SDL3] handlerStart depth=%d name=%s mode=%d\n", info->depth, name, info->mode);
+    fflush(stderr);
 
-	info->depth++;
+    info->depth++;
 
 	switch(info->mode) {
 		case THEMEMODE_NONE:
@@ -374,10 +380,12 @@ void handlerStart(void* userData, const XML_Char *name, const XML_Char** atts) {
 }
 
 void handlerEnd(void* userData, const XML_Char* name) {
-	PARSE_INFO* info = (PARSE_INFO*)userData;
+    PARSE_INFO* info = (PARSE_INFO*)userData;
+    fprintf(stderr, "[ASC SDL3] handlerEnd depth=%d name=%s mode=%d\n", info->depth, name, info->mode);
+    fflush(stderr);
 
-	if(tcscmp(T(name), T("object")) == 0) {
-		info->mode = THEMEMODE_WIDGET;
+    if(tcscmp(T(name), T("object")) == 0) {
+        info->mode = THEMEMODE_WIDGET;
 	} else if(tcscmp(T(name), T("widget")) == 0) {
 		info->mode = THEMEMODE_THEME;
 	} else if(tcscmp(T(name), T("theme")) == 0) {
@@ -390,6 +398,8 @@ void handlerEnd(void* userData, const XML_Char* name) {
 PG_Theme* PG_Theme::Load(const std::string& xmltheme) {
 	std::string filename;
 	buff = new char[BUFFSIZE];
+	fprintf(stderr, "[ASC SDL3] PG_Theme::Load '%s' begin\n", xmltheme.c_str());
+	fflush(stderr);
 
 	// create new parse info
 	PARSE_INFO info;
@@ -405,9 +415,13 @@ PG_Theme* PG_Theme::Load(const std::string& xmltheme) {
 
 	// check if we have a compressed themefile somewhere
 	filename = xmltheme + ".zip";
+	fprintf(stderr, "[ASC SDL3] checking theme archive %s\n", filename.c_str());
+	fflush(stderr);
 
 	// and add it to the searchpath
-	if(PG_FileArchive::Exists(filename)) {
+	bool zipExists = PG_FileArchive::Exists(filename);
+	fprintf(stderr, "[ASC SDL3] archive exists? %d\n", zipExists ? 1 : 0);
+	if(zipExists) {
 		const char* path = PG_FileArchive::GetRealDir(filename);
 		char sep = PG_FileArchive::GetDirSeparator()[0];
 
@@ -429,8 +443,14 @@ PG_Theme* PG_Theme::Load(const std::string& xmltheme) {
 	// try to open the theme
 
 	filename = xmltheme + THEME_SUFFIX;
-	if(!PG_FileArchive::Exists(filename)) {
+	fprintf(stderr, "[ASC SDL3] checking theme file %s\n", filename.c_str());
+	fflush(stderr);
+	bool themeExists = PG_FileArchive::Exists(filename);
+	fprintf(stderr, "[ASC SDL3] theme file exists? %d\n", themeExists ? 1 : 0);
+	if(!themeExists) {
 		PG_LogERR("theme '%s' not found !", filename.c_str());
+		fprintf(stderr, "[ASC SDL3] PG_Theme::Load theme file missing: %s\n", filename.c_str());
+		fflush(stderr);
 		return NULL;
 	}
 
@@ -446,8 +466,12 @@ PG_Theme* PG_Theme::Load(const std::string& xmltheme) {
 	// create an input-stream
 
 	PG_File* file = PG_FileArchive::OpenFile(filename);
+	fprintf(stderr, "[ASC SDL3] OpenFile(%s) -> %p\n", filename.c_str(), (void*)file);
+	fflush(stderr);
 
 	if(!file) {
+		fprintf(stderr, "[ASC SDL3] PG_Theme::Load failed to open %s\n", filename.c_str());
+		fflush(stderr);
 		XML_ParserFree(p);
 		delete[] buff;
 		return NULL;
@@ -458,6 +482,8 @@ PG_Theme* PG_Theme::Load(const std::string& xmltheme) {
 		int done;
 
 		int n = file->read(buff, BUFFSIZE);
+		fprintf(stderr, "[ASC SDL3] read %d bytes from theme (done=%d)\n", n, file->eof());
+		fflush(stderr);
 		done = file->eof();
 
 		if (! XML_Parse(p, buff, n, done)) {
@@ -467,22 +493,29 @@ PG_Theme* PG_Theme::Load(const std::string& xmltheme) {
 			delete[] buff;
 			return NULL;
 		}
+		fprintf(stderr, "[ASC SDL3] XML_Parse consumed %d bytes (done=%d)\n", n, done);
+		fflush(stderr);
 
-		if(done) {
-			break;
-		}
-	}
+    if(done) {
+        break;
+    }
+}
 
-	// free the parser
-	XML_ParserFree(p);
+    fprintf(stderr, "[ASC SDL3] PG_Theme::Load parse loop done for %s\n", filename.c_str());
+    fflush(stderr);
 
-	// close the file
-	delete file;
-	delete[] buff;
+    // free the parser
+    XML_ParserFree(p);
 
-	PG_LogMSG("theme '%s' loaded successfully", filename.c_str());
+    // close the file
+    delete file;
+    delete[] buff;
 
-	return info.theme;
+    PG_LogMSG("theme '%s' loaded successfully", filename.c_str());
+    fprintf(stderr, "[ASC SDL3] PG_Theme::Load returning %p\n", (void*)info.theme);
+    fflush(stderr);
+
+    return info.theme;
 }
 
 void PG_Theme::Unload(PG_Theme* theme) {

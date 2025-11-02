@@ -100,8 +100,10 @@ inline void RectStretchTemplate(SDL_Surface* src_surface, ST src, int xs1, int y
         Uint16 src_pitch = src_surface->pitch;
         Uint16 dst_pitch = dst_surface->pitch;
         
-        int src_bpp = src_surface->format->BytesPerPixel;
-        int dst_bpp = dst_surface->format->BytesPerPixel;
+        SDL_CompatPixelFormat src_fmt = SDLCompat_BuildSurfacePixelFormat(src_surface);
+        SDL_CompatPixelFormat dst_fmt = SDLCompat_BuildSurfacePixelFormat(dst_surface);
+        int src_bpp = src_fmt.BytesPerPixel;
+        int dst_bpp = dst_fmt.BytesPerPixel;
 
         register long src_pixels = ((long)src + ys1*src_pitch + xs1 * src_bpp);
         register long dst_pixels = ((long)dst + yd1*dst_pitch + xd1 * dst_bpp);
@@ -145,11 +147,13 @@ inline void RectStretchTemplate(SDL_Surface* src_surface, ST src, int xs1, int y
 
 void SDL_StretchSurface(SDL_Surface* src_surface, int xs1, int ys1, int xs2, int ys2, SDL_Surface* dst_surface, int xd1, int yd1, int xd2, int yd2, Uint32* lutVOI)
 {
-        int src_bpp = src_surface->format->BytesPerPixel;
-        int dst_bpp = dst_surface->format->BytesPerPixel;
+        SDL_CompatPixelFormat src_fmt = SDLCompat_BuildSurfacePixelFormat(src_surface);
+        SDL_CompatPixelFormat dst_fmt = SDLCompat_BuildSurfacePixelFormat(dst_surface);
+        int src_bpp = src_fmt.BytesPerPixel;
+        int dst_bpp = dst_fmt.BytesPerPixel;
 
-        if(dst_surface->format->BytesPerPixel == 1){
-            SDL_SetColors(dst_surface, src_surface->format->palette->colors, 0, 256);
+        if(dst_fmt.BytesPerPixel == 1 && src_fmt.palette && src_fmt.palette->ncolors > 0){
+            SDL_SetColors(dst_surface, src_fmt.palette->colors, 0, src_fmt.palette->ncolors);
         }
 
         switch(dst_bpp){
@@ -215,4 +219,3 @@ void SDL_StretchSurface(SDL_Surface* src_surface, SDL_Rect* src_rect, SDL_Surfac
                                 dst_rect->h,    
                                 voiLUT);
 }
-

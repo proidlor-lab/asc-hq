@@ -1,0 +1,6 @@
+#ifndef ASC_SDL_COMPAT_LEGACY_MIXER_H
+#define ASC_SDL_COMPAT_LEGACY_MIXER_H
+
+#include "../SDL_mixer.h"
+
+#endif /* ASC_SDL_COMPAT_LEGACY_MIXER_H */

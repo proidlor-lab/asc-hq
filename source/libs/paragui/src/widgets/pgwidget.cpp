@@ -1685,7 +1685,7 @@ void PG_Widget::DrawHLine(int x, int y, int w, const PG_Color& color) {
 	// clip to widget cliprect
 	int x0 = PG_MAX(x, _mid->rectClip.x);
 	int x1 = PG_MIN(x+w, _mid->rectClip.x+_mid->rectClip.w);
-	Uint32 c = color.MapRGB(surface->format);
+	Uint32 c = color.MapRGB(surface);
 
 	int wl = (x1-x0);
 
@@ -1723,7 +1723,7 @@ void PG_Widget::DrawVLine(int x, int y, int h, const PG_Color& color) {
 	// clip to widget cliprect
 	int y0 = PG_MAX(y, _mid->rectClip.y);
 	int y1 = PG_MIN(y+h, _mid->rectClip.y+_mid->rectClip.h);
-	Uint32 c = color.MapRGB(surface->format);
+	Uint32 c = color.MapRGB(surface);
 
 	int hl = (y1-y0);
 

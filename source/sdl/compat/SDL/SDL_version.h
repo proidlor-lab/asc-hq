@@ -1,0 +1,6 @@
+#ifndef ASC_SDL_COMPAT_LEGACY_VERSION_H
+#define ASC_SDL_COMPAT_LEGACY_VERSION_H
+
+#include "../SDL_version.h"
+
+#endif /* ASC_SDL_COMPAT_LEGACY_VERSION_H */

@@ -139,8 +139,8 @@ inline void RectStretchTemplate(SDL_Surface* src_surface, ST src, int xs1, int y
 	Uint16 src_pitch = src_surface->pitch;
 	Uint16 dst_pitch = dst_surface->pitch;
 
-	int src_bpp = src_surface->format->BytesPerPixel;
-	int dst_bpp = dst_surface->format->BytesPerPixel;
+	int src_bpp = SDLCompat_GetSurfaceFormat(src_surface).BytesPerPixel;
+	int dst_bpp = SDLCompat_GetSurfaceFormat(dst_surface).BytesPerPixel;
 
 	SDL_Rect clip;
 	SDL_GetClipRect(dst_surface, &clip);
@@ -227,8 +227,8 @@ inline void RectStretch24to32(SDL_Surface* src_surface, Uint8* src, int xs1, int
 	Uint16 src_pitch = src_surface->pitch;
 	Uint16 dst_pitch = dst_surface->pitch;
 
-	int src_bpp = src_surface->format->BytesPerPixel;
-	int dst_bpp = dst_surface->format->BytesPerPixel;
+	int src_bpp = SDLCompat_GetSurfaceFormat(src_surface).BytesPerPixel;
+	int dst_bpp = SDLCompat_GetSurfaceFormat(dst_surface).BytesPerPixel;
 
 	SDL_Rect clip;
 	SDL_GetClipRect(dst_surface, &clip);
@@ -253,8 +253,8 @@ inline void RectStretch24to32(SDL_Surface* src_surface, Uint8* src, int xs1, int
 }
 
 void PG_Draw::RectStretch(SDL_Surface* src_surface, int xs1, int ys1, int xs2, int ys2, SDL_Surface* dst_surface, int xd1, int yd1, int xd2, int yd2, Uint32* lutVOI) {
-	int src_bpp = src_surface->format->BytesPerPixel;
-	int dst_bpp = dst_surface->format->BytesPerPixel;
+	int src_bpp = SDLCompat_GetSurfaceFormat(src_surface).BytesPerPixel;
+	int dst_bpp = SDLCompat_GetSurfaceFormat(dst_surface).BytesPerPixel;
 
 	switch (dst_bpp) {
 
@@ -262,8 +262,8 @@ void PG_Draw::RectStretch(SDL_Surface* src_surface, int xs1, int ys1, int xs2, i
 			switch (src_bpp) {
 
 				case 1:
-					if(src_surface->format->palette != NULL) {
-						SDL_SetColors(dst_surface, src_surface->format->palette->colors, 0, 256);
+					if(SDLCompat_GetSurfaceFormat(src_surface).palette != NULL) {
+						SDL_SetColors(dst_surface, SDLCompat_GetSurfaceFormat(src_surface).palette->colors, 0, 256);
 					}
 					RectStretchTemplate(src_surface, (Uint8*)src_surface->pixels, xs1, ys1, xs2, ys2, dst_surface, (Uint8*)dst_surface->pixels, xd1, yd1, xd2, yd2, lutVOI);
 					break;
@@ -307,7 +307,7 @@ void PG_Draw::RectStretch(SDL_Surface* src_surface, int xs1, int ys1, int xs2, i
 	}
 
 	// copy the colorkey
-	//SDL_SetColorKey(dst_surface, SDL_SRCCOLORKEY, src_surface->format->colorkey);
+	//SDL_SetColorKey(dst_surface, SDL_SRCCOLORKEY, SDLCompat_GetSurfaceFormat(src_surface).colorkey);
 }
 
 

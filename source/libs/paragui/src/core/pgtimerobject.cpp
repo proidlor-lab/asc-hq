@@ -6,10 +6,6 @@ std::map<PG_TimerObject::ID, PG_TimerObject*> PG_TimerObject::timermap;
 PG_TimerObject* PG_TimerObject::objSingleTimer = NULL;
 
 PG_TimerObject::PG_TimerObject() {
-	if(objectcount == 0) {
-		SDL_InitSubSystem(SDL_INIT_TIMER);
-	}
-
 	objectcount++;
 	my_lock = SDL_CreateMutex();
 }
@@ -28,10 +24,6 @@ PG_TimerObject::~PG_TimerObject() {
 	}
 
 	objectcount--;
-
-	if(objectcount == 0) {
-		SDL_QuitSubSystem(SDL_INIT_TIMER);
-	}
 
 	SDL_DestroyMutex(my_lock);
 }

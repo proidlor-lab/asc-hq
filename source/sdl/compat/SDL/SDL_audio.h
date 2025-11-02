@@ -1,0 +1,6 @@
+#ifndef ASC_SDL_COMPAT_LEGACY_AUDIO_H
+#define ASC_SDL_COMPAT_LEGACY_AUDIO_H
+
+#include "../SDL_audio.h"
+
+#endif /* ASC_SDL_COMPAT_LEGACY_AUDIO_H */

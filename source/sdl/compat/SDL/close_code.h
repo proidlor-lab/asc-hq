@@ -1,0 +1,6 @@
+#ifndef ASC_SDL_COMPAT_LEGACY_CLOSE_CODE_H
+#define ASC_SDL_COMPAT_LEGACY_CLOSE_CODE_H
+
+#include "../close_code.h"
+
+#endif /* ASC_SDL_COMPAT_LEGACY_CLOSE_CODE_H */

@@ -127,25 +127,27 @@ template < class DT >
 inline void BlitTemplate(DT pixels, SDL_Surface* Surface, FT_Bitmap *Bitmap, int PosX, int PosY, int x0, int x1, int y0, int y1, PG_Font *Param) {
 	int xw = x1-x0;
 
-	SDL_PixelFormat* format = Surface->format;
-	Uint8 Rloss = format->Rloss;
-	Uint8 Gloss = format->Gloss;
-	Uint8 Bloss = format->Bloss;
-	Uint8 Aloss = format->Aloss;
+    SDL_CompatPixelFormat fmt = SDLCompat_BuildSurfacePixelFormat(Surface);
+    SDL_Palette* palette = fmt.palette;
+    const SDL_PixelFormatDetails* pixelDetails = SDL_GetPixelFormatDetails(Surface->format);
+    Uint8 Rloss = fmt.Rloss;
+    Uint8 Gloss = fmt.Gloss;
+    Uint8 Bloss = fmt.Bloss;
+    Uint8 Aloss = fmt.Aloss;
 	Uint8 Rloss8 = 8-Rloss;
 	Uint8 Gloss8 = 8-Gloss;
 	Uint8 Bloss8 = 8-Bloss;
 	Uint8 Aloss8 = 8-Aloss;
-	Uint8 Rshift = format->Rshift;
-	Uint8 Gshift = format->Gshift;
-	Uint8 Bshift = format->Bshift;
-	Uint8 Ashift = format->Ashift;
-	Uint32 Rmask = format->Rmask;
-	Uint32 Gmask = format->Gmask;
-	Uint32 Bmask = format->Bmask;
-	Uint32 Amask = format->Amask;
+    Uint8 Rshift = fmt.Rshift;
+    Uint8 Gshift = fmt.Gshift;
+    Uint8 Bshift = fmt.Bshift;
+    Uint8 Ashift = fmt.Ashift;
+    Uint32 Rmask = fmt.Rmask;
+    Uint32 Gmask = fmt.Gmask;
+    Uint32 Bmask = fmt.Bmask;
+    Uint32 Amask = fmt.Amask;
 
-	Uint8 bpp = format->BytesPerPixel;
+    Uint8 bpp = fmt.BytesPerPixel;
 	Uint32 pitch = Surface->pitch;
 	Uint32 src_pitch = Bitmap->pitch;
 	register Uint8* src_pixels = Bitmap->buffer + x0 + y0*Bitmap->pitch;
@@ -186,7 +188,7 @@ inline void BlitTemplate(DT pixels, SDL_Surface* Surface, FT_Bitmap *Bitmap, int
 
 			// Get the pixel
 			color = *((DT) (dst_pixels));
-			switch(Surface->format->BytesPerPixel) {
+            switch(fmt.BytesPerPixel) {
 				default:
 					// get the RGBA values
 					rv = (color & Rmask) >> Rshift;
@@ -233,9 +235,9 @@ inline void BlitTemplate(DT pixels, SDL_Surface* Surface, FT_Bitmap *Bitmap, int
 					break;
 
 				case 3:
-					cr = (fc.r << format->Rshift) >> 16 & 0xff;
-					cg = (fc.g << format->Gshift) >> 8 & 0xff;
-					cb = fc.b << format->Bshift & 0xff;
+					cr = fc.r;
+					cg = fc.g;
+					cb = fc.b;
 
 					if (v == 255) {
 						r = cr;
@@ -258,7 +260,12 @@ inline void BlitTemplate(DT pixels, SDL_Surface* Surface, FT_Bitmap *Bitmap, int
 					break;
 
 				case 1:
-					SDL_GetRGBA(color, format, &r, &g, &b, &a);
+					if (pixelDetails) {
+						SDL_GetRGBA(color, pixelDetails, palette, &r, &g, &b, &a);
+					} else {
+						r = g = b = 0;
+						a = SDL_ALPHA_OPAQUE;
+					}
 
 					// calculate new RGBA values
 					if(v == 255) {
@@ -279,7 +286,7 @@ inline void BlitTemplate(DT pixels, SDL_Surface* Surface, FT_Bitmap *Bitmap, int
 					if(a == 0) {
 						a = v;
 					}
-					color = SDL_MapRGBA(format, r,g,b, a);
+					color = SDL_MapSurfaceRGBA(Surface, r, g, b, a);
 					*((DT) (dst_pixels)) = color;
 					break;
 			}
@@ -342,7 +349,8 @@ bool PG_FontEngine::BlitFTBitmap(SDL_Surface *Surface, FT_Bitmap *Bitmap, int Po
 		return false;
 	}
 
-	switch(Surface->format->BytesPerPixel) {
+    SDL_CompatPixelFormat fmt = SDLCompat_BuildSurfacePixelFormat(Surface);
+    switch(fmt.BytesPerPixel) {
 		case 1:
 		case 3:
 			BlitTemplate((Uint8*)Surface->pixels, Surface, Bitmap, PosX, PosY, x0, x1, y0, y1, Param);
@@ -454,7 +462,7 @@ bool PG_FontEngine::BlitFTBitmap(SDL_Surface *Surface, FT_Bitmap *Bitmap, int Po
 							//if (Param->Alpha != 255)
 							//	a = (a * Param->Alpha) / 255;
 
-							raw_pixels[int(ioffset) + x + (my_charSurface->pitch/4)*(y)] = Param->Color.MapRGBA(my_charSurface->format, a);
+							raw_pixels[int(ioffset) + x + (my_charSurface->pitch/4)*(y)] = Param->Color.MapRGBA(my_charSurface, a);
 						}
 						SrcPix -= x;
 					}
@@ -472,7 +480,7 @@ bool PG_FontEngine::BlitFTBitmap(SDL_Surface *Surface, FT_Bitmap *Bitmap, int Po
 						if (Param->Alpha != 255)
 							a = (a * Param->Alpha) / 255;
 
-						*raw_pixels = Param->Color.MapRGBA(my_charSurface->format, a);
+						*raw_pixels = Param->Color.MapRGBA(my_charSurface, a);
 						raw_pixels++;
 					}
 					SrcPix -= x;
@@ -578,7 +586,7 @@ bool PG_FontEngine::RenderText(SDL_Surface *Surface, const PG_Rect *ClipRect, in
 			SDL_FillRect(
 			    Surface,
 			    &und_rect,
-			    font->GetColor().MapRGB(Surface->format)
+			    font->GetColor().MapRGB(Surface)
 			);
 		}
 	}
@@ -772,5 +780,3 @@ PG_FontEngine::FONT_ITEM::~FONT_ITEM() {
  * c-basic-offset: 8
  * End:
  */
-
-

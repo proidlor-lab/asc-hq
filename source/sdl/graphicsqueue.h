@@ -43,7 +43,7 @@ class GraphicsQueueOperation {
          bool visible;
       public:
          MouseVisibility( bool  visi )  : visible( visi ) { };
-          void execute() { SDL_ShowCursor(visible); };
+         void execute() { visible ? SDL_ShowCursor() : SDL_HideCursor(); };
       };
 
 

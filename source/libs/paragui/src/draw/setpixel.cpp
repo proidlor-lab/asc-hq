@@ -49,11 +49,11 @@ void PG_Draw::SetPixel(int x, int y, const PG_Color& c, SDL_Surface * surface) {
 		return;
 	}
 
-	bpp = surface->format->BytesPerPixel;
+	bpp = SDLCompat_GetSurfaceFormat(surface).BytesPerPixel;
 	bits = ((Uint8 *) surface->pixels) + y * surface->pitch + x * bpp;
 
 	if(old != c) {
-		pixel = c.MapRGB(surface->format);
+		pixel = c.MapRGB(surface);
 		old = c;
 	}
 
@@ -68,12 +68,12 @@ void PG_Draw::SetPixel(int x, int y, const PG_Color& c, SDL_Surface * surface) {
 			break;
 
 		case 3: {			/* Format/endian independent */
-				ri = (pixel >> surface->format->Rshift) & 0xFF;
-				gi = (pixel >> surface->format->Gshift) & 0xFF;
-				bi = (pixel >> surface->format->Bshift) & 0xFF;
-				*((bits) + surface->format->Rshift / 8) = ri;
-				*((bits) + surface->format->Gshift / 8) = gi;
-				*((bits) + surface->format->Bshift / 8) = bi;
+				ri = (pixel >> SDLCompat_GetSurfaceFormat(surface).Rshift) & 0xFF;
+				gi = (pixel >> SDLCompat_GetSurfaceFormat(surface).Gshift) & 0xFF;
+				bi = (pixel >> SDLCompat_GetSurfaceFormat(surface).Bshift) & 0xFF;
+				*((bits) + SDLCompat_GetSurfaceFormat(surface).Rshift / 8) = ri;
+				*((bits) + SDLCompat_GetSurfaceFormat(surface).Gshift / 8) = gi;
+				*((bits) + SDLCompat_GetSurfaceFormat(surface).Bshift / 8) = bi;
 			}
 			break;
 

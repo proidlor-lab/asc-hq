@@ -1,0 +1,6 @@
+#ifndef ASC_SDL_COMPAT_LEGACY_BEGIN_CODE_H
+#define ASC_SDL_COMPAT_LEGACY_BEGIN_CODE_H
+
+#include "../begin_code.h"
+
+#endif /* ASC_SDL_COMPAT_LEGACY_BEGIN_CODE_H */
