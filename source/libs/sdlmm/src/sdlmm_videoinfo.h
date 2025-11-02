@@ -1,6 +1,6 @@
 /*
  * SDLmm - a C++ wrapper for SDL and related libraries
- * Copyright © 2001 David Hedbor <david@hedbor.org>
+ * Copyright (C) 2001 David Hedbor <david@hedbor.org>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -93,8 +93,8 @@ namespace SDLmm {
     Uint32 video_mem();
 
     //! Returns the SDL_PixelFormat struct for the video device.
-    const PixelFormat GetPixelFormat() const { return PixelFormat(me->vfmt); }
-    PixelFormat GetPixelFormat() { return PixelFormat(me->vfmt); }
+    const PixelFormat GetPixelFormat() const { return me ? PixelFormat(me->vfmt) : PixelFormat(SDL_PIXELFORMAT_UNKNOWN); }
+    PixelFormat GetPixelFormat() { return me ? PixelFormat(me->vfmt) : PixelFormat(SDL_PIXELFORMAT_UNKNOWN); }
   };
 }
 #endif // SDLMM_VIDEOINFO_H

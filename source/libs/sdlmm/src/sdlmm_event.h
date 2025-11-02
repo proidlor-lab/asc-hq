@@ -269,7 +269,7 @@ namespace SDLmm {
       \return the SDL defined name of the \a key.
       \param key the SDLkey key symbol
     */
-    static char *GetKeyName(SDLKey key);
+    static const char *GetKeyName(SDLKey key);
 
     //! Enable UNICODE keyboard translation
     /*!

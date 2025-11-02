@@ -84,13 +84,13 @@ void VideoRecorder::storeFrame( const SDL_Surface* surf )
    
    bool directScreenRender = false;
    /*
-   if ( surf->pitch == surf->w*4 && surf->format->BytesPerPixel == 4 ) {
-      if ( surf->format->Rshift == 0 && surf->format->Gshift == 8 && surf->format->Bshift == 16 ) {
+   if ( surf->pitch == surf->w*4 && SDLCompat_GetSurfaceFormat(surf).BytesPerPixel == 4 ) {
+      if ( SDLCompat_GetSurfaceFormat(surf).Rshift == 0 && SDLCompat_GetSurfaceFormat(surf).Gshift == 8 && SDLCompat_GetSurfaceFormat(surf).Bshift == 16 ) {
          frame.pixelFormat = REVEL_PF_RGBA;
          directScreenRender = true;
       }
       
-      if ( surf->format->Rshift == 24 && surf->format->Gshift == 16 && surf->format->Bshift == 8 ) {
+      if ( SDLCompat_GetSurfaceFormat(surf).Rshift == 24 && SDLCompat_GetSurfaceFormat(surf).Gshift == 16 && SDLCompat_GetSurfaceFormat(surf).Bshift == 8 ) {
          frame.pixelFormat = REVEL_PF_ABGR;
          directScreenRender = true;
       }
@@ -115,11 +115,20 @@ void VideoRecorder::storeFrame( const SDL_Surface* surf )
       if ( !data->lastFrame )
          diff = true;
       
+      const SDL_PixelFormatDetails* details = SDL_GetPixelFormatDetails(surf->format);
+      SDL_Surface* mutableSurf = const_cast<SDL_Surface*>(surf);
+      SDL_Palette* palette = SDL_GetSurfacePalette(mutableSurf);
+
       for ( int y = 0; y < surf->h; ++y ) {
          Uint32* src = ((Uint32*) surf->pixels) + (surf->pitch/4*y);
          for ( int x = 0 ; x < surf->w; ++x ) {
             Uint8 r,g,b,a;
-            SDL_GetRGBA( *src, surf->format, &r,&g,&b,&a);
+            if (details)
+               SDL_GetRGBA( *src, details, palette, &r,&g,&b,&a);
+            else {
+               r = g = b = 0;
+               a = 255;
+            }
             *pix = r + (g<<8) + (b<<16) + (a<<24);
             if ( lastBuf ) {
                if ( *pix != *lastBuf )

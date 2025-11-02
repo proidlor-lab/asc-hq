@@ -1225,7 +1225,7 @@ class GraphWidget : public PG_Widget
 
       int mapColor( int col ) {
          PG_Color color = col;
-         return color.MapRGBA( PG_Application::GetScreen()->format, 255-GetTransparency());
+         return color.MapRGBA( PG_Application::GetScreen(), 255-GetTransparency());
       }
 
    public:
@@ -1726,7 +1726,7 @@ class DamageBarWidget : public PG_ThemeWidget
          Resources cost;
          int w2 = (100 - container->damage + container->repairableDamage() ) * dst.w / 100;
 
-         Uint32 c = color.MapRGBA( PG_Application::GetScreen()->format, 255-GetTransparency());
+         Uint32 c = color.MapRGBA( PG_Application::GetScreen(), 255-GetTransparency());
          if ( w > 0 ) {
             SDL_FillRect(PG_Application::GetScreen(), &r, c );
          }
@@ -2901,4 +2901,3 @@ ASCString RecycleUnitCommandButton :: getName( const MapCoordinate& pos, Contain
 };
 
 }
-

@@ -1582,12 +1582,23 @@ class ScreenResolutionSetup {
 
 ScreenResolutionSetup::ScreenResolutionSetup( Cmdline& commandLine ) : cli( commandLine )
 {
+   bool forcedDummyDriver = false;
+   if (!getenv("SDL_VIDEODRIVER")) {
+      const char* x11 = getenv("DISPLAY");
+      const char* wayland = getenv("WAYLAND_DISPLAY");
+      if (!x11 && !wayland) {
+         putenv(const_cast<char*>("SDL_VIDEODRIVER=dummy"));
+         forcedDummyDriver = true;
+      }
+   }
    if ( SDL_Init( SDL_INIT_VIDEO ) ) 
       fatalError( ASCString("Unable to init SDL: ") +  SDL_GetError());
   
    putenv(const_cast<char*>("SDL_VIDEO_CENTERED=1")) ;
    
    fullscreen = true;
+   if (forcedDummyDriver)
+      fullscreen = false;
    
    if ( cli.w() )
       fullscreen = false;
@@ -1698,9 +1709,7 @@ int main(int argc, char *argv[] )
    }
 
    LoggingOutputHandler logger( getSearchPath( 0 ));
-   
 
-   
    SoundSystem soundSystem ( CGameOptions::Instance()->sound.muteEffects, CGameOptions::Instance()->sound.muteMusic, cl->q() || CGameOptions::Instance()->sound.off );
    soundSystem.setMusicVolume ( CGameOptions::Instance()->sound.musicVolume );
    soundSystem.setEffectVolume ( CGameOptions::Instance()->sound.soundVolume );

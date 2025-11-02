@@ -111,8 +111,8 @@ namespace SDLmm {
     Uint32 flags() const { return GetSurface()->flags; } 		   
 
     //! Returns the pixel format.
-    const PixelFormat GetPixelFormat() const { return PixelFormat(GetSurface()->format); }
-    PixelFormat GetPixelFormat() { return PixelFormat(GetSurface()->format); }
+    const PixelFormat GetPixelFormat() const { return PixelFormat(GetSurface()); }
+    PixelFormat GetPixelFormat() { return PixelFormat(GetSurface()); }
 
     //! Returns the width of the surface.
     int w() const { return GetSurface()->w; }			   
@@ -124,7 +124,11 @@ namespace SDLmm {
     Uint16 pitch() const { return GetSurface()->pitch; }		   
 
     //! Returns the surface clip rectangle
-    const SRect clip_rect() const { return SRect(GetSurface()->clip_rect); } 
+    const SRect clip_rect() const {
+      SDL_Rect rect = {0, 0, 0, 0};
+      SDL_GetSurfaceClipRect(const_cast<SDL_Surface *>(GetSurface()), &rect);
+      return SRect(rect);
+    }
 
     //! Returns the pixel data, which can be used for low-level manipulation.
     /*!
@@ -138,8 +142,13 @@ namespace SDLmm {
     */
     const void *pixels() const { return GetSurface()->pixels; }
 
+#if !SDL_VERSION_ATLEAST(3,0,0)
     //! Returns the hardware-specific surface info.
     struct private_hwdata *hwdata() const { return GetSurface()->hwdata; }
+#else
+    //! Hardware surface data is no longer exposed in SDL3.
+    struct private_hwdata *hwdata() const { return nullptr; }
+#endif
     //@}
 
     //! Set the pixel to the color

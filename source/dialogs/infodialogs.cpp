@@ -58,23 +58,24 @@ void showSearchPath()
 
 ASCString showSurfaceInfo( Surface& surface ) {
    ASCString s;
-   
-   s += "BitsPerPixel: " + ASCString::toString(  surface.getBaseSurface()->format->BitsPerPixel ) + "\n";
-   s += "BytesPerPixel: " + ASCString::toString(  surface.getBaseSurface()->format->BytesPerPixel ) + "\n";
-   s += "Rloss: " + ASCString::toString(  surface.getBaseSurface()->format->Rloss ) + "\n";
-   s += "Gloss: " + ASCString::toString(  surface.getBaseSurface()->format->Gloss ) + "\n";
-   s += "Bloss: " + ASCString::toString(  surface.getBaseSurface()->format->Bloss ) + "\n";
-   s += "Aloss: " + ASCString::toString(  surface.getBaseSurface()->format->Aloss ) + "\n";
-   s += "Rshift: " + ASCString::toString(  surface.getBaseSurface()->format->Rshift ) + "\n";
-   s += "Gshift: " + ASCString::toString(  surface.getBaseSurface()->format->Gshift ) + "\n";
-   s += "Bshift: " + ASCString::toString(  surface.getBaseSurface()->format->Bshift ) + "\n";
-   s += "Ashift: " + ASCString::toString(  surface.getBaseSurface()->format->Ashift ) + "\n";
-   s += "Rmask: " + ASCString::toString(  surface.getBaseSurface()->format->Rmask ) + "\n";
-   s += "Gmask: " + ASCString::toString(  surface.getBaseSurface()->format->Gmask ) + "\n";
-   s += "Bmask: " + ASCString::toString(  surface.getBaseSurface()->format->Bmask ) + "\n";
-   s += "Amask: " + ASCString::toString(  surface.getBaseSurface()->format->Amask ) + "\n";
-   s += "colorkey: " + ASCString::toString( surface.getBaseSurface()->format->colorkey ) + "\n";
-   s += "Alpha: " + ASCString::toString( surface.getBaseSurface()->format->alpha ) + "\n";
+   SDL_CompatPixelFormat fmt = SDLCompat_BuildSurfacePixelFormat(surface.getBaseSurface());
+
+   s += "BitsPerPixel: " + ASCString::toString(fmt.BitsPerPixel) + "\n";
+   s += "BytesPerPixel: " + ASCString::toString(fmt.BytesPerPixel) + "\n";
+   s += "Rloss: " + ASCString::toString(fmt.Rloss) + "\n";
+   s += "Gloss: " + ASCString::toString(fmt.Gloss) + "\n";
+   s += "Bloss: " + ASCString::toString(fmt.Bloss) + "\n";
+   s += "Aloss: " + ASCString::toString(fmt.Aloss) + "\n";
+   s += "Rshift: " + ASCString::toString(fmt.Rshift) + "\n";
+   s += "Gshift: " + ASCString::toString(fmt.Gshift) + "\n";
+   s += "Bshift: " + ASCString::toString(fmt.Bshift) + "\n";
+   s += "Ashift: " + ASCString::toString(fmt.Ashift) + "\n";
+   s += "Rmask: " + ASCString::toString(fmt.Rmask) + "\n";
+   s += "Gmask: " + ASCString::toString(fmt.Gmask) + "\n";
+   s += "Bmask: " + ASCString::toString(fmt.Bmask) + "\n";
+   s += "Amask: " + ASCString::toString(fmt.Amask) + "\n";
+   s += "colorkey: " + ASCString::toString(fmt.colorkey) + "\n";
+   s += "Alpha: " + ASCString::toString(fmt.alpha) + "\n";
    
    return s;
 }

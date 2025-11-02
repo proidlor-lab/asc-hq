@@ -653,58 +653,94 @@ void MemoryStreamCopy :: seek ( int newpos )
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-static int stream_seek( struct SDL_RWops *context, int offset, int whence)
+namespace {
+
+struct StreamIOContext {
+	MemoryStreamCopy* stream = nullptr;
+};
+
+SDL_IOStreamInterface BuildStreamInterface()
 {
-	MemoryStreamCopy* stream = (MemoryStreamCopy*) context->hidden.unknown.data1;
-	if ( whence == SEEK_SET )
-	   stream->seek ( offset );
-	else
-   	if ( whence == SEEK_CUR )
-	      stream->seek ( offset + stream->getPosition() );
-	   else
-         if ( whence == SEEK_END )
-            stream->seek ( offset + stream->getSize() );
-  return stream->getPosition();
+	SDL_IOStreamInterface iface;
+	SDL_INIT_INTERFACE(&iface);
+	return iface;
 }
 
-
-static int stream_read(SDL_RWops *context, void *ptr, int size, int maxnum)
-
+Sint64 SDLCALL StreamSize(void* userdata)
 {
-	MemoryStreamCopy* stream = (MemoryStreamCopy*) context->hidden.unknown.data1;
-	size_t nread = stream->readdata ( ptr, size * maxnum, 0 );
-
-	return(nread / size);
+	auto* ctx = static_cast<StreamIOContext*>(userdata);
+	return static_cast<Sint64>(ctx->stream->getSize());
 }
 
-static int stream_close(SDL_RWops *context)
+Sint64 SDLCALL StreamSeek(void* userdata, Sint64 offset, SDL_IOWhence whence)
 {
-	if ( context ) {
-		if ( context->hidden.unknown.data1 ) {
-			MemoryStreamCopy* stream = (MemoryStreamCopy*) context->hidden.unknown.data1;
-			delete stream;
+	auto* ctx = static_cast<StreamIOContext*>(userdata);
+	try {
+		switch (whence) {
+		case SDL_IO_SEEK_SET:
+			ctx->stream->seek(static_cast<int>(offset));
+			break;
+		case SDL_IO_SEEK_CUR:
+			ctx->stream->seek(static_cast<int>(ctx->stream->getPosition() + offset));
+			break;
+		case SDL_IO_SEEK_END:
+			ctx->stream->seek(static_cast<int>(ctx->stream->getSize() + offset));
+			break;
+		default:
+			SDL_SetError("Invalid 'whence' parameter.");
+			return -1;
 		}
-		SDL_FreeRW(context);
+	} catch (const std::exception& e) {
+		SDL_SetError("Stream seek failed: %s", e.what());
+		return -1;
 	}
-	return(0);
+	return static_cast<Sint64>(ctx->stream->getPosition());
 }
 
+size_t SDLCALL StreamRead(void* userdata, void* ptr, size_t size, SDL_IOStatus* status)
+{
+	auto* ctx = static_cast<StreamIOContext*>(userdata);
+	size_t bytesRequested = size;
+	size_t bytesRead = ctx->stream->readdata(ptr, bytesRequested, 0);
+	if (bytesRead == 0) {
+		if (status)
+			*status = SDL_IO_STATUS_EOF;
+	}
+	return bytesRead;
+}
+
+bool SDLCALL StreamClose(void* userdata)
+{
+	auto* ctx = static_cast<StreamIOContext*>(userdata);
+	delete ctx->stream;
+	delete ctx;
+	return true;
+}
+
+} // namespace
 
 SDL_RWops *SDL_RWFromStream( tnstream* stream )
 {
-   MemoryStreamCopy* msb = new MemoryStreamCopy ( stream );
+	if (!stream)
+		return nullptr;
 
-	SDL_RWops *rwops;
+	auto* ctx = new StreamIOContext;
+	ctx->stream = new MemoryStreamCopy(stream);
 
-	rwops = SDL_AllocRW();
-	if ( rwops != NULL ) {
-	   rwops->seek = stream_seek;
-	   rwops->read = stream_read;
-	   rwops->write = NULL;
-	   rwops->close = stream_close;
-	   rwops->hidden.unknown.data1 = msb;
+	SDL_IOStreamInterface iface = BuildStreamInterface();
+	iface.size = StreamSize;
+	iface.seek = StreamSeek;
+	iface.read = StreamRead;
+	iface.write = nullptr;
+	iface.flush = nullptr;
+	iface.close = StreamClose;
+
+	SDL_IOStream* io = SDL_OpenIO(&iface, ctx);
+	if (!io) {
+		delete ctx->stream;
+		delete ctx;
 	}
-	return(rwops);
+	return io;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

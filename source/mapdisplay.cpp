@@ -810,7 +810,7 @@ void MapDisplayPG::blitInternalSurface( SDL_Surface* dest, const SPoint& pnt, co
       // SourcePixelSelector
       blitter.setSrcRectangle( upperLeftSourceBlitCorner, int(float(Width()) / fzoom), int(float(Height()) / fzoom));
 
-      PG_Rect clip= dstClip.IntersectRect( dest->clip_rect );
+      PG_Rect clip = dstClip.IntersectRect(PG_Rect(SDLCompat_GetClipRect(dest)));
       blitter.setTargetRect( clip );
       
       Surface s = Surface::Wrap( dest );
@@ -822,7 +822,7 @@ void MapDisplayPG::blitInternalSurface( SDL_Surface* dest, const SPoint& pnt, co
       // SourcePixelSelector
       blitter.setSrcRectangle( upperLeftSourceBlitCorner, Width(), Height() );
       
-      PG_Rect clip= dstClip.IntersectRect( dest->clip_rect );
+      PG_Rect clip = dstClip.IntersectRect(PG_Rect(SDLCompat_GetClipRect(dest)));
       blitter.setTargetRect( clip );
       
       Surface s = Surface::Wrap( dest );
@@ -852,7 +852,7 @@ void MapDisplayPG::displayCursor( const PG_Rect& dst )
       MegaBlitter<colorDepth,colorDepth,ColorTransform_None,ColorMerger_AlphaOverwrite,SourcePixelSelector_DirectZoom,TargetPixelSelector_Rect> blitter;
       blitter.setZoom( float(zoom) / 100.0 );
 
-      PG_Rect clip= dst.IntersectRect( PG_Application::GetScreen()->clip_rect );
+      PG_Rect clip = dst.IntersectRect(PG_Rect(SDLCompat_GetClipRect(PG_Application::GetScreen())));
 
       if ( clip.w && clip.h ) {
          blitter.setTargetRect ( clip );
@@ -1859,6 +1859,5 @@ MapDisplayPG::LockDisplay::~LockDisplay()
          unlockMapdisplay();
    }
 }
-
 
 

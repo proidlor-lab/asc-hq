@@ -311,23 +311,45 @@ StartupScreen::StartupScreen( const ASCString& filename, sigc::signal<void>& tic
    int bt = 0;
 
    fullscreenImage = Surface( IMG_Load_RW( SDL_RWFromStream( &s ), true ));
-   if ( fullscreenImage.valid() ) {
-      for ( int y = 0; y < fullscreenImage.h(); ++y ) {
-         for ( int x = 0; x < fullscreenImage.w(); ++x ) {
-            Uint8 r,g,b;
-            fullscreenImage.GetPixelFormat().GetRGB( fullscreenImage.GetPixel(x,y), r,g,b ); 
-            rt += r;
-            gt += g;
-            bt += b;
+   bool imageValid = fullscreenImage.valid();
+   if ( imageValid ) {
+      SDL_Surface* rawSurface = fullscreenImage.getBaseSurface();
+      if ( !rawSurface ) {
+         imageValid = false;
+      } else {
+         SDL_Surface* workSurface = SDL_DuplicateSurface(rawSurface);
+         if ( !workSurface )
+            workSurface = rawSurface;
+
+
+         for ( int y = 0; y < workSurface->h; ++y ) {
+            for ( int x = 0; x < workSurface->w; ++x ) {
+               Uint8 r = 0;
+               Uint8 g = 0;
+               Uint8 b = 0;
+               Uint8 a = 0;
+               if ( SDL_ReadSurfacePixel(workSurface, x, y, &r, &g, &b, &a) ) {
+                  rt += r;
+                  gt += g;
+                  bt += b;
+               }
+            }
+         }
+
+         int totalPixels = workSurface->h * workSurface->w;
+         if ( totalPixels > 0 ) {
+            rt /= totalPixels;
+            gt /= totalPixels;
+            bt /= totalPixels;
+         }
+         if ( workSurface != rawSurface ) {
+            SDL_FreeSurface(workSurface);
          }
       }
-      rt /= fullscreenImage.h() * fullscreenImage.w();
-      gt /= fullscreenImage.h() * fullscreenImage.w();
-      bt /= fullscreenImage.h() * fullscreenImage.w();
    }
-
-
-
+   if ( !imageValid ) {
+      rt = gt = bt = 0;
+   }
 
    background = new PG_ThemeWidget(NULL, PG_Rect(0,0,PG_Application::GetScreenWidth(), PG_Application::GetScreenHeight()));
    background->SetSimpleBackground(true);
@@ -773,7 +795,7 @@ void Emboss::eventBlit (SDL_Surface *surface, const PG_Rect &src, const PG_Rect 
 {
    Surface s = Surface::Wrap( PG_Application::GetScreen() );
 
-   PG_Rect clip= dst.IntersectRect( PG_Application::GetScreen()->clip_rect );
+   PG_Rect clip = dst.IntersectRect(PG_Rect(SDLCompat_GetClipRect(PG_Application::GetScreen())));
    if ( inv )
       rectangle<4> ( s, SPoint(dst.x, dst.y), dst.w, dst.h, ColorMerger_Brightness<4>( 0.7 ), ColorMerger_Brightness<4>( 1.4 ), clip);
    else
@@ -823,4 +845,3 @@ int choiceDialog(const ASCString& text, const ASCString& button1, const ASCStrin
    return  result;
 
 }
-

@@ -27,18 +27,11 @@
 namespace SDLmm {
   bool Timer::Init() {
     Uint32 wasinit = SDL_WasInit(SDL_INIT_EVERYTHING);
-    if(!wasinit) {
-      return SDL_Init(SDL_INIT_TIMER) == 0;
-    } else if(!(wasinit & SDL_INIT_TIMER)) {
-      return SDL_InitSubSystem(SDL_INIT_TIMER) == 0;
-    }
+    (void)wasinit;
     return true;
   }
 
   void Timer::Quit() {
-    if(SDL_WasInit(SDL_INIT_TIMER)) {
-      SDL_QuitSubSystem(SDL_INIT_TIMER);
-    }
   }
 
   Timer::Ticks Timer::GetTicks() {

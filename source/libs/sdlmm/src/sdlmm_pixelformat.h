@@ -1,6 +1,6 @@
 /*
  * SDmm - a C++ wrapper for SDL and related libraries
- * Copyright © 2001 David Hedbor <david@hedbor.org>
+ * Copyright (C) 2001 David Hedbor <david@hedbor.org>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -33,48 +33,44 @@ namespace SDLmm {
 
   class  PixelFormat {
   protected:
-    //! The actual SDL_PixelFormat for this PixelFormat.
-    SDL_PixelFormat *me;
+    SDL_CompatPixelFormat info;
+    SDL_PixelFormat formatEnum;
+    SDL_Surface *surfaceRef;
+
+    void init(SDL_PixelFormat fmt, SDL_Surface *surface);
 
   public:
-    //! Constructor from an SDL_PixelFormat*
-    /*!
-      This creates a new PixelFormat object from an existing
-      SDL_PixelFormat. It's very important not to free the original
-      pixel format since that will cause problems. Use with caution.
-    */
-    explicit PixelFormat(SDL_PixelFormat *pixelformat): me(pixelformat) {  }
-    
-    // The destructor.
-    // virtual ~PixelFormat() { }
+    PixelFormat();
+    explicit PixelFormat(SDL_PixelFormat fmt);
+    explicit PixelFormat(SDL_Surface *surface);
+    explicit PixelFormat(const SDL_Surface *surface);
+    explicit PixelFormat(const SDL_CompatPixelFormat &formatInfo);
     
     //! \name Informational methods
     //@{
-    //! Returns true if this PixelFormat is initialized, false otherwise.
-    /*! \warning Using an uninitialzied PixelFormat can cause many problems. */
-    bool valid() const { return me != 0; }
+    bool valid() const { return info.BitsPerPixel != 0 || info.BytesPerPixel != 0; }
 
     //@}
-    Uint8 BitsPerPixel() const { return me->BitsPerPixel; }
-    Uint8 BytesPerPixel() const { return me->BytesPerPixel; }
-    Uint8 Rshift() const { return me->Rshift; }
-    Uint8 Gshift() const { return me->Gshift; }
-    Uint8 Bshift() const { return me->Bshift; }
-    Uint8 Ashift() const { return me->Ashift; }
+    Uint8 BitsPerPixel() const { return info.BitsPerPixel; }
+    Uint8 BytesPerPixel() const { return info.BytesPerPixel; }
+    Uint8 Rshift() const { return info.Rshift; }
+    Uint8 Gshift() const { return info.Gshift; }
+    Uint8 Bshift() const { return info.Bshift; }
+    Uint8 Ashift() const { return info.Ashift; }
 
-    Uint8 Rloss() const { return me->Rloss; }
-    Uint8 Gloss() const { return me->Gloss; }
-    Uint8 Bloss() const { return me->Bloss; }
-    Uint8 Aloss() const { return me->Aloss; }
+    Uint8 Rloss() const { return info.Rloss; }
+    Uint8 Gloss() const { return info.Gloss; }
+    Uint8 Bloss() const { return info.Bloss; }
+    Uint8 Aloss() const { return info.Aloss; }
 
-    Uint32 Rmask() const { return me->Rmask; }
-    Uint32 Gmask() const { return me->Gmask; }
-    Uint32 Bmask() const { return me->Bmask; }
-    Uint32 Amask() const { return me->Amask; }
+    Uint32 Rmask() const { return info.Rmask; }
+    Uint32 Gmask() const { return info.Gmask; }
+    Uint32 Bmask() const { return info.Bmask; }
+    Uint32 Amask() const { return info.Amask; }
 
-    Color colorkey() const { return me->colorkey; }
-    Uint8 alpha() const { return me->alpha; }
-    SDL_Palette *palette() const { return me->palette; }
+    Color colorkey() const { return info.colorkey; }
+    Uint8 alpha() const { return info.alpha; }
+    SDL_Palette *palette() const { return info.palette; }
 
     //! Map a RGB color value to a pixel format.
     /*!

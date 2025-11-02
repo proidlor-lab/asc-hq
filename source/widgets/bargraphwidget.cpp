@@ -49,11 +49,11 @@ void BarGraphWidget::eventBlit (SDL_Surface *surface, const PG_Rect &src, const 
    my_blendLevel );
           */
 
-   Uint32 c = color.MapRGBA( PG_Application::GetScreen()->format, 255-GetTransparency());
+   Uint32 c = color.MapRGBA( PG_Application::GetScreen(), 255-GetTransparency());
    for ( Colors::iterator i = colors.begin(); i != colors.end(); ++i)
       if ( fraction < i->first ) {
          PG_Color col = i->second;
-         c = col.MapRGBA( PG_Application::GetScreen()->format, 255-GetTransparency());
+         c = col.MapRGBA( PG_Application::GetScreen(), 255-GetTransparency());
       }
 
    SDL_FillRect(PG_Application::GetScreen(), &d, c);
@@ -65,5 +65,4 @@ void BarGraphWidget::setFraction( float f )
 {
    fraction = f;
 }
-
 

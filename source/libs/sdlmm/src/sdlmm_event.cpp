@@ -75,7 +75,7 @@ namespace SDLmm {
     return SDL_GetModState();
   }
 
-  char *Event::GetKeyName(SDLKey key) {
+  const char *Event::GetKeyName(SDLKey key) {
     return SDL_GetKeyName(key);
   }
   

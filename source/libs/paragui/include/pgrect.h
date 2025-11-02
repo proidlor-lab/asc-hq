@@ -205,13 +205,13 @@ public:
 		return my_prev;
 	}
 
-	Sint16& my_xpos;
+	int& my_xpos;
 
-	Sint16& my_ypos;
+	int& my_ypos;
 
-	Uint16& my_width;
+	int& my_width;
 
-	Uint16& my_height;
+	int& my_height;
 
 	Uint32 index;
 

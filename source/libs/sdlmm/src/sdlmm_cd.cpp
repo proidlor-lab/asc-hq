@@ -1,6 +1,6 @@
 /*
  * SDLmm - a C++ wrapper for SDL and related libraries
- * Copyright © 2001 David Hedbor <david@hedbor.org>
+ * Copyright (C) 2001 David Hedbor <david@hedbor.org>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -26,19 +26,10 @@
 
 namespace SDLmm {
   bool CD::Init() {
-    Uint32 wasinit = SDL_WasInit(SDL_INIT_EVERYTHING);
-    if(!wasinit) {
-      return SDL_Init(SDL_INIT_CDROM) == 0;
-    } else if(!(wasinit & SDL_INIT_CDROM)) {
-      return SDL_InitSubSystem(SDL_INIT_CDROM) == 0;
-    }
-    return true;
+    (void)SDL_WasInit(SDL_INIT_EVERYTHING);
+    return false;
   }
 
   void CD::Quit() {
-    if(SDL_WasInit(SDL_INIT_CDROM)) {
-      SDL_QuitSubSystem(SDL_INIT_CDROM);
-    }
   }
 }
-  

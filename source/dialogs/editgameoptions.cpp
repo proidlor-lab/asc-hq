@@ -93,37 +93,25 @@ GetVideoModes::GetVideoModes()
    int i;
 
 
-   SDL_PixelFormat format;
-   format.palette = NULL;
-   format.BitsPerPixel = 32;
-   format.BytesPerPixel = 4;
-   format.Rloss = format.Gloss = format.Bloss = format.Aloss = 0;
-   format.Rshift = 0;
-   format.Gshift = 8;
-   format.Bshift = 16;
-   format.Ashift = 24;
-   format.Rmask = 0xff;
-   format.Gmask = 0xff00;
-   format.Bmask = 0xff0000;
-   format.Amask = 0xff000000;
-   format.colorkey = 0;
-   format.alpha = 0;
-   
-   
    /* Get available fullscreen/hardware modes */
-   modes=SDL_ListModes(&format, SDL_FULLSCREEN);
+   modes=SDL_ListModes(NULL, SDL_FULLSCREEN);
+   fprintf(stderr, "[ASC SDL3] SDL_ListModes returned %p\n", (void*)modes);
 
 
    listedmodes.push_back( make_pair( 0, 0));
    
    /* Check is there are any modes available */
    if(modes == (SDL_Rect **)0){
+      listedmodes.push_back( make_pair( 1024, 768 ) );
+      list.push_back( "1024*768" );
       return;
    }
    
    /* Check if our resolution is restricted */
    if(modes == (SDL_Rect **)-1){
       warningMessage("All resolutions available.\n");
+      listedmodes.push_back( make_pair( 1024, 768 ) );
+      list.push_back( "1024*768" );
       return;
    }
    else{

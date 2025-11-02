@@ -1,6 +1,6 @@
 /*
  * SDLmm - a C++ wrapper for SDL and related libraries
- * Copyright © 2001 David Hedbor <david@hedbor.org>
+ * Copyright (C) 2001 David Hedbor <david@hedbor.org>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -27,19 +27,76 @@
 
 namespace SDLmm {
 
+  void PixelFormat::init(SDL_PixelFormat fmt, SDL_Surface *surface)
+  {
+    surfaceRef = surface;
+    if (surfaceRef) {
+      formatEnum = surfaceRef->format;
+      info = SDLCompat_BuildSurfacePixelFormat(surfaceRef);
+    } else {
+      formatEnum = fmt;
+      info = SDLCompat_BuildPixelFormat(formatEnum);
+    }
+  }
+
+  PixelFormat::PixelFormat()
+  {
+    init(SDL_PIXELFORMAT_UNKNOWN, nullptr);
+  }
+
+  PixelFormat::PixelFormat(SDL_PixelFormat fmt)
+  {
+    init(fmt, nullptr);
+  }
+
+  PixelFormat::PixelFormat(SDL_Surface *surface)
+  {
+    init(surface ? surface->format : SDL_PIXELFORMAT_UNKNOWN, surface);
+  }
+
+  PixelFormat::PixelFormat(const SDL_Surface *surface)
+  {
+    init(surface ? surface->format : SDL_PIXELFORMAT_UNKNOWN,
+         const_cast<SDL_Surface *>(surface));
+  }
+
+  PixelFormat::PixelFormat(const SDL_CompatPixelFormat &formatInfo)
+  {
+    formatEnum = SDL_PIXELFORMAT_UNKNOWN;
+    surfaceRef = nullptr;
+    info = formatInfo;
+  }
+
   Color PixelFormat::MapRGB(Uint8 r, Uint8 g, Uint8 b) const {
-    return SDL_MapRGB(me, r, g, b);
+    const SDL_PixelFormatDetails* details = SDL_GetPixelFormatDetails(formatEnum);
+    if (!details)
+      return 0;
+    return SDL_MapRGB(details, info.palette, r, g, b);
   }
 
   Color PixelFormat::MapRGBA(Uint8 r, Uint8 g, Uint8 b, Uint8 a) const {
-    return SDL_MapRGBA(me, r, g, b, a);
+    const SDL_PixelFormatDetails* details = SDL_GetPixelFormatDetails(formatEnum);
+    if (!details)
+      return 0;
+    return SDL_MapRGBA(details, info.palette, r, g, b, a);
   }
   
   void PixelFormat::GetRGB(Color pixel, Uint8 &r, Uint8 &g, Uint8 &b) const {
-    SDL_GetRGB(pixel, me, &r, &g, &b);
+    const SDL_PixelFormatDetails* details = SDL_GetPixelFormatDetails(formatEnum);
+    if (!details) {
+      r = g = b = 0;
+      return;
+    }
+    SDL_GetRGB(pixel, details, info.palette, &r, &g, &b);
   }
 
   void PixelFormat::GetRGBA(Color pixel, Uint8 &r, Uint8 &g, Uint8 &b, Uint8 &a) const {
-    SDL_GetRGBA(pixel, me, &r, &g, &b, &a);
+    const SDL_PixelFormatDetails* details = SDL_GetPixelFormatDetails(formatEnum);
+    if (!details) {
+      r = g = b = 0;
+      a = 255;
+      return;
+    }
+    SDL_GetRGBA(pixel, details, info.palette, &r, &g, &b, &a);
   }
 }

@@ -78,7 +78,7 @@ void OverviewMapPanel::painter ( const PG_Rect &src, const ASCString& name, cons
       MegaBlitter< gamemapPixelSize, gamemapPixelSize,ColorTransform_None,ColorMerger_AlphaOverwrite,SourcePixelSelector_DirectZoom,TargetPixelSelector_Rect> blitter;
       blitter.setSize( s.w(), s.h(), dst.w, dst.h );
 
-      PG_Rect clip= dst.IntersectRect( PG_Application::GetScreen()->clip_rect );
+   PG_Rect clip = dst.IntersectRect(PG_Rect(SDLCompat_GetClipRect(PG_Application::GetScreen())));
       blitter.setTargetRect( clip );
 
 
@@ -152,4 +152,3 @@ bool OverviewMapPanel::mouseMotion  ( PG_MessageObject* o,  const SDL_MouseMotio
 
    return false;
 }
-

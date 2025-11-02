@@ -195,7 +195,8 @@ class SignalAppIdle : public sigc::signal<bool, PG_MessageObject*> {}
 	@return	true - the lock was established successfully
 	*/
 	inline static bool LockScreen() {
-	   return SDL_mutexP(mutexScreen) == 0;
+	   SDL_LockMutex(mutexScreen);
+	   return true;
 	}
 	
 	
@@ -205,7 +206,8 @@ class SignalAppIdle : public sigc::signal<bool, PG_MessageObject*> {}
 	@return	true - the unlock operation was successful
 	*/
 	inline static bool UnlockScreen() {
-	   return (SDL_mutexV(mutexScreen) == 0);	   
+	   SDL_UnlockMutex(mutexScreen);
+	   return true;
 	}
 
 	/**
