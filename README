@@ -1,1 +1,11 @@
-For an index of all ASC documentation please refer to the file doc/index.html 
+For an index of all ASC documentation please refer to the file doc/index.html
+
+SDL3 Migration Prerequisites
+---------------------------
+- SDL3 development headers (`libsdl3-dev` on Debian/Ubuntu)
+- SDL3_image development headers (`libsdl3-image-dev` on Debian/Ubuntu)
+- SDL3_mixer development headers (`libsdl3-mixer-dev` on Debian/Ubuntu)
+
+Install these packages before running `./configure` so the build system can find the updated SDL3 stack.
+
+Note: SDL3_mixer is currently only available from the upstream `main` branch; build and install it manually so that `pkg-config --modversion sdl3-mixer` resolves (e.g. by exporting `PKG_CONFIG_PATH=$HOME/projects/SDL_mixer/install/lib/pkgconfig:$PKG_CONFIG_PATH` during configure/build).

@@ -160,18 +160,29 @@ if test "x$XVIDAVAIL" = x1; then
 fi
 
 
-dnl check for libSDL
-SDL_VERSION=1.2.2
-AM_PATH_SDL($SDL_VERSION,:, AC_LIB_MISSING( SDL, http://www.libsdl.org/, [ (version >= $SDL_VERSION)])) 
+dnl check for SDL3
+PKG_CHECK_MODULES([SDL3], [sdl3 >= 3.2.26],,
+   AC_LIB_MISSING( SDL3, https://github.com/libsdl-org/SDL, [ (version >= 3.2.26)]))
+SDL_CFLAGS="$SDL3_CFLAGS"
+SDL_LIBS="$SDL3_LIBS"
+AC_SUBST(SDL_CFLAGS)
+AC_SUBST(SDL_LIBS)
 
 dnl set up new FLAGS
 CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
 CFLAGS="$CFLAGS $SDL_CFLAGS"
 LIBS="$LIBS $SDL_LIBS"
+ASC_TOP_ABS=`cd "$srcdir" && pwd`
+CPPFLAGS="$CPPFLAGS -I$srcdir/source/sdl/compat -I$ASC_TOP_ABS/source/sdl/compat"
 
-AC_CHECK_LIB( SDL_image,
-              IMG_LoadJPG_RW,,
-              AC_LIB_MISSING( SDL_image, http://www.libsdl.org/projects/SDL_image/ )) 
+PKG_CHECK_MODULES([SDL3_IMAGE], [sdl3-image >= 3.2.0],,
+   AC_LIB_MISSING( SDL3_image, https://github.com/libsdl-org/SDL_image/ ))
+SDL_IMAGE_CFLAGS="$SDL3_IMAGE_CFLAGS"
+SDL_IMAGE_LIBS="$SDL3_IMAGE_LIBS"
+AC_SUBST(SDL_IMAGE_CFLAGS)
+AC_SUBST(SDL_IMAGE_LIBS)
+CXXFLAGS="$CXXFLAGS $SDL_IMAGE_CFLAGS"
+CFLAGS="$CFLAGS $SDL_IMAGE_CFLAGS"
 
 #AC_MSG_CHECKING("SDL_image.h")
 #AC_TRY_COMPILE( [#include <SDL_image.h>],[return 0;],
@@ -205,9 +216,26 @@ AC_CHECK_LIB(jpeg,
              jpeg_CreateDecompress,,
              AC_LIB_MISSING( jpeg, http://www.ijg.org/,,[ which is VERY unlikely,]))
 
-AC_CHECK_LIB(SDL_mixer, 
-             Mix_PlayChannelTimed,, 
-             AC_LIB_MISSING( SDL_mixer, http://www.libsdl.org/projects/SDL_mixer/ ))
+have_sdl3_mixer=no
+PKG_CHECK_MODULES([SDL3_MIXER], [sdl3-mixer >= 3.2.0],[
+   have_sdl3_mixer=yes
+   SDL_MIXER_CFLAGS="$SDL3_MIXER_CFLAGS"
+   SDL_MIXER_LIBS="$SDL3_MIXER_LIBS"
+],[
+   PKG_CHECK_MODULES([SDL_MIXER_LEGACY], [SDL_mixer >= 1.2.12],,
+      AC_MSG_ERROR([ASC requires audio support via SDL3_mixer >= 3.2.0 (in development) or SDL_mixer >= 1.2.12. Install one of them and rerun configure.]))
+   SDL_MIXER_CFLAGS="$SDL_MIXER_LEGACY_CFLAGS"
+   SDL_MIXER_LIBS="$SDL_MIXER_LEGACY_LIBS"
+])
+AC_SUBST(SDL_MIXER_CFLAGS)
+AC_SUBST(SDL_MIXER_LIBS)
+CXXFLAGS="$CXXFLAGS $SDL_MIXER_CFLAGS"
+CFLAGS="$CFLAGS $SDL_MIXER_CFLAGS"
+if test "x$have_sdl3_mixer" = "xyes"; then
+   AC_DEFINE([ASC_HAVE_SDL3_MIXER], [1], [Define to 1 if SDL3_mixer is available])
+else
+   AC_DEFINE([ASC_HAVE_SDL3_MIXER], [0], [Define to 1 if SDL3_mixer is available])
+fi
 
 AC_CHECK_LIB( SDL_sound, Sound_Init,,SDLsoundmissing=y)
 
@@ -817,4 +845,3 @@ AC_MSG_NOTICE( [ configure completed successfully. Now run "make" do build ASC.
 If the build process fails for any reason, take a look at
 http://asc-hq.sourceforge.net/browse.php?topic=linux
 ] )
-
