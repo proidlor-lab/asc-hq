@@ -27,7 +27,7 @@ EXTRA_DIST = \
 	$(srcdir)/*.md \
 	$(srcdir)/docs/*.md
 
-# Test binary (optional - uncomment when ready to build)
-# noinst_PROGRAMS = snapshot_test
-# snapshot_test_SOURCES = domain/snapshot_test.cpp
-# snapshot_test_LDADD = libmcts.la $(top_builddir)/source/libascmain.la
+# Test binary (enabled for snapshot testing)
+noinst_PROGRAMS = snapshot_test
+snapshot_test_SOURCES = domain/snapshot_test.cpp
+snapshot_test_LDADD = libmcts.la

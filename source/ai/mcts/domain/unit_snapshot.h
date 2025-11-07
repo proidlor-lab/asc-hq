@@ -83,37 +83,37 @@ struct UnitSnapshot {
     static UnitSnapshot fromVehicle(const Vehicle* vehicle);
     
     /**
-     * Get map coordinate
+     * Get map coordinate (C++23: constexpr)
      */
-    MapCoordinate getPosition() const {
+    constexpr MapCoordinate getPosition() const noexcept {
         return MapCoordinate(x, y);
     }
     
     /**
-     * Calculate approximate HP percentage (0-100)
+     * Calculate approximate HP percentage (0-100, C++23: constexpr)
      */
-    uint8_t getHPPercent() const {
+    constexpr uint8_t getHPPercent() const noexcept {
         return static_cast<uint8_t>(100 - damage);
     }
     
     /**
-     * Check if unit is destroyed
+     * Check if unit is destroyed (C++23: constexpr)
      */
-    bool isDestroyed() const {
+    constexpr bool isDestroyed() const noexcept {
         return damage >= 100;
     }
     
     /**
-     * Check if unit can move
+     * Check if unit can move (C++23: constexpr)
      */
-    bool canMove() const {
+    constexpr bool canMove() const noexcept {
         return movement > 0 && fuel > 0 && !isDestroyed();
     }
     
     /**
-     * Check if unit can attack
+     * Check if unit can attack (C++23: constexpr)
      */
-    bool canAttack() const {
+    constexpr bool canAttack() const noexcept {
         return !attacked && ammoMask != 0 && !isDestroyed();
     }
 };
