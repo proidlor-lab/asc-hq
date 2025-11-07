@@ -38,6 +38,7 @@ Cmdline::Cmdline(int argc, char *argv[])
     {"xresolution", 1, 0, 'x'},
     {"yresolution", 1, 0, 'y'},
     {"load", 1, 0, 'l'},
+    {"mapfile", 1, 0, 'M'},
     {"configfile", 1, 0, 'c'},
     {"verbose", 1, 0, 'r'},
     {"window", 0, 0, 'w'},
@@ -45,6 +46,10 @@ Cmdline::Cmdline(int argc, char *argv[])
     {"nosound", 0, 0, 'q'},
     {"help", 0, 0, 'h'},
     {"version", 0, 0, 'v'},
+    {"headless", 0, 0, 'H'},
+    {"player1", 1, 0, 'P'},
+    {"player2", 1, 0, 'Q'},
+    {"turnlimit", 1, 0, 'T'},
     {0, 0, 0, 0}
   };
 
@@ -59,8 +64,12 @@ Cmdline::Cmdline(int argc, char *argv[])
   _q = false;
   _h = false;
   _v = false;
+  _headless = false;
+  _player1 = "";
+  _player2 = "";
+  _turnLimit = 0;
 
-  while ((c = getopt_long(argc, argv, "x:y:l:c:r:wfqhv", long_options, &option_index)) != EOF)
+  while ((c = getopt_long(argc, argv, "x:y:l:c:r:wfqhvHM:P:Q:T:", long_options, &option_index)) != EOF)
     {
       switch(c)
         {
@@ -85,6 +94,10 @@ Cmdline::Cmdline(int argc, char *argv[])
           break;
 
         case 'l': 
+          _l = optarg;
+          break;
+
+        case 'M': 
           _l = optarg;
           break;
 
@@ -129,6 +142,46 @@ Cmdline::Cmdline(int argc, char *argv[])
           _v = true;
           break;
 
+        case 'H':
+          _headless = true;
+          break;
+
+        case 'P':
+          if (!optarg || !optarg[0])
+            {
+              string s;
+              s += "player1 requires an argument";
+              throw(s);
+            }
+          _player1 = optarg;
+          break;
+
+        case 'Q':
+          if (!optarg || !optarg[0])
+            {
+              string s;
+              s += "player2 requires an argument";
+              throw(s);
+            }
+          _player2 = optarg;
+          break;
+
+        case 'T':
+          if (!optarg || !optarg[0])
+            {
+              string s;
+              s += "turnlimit requires an argument";
+              throw(s);
+            }
+          _turnLimit = atoi(optarg);
+          if (_turnLimit < 0)
+            {
+              string s;
+              s += "parameter range error: turnlimit must be >= 0";
+              throw(s);
+            }
+          break;
+
         default:
           this->usage();
 
@@ -149,7 +202,7 @@ Cmdline::Cmdline(int argc, char *argv[])
 void Cmdline::usage()
 {
   cout << "Advanced Strategic Command: a turn based strategy game " << endl;
-  cout << "usage: " << _executable << " [ -xylcrwfqhv ] " << endl;
+  cout << "usage: " << _executable << " [ -xylcrwfqhvHMPQT ] " << endl;
   cout << "  [ -x ] ";
   cout << "[ --xresolution ]  ";
   cout << "(";
@@ -226,6 +279,45 @@ void Cmdline::usage()
   cout << "FLAG";
   cout << ")\n";
   cout << "         Output version.\n";
+  cout << "  [ -H ] ";
+  cout << "[ --headless ]  ";
+  cout << "(";
+  cout << "type=";
+  cout << "FLAG";
+  cout << ")\n";
+  cout << "         Run the simulation without graphics.\n";
+  cout << "  [ -M ] ";
+  cout << "[ --mapfile ]  ";
+  cout << "(";
+  cout << "type=";
+  cout << "STRING";
+  cout << ")\n";
+  cout << "         Load a map file (alias for --load).\n";
+  cout << "  [ -P ] ";
+  cout << "[ --player1 ]  ";
+  cout << "(";
+  cout << "type=";
+  cout << "STRING,";
+  cout << " default=ai1";
+  cout << ")\n";
+  cout << "         Configure player 1 controller for headless mode.\n";
+  cout << "  [ -Q ] ";
+  cout << "[ --player2 ]  ";
+  cout << "(";
+  cout << "type=";
+  cout << "STRING,";
+  cout << " default=ai2";
+  cout << ")\n";
+  cout << "         Configure player 2 controller for headless mode.\n";
+  cout << "  [ -T ] ";
+  cout << "[ --turnlimit ]  ";
+  cout << "(";
+  cout << "type=";
+  cout << "INTEGER,";
+  cout << " range=0...,";
+  cout << " default=0";
+  cout << ")\n";
+  cout << "         Limit headless play to the given number of rounds (0 = unlimited).\n";
   exit(0);
 }
 

@@ -36,6 +36,7 @@
 #include "attack.h"
 #include "spfst.h"
 #include "gameoptions.h"
+#include "headlessstats.h"
 
 #include "actions/changeunitproperty.h"
 #include "actions/consumeammo.h"
@@ -482,11 +483,20 @@ void tunitattacksunit :: setresult( const Context& context )
    if( dv.damage >= 100 )
       log ( _attackingunit, _attackedunit );
    
-   GameAction* f = new InflictDamage( _attackingunit, av.damage - _attackingunit->damage );
-   f->execute ( context );
+   int attackerOwner = _attackingunit ? _attackingunit->getOwner() : -1;
+   int defenderOwner = _attackedunit ? _attackedunit->getOwner() : -1;
 
-   GameAction* g = new InflictDamage( _attackedunit, dv.damage - _attackedunit->damage  );
-   g->execute ( context );
+   {
+      HeadlessStatsContextGuard guard( defenderOwner, attackerOwner, reactionfire );
+      GameAction* f = new InflictDamage( _attackingunit, av.damage - _attackingunit->damage );
+      f->execute ( context );
+   }
+
+   {
+      HeadlessStatsContextGuard guard( attackerOwner, defenderOwner, reactionfire );
+      GameAction* g = new InflictDamage( _attackedunit, dv.damage - _attackedunit->damage  );
+      g->execute ( context );
+   }
    
 
    /* If the attacking vehicle was destroyed, remove it */
@@ -600,11 +610,20 @@ void tunitattacksbuilding :: setresult( const Context& context )
    
    _attackingunit->postAttack( false, context );
    
-   GameAction* f = new InflictDamage( _attackingunit, av.damage - _attackingunit->damage );
-   f->execute ( context );
+   int attackerOwner = _attackingunit ? _attackingunit->getOwner() : -1;
+   int buildingOwner = _attackedbuilding ? _attackedbuilding->getOwner() : -1;
+
+   {
+      HeadlessStatsContextGuard guard( buildingOwner, attackerOwner, false );
+      GameAction* f = new InflictDamage( _attackingunit, av.damage - _attackingunit->damage );
+      f->execute ( context );
+   }
    
-   GameAction* g = new InflictDamage( _attackedbuilding, dv.damage - _attackedbuilding->damage  );
-   g->execute ( context );
+   {
+      HeadlessStatsContextGuard guard( attackerOwner, buildingOwner, false );
+      GameAction* g = new InflictDamage( _attackedbuilding, dv.damage - _attackedbuilding->damage  );
+      g->execute ( context );
+   }
 }
 
 
@@ -821,8 +840,12 @@ void tunitattacksobject :: setresult( const Context& context )
    
    _attackingunit->postAttack( false, context );
    
-   GameAction* f = new InflictDamage( _attackingunit, av.damage - _attackingunit->damage );
-   f->execute ( context );
+   {
+      int attackerOwner = _attackingunit ? _attackingunit->getOwner() : -1;
+      HeadlessStatsContextGuard guard( -1, attackerOwner, false );
+      GameAction* f = new InflictDamage( _attackingunit, av.damage - _attackingunit->damage );
+      f->execute ( context );
+   }
    
    
    MapCoordinate position( _x, _y );

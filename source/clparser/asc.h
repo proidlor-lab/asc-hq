@@ -42,6 +42,10 @@ private:
   bool _q;
   bool _h;
   bool _v;
+  bool _headless;
+  string _player1;
+  string _player2;
+  int _turnLimit;
 
   /* other stuff to keep track of */
   string _executable;
@@ -70,6 +74,10 @@ public:
   bool q() { return _q; }
   bool h() { return _h; }
   bool v() { return _v; }
+  bool headless() { return _headless; }
+  const string& player1() const { return _player1; }
+  const string& player2() const { return _player2; }
+  int turnLimit() const { return _turnLimit; }
 };
 
 #endif

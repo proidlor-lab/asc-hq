@@ -38,6 +38,7 @@
 #include "strtmesg.h"
 #include "loaders.h"
 #include "cannedmessages.h"
+#include "sg.h"
 #include "viewcalculation.h"
 #include "network/simple_file_transfer.h"
 #include "dialogs/fileselector.h"
@@ -376,6 +377,9 @@ GameMap* continueNetworkGame ( const ASCString& filename )
 
 void  checkforvictory ( GameMap* gamemap, bool hasTurnControl )
 {
+   if ( isHeadlessMode() )
+      return;
+
    if ( !gamemap->continueplaying && gamemap->state == GameMap::State::Normal) {
       int plnum = 0;
       for ( int i = 0; i < 8; i++ )

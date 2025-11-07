@@ -713,6 +713,7 @@ AC_CONFIG_FILES( [ Makefile \
        doc/unitguide/output/Makefile \
        source/Makefile \
        source/ai/Makefile \
+       source/ai/mcts/Makefile \
        source/clparser/Makefile \
        source/docs/Makefile \
        source/docs/en/Makefile \

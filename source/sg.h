@@ -59,6 +59,22 @@ extern void saveGame( bool as );
 extern bool continueAndStartMultiplayerGame( bool mostRecent );
 extern void changePassword();
 
+inline bool& headlessModeFlag()
+{
+   static bool flag = false;
+   return flag;
+}
+
+inline bool isHeadlessMode()
+{
+   return headlessModeFlag();
+}
+
+inline void setHeadlessMode( bool enabled )
+{
+   headlessModeFlag() = enabled;
+}
+
 extern Context createContext( GameMap* gamemap );
 
 

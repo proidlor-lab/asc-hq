@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BackendCodeEditorMiscSettings">
+    <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
+  </component>
+  <component name="CMakeProjectFlavorService">
+    <option name="flavorId" value="CMakePlainProjectFlavor" />
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="60f3bd7f-654f-427c-951d-4f7cefe4db91" name="Changes" comment="A failed attempt of LLM sloth">
+      <change afterPath="$PROJECT_DIR$/source/ai/mcts/docs/code_structure.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/ai/mcts/docs/game_description.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/ai/mcts/docs/hierarchical_state_design.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/ai/mcts/docs/implementation_roadmap.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aclocal.m4" beforeDir="false" afterPath="$PROJECT_DIR$/aclocal.m4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.guess" beforeDir="false" afterPath="$PROJECT_DIR$/config.guess" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.h.in" beforeDir="false" afterPath="$PROJECT_DIR$/config.h.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.sub" beforeDir="false" afterPath="$PROJECT_DIR$/config.sub" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configure" beforeDir="false" afterPath="$PROJECT_DIR$/configure" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configure.ac" beforeDir="false" afterPath="$PROJECT_DIR$/configure.ac" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/data/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dialog/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/data/dialog/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/icons/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/data/icons/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/music/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/data/music/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/sounds/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/data/sounds/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/doc/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/manpages/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/doc/manpages/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/unitguide/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/doc/unitguide/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/unitguide/output/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/doc/unitguide/output/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extra-data/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/extra-data/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/installer/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/installer/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ltmain.sh" beforeDir="false" afterPath="$PROJECT_DIR$/ltmain.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/m4/libtool.m4" beforeDir="false" afterPath="$PROJECT_DIR$/m4/libtool.m4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/m4/ltoptions.m4" beforeDir="false" afterPath="$PROJECT_DIR$/m4/ltoptions.m4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/m4/ltsugar.m4" beforeDir="false" afterPath="$PROJECT_DIR$/m4/ltsugar.m4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/m4/ltversion.m4" beforeDir="false" afterPath="$PROJECT_DIR$/m4/ltversion.m4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/m4/lt~obsolete.m4" beforeDir="false" afterPath="$PROJECT_DIR$/m4/lt~obsolete.m4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/actions/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/actions/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/ai/Makefile.am" beforeDir="false" afterPath="$PROJECT_DIR$/source/ai/Makefile.am" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/ai/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/ai/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/ai/mcts_v2/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/source/ai/mcts/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/ai/mcts_v2/agents/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/source/ai/mcts/agents/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/ai/mcts_v2/coordination/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/source/ai/mcts/coordination/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/ai/mcts_v2/core/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/source/ai/mcts/core/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/ai/mcts_v2/domain/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/source/ai/mcts/domain/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/ai/mcts_v2/game_description.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/ai/mcts_v2/infrastructure/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/source/ai/mcts/infrastructure/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/ai/mcts_v2/mcts_rewrite_recommendations.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/clparser/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/clparser/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/dialogs/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/dialogs/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/doc/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/doc/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/docs/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/docs/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/docs/en/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/docs/en/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/graphics/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/graphics/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/libs/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/libs/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/libs/loki-0.1.6/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/libs/loki-0.1.6/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/libs/paragui/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/libs/paragui/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/libs/paragui/src/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/libs/paragui/src/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/libs/paragui/src/core/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/libs/paragui/src/core/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/libs/paragui/src/draw/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/libs/paragui/src/draw/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/libs/paragui/src/font/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/libs/paragui/src/font/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/libs/paragui/src/themes/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/libs/paragui/src/themes/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/libs/paragui/src/widgets/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/libs/paragui/src/widgets/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/libs/paragui/src/ystring/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/libs/paragui/src/ystring/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/libs/revel/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/libs/revel/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/libs/sdl_sound/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/libs/sdl_sound/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/libs/sdlmm/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/libs/sdlmm/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/libs/sdlmm/src/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/libs/sdlmm/src/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/libs/triangul/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/libs/triangul/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/lua/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/lua/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/network/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/network/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/sdl/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/sdl/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/tasks/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/tasks/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/tools/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/tools/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/tools/lib/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/tools/lib/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/tools/linux/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/tools/linux/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/unittests/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/unittests/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/unix/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/unix/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/unix/asc/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/unix/asc/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/unix/mapeditor/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/unix/mapeditor/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/unix/pbpedit/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/unix/pbpedit/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/util/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/util/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/video/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/video/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/widgets/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/widgets/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/win32/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/win32/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/win32/msvc/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/source/win32/msvc/Makefile.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/unittester/Makefile.in" beforeDir="false" afterPath="$PROJECT_DIR$/unittester/Makefile.in" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MakefileLocalSettings">
+    <option name="projectSyncType">
+      <map>
+        <entry key="$PROJECT_DIR$" value="RE_IMPORT" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectApplicationVersion">
+    <option name="ide" value="CLion" />
+    <option name="majorVersion" value="2025" />
+    <option name="minorVersion" value="2.4" />
+    <option name="productBranch" value="Classic" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="34s4VP6r8YOgMLUuwnXHt8niJjN" />
+  <component name="ProjectStatusUIService">{
+  &quot;uiKindId&quot;: &quot;Widget&quot;
+}</component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.RadMigrateCodeStyle&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;mcts&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/vboxuser/projects/asc-hq&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;Settings.Markdown&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/source/ai/mcts/docs" />
+      <recent name="$PROJECT_DIR$/source/ai/mcts_v2" />
+    </key>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="60f3bd7f-654f-427c-951d-4f7cefe4db91" name="Changes" comment="" />
+      <created>1761988985382</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1761988985382</updated>
+      <workItem from="1761988991484" duration="1605000" />
+      <workItem from="1761990926974" duration="6874000" />
+      <workItem from="1762030007432" duration="5938000" />
+      <workItem from="1762169502418" duration="632000" />
+      <workItem from="1762170271552" duration="1411000" />
+      <workItem from="1762171891648" duration="6884000" />
+      <workItem from="1762192956723" duration="879000" />
+      <workItem from="1762196413568" duration="696000" />
+      <workItem from="1762267615094" duration="7000" />
+      <workItem from="1762281056022" duration="204000" />
+      <workItem from="1762328526070" duration="11212000" />
+      <workItem from="1762367767208" duration="17555000" />
+      <workItem from="1762461272348" duration="17387000" />
+    </task>
+    <task id="LOCAL-00001" summary="Added dummy structure for mcts">
+      <option name="closed" value="true" />
+      <created>1762191265015</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1762191265015</updated>
+    </task>
+    <task id="LOCAL-00002" summary="A failed attempt of LLM sloth">
+      <option name="closed" value="true" />
+      <created>1762191490188</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1762191490188</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Added dummy structure for mcts" />
+    <MESSAGE value="A failed attempt of LLM sloth" />
+    <option name="LAST_COMMIT_MESSAGE" value="A failed attempt of LLM sloth" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

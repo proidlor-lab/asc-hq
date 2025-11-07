@@ -24,6 +24,8 @@
 
 #include "../containerbase.h"
 #include "../gamemap.h"
+#include "../player.h"
+#include "../headlessstats.h"
 
 #include "destructcontainer.h"
      
@@ -80,11 +82,24 @@ ActionResult InflictDamage::runAction( const Context& context )
    
    originalDamage = c->damage;
    c->damage += damage;
-   if ( c->damage >= 100 ) 
+   if ( c->damage >= 100 )
       c->damage = 100;
-   
+
    resultingDamage = c->damage;
+
+   int defenderPlayer = c ? c->getOwner() : -1;
+   int attackerPlayer = -1;
+   if ( context.actingPlayer )
+      attackerPlayer = context.actingPlayer->getPosition();
+
+   int inflictedDamage = resultingDamage - originalDamage;
+   if ( inflictedDamage < 0 )
+      inflictedDamage = 0;
+
+   headlessStatsRecordDamage( attackerPlayer, defenderPlayer, inflictedDamage );
+
    if ( c->damage >= 100 ) {
+      headlessStatsRecordKill( attackerPlayer, defenderPlayer, c );
       GameAction* a = new DestructContainer( c );
       ActionResult r = a->execute( context );
       if ( !r.successful() )
