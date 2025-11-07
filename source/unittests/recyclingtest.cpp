@@ -18,7 +18,7 @@
 
 void testRecycling() 
 {
-   auto_ptr<GameMap> game ( startMap("unittest-recycle.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-recycle.map"));
    
    Building* bld = game->getField(5,8)->building;
    Vehicle* veh = getFirstCargo( bld );

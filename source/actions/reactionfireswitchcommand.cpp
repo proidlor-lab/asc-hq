@@ -81,7 +81,7 @@ ActionResult ReactionFireSwitchCommand::go ( const Context& context )
    
    if ( newRFstate == true ) {
          
-      auto_ptr<ChangeUnitProperty> propChange ( new ChangeUnitProperty( getUnit(), ChangeUnitProperty::ReactionFire, (int) Vehicle::ReactionFire::init2 ));
+      std::unique_ptr<ChangeUnitProperty> propChange ( new ChangeUnitProperty( getUnit(), ChangeUnitProperty::ReactionFire, (int) Vehicle::ReactionFire::init2 ));
       ActionResult res = propChange->execute( context );
       
       if ( res.successful() ) {
@@ -96,7 +96,7 @@ ActionResult ReactionFireSwitchCommand::go ( const Context& context )
             && unit->reactionfire.getStatus() != Vehicle::ReactionFire::init2 
             && !unit->typ->hasFunction(ContainerBaseType::MoveWithReactionFire)  ) {
          
-         auto_ptr<ChangeUnitMovement> propChange ( new ChangeUnitMovement( getUnit(), 0 ));
+         std::unique_ptr<ChangeUnitMovement> propChange ( new ChangeUnitMovement( getUnit(), 0 ));
          ActionResult res = propChange->execute( context );
       
          if ( res.successful() ) 
@@ -104,7 +104,7 @@ ActionResult ReactionFireSwitchCommand::go ( const Context& context )
          
       }
       
-      auto_ptr<ChangeUnitProperty> propChange ( new ChangeUnitProperty( getUnit(), ChangeUnitProperty::ReactionFire, (int) Vehicle::ReactionFire::off ));
+      std::unique_ptr<ChangeUnitProperty> propChange ( new ChangeUnitProperty( getUnit(), ChangeUnitProperty::ReactionFire, (int) Vehicle::ReactionFire::off ));
       ActionResult res = propChange->execute( context );
       
       if ( res.successful() ) {

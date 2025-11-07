@@ -522,7 +522,7 @@ class CargoDialog : public Panel
 
          if ( draggedUnit != targetUnit ) {
             if ( targetUnit && CargoMoveCommand::moveInAvail(draggedUnit, targetUnit) ) {
-               auto_ptr<CargoMoveCommand> cargomove ( new CargoMoveCommand( draggedUnit ));
+               std::unique_ptr<CargoMoveCommand> cargomove ( new CargoMoveCommand( draggedUnit ));
                cargomove->setMode( CargoMoveCommand::moveInwards );
                cargomove->setTargetCarrier( targetUnit );
                ActionResult res = cargomove->execute ( createContext( getContainer()->getMap() ));
@@ -530,7 +530,7 @@ class CargoDialog : public Panel
                   cargomove.release();
             } else {
                if ( container->getCarrier() && !targetUnit ) {
-                  auto_ptr<CargoMoveCommand> cargomove ( new CargoMoveCommand( draggedUnit ));
+                  std::unique_ptr<CargoMoveCommand> cargomove ( new CargoMoveCommand( draggedUnit ));
                   cargomove->setMode( CargoMoveCommand::moveOutwards );
                   ActionResult res = cargomove->execute ( createContext( getContainer()->getMap() ));
                   if ( res.successful() )
@@ -1077,7 +1077,7 @@ class BuildingControlWindow : public SubWindow
          if ( !RepairBuildingCommand::avail( bld ))
             return false;
 
-         auto_ptr<RepairBuildingCommand> rbc ( new RepairBuildingCommand( bld ));
+         std::unique_ptr<RepairBuildingCommand> rbc ( new RepairBuildingCommand( bld ));
          ActionResult res = rbc->execute( createContext( container()->getMap() ));
          if  ( res.successful() )
             rbc.release();
@@ -1473,7 +1473,7 @@ class MatterAndMiningBaseWindow : public SubWindow
 
       void setnewpower ( ContainerBase* c, int power ) {
          if ( hasFunction( c ) ) {
-            auto_ptr<SetResourceProcessingRateCommand> srprc ( new SetResourceProcessingRateCommand( c, power ));
+            std::unique_ptr<SetResourceProcessingRateCommand> srprc ( new SetResourceProcessingRateCommand( c, power ));
 
             ActionResult res = srprc->execute( createContext( c->getMap() ));
             if ( res.successful() )
@@ -2136,7 +2136,7 @@ void UnitProduction::execute( const MapCoordinate& pos, ContainerBase* subject, 
    bool refillAmmo;
    bool refillResources;
 
-   auto_ptr<ConstructUnitCommand> production ( new ConstructUnitCommand( parent.getContainer() ));
+   std::unique_ptr<ConstructUnitCommand> production ( new ConstructUnitCommand( parent.getContainer() ));
    constructUnitCommand = production.get();
 
    const VehicleType* v;
@@ -2186,7 +2186,7 @@ void UnitProduction::execute( const MapCoordinate& pos, ContainerBase* subject, 
 
 
       if ( refillAmmo || refillResources ) {
-         auto_ptr<ServiceCommand> ser ( new ServiceCommand( parent.getContainer() ));
+         std::unique_ptr<ServiceCommand> ser ( new ServiceCommand( parent.getContainer() ));
          ser->setDestination( newUnit );
          TransferHandler& trans = ser->getTransferHandler();
          if ( refillAmmo )
@@ -2264,7 +2264,7 @@ void UnitTraining::execute( const MapCoordinate& pos, ContainerBase* subject, in
    if ( !veh )
       return;
 
-   auto_ptr<TrainUnitCommand> tuc ( new TrainUnitCommand( parent.getContainer() ));
+   std::unique_ptr<TrainUnitCommand> tuc ( new TrainUnitCommand( parent.getContainer() ));
    tuc->setUnit( veh );
    ActionResult res = tuc->execute( createContext( veh->getMap()));
    if ( res.successful() ) {
@@ -2320,7 +2320,7 @@ void RefuelUnitCommand::execute( const MapCoordinate& pos, ContainerBase* subjec
    if ( !veh )
       return;
 
-   auto_ptr<ServiceCommand> ser ( new ServiceCommand( parent.getContainer() ));
+   std::unique_ptr<ServiceCommand> ser ( new ServiceCommand( parent.getContainer() ));
    ser->setDestination( subject );
    ser->getTransferHandler().fillDest();
    ser->saveTransfers();
@@ -2382,7 +2382,7 @@ void RepairUnit::execute( const MapCoordinate& pos, ContainerBase* subject, int 
    if ( !veh )
       return;
 
-   auto_ptr<RepairUnitCommand> rp ( new RepairUnitCommand( parent.getContainer() ));
+   std::unique_ptr<RepairUnitCommand> rp ( new RepairUnitCommand( parent.getContainer() ));
 
    if ( !rp->validTarget( veh ) )
       return;
@@ -2436,7 +2436,7 @@ void MoveUnitUp::execute( const MapCoordinate& pos, ContainerBase* subject, int 
    if ( !veh )
       return;
 
-   auto_ptr<CargoMoveCommand> cargomove ( new CargoMoveCommand( veh ));
+   std::unique_ptr<CargoMoveCommand> cargomove ( new CargoMoveCommand( veh ));
    cargomove->setMode( CargoMoveCommand::moveOutwards );
    ActionResult res = cargomove->execute ( createContext( veh->getMap() ));
    if ( res.successful() )
@@ -2547,7 +2547,7 @@ void TransferUnitControl::execute( const MapCoordinate& pos, ContainerBase* subj
    Vehicle* veh = dynamic_cast<Vehicle*>(subject);
    if ( veh ) {
 
-      auto_ptr<TransferControlCommand> tcc ( new TransferControlCommand( subject ));
+      std::unique_ptr<TransferControlCommand> tcc ( new TransferControlCommand( subject ));
       TransferControlCommand::Receivers rec = tcc->getReceivers();
 
       vector<ASCString> entries;
@@ -2683,7 +2683,7 @@ void MoveUnitIntoInnerContainer::execute( const MapCoordinate& pos, ContainerBas
    if ( !veh )
       return;
 
-   auto_ptr<CargoMoveCommand> cargomove ( new CargoMoveCommand( veh ));
+   std::unique_ptr<CargoMoveCommand> cargomove ( new CargoMoveCommand( veh ));
    cargomove->setMode( CargoMoveCommand::moveInwards );
 
    vector<Vehicle*> targets = cargomove->getTargetCarriers();
@@ -2724,7 +2724,7 @@ void RefuelUnitDialogCommand :: execute( const MapCoordinate& pos, ContainerBase
    if ( !subject )
       return;
 
-   auto_ptr<ServiceCommand> ser ( new ServiceCommand( parent.getContainer() ));
+   std::unique_ptr<ServiceCommand> ser ( new ServiceCommand( parent.getContainer() ));
    ser->setDestination( subject );
    ammoTransferWindow( parent.getContainer(), subject, ser.get() );
    parent.cargoChanged();
@@ -2835,7 +2835,7 @@ void RecycleUnitCommandButton :: execute( const MapCoordinate& pos, ContainerBas
    ASCString msg = "do you really want to " + getCommandName( parent.getContainer() ) + " this unit ?";
 
    if (choice_dlg( msg ,"~y~es","~n~o") == 1) {
-      auto_ptr<RecycleUnitCommand> command ( new RecycleUnitCommand( parent.getContainer() ));
+      std::unique_ptr<RecycleUnitCommand> command ( new RecycleUnitCommand( parent.getContainer() ));
       command->setUnit( veh );
       ActionResult res = command->execute( createContext( parent.getContainer()->getMap() ));
       if ( res.successful() )

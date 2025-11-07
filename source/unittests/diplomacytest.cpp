@@ -22,7 +22,7 @@ void checkSymmetry( const Player& p0, const Player& p1 )
 
 void testDiplomacy1() 
 {
-   auto_ptr<GameMap> game ( startMap("unittest-diplomacy.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-diplomacy.map"));
    
    // there is PEACE between the player
    
@@ -204,7 +204,7 @@ void testDiplomacy1()
 
 void testDiplomacy2() 
 {
-   auto_ptr<GameMap> game ( startMap("unittest-diplomacy.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-diplomacy.map"));
    
    // there is PEACE between the player
    
@@ -235,7 +235,7 @@ void testDiplomacy2()
 
 void testDiplomacy3() 
 {
-   auto_ptr<GameMap> game ( startMap("unittest-diplomacy.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-diplomacy.map"));
    
    // there is PEACE between the player
    

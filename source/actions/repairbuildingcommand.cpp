@@ -81,14 +81,14 @@ ActionResult RepairBuildingCommand::go ( const Context& context )
    
    RepairData data = getCost();
    
-   auto_ptr<ChangeContainerProperty> propChange ( new ChangeContainerProperty( building, ChangeContainerProperty::Damage, data.newDamage ));
+   std::unique_ptr<ChangeContainerProperty> propChange ( new ChangeContainerProperty( building, ChangeContainerProperty::Damage, data.newDamage ));
    ActionResult res = propChange->execute( context );
    if ( res.successful() )
       propChange.release();
    else
       return res;
    
-   auto_ptr<ChangeContainerProperty> propChange2 ( new ChangeContainerProperty( building, ChangeContainerProperty::RepairedThisTurn, data.damageDelta, false ));
+   std::unique_ptr<ChangeContainerProperty> propChange2 ( new ChangeContainerProperty( building, ChangeContainerProperty::RepairedThisTurn, data.damageDelta, false ));
    res = propChange2->execute( context );
    if ( res.successful() )
       propChange2.release();
@@ -96,7 +96,7 @@ ActionResult RepairBuildingCommand::go ( const Context& context )
       return res;
    
    
-   auto_ptr<ConsumeResource> resource ( new ConsumeResource( getContainer(), data.cost ));
+   std::unique_ptr<ConsumeResource> resource ( new ConsumeResource( getContainer(), data.cost ));
    res = resource->execute( context );
    if ( res.successful() )
       resource.release();

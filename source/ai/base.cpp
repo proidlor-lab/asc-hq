@@ -243,7 +243,7 @@ void AI:: run ( bool benchMark, MapDisplayInterface* myMapDisplay )
 
    this->benchMark = benchMark;
 
-   auto_ptr<ReplayMapDisplay> rmd;
+   std::unique_ptr<ReplayMapDisplay> rmd;
    if ( getMap()->getPlayerView() >= 0 && !benchMark && myMapDisplay ) {
       rmd.reset( new ReplayMapDisplay ( myMapDisplay ) );
       rmd->setCursorDelay (CGameOptions::Instance()->replayspeed + 30 );
@@ -364,7 +364,7 @@ void AI :: diplomacy ()
             if ( proposal > getPlayer().diplomacy.getState( i ))
                new Message( "Your diplomatic proposal is declined", getMap(), 1 << i, 1 << getPlayerNum() );
             else {
-               auto_ptr<DiplomacyCommand> dc ( new DiplomacyCommand( getPlayer()));  
+               std::unique_ptr<DiplomacyCommand> dc ( new DiplomacyCommand( getPlayer()));  
                dc->newstate( proposal, getMap()->getPlayer(i) );
                ActionResult res = dc->execute( getContext() );
                if ( res.successful() )

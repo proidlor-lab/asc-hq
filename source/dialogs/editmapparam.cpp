@@ -60,7 +60,7 @@ bool GameParameterEditorWidget :: LoadParameter()
       tnfilestream s ( filename, tnstream::reading );
       
       TextFormatParser tfp ( &s );
-      auto_ptr<TextPropertyGroup> tpg ( tfp.run());
+      std::unique_ptr<TextPropertyGroup> tpg ( tfp.run());
       
       PropertyReadingContainer pc ( blockName, tpg.get() );
    

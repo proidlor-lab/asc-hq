@@ -112,7 +112,7 @@ void SoundList::initialize(  )
       TextFormatParser tfp ( &s );
       tpg = tfp.run();
    }
-   auto_ptr<TextPropertyGroup> atpg ( tpg );
+   std::unique_ptr<TextPropertyGroup> atpg ( tpg );
 
    PropertyReadingContainer pc ( "sounds", tpg );
 

@@ -715,7 +715,7 @@ void showUsedPackages()
 class CommandAllianceSetupStrategy : public AllianceSetupWidget::ApplyStrategy {
    virtual void sneakAttack ( GameMap* map, int actingPlayer, int towardsPlayer )
    {
-      auto_ptr<DiplomacyCommand> dc ( new DiplomacyCommand( map->player[actingPlayer]));
+      std::unique_ptr<DiplomacyCommand> dc ( new DiplomacyCommand( map->player[actingPlayer]));
       dc->sneakAttack( map->getPlayer( towardsPlayer ));
       ActionResult res = dc->execute( createContext(actmap) );
       if ( res.successful() )
@@ -726,7 +726,7 @@ class CommandAllianceSetupStrategy : public AllianceSetupWidget::ApplyStrategy {
 
    virtual void setState ( GameMap* map, int actingPlayer, int towardsPlayer, DiplomaticStates newState )
    {
-      auto_ptr<DiplomacyCommand> dc ( new DiplomacyCommand( map->player[actingPlayer]));
+      std::unique_ptr<DiplomacyCommand> dc ( new DiplomacyCommand( map->player[actingPlayer]));
       dc->newstate( newState, map->getPlayer( towardsPlayer ));
       ActionResult res = dc->execute( createContext(actmap) );
       if ( res.successful() )
@@ -1017,7 +1017,7 @@ void executeUserAction ( tuseractions action )
             // s += strrr ( actmap->player[actmap->actplayer].research.progress );
             // s += " research points will be lost.";
             if (choice_dlg(s.c_str(),"~y~es","~n~o") == 1) {
-               auto_ptr<CancelResearchCommand> crc ( new CancelResearchCommand( actmap ));
+               std::unique_ptr<CancelResearchCommand> crc ( new CancelResearchCommand( actmap ));
                crc->setPlayer( actmap->player[actmap->actplayer] );
                ActionResult res = crc->execute( createContext( actmap ));
                if ( res.successful() )
@@ -1393,7 +1393,7 @@ int gamethread ( void* data )
    
    GameThreadParams* gtp = (GameThreadParams*) data;
 
-   std::auto_ptr<StartupScreen> startupScreen;
+   std::unique_ptr<StartupScreen> startupScreen;
 
    MapTypeLoaded mtl = None;
 
@@ -1733,7 +1733,7 @@ static int runHeadlessMode( Cmdline& cl )
    GameMap::sigMapDeletion.connect( sigc::ptr_fun( &resetActmap ));
    GameMap::sigPlayerTurnEndsStatic.connect( sigc::ptr_fun( &automaticTrainig ));
 
-   auto_ptr<GameMap> mapHolder( mapLoadingExceptionChecker( cl.l(), MapLoadingFunction( tmaploaders::loadmap )));
+   std::unique_ptr<GameMap> mapHolder( mapLoadingExceptionChecker( cl.l(), MapLoadingFunction( tmaploaders::loadmap )));
    if ( !mapHolder.get() ) {
       errorMessage( "Unable to load map for headless mode" );
       return 1;
@@ -2075,7 +2075,7 @@ int main(int argc, char *argv[] )
       cerr << s;
       exit(1);
    }
-   auto_ptr<Cmdline> apcl ( cl );
+   std::unique_ptr<Cmdline> apcl ( cl );
 
    if ( cl->v() ) {
       ASCString msg = getstartupmessage();

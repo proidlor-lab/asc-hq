@@ -131,21 +131,21 @@ ActionResult JumpDriveCommand::go ( const Context& context )
       return ActionResult( 22601 );
    
    
-   auto_ptr<ConsumeResource> cr ( new ConsumeResource( unit, unit->typ->jumpDrive.consumption ));
+   std::unique_ptr<ConsumeResource> cr ( new ConsumeResource( unit, unit->typ->jumpDrive.consumption ));
    ActionResult res = cr->execute( context );
    if ( !res.successful() )
       return res;
    else
       cr.release();
    
-   auto_ptr<UnitFieldRegistration> ufr1 ( new UnitFieldRegistration( unit, unit->getPosition(), UnitFieldRegistration::RemoveView ));
+   std::unique_ptr<UnitFieldRegistration> ufr1 ( new UnitFieldRegistration( unit, unit->getPosition(), UnitFieldRegistration::RemoveView ));
    res = ufr1->execute( context );
    if ( !res.successful() )
       return res;
    else
       ufr1.release();
    
-   auto_ptr<UnitFieldRegistration> ufr2 ( new UnitFieldRegistration( unit, unit->getPosition(), UnitFieldRegistration::UnregisterOnField ));
+   std::unique_ptr<UnitFieldRegistration> ufr2 ( new UnitFieldRegistration( unit, unit->getPosition(), UnitFieldRegistration::UnregisterOnField ));
    res = ufr2->execute( context );
    if ( !res.successful() )
       return res;
@@ -159,14 +159,14 @@ ActionResult JumpDriveCommand::go ( const Context& context )
    srfu.init( unit , dest3D );
    
    
-   auto_ptr<UnitFieldRegistration> ufr3( new UnitFieldRegistration( unit, dest3D, UnitFieldRegistration::Position3D ));
+   std::unique_ptr<UnitFieldRegistration> ufr3( new UnitFieldRegistration( unit, dest3D, UnitFieldRegistration::Position3D ));
    res = ufr3->execute( context );
    if ( !res.successful() )
       return res;
    else
       ufr3.release();
    
-   auto_ptr<UnitFieldRegistration> ufr4 ( new UnitFieldRegistration( unit, dest3D, UnitFieldRegistration::RegisterOnField ));
+   std::unique_ptr<UnitFieldRegistration> ufr4 ( new UnitFieldRegistration( unit, dest3D, UnitFieldRegistration::RegisterOnField ));
    res = ufr4->execute( context );
    if ( !res.successful() )
       return res;
@@ -183,7 +183,7 @@ ActionResult JumpDriveCommand::go ( const Context& context )
    else
       newmovement = unit->getMovement(false,false) - unit->maxMovement() * unit->typ->jumpDrive.movementConsumptionPercentage / 100 ;
 
-   auto_ptr<ChangeUnitMovement> cum ( new ChangeUnitMovement( unit, newmovement, false, ChangeUnitMovement::ALLFULL ));
+   std::unique_ptr<ChangeUnitMovement> cum ( new ChangeUnitMovement( unit, newmovement, false, ChangeUnitMovement::ALLFULL ));
    res = cum->execute( context );
    if ( !res.successful() )
       return res;
@@ -191,7 +191,7 @@ ActionResult JumpDriveCommand::go ( const Context& context )
       cum.release();
       
    if ( !unit->typ->jumpDrive.attackAfterJump ) {
-      auto_ptr<ChangeUnitProperty> cup ( new ChangeUnitProperty( unit, ChangeUnitProperty::AttackedFlag, 1 ));
+      std::unique_ptr<ChangeUnitProperty> cup ( new ChangeUnitProperty( unit, ChangeUnitProperty::AttackedFlag, 1 ));
       res = cup->execute( context );
       if ( !res.successful() )
          return res;
@@ -200,7 +200,7 @@ ActionResult JumpDriveCommand::go ( const Context& context )
    }
       
       
-   auto_ptr<UnitFieldRegistration> ufr5( new UnitFieldRegistration( unit, dest3D, UnitFieldRegistration::AddView ));
+   std::unique_ptr<UnitFieldRegistration> ufr5( new UnitFieldRegistration( unit, dest3D, UnitFieldRegistration::AddView ));
    res = ufr5->execute( context );
    if ( !res.successful() )
       return res;

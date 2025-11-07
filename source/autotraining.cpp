@@ -37,7 +37,7 @@ static void autoTrainer( ContainerBase* container )
          context.viewingPlayer = container->getOwner(); 
          context.actionContainer = &container->getMap()->actions;
                   
-         auto_ptr<TrainUnitCommand> tuc ( new TrainUnitCommand( container ));
+         std::unique_ptr<TrainUnitCommand> tuc ( new TrainUnitCommand( container ));
          tuc->setUnit( *i );
          ActionResult res = tuc->execute( context );
                   
@@ -46,7 +46,7 @@ static void autoTrainer( ContainerBase* container )
                   
                   
          if ( ServiceCommand::avail( container, *i )) {
-            auto_ptr<ServiceCommand> sc ( new ServiceCommand( container ));
+            std::unique_ptr<ServiceCommand> sc ( new ServiceCommand( container ));
             sc->setDestination( *i );
             TransferHandler& tc = sc->getTransferHandler();
             tc.fillDestAmmo();

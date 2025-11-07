@@ -232,7 +232,7 @@ ActionResult ConstructBuildingCommand::go ( const Context& context )
    
    
    
-   auto_ptr<SpawnBuilding> sb ( new SpawnBuilding( getMap(), target, buildingTypeID, getUnit()->getOwner() ));
+   std::unique_ptr<SpawnBuilding> sb ( new SpawnBuilding( getMap(), target, buildingTypeID, getUnit()->getOwner() ));
    ActionResult res = sb->execute( context );
    if ( res.successful() )
       sb.release();
@@ -241,21 +241,21 @@ ActionResult ConstructBuildingCommand::go ( const Context& context )
 
    Resources cost = getProductionCost( bld );
    
-   auto_ptr<ConsumeResource> cr ( new ConsumeResource( getUnit(), cost ));
+   std::unique_ptr<ConsumeResource> cr ( new ConsumeResource( getUnit(), cost ));
    res = cr->execute( context );
    if ( res.successful() )
       cr.release();
    else
       return res;
    
-   auto_ptr<ChangeUnitMovement> cum ( new ChangeUnitMovement( getUnit(), 0 ));
+   std::unique_ptr<ChangeUnitMovement> cum ( new ChangeUnitMovement( getUnit(), 0 ));
    res = cum->execute( context );
    if ( res.successful() )
       cum.release();
    else
       return res;
 
-   auto_ptr<ChangeUnitProperty> cup ( new ChangeUnitProperty( getUnit(), ChangeUnitProperty::AttackedFlag, 1 ));
+   std::unique_ptr<ChangeUnitProperty> cup ( new ChangeUnitProperty( getUnit(), ChangeUnitProperty::AttackedFlag, 1 ));
    res = cup->execute( context );
    if ( res.successful() )
       cup.release();

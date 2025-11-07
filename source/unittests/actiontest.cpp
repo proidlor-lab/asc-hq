@@ -16,7 +16,7 @@
 
 void testActions() 
 {
-   auto_ptr<GameMap> game ( startMap("unittest-movement.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-movement.map"));
    
    Vehicle* veh = game->getField(0,0)->vehicle;
    assertOrThrow( veh->getMovement() == 100 );

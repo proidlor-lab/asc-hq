@@ -53,7 +53,7 @@ void networksupervisor ()
 
    StatusMessageWindowHolder smw = MessagingHub::Instance().infoMessageWindow( "loading " + filename );
    FileTransfer ft;
-   auto_ptr<GameMap> newMap ( mapLoadingExceptionChecker( filename, MapLoadingFunction( &ft, &FileTransfer::loadPBEMFile )));
+   std::unique_ptr<GameMap> newMap ( mapLoadingExceptionChecker( filename, MapLoadingFunction( &ft, &FileTransfer::loadPBEMFile )));
    if ( !newMap.get() )
       return;
 

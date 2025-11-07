@@ -643,7 +643,7 @@ public:
         return ( key->keysym.unicode == 'p' );
     };
     void execute( const MapCoordinate& pos, ContainerBase* subject, int num ) {
-        auto_ptr<PowerGenerationSwitchCommand> pgsc ( new PowerGenerationSwitchCommand( actmap->getField(pos)->vehicle));
+        std::unique_ptr<PowerGenerationSwitchCommand> pgsc ( new PowerGenerationSwitchCommand( actmap->getField(pos)->vehicle));
         pgsc->setNewState( newState );
         ActionResult res = pgsc->execute( createContext( actmap ));
         if ( !res.successful() )
@@ -763,7 +763,7 @@ void DestructBuilding::execute(  const MapCoordinate& pos, ContainerBase* subjec
 		if ( !unit )
 			return;
 
-        auto_ptr<DestructBuildingCommand> db ( new DestructBuildingCommand( unit ));
+        std::unique_ptr<DestructBuildingCommand> db ( new DestructBuildingCommand( unit ));
 
         vector<MapCoordinate> fields = db->getFields();
 
@@ -863,7 +863,7 @@ public:
 
     void execute( const MapCoordinate& pos, ContainerBase* subject, int num ) {
         Vehicle* eht = actmap->getField(pos)->vehicle;
-        auto_ptr<ReactionFireSwitchCommand> rf ( new ReactionFireSwitchCommand( eht ));
+        std::unique_ptr<ReactionFireSwitchCommand> rf ( new ReactionFireSwitchCommand( eht ));
         rf->setNewState( true );
         ActionResult res = rf->execute( createContext( actmap ));
         if ( res.successful() )
@@ -901,7 +901,7 @@ public:
     };
     void execute( const MapCoordinate& pos, ContainerBase* subject, int num ) {
         Vehicle* eht = actmap->getField(pos)->vehicle;
-        auto_ptr<ReactionFireSwitchCommand> rf ( new ReactionFireSwitchCommand( eht ));
+        std::unique_ptr<ReactionFireSwitchCommand> rf ( new ReactionFireSwitchCommand( eht ));
         rf->setNewState( false );
         ActionResult res = rf->execute( createContext( actmap ));
         if ( res.successful() )
@@ -960,7 +960,7 @@ public:
                return;
             }
             
-            auto_ptr<JumpDriveCommand> jdc ( new JumpDriveCommand( eht ));
+            std::unique_ptr<JumpDriveCommand> jdc ( new JumpDriveCommand( eht ));
 
             vector<MapCoordinate> fields = jdc->getDestinations();
             for ( vector<MapCoordinate>::const_iterator i = fields.begin(); i != fields.end(); ++i )
@@ -1026,7 +1026,7 @@ public:
     };
     void execute( const MapCoordinate& pos, ContainerBase* subject, int num ) {
         if ( !commandPending()  ) {
-            auto_ptr<RepairUnitCommand> rp ( new RepairUnitCommand( actmap->getField(pos)->vehicle ));
+            std::unique_ptr<RepairUnitCommand> rp ( new RepairUnitCommand( actmap->getField(pos)->vehicle ));
 
             vector<Vehicle*> targets = rp->getExternalTargets();
 
@@ -1114,7 +1114,7 @@ public:
 
     void execute( const MapCoordinate& pos, ContainerBase* subject, int num ) {
         if ( !NewGuiHost::pendingCommand ) {
-            auto_ptr<ServiceCommand> service ( new ServiceCommand( subject ));
+            std::unique_ptr<ServiceCommand> service ( new ServiceCommand( subject ));
 
             MapCoordinate srcPos = subject->getPosition();
             int fieldCount = 0;
@@ -1228,7 +1228,7 @@ public:
     void execute( const MapCoordinate& pos, ContainerBase* subject, int num ) {
         MapField* fld = actmap->getField(pos);
         if ( fld->vehicle ) {
-            auto_ptr<PutMineCommand> poc ( new PutMineCommand( actmap->getField(pos)->vehicle ));
+            std::unique_ptr<PutMineCommand> poc ( new PutMineCommand( actmap->getField(pos)->vehicle ));
             ActionResult res = poc->searchFields();
             if ( res.successful() ) {
                 vector<MapCoordinate> fields = poc->getFields();
@@ -1624,7 +1624,7 @@ void BuildObject::execute(  const MapCoordinate& pos, ContainerBase* subject, in
 {
     MapField* fld = actmap->getField(pos);
     if ( fld->vehicle ) {
-        auto_ptr<PutObjectCommand> poc ( new PutObjectCommand( actmap->getField(pos)->vehicle ));
+        std::unique_ptr<PutObjectCommand> poc ( new PutObjectCommand( actmap->getField(pos)->vehicle ));
         ActionResult res =poc->searchFields();
         if ( res.successful() ) {
             vector<MapCoordinate> fields = poc->getFields();
@@ -1683,7 +1683,7 @@ void BuildVehicleCommand::execute(  const MapCoordinate& pos, ContainerBase* sub
     ConstructUnitCommand* construct = dynamic_cast<ConstructUnitCommand*>(NewGuiHost::pendingCommand);
     if ( !construct  ) {
         delete construct;
-        auto_ptr<ConstructUnitCommand> constructCommand ( new ConstructUnitCommand( subject ));
+        std::unique_ptr<ConstructUnitCommand> constructCommand ( new ConstructUnitCommand( subject ));
         constructCommand->setMode( ConstructUnitCommand::external);
         ConstructUnitCommand::Producables buildables = constructCommand->getProduceableVehicles();
 
@@ -1866,7 +1866,7 @@ void ConstructBuilding::execute(  const MapCoordinate& pos, ContainerBase* subje
         MapField* fld = actmap->getField(pos);
 
 
-        auto_ptr<ConstructBuildingCommand> cbc ( new ConstructBuildingCommand( fld->vehicle ));
+        std::unique_ptr<ConstructBuildingCommand> cbc ( new ConstructBuildingCommand( fld->vehicle ));
 
         ConstructBuildingCommand::Producables producables = cbc->getProduceableBuildings();
 
@@ -1981,7 +1981,7 @@ public:
     void execute( const MapCoordinate& pos, ContainerBase* subject, int num ) {
         MapField* fld = actmap->getField(pos);
         if (choice_dlg("do you really want to destruct this unit?","~y~es","~n~o") == 1) {
-            auto_ptr<DestructUnitCommand> destructor ( new  DestructUnitCommand( fld->getContainer() ));
+            std::unique_ptr<DestructUnitCommand> destructor ( new  DestructUnitCommand( fld->getContainer() ));
             ActionResult res = destructor->execute( createContext( actmap ) );
             if ( res.successful() )
                 destructor.release();

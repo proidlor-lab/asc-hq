@@ -29,7 +29,7 @@ void runScript( const ASCString& script )
 
 void testMaps() 
 {
-   auto_ptr<GameMap> game ( startMap("kam005.map"));
+   std::unique_ptr<GameMap> game ( startMap("kam005.map"));
    actmap = game.get();
    runScript( "kam005.lua" );
    actmap = NULL;

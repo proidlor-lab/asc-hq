@@ -360,7 +360,7 @@ GameMap* continueNetworkGame ( bool mostRecent )
 GameMap* continueNetworkGame ( const ASCString& filename )
 {
    FileTransfer ft;
-   auto_ptr<GameMap> newMap ( mapLoadingExceptionChecker( filename, MapLoadingFunction( &ft, &FileTransfer::loadPBEMFile )));
+   std::unique_ptr<GameMap> newMap ( mapLoadingExceptionChecker( filename, MapLoadingFunction( &ft, &FileTransfer::loadPBEMFile )));
    if ( !newMap.get() )
       return NULL;
 

@@ -206,7 +206,7 @@ int main(int argc, char *argv[] )
       cerr << s;
       exit(1);
    }
-   auto_ptr<Cmdline> apcl ( cl );
+   std::unique_ptr<Cmdline> apcl ( cl );
 
    if ( cl->next_param() < argc ) {
       cerr << "invalid command line parameter\n";

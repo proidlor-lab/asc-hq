@@ -252,7 +252,7 @@ class ChooseTech : public ASC_PG_Dialog
          if ( goal || !itemSelector->getItemNum() ) {
             
             if ( goal ) {
-               auto_ptr<DirectResearchCommand> drc ( new DirectResearchCommand( player ));
+               std::unique_ptr<DirectResearchCommand> drc ( new DirectResearchCommand( player ));
                drc->setTechnology( goal );
                ActionResult res = drc->execute( createContext( player.getParentMap() ));
                if ( res.successful() ) {

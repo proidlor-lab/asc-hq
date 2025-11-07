@@ -53,8 +53,8 @@ const ASCString UnitGuideGen::ORBITUNIT = "Orbital";
 
 bool InfoPageUtil::equalFiles(const ASCString src, const ASCString dst) {
   const int maxFileSize = 10000000;
-  auto_ptr<char> s ( new char[maxFileSize]);
-  auto_ptr<char> d ( new char[maxFileSize]);
+  std::unique_ptr<char> s ( new char[maxFileSize]);
+  std::unique_ptr<char> d ( new char[maxFileSize]);
   FILE* i = fopen ( src.c_str(), filereadmode );
   FILE* o = fopen ( dst.c_str(), filereadmode );
   bool result = true;
@@ -85,7 +85,7 @@ bool InfoPageUtil::equalFiles(const ASCString src, const ASCString dst) {
 void InfoPageUtil::copyFile(const ASCString src, const ASCString dst) {
   const int maxFileSize = 10000000;
 
-  auto_ptr<char> s ( new char[maxFileSize]);
+  std::unique_ptr<char> s ( new char[maxFileSize]);
   FILE* i = fopen ( src.c_str(), filereadmode );
   FILE* o = fopen ( dst.c_str(), filewritemode);
   if(!i) {

@@ -294,7 +294,7 @@ void showAttackAnimation( tfight& battle, GameMap* actmap, int ad, int dd )
 
    BattleSoundPlayer bsp( battle );
    
-   auto_ptr<AttackPanel> at ( new AttackPanel(battle));
+   std::unique_ptr<AttackPanel> at ( new AttackPanel(battle));
 
    float avd = float( 100 - battle.av.damage )/100;
    float dvd = float( 100 - battle.dv.damage )/100;

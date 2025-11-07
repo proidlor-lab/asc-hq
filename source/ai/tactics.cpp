@@ -279,7 +279,7 @@ AI::AiResult AI::executeMoveAttack ( Vehicle* veh, TargetVector& tv )
       VisibilityStates org_vision =  getVision() ;
       setVision(visible_now);
       
-      auto_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( veh ));
+      std::unique_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( veh ));
       muc->setFlags ( MoveUnitCommand::NoInterrupt );
       muc->setDestination( mv->movePos );
       ActionResult res = muc->execute( getContext () );
@@ -308,7 +308,7 @@ AI::AiResult AI::executeMoveAttack ( Vehicle* veh, TargetVector& tv )
        return result;
    }
 
-   auto_ptr<AttackCommand> va (new AttackCommand( veh ));
+   std::unique_ptr<AttackCommand> va (new AttackCommand( veh ));
    ActionResult res = va->searchTargets();
    if ( !res.successful() )
       displaymessage ( "AI :: executeMoveAttack \n error in attack step 2 with unit %d", 1, veh->networkid );
@@ -394,7 +394,7 @@ AI::AiResult AI::moveToSavePlace ( Vehicle* veh, int preferredHeight )
 
    AiResult result;
 
-   auto_ptr<MoveUnitCommand> muc( new MoveUnitCommand( veh ));
+   std::unique_ptr<MoveUnitCommand> muc( new MoveUnitCommand( veh ));
 
    ActionResult res = muc->searchFields( preferredHeight );
    if ( !res.successful() )
@@ -468,7 +468,7 @@ int AI::changeVehicleHeight ( Vehicle* veh, int preferredDirection )
          cvh = new DecreaseVehicleHeight ( mapDisplay, NULL );
          newheight = veh->height >> 1;
       }
-      auto_ptr<ChangeVehicleHeight> acvh ( cvh );
+      std::unique_ptr<ChangeVehicleHeight> acvh ( cvh );
 
       if ( newheight & veh->typ->height ) {
          if ( cvh->available ( veh ) ) {
@@ -842,7 +842,7 @@ AI::AiResult AI::tactics( void )
                            
                            
                            int nwid = a->networkid;
-                           auto_ptr<AttackCommand> va ( new AttackCommand ( a ));
+                           std::unique_ptr<AttackCommand> va ( new AttackCommand ( a ));
                            va->searchTargets();
                            
                            VehicleTypeEfficiencyCalculator vtec (*this, finalPositions[finalOrder[i]], enemy );

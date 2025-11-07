@@ -17,7 +17,7 @@
 
 void testAiService1() 
 {
-   auto_ptr<GameMap> game ( startMap("unittest-ai-refuel1.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-ai-refuel1.map"));
    
    Vehicle* veh = game->getField(2,10)->vehicle;
    
@@ -41,7 +41,7 @@ void testAiService1()
 
 void testAiService2() 
 {
-   auto_ptr<GameMap> game ( startMap("unittest-ai-refuel2.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-ai-refuel2.map"));
    
    Vehicle* veh = game->getField(4,6)->vehicle;
    

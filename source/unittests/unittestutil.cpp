@@ -20,7 +20,7 @@
 
 void move( Vehicle* veh, const MapCoordinate& dest )
 {
-   auto_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( veh ));
+   std::unique_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( veh ));
    muc->setDestination( dest );
    ActionResult res = muc->execute( createTestingContext( veh->getMap() ));
    if ( res.successful() )
@@ -31,7 +31,7 @@ void move( Vehicle* veh, const MapCoordinate& dest )
 
 void move( Vehicle* veh, const MapCoordinate3D& dest )
 {
-   auto_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( veh ));
+   std::unique_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( veh ));
    muc->setDestination( dest );
    ActionResult res = muc->execute( createTestingContext( veh->getMap() ));
    if ( res.successful() )
@@ -42,7 +42,7 @@ void move( Vehicle* veh, const MapCoordinate3D& dest )
 
 void attack( Vehicle* veh, const MapCoordinate& target )
 {
-   auto_ptr<AttackCommand> muc ( new AttackCommand( veh ));
+   std::unique_ptr<AttackCommand> muc ( new AttackCommand( veh ));
    muc->setTarget( target );
    ActionResult res = muc->execute( createTestingContext( veh->getMap() ));
    if ( res.successful() )

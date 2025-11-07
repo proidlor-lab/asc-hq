@@ -625,7 +625,7 @@ void tgiveunitawaydlg :: run ( const Context& context )
    } while ( status < 10 ); /* enddo */
 
    if ( status == 12 ) {
-      auto_ptr<TransferControlCommand> tcc ( new TransferControlCommand( fld->getContainer() ));
+      std::unique_ptr<TransferControlCommand> tcc ( new TransferControlCommand( fld->getContainer() ));
       tcc->setReceiver( receivers[markedplayer] );
       ActionResult res = tcc->execute( context );
       if ( res.successful() )

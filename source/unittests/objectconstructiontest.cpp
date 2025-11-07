@@ -19,7 +19,7 @@
 
 void testObjectConstruction1() 
 {
-   auto_ptr<GameMap> game ( startMap("unittest-objectconstruction.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-objectconstruction.map"));
    
    ObjectType* crystals = objectTypeRepository.getObject_byID( 2105 );
    assertOrThrow( crystals != NULL );
@@ -49,7 +49,7 @@ void testObjectConstruction1()
 
 void testObjectRemoval() 
 {
-   auto_ptr<GameMap> game ( startMap("unittest-objectremoval.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-objectremoval.map"));
    
    ObjectType* wood = objectTypeRepository.getObject_byID( 181 );
    assertOrThrow( wood != NULL );

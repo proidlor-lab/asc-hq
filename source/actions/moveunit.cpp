@@ -114,7 +114,7 @@ ActionResult MoveUnit::runAction( const Context& context )
    Vehicle* vehicle = getUnit();
    
    
-   auto_ptr<WindMovement> wind;
+   std::unique_ptr<WindMovement> wind;
 
    if ( (vehicle->typ->height & ( chtieffliegend | chfliegend | chhochfliegend )) && getMap()->weather.windSpeed ) {
       wind.reset( new WindMovement ( vehicle ) );

@@ -18,7 +18,7 @@
 
 void testView3() 
 {
-   auto_ptr<GameMap> game ( startMap("unittest-jammingdestroyview.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-jammingdestroyview.map"));
    
    Vehicle* ari = game->getField(5,2)->vehicle;
    
@@ -44,7 +44,7 @@ void testView3()
 
 void testView1() 
 {
-   auto_ptr<GameMap> game ( startMap("unittest-view1.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-view1.map"));
    
    Vehicle* radar = game->getField(0,4)->vehicle;
    
@@ -89,7 +89,7 @@ void testView1()
 
 void testView2() 
 {
-   auto_ptr<GameMap> game ( startMap("unittest-view2.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-view2.map"));
    
    Vehicle* spyplane = game->getField(5,2)->vehicle;
    

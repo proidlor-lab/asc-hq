@@ -1612,7 +1612,7 @@ void ChangeDiplomaticStatus :: setup ()
 void ChangeDiplomaticStatus :: execute( MapDisplayInterface* md )
 {
 #ifdef sgmain
-   auto_ptr<DiplomacyCommand> dc ( new DiplomacyCommand( gamemap->getPlayer(proposingPlayer) ));  
+   std::unique_ptr<DiplomacyCommand> dc ( new DiplomacyCommand( gamemap->getPlayer(proposingPlayer) ));  
    if ( proposal == Peace ) {
       dc->newstate( PEACE, gamemap->getPlayer(targetPlayer) );
    } else

@@ -24,8 +24,11 @@
  }; 
  
  template<class T> 
- struct MemorySum : public unary_function<T, void>
+ struct MemorySum
  {
+    using argument_type = T;
+    using result_type = void;
+    
     MemorySum() : size(0) {}
     void operator() (const T& x) { size += getMemoryFootprint(x); }
     void operator() (const T* x) { size += getMemoryFootprint(*x); }

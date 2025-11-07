@@ -17,7 +17,7 @@
 
 void testAiMovement1() 
 {
-   auto_ptr<GameMap> game ( startMap("unittest-ai-simpleattack.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-ai-simpleattack.map"));
    
    Vehicle* veh = game->getField(3,9)->vehicle;
    
@@ -33,7 +33,7 @@ void testAiMovement1()
 void testAiMovement2() 
 {
    
-   auto_ptr<GameMap> game ( startMap("unittest-ai-mam.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-ai-mam.map"));
    
    Vehicle* veh = game->getField(3,9)->vehicle;
    
@@ -52,7 +52,7 @@ void testAiMovement2()
 void testAiMovement3() 
 {
    
-   auto_ptr<GameMap> game ( startMap("unittest-ai-hemming.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-ai-hemming.map"));
    
    Vehicle* veh = game->getField(3,9)->vehicle;
    
@@ -74,7 +74,7 @@ void testAiMovement3()
 void testAiMovement4() 
 {
    
-   auto_ptr<GameMap> game ( startMap("unittest-ai-carrier.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-ai-carrier.map"));
    
    Vehicle* veh = game->getField(2,7)->vehicle;
    
@@ -92,7 +92,7 @@ void testAiMovement4()
 void testAiMovement5() 
 {
    
-   auto_ptr<GameMap> game ( startMap("unittest-ai-conquer.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-ai-conquer.map"));
    
    Vehicle* veh = game->getField(8,4)->vehicle;
    Building* bld = game->getField( 14,9 )->building;
@@ -117,7 +117,7 @@ void testAiMovement5()
 void testAiMovement6() 
 {
    
-   auto_ptr<GameMap> game ( startMap("unittest-ai-conquer2.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-ai-conquer2.map"));
    
    Vehicle* veh = game->getField(3,5)->vehicle;
    Building* bld = game->getField(4,8)->building;
@@ -137,7 +137,7 @@ void testAiMovement6()
     of tte building are more worth than the lost unit*/
 void testAiMovement7() 
 {
-   auto_ptr<GameMap> game ( startMap("unittest-ai-conquer3.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-ai-conquer3.map"));
    
    Vehicle* veh = game->getField(3,5)->vehicle;
    Building* bld = game->getField(4,8)->building;
@@ -155,7 +155,7 @@ void testAiMovement7()
 /** the helicopter should attack from a height where the tank can't retaliate*/
 void testAiHeliMovement1()
 {
-   auto_ptr<GameMap> game ( startMap("unittest-ai-heli.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-ai-heli.map"));
    
    Vehicle* heli = game->getField(7,10)->vehicle;
    

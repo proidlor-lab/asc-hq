@@ -963,7 +963,7 @@ ASCGUI_Window::WidgetParameters Panel::getDefaultWidgetParams()
        tnfilestream s ( "default.ascgui", tnstream::reading );
 
        TextFormatParser tfp ( &s );
-       auto_ptr<TextPropertyGroup> tpg ( tfp.run());
+       std::unique_ptr<TextPropertyGroup> tpg ( tfp.run());
 
        PropertyReadingContainer pc ( "panel", tpg.get() );
 

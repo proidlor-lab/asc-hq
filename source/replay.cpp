@@ -952,7 +952,7 @@ void trunreplay :: execnextreplaymove ( void )
                            ReplayMapDisplay rmd ( &getDefaultMapDisplay() );
                            
                            
-                           auto_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( eht ));
+                           std::unique_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( eht ));
                            muc->setDestination( MapCoordinate(x2,y2) );
 
                            int t = ticker;
@@ -994,7 +994,7 @@ void trunreplay :: execnextreplaymove ( void )
 
                         Vehicle* eht = actmap->getUnit ( x1, y1, nwid );
                         if ( eht ) {
-                           auto_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( eht ));
+                           std::unique_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( eht ));
                            
                            int t = ticker;
                            wait( MapCoordinate(x1,y1), MapCoordinate(x2,y2), t );
@@ -1166,7 +1166,7 @@ void trunreplay :: execnextreplaymove ( void )
                         if ( eht ) {
                            ReplayMapDisplay rmd( &getDefaultMapDisplay() );
                            
-                           auto_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( eht ));
+                           std::unique_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( eht ));
                            muc->setDestination( MapCoordinate3D( x2,y2, newheight ));
                            
                            wait( MapCoordinate(x1,y1), MapCoordinate(x2,y2) );
@@ -1370,7 +1370,7 @@ void trunreplay :: execnextreplaymove ( void )
 
                                if ( bld && fld && networkid && actmap->getUnit( networkid ) ) {
                                   displayActionCursor ( x, y );
-                                  auto_ptr<ConstructBuildingCommand> cbc ( new ConstructBuildingCommand( actmap->getUnit( networkid ) ));
+                                  std::unique_ptr<ConstructBuildingCommand> cbc ( new ConstructBuildingCommand( actmap->getUnit( networkid ) ));
                                   cbc->setBuildingType( bld );
                                   cbc->setTargetPosition( MapCoordinate(x,y));
                                   ActionResult res = cbc->execute( createReplayContext());
@@ -1542,7 +1542,7 @@ void trunreplay :: execnextreplaymove ( void )
                                  readnextaction();
                                  MapField* fld = getfield(x,y);
                                  if ( (!fld->vehicle || fld->vehicle->networkid != nwid) && fld->building ) {
-                                    auto_ptr<RecycleUnitCommand> ruc ( new RecycleUnitCommand( fld->building ));
+                                    std::unique_ptr<RecycleUnitCommand> ruc ( new RecycleUnitCommand( fld->building ));
                                     ruc->setUnit( actmap->getUnit( nwid ) );
                                     ActionResult res = ruc->execute( createReplayContext());
                                     if ( res.successful() )
@@ -1565,7 +1565,7 @@ void trunreplay :: execnextreplaymove ( void )
                                  Vehicle* eht = actmap->getUnit ( x, y, nwid );
                                  Building* bld = actmap->getField ( x, y )->building;
                                  if ( eht && bld ) {
-                                    auto_ptr<TrainUnitCommand> tuc ( new TrainUnitCommand( bld ));
+                                    std::unique_ptr<TrainUnitCommand> tuc ( new TrainUnitCommand( bld ));
                                     tuc->setUnit( eht );
                                     ActionResult res = tuc->execute( createReplayContext());
                                     if ( res.successful())
@@ -1831,7 +1831,7 @@ void trunreplay :: execnextreplaymove ( void )
                                  VehicleType* veh = actmap->getvehicletype_byid ( vehicleid );
                                  if ( bld && veh ) {
                                     if ( veh->techDependency.available( actmap->player[ bld->getOwner()].research )) {
-                                       auto_ptr<BuildProductionLineCommand> bplc ( new BuildProductionLineCommand( bld ));
+                                       std::unique_ptr<BuildProductionLineCommand> bplc ( new BuildProductionLineCommand( bld ));
                                        bplc->setProduction( veh );
                                        ActionResult res = bplc->execute( createReplayContext() );
                                        if ( res.successful() )
@@ -1854,7 +1854,7 @@ void trunreplay :: execnextreplaymove ( void )
                                  Building* bld = dynamic_cast<Building*>( actmap->getContainer(building));
                                  VehicleType* veh = actmap->getvehicletype_byid ( vehicleid );
                                  if ( bld && veh ) {
-                                    auto_ptr<RemoveProductionLineCommand> rplc ( new RemoveProductionLineCommand( bld ));
+                                    std::unique_ptr<RemoveProductionLineCommand> rplc ( new RemoveProductionLineCommand( bld ));
                                     rplc->setRemoval( veh );
                                     ActionResult res = rplc->execute( createReplayContext());
                                     if ( res.successful()) 
@@ -1979,7 +1979,7 @@ void trunreplay :: execnextreplaymove ( void )
             Vehicle* veh = actmap->getUnit(nwid);
             if ( veh ) {
                if ( JumpDriveCommand::available( veh ).ready()) {
-                  auto_ptr<JumpDriveCommand> jd( new JumpDriveCommand(veh) );
+                  std::unique_ptr<JumpDriveCommand> jd( new JumpDriveCommand(veh) );
                   displayActionCursor ( veh->getPosition().x , veh->getPosition().x, x, y, 0 );
                   jd->setDestination( MapCoordinate(x,y));
                   ActionResult res = jd->execute( createReplayContext() );
@@ -2004,7 +2004,7 @@ void trunreplay :: execnextreplaymove ( void )
                                  Building* bld = dynamic_cast<Building*>( actmap->getContainer(building));
                                  Vehicle* veh = actmap->getUnit ( vehicleid );
                                  if ( bld && veh ) {
-                                    auto_ptr<RecycleUnitCommand> ruc ( new RecycleUnitCommand( bld ));
+                                    std::unique_ptr<RecycleUnitCommand> ruc ( new RecycleUnitCommand( bld ));
                                     ruc->setUnit( veh  );
                                     ActionResult res = ruc->execute( createReplayContext() );
                                     if ( res.successful() )
@@ -2046,7 +2046,7 @@ void trunreplay :: execnextreplaymove ( void )
              readnextaction();
              ContainerBase* c = actmap->getContainer( nwid );
              if ( DestructUnitCommand::avail( c )) {
-                auto_ptr<DestructUnitCommand> duc ( new DestructUnitCommand( c ));
+                std::unique_ptr<DestructUnitCommand> duc ( new DestructUnitCommand( c ));
                 ActionResult res = duc->execute( createReplayContext() );
                 if ( !res.successful() )
                    error("severe replay inconsistency:\nno container for selfdestruct command !");
@@ -2061,7 +2061,7 @@ void trunreplay :: execnextreplaymove ( void )
                stream->readInt();
                readnextaction();
                
-               auto_ptr<CancelResearchCommand> crc ( new CancelResearchCommand( actmap ));
+               std::unique_ptr<CancelResearchCommand> crc ( new CancelResearchCommand( actmap ));
                crc->setPlayer( actmap->player[actmap->actplayer] );
                ActionResult res = crc->execute( createReplayContext() );
                if ( res.successful() )
@@ -2080,7 +2080,7 @@ void trunreplay :: execnextreplaymove ( void )
             
             MemoryStream memstream( &buffer, tnstream::reading );
             
-            auto_ptr<GameAction> readaction ( GameAction::readFromStream( memstream, actmap ));
+            std::unique_ptr<GameAction> readaction ( GameAction::readFromStream( memstream, actmap ));
             
             Command* a = dynamic_cast<Command*> ( readaction.get() );
             

@@ -69,7 +69,7 @@ ActionResult PowerGenerationSwitchCommand::go ( const Context& context )
    if ( !avail( unit, newState ))
       return ActionResult( 22300 );
    
-   auto_ptr<ChangeUnitProperty> propChange ( new ChangeUnitProperty( getUnit(), ChangeUnitProperty::PowerGeneration, newState ));
+   std::unique_ptr<ChangeUnitProperty> propChange ( new ChangeUnitProperty( getUnit(), ChangeUnitProperty::PowerGeneration, newState ));
    ActionResult res = propChange->execute( context );
    
    if ( res.successful() ) 

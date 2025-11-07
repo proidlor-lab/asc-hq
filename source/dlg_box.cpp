@@ -2692,7 +2692,7 @@ void tviewtext::setparams ( int xx1, int yy1, int xx2, int yy2, const char* ttxt
 
 void tviewtext::displaytext ( void )
 {
-  auto_ptr<collategraphicoperations> cgo;
+  std::unique_ptr<collategraphicoperations> cgo;
   if ( tvt_dispactive )
     cgo.reset( new collategraphicoperations ( tvt_x1, tvt_y1, tvt_x2, tvt_y2 ) );
 

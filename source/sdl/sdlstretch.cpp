@@ -37,7 +37,7 @@ inline void StretchTemplateLUT(int x1, int x2, int y1, int y2, int yr, int yw, S
 {
         int dx,dy,e,d,dx2;
 
-        register Uint32 p;
+        Uint32 p;
         
         dx=(x2-x1);
         dy=(y2-y1);
@@ -103,9 +103,9 @@ inline void RectStretchTemplate(SDL_Surface* src_surface, ST src, int xs1, int y
         int src_bpp = src_surface->format->BytesPerPixel;
         int dst_bpp = dst_surface->format->BytesPerPixel;
 
-        register long src_pixels = ((long)src + ys1*src_pitch + xs1 * src_bpp);
-        register long dst_pixels = ((long)dst + yd1*dst_pitch + xd1 * dst_bpp);
-        register Uint32* lut = lutVOI;
+        long src_pixels = ((long)src + ys1*src_pitch + xs1 * src_bpp);
+        long dst_pixels = ((long)dst + yd1*dst_pitch + xd1 * dst_bpp);
+        Uint32* lut = lutVOI;
 
         if(lut == NULL){                                        // Stretch without lookup table
                 for(d=0; (d<=dx) && (yd1<dst_surface->h); d++)

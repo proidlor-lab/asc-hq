@@ -18,7 +18,7 @@
 
 void testJumpdrive() 
 {
-   auto_ptr<GameMap> game ( startMap("testjump.map"));
+   std::unique_ptr<GameMap> game ( startMap("testjump.map"));
    
    Vehicle* veh = game->getField(5,14)->vehicle;
    assertOrThrow( veh != NULL );

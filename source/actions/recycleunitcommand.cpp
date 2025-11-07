@@ -94,7 +94,7 @@ ActionResult RecycleUnitCommand::go ( const Context& context )
    if ( !avail( getContainer(), unit ))
       return ActionResult( 22101 );
    
-   auto_ptr<ServiceCommand> service ( new ServiceCommand( getContainer()));
+   std::unique_ptr<ServiceCommand> service ( new ServiceCommand( getContainer()));
    
    const ServiceTargetSearcher::Targets& targets = service->getDestinations();
    if ( find( targets.begin(), targets.end(), unit ) != targets.end() ) {

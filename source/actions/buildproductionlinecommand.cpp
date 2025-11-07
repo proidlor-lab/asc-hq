@@ -115,7 +115,7 @@ ActionResult BuildProductionLineCommand::go ( const Context& context )
    if ( avail < needed  )
       return ActionResult(22901);
    
-   auto_ptr<ConsumeResource> cr ( new ConsumeResource( getContainer(), needed ));
+   std::unique_ptr<ConsumeResource> cr ( new ConsumeResource( getContainer(), needed ));
    ActionResult res = cr->execute(context);
    
    if ( !res.successful() ) {

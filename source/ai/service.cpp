@@ -561,7 +561,7 @@ void AI :: runServiceUnit ( Vehicle* supplyUnit )
    Vehicle* targetUnit = getMap()->getUnit(target);
    if ( destinationReached && targetUnit ) {
       
-      auto_ptr<ServiceCommand> sc ( new ServiceCommand( supplyUnit ));
+      std::unique_ptr<ServiceCommand> sc ( new ServiceCommand( supplyUnit ));
       sc->setDestination( targetUnit );
       sc->getTransferHandler().fillDest();
       sc->saveTransfers();
@@ -668,7 +668,7 @@ AI::AiResult AI :: executeServices ( )
            if ( veh->getPosition3D() == veh->aiparam[ getPlayerNum() ]->dest ) {
               MapField* fld = getMap()->getField ( veh->xpos, veh->ypos );
               if ( fld->building ) {
-                 auto_ptr<ServiceCommand> sc ( new ServiceCommand( fld->building ));
+                 std::unique_ptr<ServiceCommand> sc ( new ServiceCommand( fld->building ));
                  sc->setDestination( veh );
                  sc->getTransferHandler().fillDest();
                  sc->saveTransfers();
@@ -681,7 +681,7 @@ AI::AiResult AI :: executeServices ( )
                  
                  if ( veh->damage ) {
                     if( RepairUnitCommand::avail( fld->building )) {
-                       auto_ptr<RepairUnitCommand> ruc ( new RepairUnitCommand( fld->building ));
+                       std::unique_ptr<RepairUnitCommand> ruc ( new RepairUnitCommand( fld->building ));
                        if ( ruc->validTarget( veh )) {
                           ruc->setTarget( veh );
                           ActionResult res = ruc->execute( getContext() );

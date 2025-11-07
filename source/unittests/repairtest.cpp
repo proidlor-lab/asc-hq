@@ -20,7 +20,7 @@
  * To avoid double deallocation, we must intercept the event and release the auto_ptr
  */
 class MapHolder : public sigc::trackable {
-		auto_ptr<GameMap> game;
+		std::unique_ptr<GameMap> game;
 	public:
 		MapHolder( GameMap* gamemap ) : game( gamemap ){
 			   GameMap::sigMapDeletion.connect( sigc::mem_fun( *this, &MapHolder::reset ));
@@ -79,7 +79,7 @@ void testManualRepair()
    assertOrThrow ( aircraft->damage == 50 );
 
    assertOrThrow( RepairUnitCommand::avail(carrier) );
-   auto_ptr<RepairUnitCommand> ruc ( new RepairUnitCommand( carrier ));
+   std::unique_ptr<RepairUnitCommand> ruc ( new RepairUnitCommand( carrier ));
 
    assertOrThrow( ruc->getInternalTargets().size() == 1 );
    assertOrThrow( ruc->getInternalTargets()[0] == aircraft );

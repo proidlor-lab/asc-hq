@@ -19,11 +19,11 @@ namespace yasli {
     
     // 20.4.1.2, allocator globals
     template <class T, class U>
-    bool operator==(const allocator<T>&, const allocator<U>&) throw()
+    bool operator==(const allocator<T>&, const allocator<U>&) noexcept
     { return true; }
 
     template <class T, class U>
-    bool operator!=(const allocator<T>&, const allocator<U>&) throw()
+    bool operator!=(const allocator<T>&, const allocator<U>&) noexcept
     { return false; }
     
     // 20.4.2, raw storage iterator:
@@ -76,10 +76,10 @@ namespace yasli {
         typedef T                      value_type;
         
         template <class U> struct rebind { typedef allocator<U> other; };
-        allocator() throw() {}
-        allocator(const allocator&) throw() {}
-        template <class U> allocator(const allocator<U>&) throw() {}
-        ~allocator() throw() {}
+        allocator() noexcept {}
+        allocator(const allocator&) noexcept {}
+        template <class U> allocator(const allocator<U>&) noexcept {}
+        ~allocator() noexcept {}
         pointer address(reference x) const { return &x; }
         const_pointer address(const_reference x) { return &x; }
         pointer allocate(size_type n, allocator<void>::const_pointer = 0)
@@ -90,7 +90,7 @@ namespace yasli {
         {
             ::operator delete(p);
         }
-        size_type max_size() const throw() 
+        size_type max_size() const noexcept 
         {
             return size_type(-1);
         }
@@ -119,10 +119,10 @@ namespace yasli_nstd
         typedef T            value_type;
         
         template <class U> struct rebind { typedef mallocator<U> other; };
-        mallocator() throw() {}
-        mallocator(const mallocator&) throw() {}
-        template <class U> mallocator(const mallocator<U>&) throw() {}
-        ~mallocator() throw() {}
+        mallocator() noexcept {}
+        mallocator(const mallocator&) noexcept {}
+        template <class U> mallocator(const mallocator<U>&) noexcept {}
+        ~mallocator() noexcept {}
         pointer address(reference x) const { return &x; }
         const_pointer address(const_reference x) { return &x; }
         pointer allocate(size_type n, yasli::allocator<void>::const_pointer = 0)
@@ -133,7 +133,7 @@ namespace yasli_nstd
         {
             free(p);
         }
-        size_type max_size() const throw() 
+        size_type max_size() const noexcept 
         {
             return size_type(-1);
         }

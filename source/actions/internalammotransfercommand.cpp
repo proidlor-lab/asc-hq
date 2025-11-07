@@ -110,7 +110,7 @@ ActionResult InternalAmmoTransferCommand::go ( const Context& context )
    
    for ( int w = 0; w < unit->typ->weapons.count; ++w ) {
       if ( unit->ammo[w] != ammoAmount[w] ) {
-         auto_ptr<ConsumeAmmo> cr ( new ConsumeAmmo( unit, unit->typ->weapons.weapon[w].getScalarWeaponType(), w, unit->ammo[w] - ammoAmount[w] ));
+         std::unique_ptr<ConsumeAmmo> cr ( new ConsumeAmmo( unit, unit->typ->weapons.weapon[w].getScalarWeaponType(), w, unit->ammo[w] - ammoAmount[w] ));
          ActionResult res = cr->execute( context );
          if ( !res.successful() )
             return res;

@@ -79,7 +79,7 @@ GameActionID VehicleAttackAction::getID() const
 
 ActionResult VehicleAttackAction::runAction( const Context& context )
 {
-   auto_ptr<tfight> battle;
+   std::unique_ptr<tfight> battle;
       
    MapField* fld = getMap()->getField( target );
    

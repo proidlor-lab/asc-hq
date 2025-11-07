@@ -99,7 +99,7 @@
 
     Typcial usage pattern of a command is:
     \code
-      auto_ptr<DoSomethingCommand> command ( new DoSomethingCommand( subject ));
+      std::unique_ptr<DoSomethingCommand> command ( new DoSomethingCommand( subject ));
       command->prepareCommand( whatEverInput );
       ActionResult result = command->execute( context );
       if ( result.successful() )

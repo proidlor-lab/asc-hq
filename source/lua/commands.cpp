@@ -81,7 +81,7 @@ ActionResult unitAttack( GameMap* actmap, int veh, const MapCoordinate& target, 
    if ( !AttackCommand::avail( unit ))   
       return ActionResult(202);
    
-   auto_ptr<AttackCommand> ac( new AttackCommand(unit) );
+   std::unique_ptr<AttackCommand> ac( new AttackCommand(unit) );
    ac->setTarget( target, weapon);
    ActionResult res = ac->execute( createContext( actmap ) );
    if ( res.successful() ) 
@@ -103,7 +103,7 @@ ActionResult unitMovement( GameMap* actmap, int unitID, const MapCoordinate& des
    if ( !MoveUnitCommand::avail( unit ))   
       return ActionResult(23411);
    
-   auto_ptr<MoveUnitCommand> ac( new MoveUnitCommand(unit) );
+   std::unique_ptr<MoveUnitCommand> ac( new MoveUnitCommand(unit) );
    if ( destinationHeigth < 0 )
       ac->setDestination( destination );
    else
@@ -132,7 +132,7 @@ ActionResult putMineFunc( GameMap* actmap, int veh, const MapCoordinate& destina
    if ( !PutMineCommand::avail( unit ))   
       return ActionResult(23411);
    
-   auto_ptr<PutMineCommand> ac( new PutMineCommand(unit) );
+   std::unique_ptr<PutMineCommand> ac( new PutMineCommand(unit) );
    ac->setCreationTarget( destination, (MineTypes)mineType );
    ActionResult res = ac->execute( createContext( actmap ) );
    if ( res.successful() ) 
@@ -153,7 +153,7 @@ ActionResult removeMineFunc( GameMap* actmap, int veh, const MapCoordinate& dest
    if ( !PutMineCommand::avail( unit ))   
       return ActionResult(23411);
    
-   auto_ptr<PutMineCommand> ac( new PutMineCommand(unit) );
+   std::unique_ptr<PutMineCommand> ac( new PutMineCommand(unit) );
    ac->setRemovalTarget( destination );
    ActionResult res = ac->execute( createContext( actmap ) );
    if ( res.successful() ) 
@@ -176,7 +176,7 @@ ActionResult unitPutObject( GameMap* actmap, int veh, const MapCoordinate& desti
    if ( !PutObjectCommand::avail( unit ))   
       return ActionResult(23411);
    
-   auto_ptr<PutObjectCommand> ac( new PutObjectCommand(unit) );
+   std::unique_ptr<PutObjectCommand> ac( new PutObjectCommand(unit) );
    ac->setTarget( destination, objectID );
    ActionResult res = ac->execute( createContext( actmap ) );
    if ( res.successful() ) 
@@ -203,7 +203,7 @@ ActionResult unitDestructBuilding( GameMap* actmap, int veh, const MapCoordinate
    if ( !DestructBuildingCommand::avail( unit ))   
       return ActionResult(23411);
    
-   auto_ptr<DestructBuildingCommand> ac( new DestructBuildingCommand(unit) );
+   std::unique_ptr<DestructBuildingCommand> ac( new DestructBuildingCommand(unit) );
    ac->setTargetPosition( destination );
    ActionResult res = ac->execute( createContext( actmap ) );
    if ( res.successful() ) 
@@ -228,7 +228,7 @@ ActionResult transferControl( GameMap* actmap, int containerID, int newOwner )
       return ActionResult(22801);
    
    
-   auto_ptr<TransferControlCommand> ac( new TransferControlCommand(c) );
+   std::unique_ptr<TransferControlCommand> ac( new TransferControlCommand(c) );
    ac->setReceiver( &actmap->getPlayer( newOwner) );
    ActionResult res = ac->execute( createContext( actmap ) );
    if ( res.successful() ) 
@@ -254,7 +254,7 @@ ActionResult trainUnit( GameMap* actmap, int containerID, int unitID )
       return ActionResult(23411);
    
    
-   auto_ptr<TrainUnitCommand> ac( new TrainUnitCommand(c) );
+   std::unique_ptr<TrainUnitCommand> ac( new TrainUnitCommand(c) );
    ac->setUnit( v );
    ActionResult res = ac->execute( createContext( actmap ) );
    if ( res.successful() ) 
@@ -280,7 +280,7 @@ ActionResult constructUnit( GameMap* actmap, int containerID, const MapCoordinat
       return ActionResult(23411);
    
    
-   auto_ptr<ConstructUnitCommand> ac( new ConstructUnitCommand(c) );
+   std::unique_ptr<ConstructUnitCommand> ac( new ConstructUnitCommand(c) );
    ac->setVehicleType( v );
    
    if ( position.valid() ) {
@@ -318,7 +318,7 @@ ActionResult constructBuilding( GameMap* actmap, int unitID, const MapCoordinate
       return ActionResult( 21701 );
    
   
-   auto_ptr<ConstructBuildingCommand> ac( new ConstructBuildingCommand(unit) );
+   std::unique_ptr<ConstructBuildingCommand> ac( new ConstructBuildingCommand(unit) );
    ac->setBuildingType( v );
    ac->setTargetPosition( position );
 
@@ -339,7 +339,7 @@ ActionResult serviceCommand( GameMap* actmap, int providingContainerID, int rece
    if ( !pro || !rec )
       return ActionResult(23410);
    
-   auto_ptr<ServiceCommand> ac( new ServiceCommand(pro) );
+   std::unique_ptr<ServiceCommand> ac( new ServiceCommand(pro) );
    ac->setDestination( rec );
    
    TransferHandler::Transfers& transfers = ac->getTransferHandler().getTransfers();
@@ -377,7 +377,7 @@ ActionResult repairUnit( GameMap* actmap, int repairerID, int damagedUnitID )
       return ActionResult(23411);
    
    
-   auto_ptr<RepairUnitCommand> ac( new RepairUnitCommand(c) );
+   std::unique_ptr<RepairUnitCommand> ac( new RepairUnitCommand(c) );
    ac->setTarget( v );
    ActionResult res = ac->execute( createContext( actmap ) );
    if ( res.successful() ) 
@@ -398,7 +398,7 @@ ActionResult unitReactionFireEnable( GameMap* actmap, int unitID, bool enabled )
    if ( !ReactionFireSwitchCommand::avail( unit, enabled ))   
       return ActionResult(23411);
    
-   auto_ptr<ReactionFireSwitchCommand> ac( new ReactionFireSwitchCommand(unit) );
+   std::unique_ptr<ReactionFireSwitchCommand> ac( new ReactionFireSwitchCommand(unit) );
    ac->setNewState( enabled );
    ActionResult res = ac->execute( createContext( actmap ) );
    if ( res.successful() ) 
@@ -419,7 +419,7 @@ ActionResult unitPowerGenerationEnable( GameMap* actmap, int unitID, int enabled
    if ( !PowerGenerationSwitchCommand::avail( unit, enabled ))   
       return ActionResult(23411);
 
-   auto_ptr<PowerGenerationSwitchCommand> ac( new PowerGenerationSwitchCommand(unit) );
+   std::unique_ptr<PowerGenerationSwitchCommand> ac( new PowerGenerationSwitchCommand(unit) );
    ac->setNewState( enabled );
    ActionResult res = ac->execute( createContext( actmap ) );
    if ( res.successful() ) 
@@ -441,7 +441,7 @@ ActionResult unitJump( GameMap* actmap, int veh, const MapCoordinate& destinatio
    if ( !aa.ready())   
       return ActionResult(23411, aa.getMessage() );
    
-   auto_ptr<JumpDriveCommand> ac( new JumpDriveCommand(unit) );
+   std::unique_ptr<JumpDriveCommand> ac( new JumpDriveCommand(unit) );
    ac->setDestination( destination );
    ActionResult res = ac->execute( createContext( actmap ) );
    if ( res.successful() ) 
@@ -462,7 +462,7 @@ ActionResult selfDestruct( GameMap* actmap, int containerID )
    if ( !DestructUnitCommand::avail( c ))   
       return ActionResult(23411);
    
-   auto_ptr<DestructUnitCommand> ac( new DestructUnitCommand(c) );
+   std::unique_ptr<DestructUnitCommand> ac( new DestructUnitCommand(c) );
    ActionResult res = ac->execute( createContext( actmap ) );
    if ( res.successful() ) 
       ac.release();
@@ -487,7 +487,7 @@ ActionResult recycleUnit( GameMap* actmap, int containerID, int unitID )
       return ActionResult(23411);
    
    
-   auto_ptr<RecycleUnitCommand> ac( new RecycleUnitCommand(c) );
+   std::unique_ptr<RecycleUnitCommand> ac( new RecycleUnitCommand(c) );
    ac->setUnit( v );
    ActionResult res = ac->execute( createContext( actmap ) );
    if ( res.successful() ) 
@@ -513,7 +513,7 @@ ActionResult buildProductionLine( GameMap* actmap, int containerID, int vehicleT
       return ActionResult(23411);
    
    
-   auto_ptr<BuildProductionLineCommand> ac( new BuildProductionLineCommand(c) );
+   std::unique_ptr<BuildProductionLineCommand> ac( new BuildProductionLineCommand(c) );
    ac->setProduction( v );
    ActionResult res = ac->execute( createContext( actmap ) );
    if ( res.successful() ) 
@@ -538,7 +538,7 @@ ActionResult removeProductionLine( GameMap* actmap, int containerID, int vehicle
    if ( !RemoveProductionLineCommand::avail( c ))   
       return ActionResult(23411);
    
-   auto_ptr<RemoveProductionLineCommand> ac( new RemoveProductionLineCommand(c) );
+   std::unique_ptr<RemoveProductionLineCommand> ac( new RemoveProductionLineCommand(c) );
    ac->setRemoval( v );
    ActionResult res = ac->execute( createContext( actmap ) );
    if ( res.successful() ) 
@@ -563,7 +563,7 @@ ActionResult repairBuilding( GameMap* actmap, int buildingID )
    if ( !RepairBuildingCommand::avail( b ))   
       return ActionResult(23411);
    
-   auto_ptr<RepairBuildingCommand> ac( new RepairBuildingCommand(b) );
+   std::unique_ptr<RepairBuildingCommand> ac( new RepairBuildingCommand(b) );
    ActionResult res = ac->execute( createContext( actmap ) );
    if ( res.successful() ) 
       ac.release();
@@ -583,7 +583,7 @@ ActionResult setResourceProcessingRate( GameMap* actmap, int containerID, int am
    if ( !SetResourceProcessingRateCommand::avail( c ))   
       return ActionResult(23411);
    
-   auto_ptr<SetResourceProcessingRateCommand> ac( new SetResourceProcessingRateCommand(c, amount ) );
+   std::unique_ptr<SetResourceProcessingRateCommand> ac( new SetResourceProcessingRateCommand(c, amount ) );
    ActionResult res = ac->execute( createContext( actmap ) );
    if ( res.successful() ) 
       ac.release();
@@ -600,7 +600,7 @@ ActionResult cargoUnitMove( GameMap* actmap, int unitID, int targetContainerID )
    if ( !unit )
       return ActionResult(120);
    
-   auto_ptr<CargoMoveCommand> ac( new CargoMoveCommand(unit) );
+   std::unique_ptr<CargoMoveCommand> ac( new CargoMoveCommand(unit) );
    
    Vehicle* target = NULL;
    if ( targetContainerID != -1 ) {
@@ -641,7 +641,7 @@ ActionResult setDiplomacy( GameMap* actmap, int actingPlayer, int towardsPlayer,
    
    
    
-   auto_ptr<DiplomacyCommand> ac( new DiplomacyCommand(actmap->getPlayer(actingPlayer)) );
+   std::unique_ptr<DiplomacyCommand> ac( new DiplomacyCommand(actmap->getPlayer(actingPlayer)) );
    if ( sneak )
       ac->sneakAttack( actmap->getPlayer(towardsPlayer) );
    else {
@@ -666,7 +666,7 @@ ActionResult cancelResearch( GameMap* actmap, int actingPlayer )
    if ( actingPlayer < 0 || actingPlayer >= actmap->getPlayerCount() )
       return ActionResult( 23100 );
    
-   auto_ptr<CancelResearchCommand> ac( new CancelResearchCommand( actmap ) );
+   std::unique_ptr<CancelResearchCommand> ac( new CancelResearchCommand( actmap ) );
    ac->setPlayer( actmap->getPlayer( actingPlayer ));
    ActionResult res = ac->execute( createContext( actmap ) );
    if ( res.successful() ) 
@@ -693,7 +693,7 @@ ActionResult setResearchGoal( GameMap* actmap, int actingPlayer, int techID )
    if ( !t )
       return ActionResult( 23205 );
    
-   auto_ptr<DirectResearchCommand> ac( new DirectResearchCommand( p ) );
+   std::unique_ptr<DirectResearchCommand> ac( new DirectResearchCommand( p ) );
    ac->setTechnology( t );
    ActionResult res = ac->execute( createContext( actmap ) );
    if ( res.successful() ) 
@@ -752,7 +752,7 @@ ActionResult renameContainer( GameMap* actmap, int unitID, const ASCString& publ
       return ActionResult(23410);
    
    
-   auto_ptr<RenameContainerCommand> rcc ( new RenameContainerCommand(v) );
+   std::unique_ptr<RenameContainerCommand> rcc ( new RenameContainerCommand(v) );
    rcc->setName( publicName, privateName );
    ActionResult res = rcc->execute( createContext( actmap ) );
    if ( res.successful() ) 

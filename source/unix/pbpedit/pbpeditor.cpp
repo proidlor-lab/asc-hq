@@ -35,7 +35,7 @@ void         k_loadmap(void)
       if ( !mp )
          return;
          
-      auto_ptr<GameMap> oldMap ( actmap );
+      std::unique_ptr<GameMap> oldMap ( actmap );
       actmap =  mp;
 
       Password pwd;

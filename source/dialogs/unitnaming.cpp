@@ -15,7 +15,7 @@
 bool UnitNaming::ok()
 {
    if ( publicName->GetText() != unit->name || privateName->GetText() != unit->privateName ) {
-      auto_ptr<RenameContainerCommand> rcc ( new RenameContainerCommand( unit ));
+      std::unique_ptr<RenameContainerCommand> rcc ( new RenameContainerCommand( unit ));
       rcc->setName( publicName->GetText(), privateName->GetText() );
       ActionResult res = rcc->execute( createContext( unit->getMap() ));
       if ( res.successful() ) 

@@ -110,25 +110,25 @@ ActionResult TrainUnitCommand::go ( const Context& context )
       newexp_d = maxexp;
    
    if ( newexp_o >= unit->getExperience_offensive() ) {
-      auto_ptr<ChangeUnitProperty> train ( new ChangeUnitProperty( unit, ChangeUnitProperty::ExperienceOffensive, newexp_o ));
+      std::unique_ptr<ChangeUnitProperty> train ( new ChangeUnitProperty( unit, ChangeUnitProperty::ExperienceOffensive, newexp_o ));
       ActionResult res = train->execute( context );
       if ( res.successful() )
          train.release();
    }
          
    if ( newexp_d >= unit->getExperience_defensive() ) {
-      auto_ptr<ChangeUnitProperty> train ( new ChangeUnitProperty( unit, ChangeUnitProperty::ExperienceDefensive, newexp_d ));
+      std::unique_ptr<ChangeUnitProperty> train ( new ChangeUnitProperty( unit, ChangeUnitProperty::ExperienceDefensive, newexp_d ));
       ActionResult res = train->execute( context );
       if ( res.successful() )
          train.release();
    }
    
-   auto_ptr<ChangeUnitProperty> train2 ( new ChangeUnitProperty( unit, ChangeUnitProperty::AttackedFlag, 1 ));
+   std::unique_ptr<ChangeUnitProperty> train2 ( new ChangeUnitProperty( unit, ChangeUnitProperty::AttackedFlag, 1 ));
    ActionResult res = train2->execute( context );
    if ( res.successful() )
       train2.release();
    
-   auto_ptr<ChangeUnitProperty> move ( new ChangeUnitProperty( unit, ChangeUnitProperty::Movement, 0 ));
+   std::unique_ptr<ChangeUnitProperty> move ( new ChangeUnitProperty( unit, ChangeUnitProperty::Movement, 0 ));
    res = move->execute( context );
    if ( res.successful() )
       move.release();
@@ -136,7 +136,7 @@ ActionResult TrainUnitCommand::go ( const Context& context )
    
    for (int i = 0; i < unit->typ->weapons.count; i++ ) {
       if ( unit->typ->weapons.weapon[i].shootable() && (unit->typ->weapons.weapon[i].count > 0 )) {
-         auto_ptr<ConsumeAmmo> consumer ( new ConsumeAmmo( unit, unit->typ->weapons.weapon[i].getScalarWeaponType(), i, 1 ));
+         std::unique_ptr<ConsumeAmmo> consumer ( new ConsumeAmmo( unit, unit->typ->weapons.weapon[i].getScalarWeaponType(), i, 1 ));
          res = consumer->execute( context );
          if ( res.successful() )
             consumer.release();

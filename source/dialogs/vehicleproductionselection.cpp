@@ -124,7 +124,7 @@ AddProductionLine_SelectionItemFactory::AddProductionLine_SelectionItemFactory( 
 
 void AddProductionLine_SelectionItemFactory::vehicleTypeSelected( const VehicleType* type, bool mouse )
 {
-   auto_ptr<BuildProductionLineCommand> bplc ( new BuildProductionLineCommand(plant ));
+   std::unique_ptr<BuildProductionLineCommand> bplc ( new BuildProductionLineCommand(plant ));
    bplc->setProduction( type );
    ActionResult res = bplc->execute ( createContext( plant->getMap() ));
    if ( res.successful() )
@@ -281,7 +281,7 @@ bool VehicleProduction_SelectionWindow::addProductionLine()
 bool VehicleProduction_SelectionWindow::removeProductionLine()
 {
    if ( selected && choice_dlg("do you really want to remove this production line ?","~y~es","~n~o") == 1) {
-      auto_ptr<RemoveProductionLineCommand> rplc ( new RemoveProductionLineCommand( my_plant ));
+      std::unique_ptr<RemoveProductionLineCommand> rplc ( new RemoveProductionLineCommand( my_plant ));
       rplc->setRemoval( selected );
       ActionResult res = rplc->execute( createContext( my_plant->getMap() ));
       if ( res.successful()) 

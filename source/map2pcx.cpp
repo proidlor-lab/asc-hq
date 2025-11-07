@@ -273,7 +273,7 @@ int mapeditorMainThread (  void* _mapname )
 int main(int argc, char *argv[] )
 {
    Cmdline* cl = NULL;
-   auto_ptr<Cmdline> apcl ( cl );
+   std::unique_ptr<Cmdline> apcl ( cl );
    try {
       cl = new Cmdline ( argc, argv );
    }

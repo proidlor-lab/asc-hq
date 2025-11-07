@@ -23,7 +23,7 @@ bool vectorContains( vector<const Technology*>& v, const Technology* t )
 
 void testresearch1() 
 {
-   auto_ptr<GameMap> game ( startMap("unittest-research.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-research.map"));
    
    Player& p0 = game->getPlayer(0);
    Research& r = p0.research;
@@ -122,7 +122,7 @@ void testresearch1()
 
 void testresearch2() 
 {
-   auto_ptr<GameMap> game ( startMap("unittest-research.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-research.map"));
    
    Player& p0 = game->getPlayer(0);
    Research& r = p0.research;

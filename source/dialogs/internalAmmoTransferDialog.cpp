@@ -277,7 +277,7 @@ void InternalAmmoTransferHandler::performTransfer()
         for( int i=0; i<16; i++ )
            am.push_back( weaponAmmo[i] );
         
-        auto_ptr<InternalAmmoTransferCommand> iatc ( new InternalAmmoTransferCommand( _vehicle));
+        std::unique_ptr<InternalAmmoTransferCommand> iatc ( new InternalAmmoTransferCommand( _vehicle));
         iatc->setAmmounts( am );
         ActionResult res = iatc->execute( createContext( _vehicle->getMap() ));
         if ( res.successful() )

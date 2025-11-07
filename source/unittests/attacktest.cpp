@@ -17,7 +17,7 @@
 
 void testAttack1() 
 {
-   auto_ptr<GameMap> game ( startMap("unittest-attack.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-attack.map"));
    
    Vehicle* veh = game->getField(3,6)->vehicle;
    assertOrThrow( veh != NULL );
@@ -70,7 +70,7 @@ void testAttack1()
 
 void testAttack2()
 {
-   auto_ptr<GameMap> game ( startMap("unittest-objectattack.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-objectattack.map"));
    
    Vehicle* buggy = game->getField(0,3)->vehicle;
    assertOrThrow( buggy != NULL );
@@ -118,7 +118,7 @@ void testAttack2()
       
 void testAttack3()
 {
-   auto_ptr<GameMap> game ( startMap("unittest-attack-view.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-attack-view.map"));
    
    Vehicle* assault = game->getField(4,9)->vehicle;
    assertOrThrow( assault != NULL );

@@ -377,7 +377,7 @@ AI::AiResult  AI :: container ( ContainerBase* cb )
 
       int preferredHeight = getBestHeight ( *i );
 
-      auto_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( *i ));
+      std::unique_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( *i ));
       muc->searchFields();
       
       if ( muc->getReachableFields().size() ) {
@@ -442,7 +442,7 @@ AI::AiResult AI::buildings( int process )
             ++unitCounter;
             displaymessage2("processing building %d (unit %d)", buildingCounter, unitCounter );
             
-            auto_ptr<ServiceCommand> sc ( new ServiceCommand( *bi ));
+            std::unique_ptr<ServiceCommand> sc ( new ServiceCommand( *bi ));
             sc->setDestination( veh );
             if ( veh->aiparam[ getPlayerNum() ]->getJob() != AiParameter::job_supply )
                sc->getTransferHandler().fillDestAmmo();
@@ -504,7 +504,7 @@ bool AI :: moveUnit ( Vehicle* veh, const MapCoordinate3D& destination, bool int
          else
             ast = new AntiMineAStar3D ( this, veh );
 
-      auto_ptr<AStar3D> ap ( ast );
+      std::unique_ptr<AStar3D> ap ( ast );
 
       AStar3D::Path path;
       ast->findPath ( path, destination );
@@ -512,7 +512,7 @@ bool AI :: moveUnit ( Vehicle* veh, const MapCoordinate3D& destination, bool int
       if ( path.empty() )
          return false;
 
-      auto_ptr<MoveUnitCommand> mum ( new MoveUnitCommand( veh ));
+      std::unique_ptr<MoveUnitCommand> mum ( new MoveUnitCommand( veh ));
       mum->searchFields();
       // CODE DUPLICATION: MoveUnitCommand::findPath()
       const AStar3D::Node* n;
@@ -862,7 +862,7 @@ void AI::production()
                                Vehicle* veh = cuc->getProducedUnit();
                                if ( veh ) {
                                   
-                                  auto_ptr<ServiceCommand> sc ( new ServiceCommand( pr.bld ));
+                                  std::unique_ptr<ServiceCommand> sc ( new ServiceCommand( pr.bld ));
                                   sc->setDestination( veh );
                                   sc->getTransferHandler().fillDest();
                                   sc->saveTransfers();

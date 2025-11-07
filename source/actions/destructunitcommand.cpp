@@ -82,7 +82,7 @@ ActionResult DestructUnitCommand::go ( const Context& context )
    int viewdist = container->baseType->view;
    
    
-   auto_ptr<DestructContainer> destructor ( new DestructContainer( container ));
+   std::unique_ptr<DestructContainer> destructor ( new DestructContainer( container ));
    ActionResult res = destructor->execute( context );
    if ( res.successful() )
       destructor.release();

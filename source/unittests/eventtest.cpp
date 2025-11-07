@@ -16,7 +16,7 @@
 
 void testLoseMap() 
 {
-   auto_ptr<GameMap> game ( startMap("unittest-eventlose.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-eventlose.map"));
    
    Vehicle* veh = game->getField(5,4)->vehicle;
    assertOrThrow( veh != NULL );

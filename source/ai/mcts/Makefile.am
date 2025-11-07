@@ -1,7 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 # Compiler flags
-AM_CXXFLAGS = @SDL_CFLAGS@ @SIGC_CFLAGS@
+AM_CXXFLAGS = @SDL_CFLAGS@ @SIGC_CFLAGS@ -std=c++23
 
 # Include paths
 AM_CPPFLAGS = -I$(top_srcdir)/source \

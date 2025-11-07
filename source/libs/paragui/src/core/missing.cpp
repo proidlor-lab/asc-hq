@@ -22,8 +22,8 @@ char *strdup(const char *s) {
 /* Match STRING against the filename pattern PATTERN, returning zero
    if it matches, FNM_NOMATCH if not.  */
 int fnmatch (const char *pattern, const char *string, int flags) {
-	register const char *p = pattern, *n = string;
-	register char c;
+	const char *p = pattern, *n = string;
+	char c;
 
 	if ((flags & ~__FNM_FLAGS) != 0) {
 		errno = EINVAL;
@@ -74,7 +74,7 @@ int fnmatch (const char *pattern, const char *string, int flags) {
 			case '[': {
 					/* Nonzero if the sense of the character class is
 					   inverted.  */
-					register int nott;
+					int nott;
 
 					if (*n == '\0')
 						return (FNM_NOMATCH);
@@ -86,7 +86,7 @@ int fnmatch (const char *pattern, const char *string, int flags) {
 					/* Make sure there is a closing `]'.  If there isn't,
 					   the `[' is just a character to be matched.  */
 					{
-						register const char *np;
+						const char *np;
 
 						for (np = p; np && *np && *np != ']'; np++)
 							;
@@ -104,7 +104,7 @@ int fnmatch (const char *pattern, const char *string, int flags) {
 
 					c = *p++;
 					while (1) {
-						register char cstart = c, cend = c;
+						char cstart = c, cend = c;
 
 						if (!(flags & FNM_NOESCAPE) && c == '\\')
 							cstart = cend = *p++;

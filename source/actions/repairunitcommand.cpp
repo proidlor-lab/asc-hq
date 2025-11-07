@@ -158,7 +158,7 @@ ActionResult RepairUnitCommand::go ( const Context& context )
    int oldDamage = target->damage;
    int newDamage = servicer->getMaxRepair ( target, 0, cost );
    
-   auto_ptr<ChangeContainerProperty> propChange ( new ChangeContainerProperty( target, ChangeContainerProperty::Damage, newDamage ));
+   std::unique_ptr<ChangeContainerProperty> propChange ( new ChangeContainerProperty( target, ChangeContainerProperty::Damage, newDamage ));
    ActionResult res = propChange->execute( context );
    if ( res.successful() )
       propChange.release();
@@ -169,7 +169,7 @@ ActionResult RepairUnitCommand::go ( const Context& context )
    int experience_d = target->getRepairExperienceValue( oldDamage, newDamage, false, Vehicle::experienceResolution );
    
    if ( experience_o != target->getExperience_offensive_raw() ) {
-      auto_ptr<ChangeUnitProperty> expChange ( new ChangeUnitProperty( target, ChangeUnitProperty::ExperienceOffensive_Raw, experience_o ));
+      std::unique_ptr<ChangeUnitProperty> expChange ( new ChangeUnitProperty( target, ChangeUnitProperty::ExperienceOffensive_Raw, experience_o ));
       ActionResult res = expChange->execute( context );
       if ( res.successful() )
          expChange.release();
@@ -178,7 +178,7 @@ ActionResult RepairUnitCommand::go ( const Context& context )
    }
    
    if ( experience_d != target->getExperience_defensive_raw() ) {
-      auto_ptr<ChangeUnitProperty> expChange ( new ChangeUnitProperty( target, ChangeUnitProperty::ExperienceDefensive_Raw, experience_d ));
+      std::unique_ptr<ChangeUnitProperty> expChange ( new ChangeUnitProperty( target, ChangeUnitProperty::ExperienceDefensive_Raw, experience_d ));
       ActionResult res = expChange->execute( context );
       if ( res.successful() )
          expChange.release();
@@ -187,7 +187,7 @@ ActionResult RepairUnitCommand::go ( const Context& context )
    }
    
    
-   auto_ptr<ConsumeResource> resource ( new ConsumeResource( getContainer(), cost ));
+   std::unique_ptr<ConsumeResource> resource ( new ConsumeResource( getContainer(), cost ));
    res = resource->execute( context );
    if ( res.successful() )
       resource.release();

@@ -103,7 +103,7 @@ ActionResult TransferControlCommand::go ( const Context& context )
    if ( !found )
       return ActionResult(22801);
    
-   auto_ptr<ConvertContainer> cc ( new ConvertContainer( getContainer(), receivingPlayer ));
+   std::unique_ptr<ConvertContainer> cc ( new ConvertContainer( getContainer(), receivingPlayer ));
    ActionResult res = cc->execute(context);
    
    if ( res.successful() ) {

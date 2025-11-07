@@ -18,7 +18,7 @@
 
 void testTransferControl() 
 {
-   auto_ptr<GameMap> game ( startMap("unittest-transfercontrol.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-transfercontrol.map"));
    
    Vehicle* veh = game->getField(4,8)->vehicle;
    assertOrThrow( veh != NULL );
@@ -28,7 +28,7 @@ void testTransferControl()
    assertOrThrow(  fieldvisiblenow(fld,0) );
    assertOrThrow( !fieldvisiblenow(fld,3) );
    
-   auto_ptr<TransferControlCommand> tcc ( new TransferControlCommand( veh ));
+   std::unique_ptr<TransferControlCommand> tcc ( new TransferControlCommand( veh ));
    tcc->setReceiver( &game->player[3] );
    ActionResult res = tcc->execute( createTestingContext( game.get() ));
    assertOrThrow( res.successful() );
@@ -51,7 +51,7 @@ void testTransferControl()
    assertOrThrow( bld->getOwner() == 0 );
    
    
-   auto_ptr<TransferControlCommand> tcc2 ( new TransferControlCommand( bld));
+   std::unique_ptr<TransferControlCommand> tcc2 ( new TransferControlCommand( bld));
    tcc2->setReceiver( &game->player[1] );
    ActionResult res2 = tcc2->execute( createTestingContext( game.get() ));
    assertOrThrow( res2.successful() );

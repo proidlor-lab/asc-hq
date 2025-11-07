@@ -17,7 +17,7 @@
 
 void testMovement1() 
 {
-   auto_ptr<GameMap> game ( startMap("unittest-movement.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-movement.map"));
    
    Vehicle* veh = game->getField(0,0)->vehicle;
    assertOrThrow( veh->getMovement() == 100 );
@@ -51,7 +51,7 @@ void testMovement1()
 
 void testMovementRF() 
 {
-   auto_ptr<GameMap> game ( startMap("unittest-reactionfire.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-reactionfire.map"));
    
    Vehicle* veh = game->getField(4,2)->vehicle;
    assertOrThrow( veh != NULL );
@@ -67,7 +67,7 @@ void testMovementRF()
 
 void testMovementTracks() 
 {
-   auto_ptr<GameMap> game ( startMap("unittest-objectgeneration.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-objectgeneration.map"));
    
    Vehicle* veh = game->getField(4,9)->vehicle;
    assertOrThrow( veh != NULL );
@@ -90,11 +90,11 @@ void testMovementTracks()
 
 void testHeightChangeAI()
 {
-   auto_ptr<GameMap> game ( startMap("unittest-heightchange.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-heightchange.map"));
    Vehicle* veh = game->getField(4,17)->vehicle;
    assertOrThrow( veh != NULL );
    
-   auto_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( veh ));
+   std::unique_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( veh ));
    
    // this is the AI way of doing things, selecting a 3D coordinate as destination
    
@@ -120,11 +120,11 @@ void testHeightChangeAI()
 
 void testHeightChangeGUI()
 {
-   auto_ptr<GameMap> game ( startMap("unittest-heightchange.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-heightchange.map"));
    Vehicle* veh = game->getField(4,17)->vehicle;
    assertOrThrow( veh != NULL );
    
-   auto_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( veh ));
+   std::unique_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( veh ));
    
    // this is the GUI way of doing things, selecting a 2D coordinate as destination
    
@@ -146,17 +146,17 @@ void testHeightChangeGUI()
 
 void testMovementFieldsReachable()
 {
-   auto_ptr<GameMap> game ( startMap("unittest-moveback.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-moveback.map"));
    Vehicle* veh = game->getField(15,31)->vehicle;
    assertOrThrow( veh != NULL );
    
-   auto_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( veh ));
+   std::unique_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( veh ));
    
    muc->searchFields();
    const set<MapCoordinate3D>& fields = muc->getReachableFields();
    
    for ( set<MapCoordinate3D>::const_iterator i = fields.begin(); i != fields.end(); ++i ) {
-      auto_ptr<MoveUnitCommand> m2 ( new MoveUnitCommand( veh ));
+      std::unique_ptr<MoveUnitCommand> m2 ( new MoveUnitCommand( veh ));
       m2->setDestination( *i );
       ActionResult res = m2->execute( createTestingContext( veh->getMap() ));
       assertOrThrow( res.successful() );
@@ -194,7 +194,7 @@ static void moveUnitTest( GameMap* game, Vehicle* veh, const MapCoordinate& dest
 {
    assertOrThrow( veh != NULL );
    assertOrThrow( game != NULL );
-   auto_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( veh ));
+   std::unique_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( veh ));
    muc->searchFields();
    muc->setDestination( destination );
    ActionResult res = muc->execute( createTestingContext( veh->getMap() ));
@@ -219,7 +219,7 @@ static void moveUnitTest( GameMap* game, Vehicle* veh, const MapCoordinate& dest
 
 void testLongDistMovement()
 {
-   auto_ptr<GameMap> game ( startMap("unittest-moveland.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-moveland.map"));
    Vehicle* veh;
    MapCoordinate airport(0,7);
    MapCoordinate carrier(0,0);
@@ -237,12 +237,12 @@ void testLongDistMovement()
 
 void testMapResizeWithMovement()
 {
-   auto_ptr<GameMap> game ( startMap("unittest-moveland.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-moveland.map"));
    Vehicle* veh = game->getField(9,16)->vehicle;
   
    assertOrThrow( veh != NULL );
    
-   auto_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( veh ));
+   std::unique_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( veh ));
    muc->searchFields();
    muc->setDestination( MapCoordinate(3,2) );
    ActionResult res = muc->execute( createTestingContext( veh->getMap() ));
@@ -265,12 +265,12 @@ void testMapResizeWithMovement()
 
 void testPathFinding()
 {
-   auto_ptr<GameMap> game ( startMap("unittest-pathfinding.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-pathfinding.map"));
    Vehicle* buggy = game->getField(12,19)->vehicle;
    assertOrThrow( buggy );
 
    {
-	   auto_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( buggy ));
+	   std::unique_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( buggy ));
 	   muc->searchFields();
 	   //cout <<  muc->getReachableFields().size() << "\n";
 	   assertOrThrow(  muc->getReachableFields().size() == 157 );
@@ -405,7 +405,7 @@ void testPathFinding()
 	   assertOrThrow( shuttle->getMovement(false,false) == 65 );
 	   assertOrThrow( trooper->getMovement(false,false) == 32 );
 
-	   auto_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( trooper ));
+	   std::unique_ptr<MoveUnitCommand> muc ( new MoveUnitCommand( trooper ));
 	   muc->searchFields();
 	   const set<MapCoordinate3D>& fields = muc->getReachableFields();
 	   // std::cout << "Fields size " << fields.size() << "\n";
@@ -422,7 +422,7 @@ void testPathFinding()
 
 void testPathFinding2()
 {
-   auto_ptr<GameMap> game ( startMap("unittest-pathfinding.map"));
+   std::unique_ptr<GameMap> game ( startMap("unittest-pathfinding.map"));
 
    {
        Vehicle* sub = game->getField(3,4)->vehicle;
