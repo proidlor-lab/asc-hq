@@ -11,10 +11,16 @@ AM_CPPFLAGS = -I$(top_srcdir)/source \
 # Build convenience library (not installed, for linking into main ASC binary)
 noinst_LTLIBRARIES = libmcts.la
 
-# Source files (Phase 0.1: Domain layer only)
+# Source files
+# Phase 0.1: Game State Cloning
+# Phase 0.2: Action Execution Interface
 libmcts_la_SOURCES = \
 	domain/unit_snapshot.cpp \
-	domain/game_state_reader.cpp
+	domain/game_state_reader.cpp \
+	domain/action_types.cpp \
+	domain/simulation_action_executor.cpp \
+	domain/real_game_action_executor.cpp \
+	domain/action_executor_factory.cpp
 
 # Header files (for distribution)
 EXTRA_DIST = \
@@ -27,7 +33,13 @@ EXTRA_DIST = \
 	$(srcdir)/*.md \
 	$(srcdir)/docs/*.md
 
-# Test binary (enabled for snapshot testing)
-noinst_PROGRAMS = snapshot_test
+# Test binaries
+noinst_PROGRAMS = snapshot_test action_executor_test
+
+# Phase 0.1 test
 snapshot_test_SOURCES = domain/snapshot_test.cpp
 snapshot_test_LDADD = libmcts.la
+
+# Phase 0.2 test
+action_executor_test_SOURCES = domain/action_executor_test.cpp
+action_executor_test_LDADD = libmcts.la
