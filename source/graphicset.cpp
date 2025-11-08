@@ -189,55 +189,6 @@ void GraphicSetManager_Base::loadData()
                gs->image[i] = IconRepository::getIcon("emptyfld.raw");
             }
            gs->image[i].assignDefaultPalette();
-           const char* dbgPalette = SDL_getenv("ASC_DEBUG_PALETTE");
-           if (dbgPalette && *dbgPalette) {
-              static bool loggedPalette = false;
-              if (!loggedPalette && picmode[i] >= 1) {
-                 loggedPalette = true;
-                 SDL_Surface* raw = gs->image[i].getBaseSurface();
-                 SDL_CompatPixelFormat fmt = raw ? SDLCompat_BuildSurfacePixelFormat(raw) : SDL_CompatPixelFormat{};
-                 SDL_Palette* palette = SDL_GetSurfacePalette(raw);
-                 fprintf(stderr, "[ASC SDL3] sample unit surface #%d bpp=%d palette=%p ncolors=%d\n",
-                         i, raw ? fmt.BitsPerPixel : -1, (void*)palette,
-                         palette ? palette->ncolors : -1);
-                 if (palette) {
-                    int limit = SDL_min(palette->ncolors, 16);
-                    for (int p = 0; p < limit; ++p)
-                       fprintf(stderr, "  pal[%d]=%u,%u,%u\n", p,
-                               palette->colors[p].r,
-                               palette->colors[p].g,
-                               palette->colors[p].b);
-                 }
-                 if (raw && raw->pixels) {
-                    Uint8* px = static_cast<Uint8*>(raw->pixels);
-                    int stride = raw->pitch;
-                    int total = raw->h * stride;
-                    int dumpCount = SDL_min(total, 32);
-                    fprintf(stderr, "  first pixels:");
-                    for (int p = 0; p < dumpCount; ++p)
-                       fprintf(stderr, " %u", px[p]);
-                    int firstNon = -1;
-                    int fx = -1;
-                    int fy = -1;
-                    for (int y = 0; y < raw->h && firstNon < 0; ++y) {
-                       for (int x = 0; x < raw->w; ++x) {
-                          Uint8 val = px[y * stride + x];
-                          if (val != 255) {
-                             firstNon = val;
-                             fx = x;
-                             fy = y;
-                             break;
-                          }
-                       }
-                    }
-                    if (firstNon >= 0)
-                       fprintf(stderr, "  first non-255 pixel @(%d,%d) = %d\n", fx, fy, firstNon);
-                    else
-                       fprintf(stderr, "  surface pixels are all 255 (transparent) in sampled area\n");
-                    fprintf(stderr, "\n");
-                 }
-              }
-           }
 
            dataLoaderTicker();
 

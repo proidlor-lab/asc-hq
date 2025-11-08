@@ -57,12 +57,6 @@ void Package::write ( tnstream& stream ) const
       
    writeClassContainer( dependencies, stream );
    
-   const char* cacheDbg = getenv("ASC_DEBUG_CACHE");
-   if (cacheDbg && *cacheDbg) {
-      fprintf(stderr, "[ASC CACHE] writing package '%s' deps=%zu\n",
-              name.c_str(), dependencies.size());
-   }
-      
    stream.writeString ( archive );
 }
 
@@ -100,11 +94,6 @@ void Package::runTextIO ( PropertyContainer& pc )
    archive = pc.getArchive();
    location = pc.getLocation();
    
-   const char* cacheDbg = getenv("ASC_DEBUG_CACHE");
-   if (cacheDbg && *cacheDbg) {
-      fprintf(stderr, "[ASC CACHE] parsed package '%s' depCount=%d (%zu actual)\n",
-              name.c_str(), depCount, dependencies.size());
-   }
 }
 
 
@@ -124,12 +113,6 @@ void Package::PackageDependency::write ( tnstream& stream ) const
    stream.writeInt( packageDependencyStreamVersion );
    stream.writeString( name );
    version.write( stream );
-   const char* cacheDbg = getenv("ASC_DEBUG_CACHE");
-   if (cacheDbg && *cacheDbg) {
-      ASCString ver = version.toString();
-      fprintf(stderr, "[ASC CACHE]   dep '%s' version %s\n",
-              name.c_str(), ver.c_str());
-   }
 }
 
             

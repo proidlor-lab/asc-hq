@@ -448,18 +448,7 @@ void Surface::assignDefaultPalette()
            spal[i].g = pal[i][1] * 4;;
            spal[i].b = pal[i][2] * 4;;
          }
-         SDL_SetColors ( me, spal, 0, 256 );
-         const char* dbg = SDL_getenv("ASC_DEBUG_PALETTE");
-         if (dbg && *dbg) {
-            static bool logged = false;
-            if (!logged) {
-               logged = true;
-               fprintf(stderr, "[ASC SDL3] assignDefaultPalette sample:");
-               for (int i = 0; i < 8; ++i)
-                  fprintf(stderr, " %d:%u,%u,%u", i, spal[i].r, spal[i].g, spal[i].b);
-               fprintf(stderr, "\n");
-            }
-         }
+        SDL_SetColors ( me, spal, 0, 256 );
    }
 }
 

@@ -71,12 +71,7 @@ class ColorTransform_PlayerCol<1>
       PixelType transform( PixelType col)
       {
          if ( col >= 16 && col < 24 ) {
-            PixelType out = col + shift;
-            const char* dbg = SDL_getenv("ASC_DEBUG_PALETTE");
-            if (dbg && *dbg) {
-               SDL_Log("[ASC SDL3] ColorTransform_PlayerCol<1> col=%u -> %u (shift=%d)", col, out, shift);
-            }
-            return out;
+            return col + shift;
          } else
             return col;
       };
@@ -129,15 +124,6 @@ class ColorTransform_PlayerTrueCol
             result = ((refr + ( 255-refr) * g / 255) << 16) + ((refg + ( 255-refg) * g / 255) << 8) + (refb + ( 255-refb) * g / 255) + (col & 0xff000000);
          }
 
-         const char* dbg = SDL_getenv("ASC_DEBUG_PALETTE");
-         if (dbg && *dbg) {
-            static int logged = 0;
-            if (logged < 10) {
-               SDL_Log("[ASC SDL3] ColorTransform_PlayerTrueCol<4> in=0x%08x out=0x%08x playerRef=0x%02x%02x%02x",
-                       col, result, refr, refg, refb);
-               ++logged;
-            }
-         }
          return result;
       };
 

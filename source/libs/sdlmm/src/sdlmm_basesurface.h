@@ -21,6 +21,7 @@
 
 #ifndef SDLMM_BASESURFACE_H
 #define SDLMM_BASESURFACE_H
+#include <SDL.h>
 #include "sdlmm_spoint.h"
 #include "sdlmm_srect.h"
 #include "sdlmm_color.h"
@@ -107,8 +108,34 @@ namespace SDLmm {
     /*! \warning Using an uninitialzied surface can cause many problems. */
     bool valid() const { return me != 0; }
 
-    //! Returns the surface flags.
-    Uint32 flags() const { return GetSurface()->flags; } 		   
+    //! Returns legacy SDL 1.2-style surface flags (SRCCOLORKEY, SRCALPHA, RLEACCEL, etc).
+    Uint32 flags() const {
+      const SDL_Surface* surface = GetSurface();
+      if (!surface)
+        return 0;
+
+      Uint32 legacy = surface->flags;
+      SDL_Surface* mutableSurface = const_cast<SDL_Surface*>(surface);  // SDL3 accessors take non-const
+
+      if (SDL_SurfaceHasColorKey(mutableSurface))
+        legacy |= SDL_SRCCOLORKEY;
+
+      if (SDL_SurfaceHasRLE(mutableSurface))
+        legacy |= SDL_RLEACCEL;
+
+      SDL_BlendMode blend = SDL_BLENDMODE_NONE;
+      if (SDL_GetSurfaceBlendMode(mutableSurface, &blend) == 0 &&
+          blend == SDL_BLENDMODE_BLEND)
+        legacy |= SDL_SRCALPHA;
+      else {
+        Uint8 alpha = SDL_ALPHA_OPAQUE;
+        if (SDL_GetSurfaceAlphaMod(mutableSurface, &alpha) == 0 &&
+            alpha != SDL_ALPHA_OPAQUE)
+          legacy |= SDL_SRCALPHA;
+      }
+
+      return legacy;
+    } 		   
 
     //! Returns the pixel format.
     const PixelFormat GetPixelFormat() const { return PixelFormat(GetSurface()); }

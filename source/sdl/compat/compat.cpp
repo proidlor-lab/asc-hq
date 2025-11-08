@@ -700,11 +700,13 @@ SDL_CompatPixelFormat SDLCompat_BuildSurfacePixelFormat(const SDL_Surface* surfa
    if (surface) {
       SDL_Surface* mutableSurface = const_cast<SDL_Surface*>(surface);
       out.palette = SDL_GetSurfacePalette(mutableSurface);
+
       Uint32 key = 0;
       if (SDL_GetSurfaceColorKey(mutableSurface, &key))
          out.colorkey = key;
       else
          out.colorkey = 0;
+
       Uint8 alpha = 255;
       if (SDL_GetSurfaceAlphaMod(mutableSurface, &alpha))
          out.alpha = alpha;

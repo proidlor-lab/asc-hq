@@ -40,19 +40,6 @@ void PackageRepository ::addProgramPackage(const char* program)
    }
    prog->dependencies.clear(); // synthetic package must not drag stale deps into cache
    prog->version.fromString( getVersionString() );
-   const char* cacheDbg = getenv("ASC_DEBUG_CACHE");
-   if (cacheDbg && *cacheDbg) {
-      fprintf(stderr, "[ASC CACHE] addProgramPackage program=%s deps=%zu after clear\n",
-              program ? program : "(null)", prog->dependencies.size());
-   }
-   if (cacheDbg && *cacheDbg) {
-      fprintf(stderr, "[ASC CACHE] PackageRepository currently holds:\n");
-      for (PackageRepository::const_iterator it = packageRepository.begin();
-           it != packageRepository.end(); ++it) {
-         fprintf(stderr, "    %s deps=%zu\n",
-                 (*it)->name.c_str(), (*it)->dependencies.size());
-      }
-   }
 }
 
 void PackageRepository ::readTextFiles( PropertyReadingContainer& prc, const ASCString& fileName, const ASCString& location )
@@ -75,22 +62,6 @@ void PackageRepository :: read ( tnstream& stream )
 void PackageRepository :: write ( tnstream& stream )
 {
    stream.writeInt( 1 );
-   const char* cacheDbg = getenv("ASC_DEBUG_CACHE");
-   if (cacheDbg && *cacheDbg) {
-      fprintf(stderr, "[ASC CACHE] PackageRepository writing %zu packages:\n",
-              packageRepository.size());
-      for (PackageRepository::const_iterator it = packageRepository.begin();
-           it != packageRepository.end(); ++it) {
-         fprintf(stderr, "  - %s deps=%zu\n",
-                 (*it)->name.c_str(), (*it)->dependencies.size());
-         if ((*it)->dependencies.size()) {
-            for (size_t depIdx = 0; depIdx < (*it)->dependencies.size(); ++depIdx) {
-               const Package::PackageDependency& dep = (*it)->dependencies[depIdx];
-               fprintf(stderr, "       dep[%zu] name=%s version=%s\n", depIdx, dep.name.c_str(), dep.version.toString().c_str());
-            }
-         }
-      }
-   }
    for (PackageRepository::iterator it = packageRepository.begin();
         it != packageRepository.end(); ++it) {
       if ( (*it)->name.compare_ci("ASC") == 0 )
