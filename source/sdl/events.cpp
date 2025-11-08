@@ -180,14 +180,12 @@ void getkeysyms ( tkey* keysym, int* keyprnt )
 
 char  skeypress(tkey keynr)
 {
-   Uint8 *keystate = SDL_GetKeyState ( NULL );
-   return keystate[ keynr ];
+   return SDLCompat_IsKeyPressed(static_cast<SDLKey>(keynr));
 }
 
 bool isKeyPressed(SDLKey key)
 {
-   Uint8 *keystate = SDL_GetKeyState ( NULL );
-   return keystate[ key ];
+   return SDLCompat_IsKeyPressed(key);
 }
 
 

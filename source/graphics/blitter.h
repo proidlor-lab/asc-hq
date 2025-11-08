@@ -295,7 +295,17 @@ class ColorConverter<1,4>
          } else {
             TargetPixelType a = Surface::opaque;
             a <<= ashift;
-            return TargetPixelType(palette[sp].r << rshift) + TargetPixelType(palette[sp].g << gshift) + TargetPixelType(palette[sp].b << bshift) + a;
+            TargetPixelType rgb = TargetPixelType(palette[sp].r) << rshift |
+                                  TargetPixelType(palette[sp].g) << gshift |
+                                  TargetPixelType(palette[sp].b) << bshift;
+            TargetPixelType result = rgb + a;
+            const char* dbg = SDL_getenv("ASC_DEBUG_PALETTE");
+            const char* verbose = SDL_getenv("ASC_DEBUG_PALETTE_CONVERTER");
+            if (dbg && *dbg && verbose && *verbose) {
+               SDL_Log("[ASC SDL3] ColorConverter<1,4> index=%u rgb=(%u,%u,%u) -> 0x%08x",
+                       sp, palette[sp].r, palette[sp].g, palette[sp].b, result);
+            }
+            return result;
          }
       };
 
@@ -750,7 +760,17 @@ class ColorMerger_AlphaOverwrite : public ColorMerger_AlphaHandler<pixelsize>
       void assign ( PixelType src, PixelType* dest )
       {
          if ( this->isOpaque(src ) ) {
+            PixelType before = *dest;
             *dest = src;
+            const char* dbg = SDL_getenv("ASC_DEBUG_PALETTE");
+            if (dbg && *dbg) {
+               static int loggedOverwrite = 0;
+               if (loggedOverwrite < 10 && sizeof(PixelType) == 4) {
+                  SDL_Log("[ASC SDL3] ColorMerger_AlphaOverwrite<%zu> src=0x%08x dstBefore=0x%08x",
+                          sizeof(PixelType), src, before);
+                  ++loggedOverwrite;
+               }
+            }
          }
       };
 
@@ -919,7 +939,18 @@ class ColorMerger_AlphaMixer<4> : public ColorMerger_AlphaHandler<4>
       {
          // STATIC_CHECK ( pixelsize == 1, wrong_pixel_size );
          if ( this->isOpaque(src ) ) {
-            *dest = ((*dest >> 1) & 0x7f7f7f7f) + ((src >> 1) & 0x7f7f7f7f);
+            PixelType before = *dest;
+            PixelType result = ((*dest >> 1) & 0x7f7f7f7f) + ((src >> 1) & 0x7f7f7f7f);
+            *dest = result;
+            const char* dbg = SDL_getenv("ASC_DEBUG_PALETTE");
+            if (dbg && *dbg) {
+               static int logged = 0;
+               if (logged < 10) {
+                  SDL_Log("[ASC SDL3] ColorMerger_AlphaMixer<4> src=0x%08x dstBefore=0x%08x dstAfter=0x%08x",
+                          src, before, result);
+                  ++logged;
+               }
+            }
          }
       };
    public:

@@ -70,7 +70,14 @@ namespace SDLmm {
 
     Color colorkey() const { return info.colorkey; }
     Uint8 alpha() const { return info.alpha; }
-    SDL_Palette *palette() const { return info.palette; }
+    SDL_Palette *palette() const {
+      if (surfaceRef) {
+        SDL_Palette* live = SDL_GetSurfacePalette(surfaceRef);
+        if (live)
+          return live;
+      }
+      return info.palette;
+    }
 
     //! Map a RGB color value to a pixel format.
     /*!

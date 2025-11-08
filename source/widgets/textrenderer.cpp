@@ -482,23 +482,22 @@ bool TextRenderer :: eventKeyDown(const SDL_KeyboardEvent* key)
       return true;
    }
 
-   int keyStateNum;
-   Uint8* keyStates = SDL_GetKeyState ( &keyStateNum );
-
-   if ( (key->keysym.sym == SDLK_UP  && keyStates[SDLK_UP] ) || ( key->keysym.sym == SDLK_KP8  && keyStates[SDLK_KP8] )) {
+   if ( (key->keysym.sym == SDLK_UP  && SDLCompat_IsKeyPressed(SDLK_UP) ) ||
+        ( key->keysym.sym == SDLK_KP8  && SDLCompat_IsKeyPressed(SDLK_KP8) )) {
       ScrollTo( GetScrollPosX (), GetScrollPosY () - scrollsize );
       return true;
    }
-   if ( (key->keysym.sym == SDLK_DOWN  && keyStates[SDLK_DOWN]) || (key->keysym.sym == SDLK_KP2  && keyStates[SDLK_KP2] )) {
+   if ( (key->keysym.sym == SDLK_DOWN  && SDLCompat_IsKeyPressed(SDLK_DOWN)) ||
+        (key->keysym.sym == SDLK_KP2  && SDLCompat_IsKeyPressed(SDLK_KP2) )) {
       ScrollTo( GetScrollPosX (), GetScrollPosY () + scrollsize );
       return true;
    }
 
-   if ( key->keysym.sym == SDLK_PAGEUP  && keyStates[SDLK_PAGEUP] ) {
+   if ( key->keysym.sym == SDLK_PAGEUP  && SDLCompat_IsKeyPressed(SDLK_PAGEUP) ) {
       ScrollTo( GetScrollPosX (), GetScrollPosY() - (Height() - 10) );
       return true;
    }
-   if ( key->keysym.sym == SDLK_PAGEDOWN  && keyStates[SDLK_PAGEDOWN] ) {
+   if ( key->keysym.sym == SDLK_PAGEDOWN  && SDLCompat_IsKeyPressed(SDLK_PAGEDOWN) ) {
       ScrollTo( GetScrollPosX (), GetScrollPosY () + (Height() - 10) );
       return true;
    }
@@ -529,6 +528,5 @@ bool ViewFormattedText :: eventKeyDown(const SDL_KeyboardEvent* key)
    }
    return false;
 }
-
 
 

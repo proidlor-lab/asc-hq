@@ -19,6 +19,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <cstdio>
 #include <map>
 #include <vector>
 #include "typen.h"
@@ -282,6 +283,15 @@ void FileCache::write()
 
    stream->writeInt ( cacheVersion );
    writeClassContainer ( actualFileInfo, *stream );
+   const char* cacheDbg = getenv("ASC_DEBUG_CACHE");
+   if (cacheDbg && *cacheDbg) {
+      fprintf(stderr, "[ASC CACHE] writing %zu FileInfo entries\n", actualFileInfo.size());
+      for (size_t idx = 0; idx < actualFileInfo.size() && idx < 5; ++idx) {
+         const tfindfile::FileInfo& fi = actualFileInfo[idx];
+         fprintf(stderr, "  FileInfo[%zu]: name='%s' dirLevel=%d inContainer=%d location='%s' size=%d date=%d\n",
+                 idx, fi.name.c_str(), fi.directoryLevel, fi.isInContainer, fi.location.c_str(), fi.size, fi.date);
+      }
+   }
 
    for ( DataLoaders::iterator i = dataLoaders.begin(); i != dataLoaders.end(); ++i)
       (*i)->write ( *stream );

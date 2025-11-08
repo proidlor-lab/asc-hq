@@ -487,6 +487,20 @@ static bool SDLCALL legacyEventFilterThunk(void*, SDL3_Event* raw)
 
 } // namespace
 
+/* SDL3 changed SDL_Init/SDL_InitSubSystem to return bool (true=success, false=failure)
+   instead of int (0=success, -1=failure). These wrappers maintain SDL 1.2/2.0 semantics. */
+int SDLCompat_Init(Uint32 flags)
+{
+   bool result = SDL3_Init(static_cast<SDL_InitFlags>(flags));
+   return result ? 0 : -1;
+}
+
+int SDLCompat_InitSubSystem(Uint32 flags)
+{
+   bool result = SDL3_InitSubSystem(static_cast<SDL_InitFlags>(flags));
+   return result ? 0 : -1;
+}
+
 int SDLCompat_PollEvent(SDL_Event* event)
 {
    SDL3_Event raw;
@@ -1017,6 +1031,19 @@ Uint8* SDLCompat_GetKeyState(int* numkeys)
    return const_cast<Uint8*>(reinterpret_cast<const Uint8*>(state));
 }
 
+Uint8 SDLCompat_IsKeyPressed(SDLKey key)
+{
+   SDL_Scancode sc = SDL_GetScancodeFromKey(static_cast<SDL_Keycode>(key), nullptr);
+   if (sc == SDL_SCANCODE_UNKNOWN)
+      return 0;
+
+   int num = 0;
+   const bool* state = SDL_GetKeyboardState(&num);
+   if (!state || sc < 0 || sc >= num)
+      return 0;
+   return state[sc] ? 1 : 0;
+}
+
 const SDL_VideoInfo* SDLCompat_GetVideoInfo(void)
 {
    std::lock_guard<std::mutex> guard(gVideoMutex);
@@ -1194,31 +1221,49 @@ int SDLCompat_SetTimer(Uint32 interval, SDL_TimerCallbackSimple callback)
 #pragma pop_macro("SDL_RemoveTimer")
 #pragma pop_macro("SDL_AddTimer")
 
-SDL_Surface* SDLCompat_DisplayFormat(SDL_Surface* surface)
+namespace {
+
+SDL_Surface* convertToDisplayFormat(SDL_Surface* surface, bool forceAlpha)
 {
    if (!surface)
       return nullptr;
 
-   SDL_Surface* copy = SDL_DuplicateSurface(surface);
-   if (!copy)
-      return nullptr;
-   SDL_Palette* srcPal = SDL_GetSurfacePalette(surface);
-   SDL_Palette* dstPal = SDL_GetSurfacePalette(copy);
-   if (srcPal && dstPal)
-      SDL_SetPaletteColors(dstPal, srcPal->colors, 0, srcPal->ncolors);
-   return copy;
+   SDL_PixelFormat targetFormat = SDL_PIXELFORMAT_UNKNOWN;
+   if (gPrimarySurface)
+      targetFormat = gPrimarySurface->format;
+
+   if (targetFormat == SDL_PIXELFORMAT_UNKNOWN)
+      targetFormat = forceAlpha ? SDL_PIXELFORMAT_ARGB8888 : surface->format;
+
+   const SDL_PixelFormatDetails* targetDetails = SDL_GetPixelFormatDetails(targetFormat);
+   if (forceAlpha && targetDetails && targetDetails->bytes_per_pixel < 4)
+      targetFormat = SDL_PIXELFORMAT_ARGB8888;
+
+   SDL_Surface* converted = SDL_ConvertSurface(surface, targetFormat);
+   if (!converted) {
+      converted = SDL_DuplicateSurface(surface);
+      if (!converted)
+         return nullptr;
+   }
+
+   if (forceAlpha)
+      SDL_SetSurfaceBlendMode(converted, SDL_BLENDMODE_BLEND);
+   else
+      SDL_SetSurfaceBlendMode(converted, SDL_BLENDMODE_NONE);
+
+   return converted;
+}
+
+} // namespace
+
+SDL_Surface* SDLCompat_DisplayFormat(SDL_Surface* surface)
+{
+   return convertToDisplayFormat(surface, false);
 }
 
 SDL_Surface* SDLCompat_DisplayFormatAlpha(SDL_Surface* surface)
 {
-   if (!surface)
-      return nullptr;
-
-   SDL_Surface* copy = SDL_DuplicateSurface(surface);
-   if (!copy)
-      return nullptr;
-   SDL_SetSurfaceBlendMode(copy, SDL_BLENDMODE_BLEND);
-   return copy;
+   return convertToDisplayFormat(surface, true);
 }
 
 SDL_Rect SDLCompat_GetClipRect(SDL_Surface* surface)
@@ -1301,10 +1346,38 @@ int SDLCompat_SetColors(SDL_Surface* surface, SDL_Color* colors, int firstcolor,
 {
    if (!surface)
       return -1;
+
    SDL_Surface* mutableSurface = surface;
    SDL_Palette* palette = SDL_GetSurfacePalette(mutableSurface);
-   if (!palette)
-      return -1;
+   if (!palette) {
+      SDL_Palette* created = SDL_CreatePalette(256);
+      if (!created)
+         return -1;
+      if (SDL_SetSurfacePalette(mutableSurface, created) != SDL_TRUE) {
+         SDL_DestroyPalette(created);
+         palette = SDL_GetSurfacePalette(mutableSurface);
+         if (!palette)
+            return -1;
+      } else {
+         palette = created;
+      }
+   }
+
+   const int requiredColors = firstcolor + ncolors;
+   if (requiredColors > palette->ncolors) {
+      SDL_Palette* resized = SDL_CreatePalette(std::max(requiredColors, 256));
+      if (!resized)
+         return -1;
+      if (SDL_SetSurfacePalette(mutableSurface, resized) != SDL_TRUE) {
+         SDL_DestroyPalette(resized);
+         palette = SDL_GetSurfacePalette(mutableSurface);
+         if (!palette)
+            return -1;
+      } else {
+         palette = resized;
+      }
+   }
+
    return SDL_SetPaletteColors(palette, colors, firstcolor, ncolors);
 }
 

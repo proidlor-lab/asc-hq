@@ -19016,19 +19016,19 @@ fi
 have_sdl3_mixer=no
 
 pkg_failed=no
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for sdl3-mixer >= 3.2.0" >&5
-printf %s "checking for sdl3-mixer >= 3.2.0... " >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for sdl3-mixer >= 3.1.0" >&5
+printf %s "checking for sdl3-mixer >= 3.1.0... " >&6; }
 
 if test -n "$SDL3_MIXER_CFLAGS"; then
     pkg_cv_SDL3_MIXER_CFLAGS="$SDL3_MIXER_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"sdl3-mixer >= 3.2.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "sdl3-mixer >= 3.2.0") 2>&5
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"sdl3-mixer >= 3.1.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "sdl3-mixer >= 3.1.0") 2>&5
   ac_status=$?
   printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_SDL3_MIXER_CFLAGS=`$PKG_CONFIG --cflags "sdl3-mixer >= 3.2.0" 2>/dev/null`
+  pkg_cv_SDL3_MIXER_CFLAGS=`$PKG_CONFIG --cflags "sdl3-mixer >= 3.1.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -19040,12 +19040,12 @@ if test -n "$SDL3_MIXER_LIBS"; then
     pkg_cv_SDL3_MIXER_LIBS="$SDL3_MIXER_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"sdl3-mixer >= 3.2.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "sdl3-mixer >= 3.2.0") 2>&5
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"sdl3-mixer >= 3.1.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "sdl3-mixer >= 3.1.0") 2>&5
   ac_status=$?
   printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_SDL3_MIXER_LIBS=`$PKG_CONFIG --libs "sdl3-mixer >= 3.2.0" 2>/dev/null`
+  pkg_cv_SDL3_MIXER_LIBS=`$PKG_CONFIG --libs "sdl3-mixer >= 3.1.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -19066,9 +19066,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-                SDL3_MIXER_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "sdl3-mixer >= 3.2.0" 2>&1`
+                SDL3_MIXER_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "sdl3-mixer >= 3.1.0" 2>&1`
         else
-                SDL3_MIXER_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "sdl3-mixer >= 3.2.0" 2>&1`
+                SDL3_MIXER_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "sdl3-mixer >= 3.1.0" 2>&1`
         fi
         # Put the nasty error message in config.log where it belongs
         echo "$SDL3_MIXER_PKG_ERRORS" >&5
@@ -19133,11 +19133,11 @@ fi
         # Put the nasty error message in config.log where it belongs
         echo "$SDL_MIXER_LEGACY_PKG_ERRORS" >&5
 
-        as_fn_error $? "ASC requires audio support via SDL3_mixer >= 3.2.0 (in development) or SDL_mixer >= 1.2.12. Install one of them and rerun configure." "$LINENO" 5
+        as_fn_error $? "ASC requires audio support via SDL3_mixer >= 3.1.0 (in development) or SDL_mixer >= 1.2.12. Install one of them and rerun configure." "$LINENO" 5
 elif test $pkg_failed = untried; then
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-        as_fn_error $? "ASC requires audio support via SDL3_mixer >= 3.2.0 (in development) or SDL_mixer >= 1.2.12. Install one of them and rerun configure." "$LINENO" 5
+        as_fn_error $? "ASC requires audio support via SDL3_mixer >= 3.1.0 (in development) or SDL_mixer >= 1.2.12. Install one of them and rerun configure." "$LINENO" 5
 else
         SDL_MIXER_LEGACY_CFLAGS=$pkg_cv_SDL_MIXER_LEGACY_CFLAGS
         SDL_MIXER_LEGACY_LIBS=$pkg_cv_SDL_MIXER_LEGACY_LIBS
@@ -19211,11 +19211,11 @@ fi
         # Put the nasty error message in config.log where it belongs
         echo "$SDL_MIXER_LEGACY_PKG_ERRORS" >&5
 
-        as_fn_error $? "ASC requires audio support via SDL3_mixer >= 3.2.0 (in development) or SDL_mixer >= 1.2.12. Install one of them and rerun configure." "$LINENO" 5
+        as_fn_error $? "ASC requires audio support via SDL3_mixer >= 3.1.0 (in development) or SDL_mixer >= 1.2.12. Install one of them and rerun configure." "$LINENO" 5
 elif test $pkg_failed = untried; then
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-        as_fn_error $? "ASC requires audio support via SDL3_mixer >= 3.2.0 (in development) or SDL_mixer >= 1.2.12. Install one of them and rerun configure." "$LINENO" 5
+        as_fn_error $? "ASC requires audio support via SDL3_mixer >= 3.1.0 (in development) or SDL_mixer >= 1.2.12. Install one of them and rerun configure." "$LINENO" 5
 else
         SDL_MIXER_LEGACY_CFLAGS=$pkg_cv_SDL_MIXER_LEGACY_CFLAGS
         SDL_MIXER_LEGACY_LIBS=$pkg_cv_SDL_MIXER_LEGACY_LIBS
@@ -19251,7 +19251,13 @@ printf "%s\n" "#define ASC_HAVE_SDL3_MIXER 0" >>confdefs.h
 
 fi
 
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for Sound_Init in -lSDL_sound" >&5
+if test "x$have_sdl3_mixer" = "xyes"; then
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Skipping SDL_sound check - using SDL3_mixer built-in decoders" >&5
+printf "%s\n" "$as_me: Skipping SDL_sound check - using SDL3_mixer built-in decoders" >&6;}
+   SDLsoundmissing=y
+   SDL_SOUND_LIB=""
+else
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for Sound_Init in -lSDL_sound" >&5
 printf %s "checking for Sound_Init in -lSDL_sound... " >&6; }
 if test ${ac_cv_lib_SDL_sound_Sound_Init+y}
 then :
@@ -19296,6 +19302,7 @@ else $as_nop
   SDLsoundmissing=y
 fi
 
+fi
 
 
 
@@ -19705,7 +19712,13 @@ fi
 
 
 if test "X$SDLsoundmissing" = "Xy" ; then
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: SDL_sound not found. Using stripped down sound support" >&5
+   if test "x$have_sdl3_mixer" = "xyes"; then
+            { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Using SDL3_mixer built-in audio decoders - no SDL_sound needed" >&5
+printf "%s\n" "$as_me: Using SDL3_mixer built-in audio decoders - no SDL_sound needed" >&6;}
+      SDL_SOUND_LIB=""
+      SdlSoundDir=""
+   else
+      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: SDL_sound not found. Using stripped down sound support" >&5
 printf "%s\n" "$as_me: WARNING: SDL_sound not found. Using stripped down sound support" >&2;}
 
 
@@ -19878,7 +19891,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
 
   rm -f conf.oggtest
 
-   if test "x$OGGFOUND" = "x" ; then
+      if test "x$OGGFOUND" = "x" ; then
 
    as_fn_error $? " ASC requires the Ogg library.
        If you have a distribution supplied Ogg package installed,
@@ -19886,7 +19899,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
        If your distribution does not include the Ogg library, you can get it from
        http://xiph.org/ogg/  " "$LINENO" 5
 
-   fi
+      fi
 
 
 
@@ -20078,14 +20091,14 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
 
   rm -f conf.vorbistest
 
-   if test "x$no_vorbis" = "x" ; then
-      AdditionalIncludeDir="$AdditionalIncludeDir -I\$(abs_top_srcdir)/source/libs/sdl_sound "
+      if test "x$no_vorbis" = "x" ; then
+         AdditionalIncludeDir="$AdditionalIncludeDir -I\$(abs_top_srcdir)/source/libs/sdl_sound "
 
-      SDL_SOUND_LIB="\$(abs_top_builddir)/source/libs/sdl_sound/libSDL_sound_int.la"
+         SDL_SOUND_LIB="\$(abs_top_builddir)/source/libs/sdl_sound/libSDL_sound_int.la"
 
-      SdlSoundDir=sdl_sound
+         SdlSoundDir=sdl_sound
 
-   else
+      else
 
    as_fn_error $? " ASC requires the Vorbis library.
        If you have a distribution supplied Vorbis package installed,
@@ -20093,6 +20106,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
        If your distribution does not include the Vorbis library, you can get it from
        http://xiph.org/vorbis/  " "$LINENO" 5
 
+      fi
    fi
 else
    SDL_SOUND_LIB=-lSDL_sound
@@ -20943,10 +20957,10 @@ fi
 
 
 
-CXXFLAGS="$SAVE_CXXFLAGS $FREETYPE_CFLAGS $AdditionalIncludeDir"
+CXXFLAGS="$SAVE_CXXFLAGS $FREETYPE_CFLAGS $AdditionalIncludeDir $SDL_MIXER_CFLAGS"
 
 
-CFLAGS="$SAVE_CFLAGS $AdditionalIncludeDir"
+CFLAGS="$SAVE_CFLAGS $AdditionalIncludeDir $SDL_MIXER_CFLAGS"
 LIBS="$SAVE_LIBS "
 
 

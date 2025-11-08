@@ -542,16 +542,15 @@ bool PG_MultiLineEdit::eventMouseButtonDown(const SDL_MouseButtonEvent* button) 
 	}
 
 	if (button->button == 1) {
-		Uint8* keys = SDL_GetKeyState(NULL);
-
-		if (!(keys[SDLK_LSHIFT] || keys[SDLK_RSHIFT])) {
+		bool shiftPressed = SDLCompat_IsKeyPressed(SDLK_LSHIFT) || SDLCompat_IsKeyPressed(SDLK_RSHIFT);
+		if (!shiftPressed) {
 			my_mark = -1;
 		}
 
 		unsigned int currentPos, line;
 		GetCursorTextPosFromScreen(button->x, button->y, currentPos, line);
 		SetCursorTextPos(currentPos, line);
-		if (!(keys[SDLK_LSHIFT] || keys[SDLK_RSHIFT])) {
+		if (!shiftPressed) {
 			my_mark = my_cursorPosition;
 		}
 	}

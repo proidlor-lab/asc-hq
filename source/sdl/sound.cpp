@@ -16,7 +16,11 @@
 
 #include <SDL.h>
 #include <SDL_mixer.h>
+#if ASC_HAVE_SDL3_MIXER
+#include "compat/SDL_sound_stub.h"
+#else
 #include <SDL_sound.h>
+#endif
 
 
 
@@ -85,6 +89,7 @@ SoundSystem  :: SoundSystem ( bool muteEffects, bool muteMusic, bool _off )
       return;
    }
 
+#if !ASC_HAVE_SDL3_MIXER
    displayLogMessage(0,"ok\nStep 2/3 (SDL_Sound Sound_Init)...");
    if (!Sound_Init()) {
       displayLogMessage(0,"failed, disabling sound\n");
@@ -95,6 +100,10 @@ SoundSystem  :: SoundSystem ( bool muteEffects, bool muteMusic, bool _off )
    }
    
    sdl_initialized = true;
+#else
+   displayLogMessage(0,"ok (SDL3_mixer handles audio decoding)\nStep 2/3 (skipped)...");
+   sdl_initialized = true;
+#endif
 
    int audio_rate = MIX_DEFAULT_FREQUENCY;
    Uint16 audio_format = MIX_DEFAULT_FORMAT;

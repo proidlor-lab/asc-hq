@@ -28,6 +28,8 @@
 #include "../basestrm.h"
 #include "../misc.h"
 #include "../util/messaginghub.h"
+#include "../palette.h"
+#include "../sgstream.h"
 #include <iostream>
 
 DI_Color::DI_Color() {
@@ -437,6 +439,8 @@ void Surface::FillTransparent()
 void Surface::assignDefaultPalette()
 {
    if ( me && GetPixelFormat().BytesPerPixel() == 1 ) {
+        if (!asc_paletteloaded)
+           loadpalette();
         SDL_Color spal[256];
         memset ( spal, 0, 256* sizeof(SDL_Color));
         for ( int i = 0; i < 256; i++ ) {
@@ -445,6 +449,17 @@ void Surface::assignDefaultPalette()
            spal[i].b = pal[i][2] * 4;;
          }
          SDL_SetColors ( me, spal, 0, 256 );
+         const char* dbg = SDL_getenv("ASC_DEBUG_PALETTE");
+         if (dbg && *dbg) {
+            static bool logged = false;
+            if (!logged) {
+               logged = true;
+               fprintf(stderr, "[ASC SDL3] assignDefaultPalette sample:");
+               for (int i = 0; i < 8; ++i)
+                  fprintf(stderr, " %d:%u,%u,%u", i, spal[i].r, spal[i].g, spal[i].b);
+               fprintf(stderr, "\n");
+            }
+         }
    }
 }
 

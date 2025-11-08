@@ -13,7 +13,7 @@ noinst_LTLIBRARIES	= libsdl.la libsdlsnd.la
 libsdl_la_SOURCES 	= graphics.cpp events.cpp compat/compat.cpp
 libsdl_la_LIBADD	= @SDL_LIBS@ @SDL_IMAGE_LIBS@ 
 
-libsdlsnd_la_SOURCES 	= sound.cpp  
+libsdlsnd_la_SOURCES 	= sound.cpp compat/SDL_sound_stub.cpp  
 libsdlsnd_la_LIBADD	= libsdl.la @SDL_LIBS@ @SDL_MIXER_LIBS@ @SDL_SOUND_LIB@ 
 
 EXTRA_DIST=$(srcdir)/*.h $(srcdir)/compat/*.h $(srcdir)/sdlstretch.cpp $(srcdir)/sdl.vcproj  

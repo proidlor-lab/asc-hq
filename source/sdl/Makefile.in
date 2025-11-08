@@ -110,8 +110,8 @@ AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
-libsdlsnd_la_DEPENDENCIES =
-am_libsdlsnd_la_OBJECTS = sound.lo
+libsdlsnd_la_DEPENDENCIES = libsdl.la
+am_libsdlsnd_la_OBJECTS = sound.lo compat/SDL_sound_stub.lo
 libsdlsnd_la_OBJECTS = $(am_libsdlsnd_la_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -129,7 +129,8 @@ DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ./$(DEPDIR)/events.Plo ./$(DEPDIR)/graphics.Plo \
-	./$(DEPDIR)/sound.Plo compat/$(DEPDIR)/compat.Plo
+	./$(DEPDIR)/sound.Plo compat/$(DEPDIR)/SDL_sound_stub.Plo \
+	compat/$(DEPDIR)/compat.Plo
 am__mv = mv -f
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -386,11 +387,11 @@ AUTOMAKE_OPTIONS = subdir-objects
 MAINTAINERCLEANFILES = Makefile.in
 AM_CXXFLAGS = @SDL_CFLAGS@ @SDL_IMAGE_CFLAGS@ @SDL_MIXER_CFLAGS@ @SIGC_CFLAGS@ @LokiInclude@
 AM_CFLAGS = @SDL_CFLAGS@ @SDL_IMAGE_CFLAGS@ @SDL_MIXER_CFLAGS@
-AM_CPPFLAGS = -I$(srcdir) -I$(top_builddir) -I$(top_srcdir)/source/libs/sdl_sound 
+AM_CPPFLAGS = -I$(srcdir) -I$(top_builddir) -I$(top_srcdir)/source/libs/sdl_sound
 noinst_LTLIBRARIES = libsdl.la libsdlsnd.la
 libsdl_la_SOURCES = graphics.cpp events.cpp compat/compat.cpp
 libsdl_la_LIBADD = @SDL_LIBS@ @SDL_IMAGE_LIBS@ 
-libsdlsnd_la_SOURCES = sound.cpp  
+libsdlsnd_la_SOURCES = sound.cpp compat/SDL_sound_stub.cpp  
 libsdlsnd_la_LIBADD = libsdl.la @SDL_LIBS@ @SDL_MIXER_LIBS@ @SDL_SOUND_LIB@ 
 EXTRA_DIST = $(srcdir)/*.h $(srcdir)/compat/*.h $(srcdir)/sdlstretch.cpp $(srcdir)/sdl.vcproj  
 all: all-am
@@ -448,6 +449,8 @@ compat/compat.lo: compat/$(am__dirstamp) \
 
 libsdl.la: $(libsdl_la_OBJECTS) $(libsdl_la_DEPENDENCIES) $(EXTRA_libsdl_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(CXXLINK)  $(libsdl_la_OBJECTS) $(libsdl_la_LIBADD) $(LIBS)
+compat/SDL_sound_stub.lo: compat/$(am__dirstamp) \
+	compat/$(DEPDIR)/$(am__dirstamp)
 
 libsdlsnd.la: $(libsdlsnd_la_OBJECTS) $(libsdlsnd_la_DEPENDENCIES) $(EXTRA_libsdlsnd_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(CXXLINK)  $(libsdlsnd_la_OBJECTS) $(libsdlsnd_la_LIBADD) $(LIBS)
@@ -463,6 +466,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/events.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/graphics.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sound.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@compat/$(DEPDIR)/SDL_sound_stub.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@compat/$(DEPDIR)/compat.Plo@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
@@ -632,6 +636,7 @@ distclean: distclean-am
 		-rm -f ./$(DEPDIR)/events.Plo
 	-rm -f ./$(DEPDIR)/graphics.Plo
 	-rm -f ./$(DEPDIR)/sound.Plo
+	-rm -f compat/$(DEPDIR)/SDL_sound_stub.Plo
 	-rm -f compat/$(DEPDIR)/compat.Plo
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
@@ -681,6 +686,7 @@ maintainer-clean: maintainer-clean-am
 		-rm -f ./$(DEPDIR)/events.Plo
 	-rm -f ./$(DEPDIR)/graphics.Plo
 	-rm -f ./$(DEPDIR)/sound.Plo
+	-rm -f compat/$(DEPDIR)/SDL_sound_stub.Plo
 	-rm -f compat/$(DEPDIR)/compat.Plo
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic

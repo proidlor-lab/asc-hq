@@ -62,6 +62,18 @@ static inline bool SDL3_GetEventFilter(SDL3_EventFilter* filter, void** userdata
    return SDL_GetEventFilter(filter, userdata);
 }
 
+/* SDL3 changed SDL_Init/SDL_InitSubSystem to return bool instead of int.
+   Provide stable aliases before redefining them below. */
+static inline bool SDL3_Init(SDL_InitFlags flags)
+{
+   return SDL_Init(flags);
+}
+
+static inline bool SDL3_InitSubSystem(SDL_InitFlags flags)
+{
+   return SDL_InitSubSystem(flags);
+}
+
 #ifndef DECLSPEC
 #define DECLSPEC SDL_DECLSPEC
 #endif
@@ -929,6 +941,7 @@ void SDLCompat_WM_SetCaption(const char* title, const char* icon);
 int SDLCompat_EnableUNICODE(int enable);
 int SDLCompat_EnableKeyRepeat(int delay, int interval);
 Uint8* SDLCompat_GetKeyState(int* numkeys);
+Uint8 SDLCompat_IsKeyPressed(SDLKey key);
 const SDL_VideoInfo* SDLCompat_GetVideoInfo(void);
 SDL_Rect** SDLCompat_ListModes(SDL_PixelFormat* format, Uint32 flags);
 const char* SDLCompat_VideoDriverName(char* namebuf, int maxlen);
@@ -955,6 +968,8 @@ void SDLCompat_WarpMouse(Uint16 x, Uint16 y);
 Uint8 SDLCompat_GetAppState(void);
 int SDLCompat_GetWMInfo(SDL_SysWMinfo* info);
 typedef Uint32 (SDLCALL *SDL_TimerCallbackSimple)(Uint32 interval);
+int SDLCompat_Init(Uint32 flags);
+int SDLCompat_InitSubSystem(Uint32 flags);
 SDL_TimerID SDLCompat_AddTimer(Uint32 interval, Uint32 (SDLCALL *callback)(Uint32 interval, void* param), void* param);
 int SDLCompat_RemoveTimer(SDL_TimerID id);
 int SDLCompat_SetTimer(Uint32 interval, SDL_TimerCallbackSimple callback);
@@ -1203,6 +1218,8 @@ int SDLCompat_mutexV(SDL_Mutex* mutex);
 #define SDL_WarpMouse SDLCompat_WarpMouse
 #define SDL_GetAppState SDLCompat_GetAppState
 #define SDL_GetWMInfo SDLCompat_GetWMInfo
+#define SDL_Init SDLCompat_Init
+#define SDL_InitSubSystem SDLCompat_InitSubSystem
 #define SDL_AddTimer SDLCompat_AddTimer
 #define SDL_RemoveTimer SDLCompat_RemoveTimer
 #define SDL_SetTimer SDLCompat_SetTimer

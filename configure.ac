@@ -217,13 +217,13 @@ AC_CHECK_LIB(jpeg,
              AC_LIB_MISSING( jpeg, http://www.ijg.org/,,[ which is VERY unlikely,]))
 
 have_sdl3_mixer=no
-PKG_CHECK_MODULES([SDL3_MIXER], [sdl3-mixer >= 3.2.0],[
+PKG_CHECK_MODULES([SDL3_MIXER], [sdl3-mixer >= 3.1.0],[
    have_sdl3_mixer=yes
    SDL_MIXER_CFLAGS="$SDL3_MIXER_CFLAGS"
    SDL_MIXER_LIBS="$SDL3_MIXER_LIBS"
 ],[
    PKG_CHECK_MODULES([SDL_MIXER_LEGACY], [SDL_mixer >= 1.2.12],,
-      AC_MSG_ERROR([ASC requires audio support via SDL3_mixer >= 3.2.0 (in development) or SDL_mixer >= 1.2.12. Install one of them and rerun configure.]))
+      AC_MSG_ERROR([ASC requires audio support via SDL3_mixer >= 3.1.0 (in development) or SDL_mixer >= 1.2.12. Install one of them and rerun configure.]))
    SDL_MIXER_CFLAGS="$SDL_MIXER_LEGACY_CFLAGS"
    SDL_MIXER_LIBS="$SDL_MIXER_LEGACY_LIBS"
 ])
@@ -237,7 +237,14 @@ else
    AC_DEFINE([ASC_HAVE_SDL3_MIXER], [0], [Define to 1 if SDL3_mixer is available])
 fi
 
-AC_CHECK_LIB( SDL_sound, Sound_Init,,SDLsoundmissing=y)
+dnl Skip SDL_sound when using SDL3_mixer (it has built-in decoders)
+if test "x$have_sdl3_mixer" = "xyes"; then
+   AC_MSG_NOTICE([Skipping SDL_sound check - using SDL3_mixer built-in decoders])
+   SDLsoundmissing=y
+   SDL_SOUND_LIB=""
+else
+   AC_CHECK_LIB( SDL_sound, Sound_Init,,SDLsoundmissing=y)
+fi
 
 
 dnl checking for wxwidgets
@@ -302,25 +309,32 @@ fi
    
      
 if test "X$SDLsoundmissing" = "Xy" ; then
-   AC_MSG_WARN( SDL_sound not found. Using stripped down sound support, which only supports OGG )
-
-   XIPH_PATH_OGG([OGGFOUND=Y])
-   if test "x$OGGFOUND" = "x" ; then 
-      AC_LIB_MISSING( Ogg, http://xiph.org/ogg/ )
-   fi
-
-
-   dnl Check for ogg
-   XIPH_PATH_VORBIS
-   if test "x$no_vorbis" = "x" ; then
-      AdditionalIncludeDir="$AdditionalIncludeDir -I\$(abs_top_srcdir)/source/libs/sdl_sound "
-      
-      SDL_SOUND_LIB="\$(abs_top_builddir)/source/libs/sdl_sound/libSDL_sound_int.la"
-      
-      SdlSoundDir=sdl_sound
-      AC_SUBST(SdlSoundDir)
+   if test "x$have_sdl3_mixer" = "xyes"; then
+      dnl SDL3_mixer has built-in audio decoders, no need for SDL_sound
+      AC_MSG_NOTICE([Using SDL3_mixer built-in audio decoders - no SDL_sound needed])
+      SDL_SOUND_LIB=""
+      SdlSoundDir=""
    else
-      AC_LIB_MISSING( Vorbis, http://xiph.org/vorbis/ )
+      AC_MSG_WARN( SDL_sound not found. Using stripped down sound support, which only supports OGG )
+
+      XIPH_PATH_OGG([OGGFOUND=Y])
+      if test "x$OGGFOUND" = "x" ; then 
+         AC_LIB_MISSING( Ogg, http://xiph.org/ogg/ )
+      fi
+
+
+      dnl Check for ogg
+      XIPH_PATH_VORBIS
+      if test "x$no_vorbis" = "x" ; then
+         AdditionalIncludeDir="$AdditionalIncludeDir -I\$(abs_top_srcdir)/source/libs/sdl_sound "
+         
+         SDL_SOUND_LIB="\$(abs_top_builddir)/source/libs/sdl_sound/libSDL_sound_int.la"
+         
+         SdlSoundDir=sdl_sound
+         AC_SUBST(SdlSoundDir)
+      else
+         AC_LIB_MISSING( Vorbis, http://xiph.org/vorbis/ )
+      fi
    fi
 else
    SDL_SOUND_LIB=-lSDL_sound
@@ -514,10 +528,10 @@ dnl ***********************************
 
 
 dnl restore old flags settings
-CXXFLAGS="$SAVE_CXXFLAGS $FREETYPE_CFLAGS $AdditionalIncludeDir"
+CXXFLAGS="$SAVE_CXXFLAGS $FREETYPE_CFLAGS $AdditionalIncludeDir $SDL_MIXER_CFLAGS"
 
 
-CFLAGS="$SAVE_CFLAGS $AdditionalIncludeDir"
+CFLAGS="$SAVE_CFLAGS $AdditionalIncludeDir $SDL_MIXER_CFLAGS"
 LIBS="$SAVE_LIBS "
 
 

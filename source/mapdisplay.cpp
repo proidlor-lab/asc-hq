@@ -1660,48 +1660,47 @@ bool MapDisplayPG::keyboardHandler( PG_MessageObject* o, const SDL_KeyboardEvent
    if ( !keyEvent || !actmap )
       return false;
 
-   int keyStateNum;
-   Uint8* keyStates = SDL_GetKeyState ( &keyStateNum );
-
    if ( keyEvent->type == SDL_KEYDOWN ) {
       if ( !disableKeyboardCursorMovement ) {
-         if ( keyEvent->keysym.sym == SDLK_RIGHT && keyStates[SDLK_RIGHT] ) {
+         if ( keyEvent->keysym.sym == SDLK_RIGHT && SDLCompat_IsKeyPressed(SDLK_RIGHT) ) {
             moveCursor(2, 1);
             return true;
          }
-         if ( keyEvent->keysym.sym == SDLK_LEFT  && keyStates[SDLK_LEFT]  ) {
+         if ( keyEvent->keysym.sym == SDLK_LEFT  && SDLCompat_IsKeyPressed(SDLK_LEFT)  ) {
             moveCursor(6, 1);
             return true;
          }
-         if ( (keyEvent->keysym.sym == SDLK_UP  && keyStates[SDLK_UP] ) || ( keyEvent->keysym.sym == SDLK_KP8  && keyStates[SDLK_KP8] )) {
+         if ( (keyEvent->keysym.sym == SDLK_UP  && SDLCompat_IsKeyPressed(SDLK_UP) ) ||
+              ( keyEvent->keysym.sym == SDLK_KP8  && SDLCompat_IsKeyPressed(SDLK_KP8) )) {
             moveCursor(0, 1);
             return true;
          }
-         if ( (keyEvent->keysym.sym == SDLK_DOWN  && keyStates[SDLK_DOWN]) || (keyEvent->keysym.sym == SDLK_KP2  && keyStates[SDLK_KP2] )) {
+         if ( (keyEvent->keysym.sym == SDLK_DOWN  && SDLCompat_IsKeyPressed(SDLK_DOWN)) ||
+              (keyEvent->keysym.sym == SDLK_KP2  && SDLCompat_IsKeyPressed(SDLK_KP2) )) {
             moveCursor(4, 1);
             return true;
          }
-         if ( keyEvent->keysym.sym == SDLK_KP6  && keyStates[SDLK_KP6] ) {
+         if ( keyEvent->keysym.sym == SDLK_KP6  && SDLCompat_IsKeyPressed(SDLK_KP6) ) {
             moveCursor(2, 2);
             return true;
          }
-         if ( keyEvent->keysym.sym == SDLK_KP4 && keyStates[SDLK_KP4] ) {
+         if ( keyEvent->keysym.sym == SDLK_KP4 && SDLCompat_IsKeyPressed(SDLK_KP4) ) {
             moveCursor(6, 2);
             return true;
          }
-         if ( keyEvent->keysym.sym == SDLK_KP7  && keyStates[SDLK_KP7] ) {
+         if ( keyEvent->keysym.sym == SDLK_KP7  && SDLCompat_IsKeyPressed(SDLK_KP7) ) {
             moveCursor(7, 1);
             return true;
          }
-         if ( keyEvent->keysym.sym == SDLK_KP9  && keyStates[SDLK_KP9]) {
+         if ( keyEvent->keysym.sym == SDLK_KP9  && SDLCompat_IsKeyPressed(SDLK_KP9)) {
             moveCursor(1, 1);
             return true;
          }
-         if ( keyEvent->keysym.sym == SDLK_KP1  && keyStates[SDLK_KP1]) {
+         if ( keyEvent->keysym.sym == SDLK_KP1  && SDLCompat_IsKeyPressed(SDLK_KP1)) {
             moveCursor(5, 1);
             return true;
          }
-         if ( keyEvent->keysym.sym == SDLK_KP3  && keyStates[SDLK_KP3]) {
+         if ( keyEvent->keysym.sym == SDLK_KP3  && SDLCompat_IsKeyPressed(SDLK_KP3)) {
             moveCursor(3, 1);
             return true;
          }
@@ -1859,5 +1858,3 @@ MapDisplayPG::LockDisplay::~LockDisplay()
          unlockMapdisplay();
    }
 }
-
-

@@ -501,7 +501,8 @@ SDL_Surface* PG_Draw::RotoScaleSurface(SDL_Surface *src, double angle,
 
 	/* Determine if source surface is 32bit or 8bit */
 	is32bit=(SDLCompat_GetSurfaceFormat(src).BitsPerPixel==32);
-	if ( (is32bit) || (SDLCompat_GetSurfaceFormat(src).BitsPerPixel==8)) {
+	bool is8bit = (SDLCompat_GetSurfaceFormat(src).BitsPerPixel==8);
+	if ( (is32bit) || is8bit) {
 		/* Use source surface 'as is' */
 		rz_src=src;
 		src_converted=0;
@@ -660,7 +661,8 @@ SDL_Surface* PG_Draw::ScaleSurface(SDL_Surface *src,
 
 	/* Determine if source surface is 32bit or 8bit */
 	is32bit=(SDLCompat_GetSurfaceFormat(src).BitsPerPixel==32);
-	if ( (is32bit) || (SDLCompat_GetSurfaceFormat(src).BitsPerPixel==8)) {
+	bool is8bit=(SDLCompat_GetSurfaceFormat(src).BitsPerPixel==8);
+	if (is32bit || is8bit) {
 		/* Use source surface 'as is' */
 		rz_src=src;
 		src_converted=0;
@@ -670,6 +672,22 @@ SDL_Surface* PG_Draw::ScaleSurface(SDL_Surface *src,
 		SDL_BlitSurface(src,NULL,rz_src,NULL);
 		src_converted=1;
 		is32bit=1;
+	}
+
+	/* SDL3 can report 8-bit surfaces without attached palettes (e.g. missing SetColors).
+	   Those cannot be safely processed by the 8-bit scaler, so promote them to 32-bit. */
+	if (!is32bit && is8bit && !SDLCompat_GetSurfaceFormat(rz_src).palette) {
+		SDL_Surface* converted = SDL_CreateRGBSurface(SDL_SWSURFACE, rz_src->w, rz_src->h,
+		                                             32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+		if (converted) {
+			SDL_BlitSurface(rz_src, NULL, converted, NULL);
+			if (src_converted)
+				SDL_FreeSurface(rz_src);
+			rz_src = converted;
+			src_converted = 1;
+			is32bit = 1;
+			is8bit = 0;
+		}
 	}
 
 	/* Sanity check zoom factors */
@@ -710,10 +728,26 @@ SDL_Surface* PG_Draw::ScaleSurface(SDL_Surface *src,
 		SDL_SetAlpha(rz_dst, SDL_SRCALPHA , 255);
 	} else {
 		/* Copy palette and colorkey info */
-		for (i=0; i<SDLCompat_GetSurfaceFormat(rz_src).palette->ncolors; i++) {
-			SDLCompat_GetSurfaceFormat(rz_dst).palette->colors[i]=SDLCompat_GetSurfaceFormat(rz_src).palette->colors[i];
+		SDL_Palette* srcPalette = SDLCompat_GetSurfaceFormat(rz_src).palette;
+		SDL_Palette* dstPalette = SDLCompat_GetSurfaceFormat(rz_dst).palette;
+		if (!dstPalette) {
+			SDL_Palette* created = SDL_CreatePalette(256);
+			if (created) {
+				SDL_SetSurfacePalette(rz_dst, created);
+				dstPalette = created;
+			}
 		}
-		SDLCompat_GetSurfaceFormat(rz_dst).palette->ncolors=SDLCompat_GetSurfaceFormat(rz_src).palette->ncolors;
+		if (srcPalette && dstPalette) {
+			if (dstPalette->ncolors < srcPalette->ncolors)
+				SDL_SetSurfacePalette(rz_dst, SDL_CreatePalette(srcPalette->ncolors));
+			dstPalette = SDLCompat_GetSurfaceFormat(rz_dst).palette;
+			if (dstPalette) {
+				for (i=0; i<srcPalette->ncolors && i<dstPalette->ncolors; i++) {
+					dstPalette->colors[i]=srcPalette->colors[i];
+				}
+				dstPalette->ncolors = srcPalette->ncolors;
+			}
+		}
 		/* Call the 8bit transformation routine to do the zooming */
 		zoomSurfaceY(rz_src,rz_dst);
 		SDL_SetColorKey(rz_dst, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDLCompat_GetSurfaceFormat(rz_src).colorkey);
@@ -745,4 +779,3 @@ void PG_Draw::BlitScale(SDL_Surface *src, SDL_Surface *dst, bool smooth) {
  * c-basic-offset: 8
  * End:
  */
-
