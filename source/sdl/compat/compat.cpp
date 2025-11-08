@@ -1305,8 +1305,8 @@ int SDLCompat_SetAlpha(SDL_Surface* surface, Uint32 flag, Uint8 alpha)
       return -1;
 
    SDL_SetSurfaceRLE(surface, (flag & SDL_RLEACCEL) != 0);
-   Uint8 alphaMod = (flag & SDL_SRCALPHA) ? alpha : SDL_ALPHA_OPAQUE;
-   SDL_SetSurfaceAlphaMod(surface, alphaMod);
+   SDL_bool enableBlend = (flag & SDL_SRCALPHA) ? SDL_TRUE : SDL_FALSE;
+   SDL_SetSurfaceAlphaMod(surface, enableBlend ? alpha : SDL_ALPHA_OPAQUE);
    SDL_SetSurfaceBlendMode(surface, (flag & SDL_SRCALPHA) ? SDL_BLENDMODE_BLEND
                                                          : SDL_BLENDMODE_NONE);
    return 0;
