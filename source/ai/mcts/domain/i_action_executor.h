@@ -17,6 +17,9 @@
 #include <vector>
 #include <functional>
 
+// Forward declaration
+class GameMap;
+
 namespace asc {
 namespace mcts {
 
@@ -144,7 +147,7 @@ public:
      * @return Unique pointer to executor
      */
     [[nodiscard]] static std::unique_ptr<IActionExecutor> createRealGameExecutor(
-        class GameMap* gameMap
+        GameMap* gameMap
     );
 };
 

@@ -89,7 +89,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-noinst_PROGRAMS = snapshot_test$(EXEEXT) action_executor_test$(EXEEXT)
+noinst_PROGRAMS = snapshot_test$(EXEEXT) action_executor_test$(EXEEXT) \
+	evaluator_test$(EXEEXT)
 subdir = source/ai/mcts
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
@@ -108,7 +109,9 @@ LTLIBRARIES = $(noinst_LTLIBRARIES)
 libmcts_la_LIBADD =
 am_libmcts_la_OBJECTS = unit_snapshot.lo game_state_reader.lo \
 	action_types.lo simulation_action_executor.lo \
-	real_game_action_executor.lo action_executor_factory.lo
+	real_game_action_executor.lo action_executor_factory.lo \
+	simple_combat_evaluator.lo evaluator_factory.lo mcts_search.lo \
+	mcts_manual_test.lo
 libmcts_la_OBJECTS = $(am_libmcts_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -117,6 +120,9 @@ am__v_lt_1 =
 am_action_executor_test_OBJECTS = action_executor_test.$(OBJEXT)
 action_executor_test_OBJECTS = $(am_action_executor_test_OBJECTS)
 action_executor_test_DEPENDENCIES = libmcts.la
+am_evaluator_test_OBJECTS = evaluator_test.$(OBJEXT)
+evaluator_test_OBJECTS = $(am_evaluator_test_OBJECTS)
+evaluator_test_DEPENDENCIES = libmcts.la
 am_snapshot_test_OBJECTS = snapshot_test.$(OBJEXT)
 snapshot_test_OBJECTS = $(am_snapshot_test_OBJECTS)
 snapshot_test_DEPENDENCIES = libmcts.la
@@ -137,8 +143,12 @@ depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ./$(DEPDIR)/action_executor_factory.Plo \
 	./$(DEPDIR)/action_executor_test.Po \
-	./$(DEPDIR)/action_types.Plo ./$(DEPDIR)/game_state_reader.Plo \
+	./$(DEPDIR)/action_types.Plo ./$(DEPDIR)/evaluator_factory.Plo \
+	./$(DEPDIR)/evaluator_test.Po \
+	./$(DEPDIR)/game_state_reader.Plo \
+	./$(DEPDIR)/mcts_manual_test.Plo ./$(DEPDIR)/mcts_search.Plo \
 	./$(DEPDIR)/real_game_action_executor.Plo \
+	./$(DEPDIR)/simple_combat_evaluator.Plo \
 	./$(DEPDIR)/simulation_action_executor.Plo \
 	./$(DEPDIR)/snapshot_test.Po ./$(DEPDIR)/unit_snapshot.Plo
 am__mv = mv -f
@@ -161,9 +171,9 @@ am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
 SOURCES = $(libmcts_la_SOURCES) $(action_executor_test_SOURCES) \
-	$(snapshot_test_SOURCES)
+	$(evaluator_test_SOURCES) $(snapshot_test_SOURCES)
 DIST_SOURCES = $(libmcts_la_SOURCES) $(action_executor_test_SOURCES) \
-	$(snapshot_test_SOURCES)
+	$(evaluator_test_SOURCES) $(snapshot_test_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -401,13 +411,19 @@ noinst_LTLIBRARIES = libmcts.la
 # Source files
 # Phase 0.1: Game State Cloning
 # Phase 0.2: Action Execution Interface
+# Phase 0.3: Basic Evaluation Function
+# Phase 1: Core MCTS Engine
 libmcts_la_SOURCES = \
 	domain/unit_snapshot.cpp \
 	domain/game_state_reader.cpp \
 	domain/action_types.cpp \
 	domain/simulation_action_executor.cpp \
 	domain/real_game_action_executor.cpp \
-	domain/action_executor_factory.cpp
+	domain/action_executor_factory.cpp \
+	domain/simple_combat_evaluator.cpp \
+	domain/evaluator_factory.cpp \
+	core/mcts_search.cpp \
+	mcts_manual_test.cpp
 
 
 # Header files (for distribution)
@@ -421,6 +437,7 @@ EXTRA_DIST = \
 	$(srcdir)/*.md \
 	$(srcdir)/docs/*.md
 
+# mcts_test - TODO: Requires full ASC library linkage (Phase 1.4 integration)
 
 # Phase 0.1 test
 snapshot_test_SOURCES = domain/snapshot_test.cpp
@@ -429,6 +446,10 @@ snapshot_test_LDADD = libmcts.la
 # Phase 0.2 test
 action_executor_test_SOURCES = domain/action_executor_test.cpp
 action_executor_test_LDADD = libmcts.la
+
+# Phase 0.3 test
+evaluator_test_SOURCES = domain/evaluator_test.cpp
+evaluator_test_LDADD = libmcts.la
 all: all-am
 
 .SUFFIXES:
@@ -490,6 +511,10 @@ action_executor_test$(EXEEXT): $(action_executor_test_OBJECTS) $(action_executor
 	@rm -f action_executor_test$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(action_executor_test_OBJECTS) $(action_executor_test_LDADD) $(LIBS)
 
+evaluator_test$(EXEEXT): $(evaluator_test_OBJECTS) $(evaluator_test_DEPENDENCIES) $(EXTRA_evaluator_test_DEPENDENCIES) 
+	@rm -f evaluator_test$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(evaluator_test_OBJECTS) $(evaluator_test_LDADD) $(LIBS)
+
 snapshot_test$(EXEEXT): $(snapshot_test_OBJECTS) $(snapshot_test_DEPENDENCIES) $(EXTRA_snapshot_test_DEPENDENCIES) 
 	@rm -f snapshot_test$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(snapshot_test_OBJECTS) $(snapshot_test_LDADD) $(LIBS)
@@ -503,8 +528,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/action_executor_factory.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/action_executor_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/action_types.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evaluator_factory.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evaluator_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/game_state_reader.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcts_manual_test.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcts_search.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/real_game_action_executor.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_combat_evaluator.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simulation_action_executor.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/snapshot_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unit_snapshot.Plo@am__quote@ # am--include-marker
@@ -578,6 +608,27 @@ action_executor_factory.lo: domain/action_executor_factory.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o action_executor_factory.lo `test -f 'domain/action_executor_factory.cpp' || echo '$(srcdir)/'`domain/action_executor_factory.cpp
 
+simple_combat_evaluator.lo: domain/simple_combat_evaluator.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT simple_combat_evaluator.lo -MD -MP -MF $(DEPDIR)/simple_combat_evaluator.Tpo -c -o simple_combat_evaluator.lo `test -f 'domain/simple_combat_evaluator.cpp' || echo '$(srcdir)/'`domain/simple_combat_evaluator.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simple_combat_evaluator.Tpo $(DEPDIR)/simple_combat_evaluator.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='domain/simple_combat_evaluator.cpp' object='simple_combat_evaluator.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o simple_combat_evaluator.lo `test -f 'domain/simple_combat_evaluator.cpp' || echo '$(srcdir)/'`domain/simple_combat_evaluator.cpp
+
+evaluator_factory.lo: domain/evaluator_factory.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT evaluator_factory.lo -MD -MP -MF $(DEPDIR)/evaluator_factory.Tpo -c -o evaluator_factory.lo `test -f 'domain/evaluator_factory.cpp' || echo '$(srcdir)/'`domain/evaluator_factory.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/evaluator_factory.Tpo $(DEPDIR)/evaluator_factory.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='domain/evaluator_factory.cpp' object='evaluator_factory.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o evaluator_factory.lo `test -f 'domain/evaluator_factory.cpp' || echo '$(srcdir)/'`domain/evaluator_factory.cpp
+
+mcts_search.lo: core/mcts_search.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mcts_search.lo -MD -MP -MF $(DEPDIR)/mcts_search.Tpo -c -o mcts_search.lo `test -f 'core/mcts_search.cpp' || echo '$(srcdir)/'`core/mcts_search.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mcts_search.Tpo $(DEPDIR)/mcts_search.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='core/mcts_search.cpp' object='mcts_search.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mcts_search.lo `test -f 'core/mcts_search.cpp' || echo '$(srcdir)/'`core/mcts_search.cpp
+
 action_executor_test.o: domain/action_executor_test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT action_executor_test.o -MD -MP -MF $(DEPDIR)/action_executor_test.Tpo -c -o action_executor_test.o `test -f 'domain/action_executor_test.cpp' || echo '$(srcdir)/'`domain/action_executor_test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/action_executor_test.Tpo $(DEPDIR)/action_executor_test.Po
@@ -591,6 +642,20 @@ action_executor_test.obj: domain/action_executor_test.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='domain/action_executor_test.cpp' object='action_executor_test.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o action_executor_test.obj `if test -f 'domain/action_executor_test.cpp'; then $(CYGPATH_W) 'domain/action_executor_test.cpp'; else $(CYGPATH_W) '$(srcdir)/domain/action_executor_test.cpp'; fi`
+
+evaluator_test.o: domain/evaluator_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT evaluator_test.o -MD -MP -MF $(DEPDIR)/evaluator_test.Tpo -c -o evaluator_test.o `test -f 'domain/evaluator_test.cpp' || echo '$(srcdir)/'`domain/evaluator_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/evaluator_test.Tpo $(DEPDIR)/evaluator_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='domain/evaluator_test.cpp' object='evaluator_test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o evaluator_test.o `test -f 'domain/evaluator_test.cpp' || echo '$(srcdir)/'`domain/evaluator_test.cpp
+
+evaluator_test.obj: domain/evaluator_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT evaluator_test.obj -MD -MP -MF $(DEPDIR)/evaluator_test.Tpo -c -o evaluator_test.obj `if test -f 'domain/evaluator_test.cpp'; then $(CYGPATH_W) 'domain/evaluator_test.cpp'; else $(CYGPATH_W) '$(srcdir)/domain/evaluator_test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/evaluator_test.Tpo $(DEPDIR)/evaluator_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='domain/evaluator_test.cpp' object='evaluator_test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o evaluator_test.obj `if test -f 'domain/evaluator_test.cpp'; then $(CYGPATH_W) 'domain/evaluator_test.cpp'; else $(CYGPATH_W) '$(srcdir)/domain/evaluator_test.cpp'; fi`
 
 snapshot_test.o: domain/snapshot_test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT snapshot_test.o -MD -MP -MF $(DEPDIR)/snapshot_test.Tpo -c -o snapshot_test.o `test -f 'domain/snapshot_test.cpp' || echo '$(srcdir)/'`domain/snapshot_test.cpp
@@ -740,8 +805,13 @@ distclean: distclean-am
 		-rm -f ./$(DEPDIR)/action_executor_factory.Plo
 	-rm -f ./$(DEPDIR)/action_executor_test.Po
 	-rm -f ./$(DEPDIR)/action_types.Plo
+	-rm -f ./$(DEPDIR)/evaluator_factory.Plo
+	-rm -f ./$(DEPDIR)/evaluator_test.Po
 	-rm -f ./$(DEPDIR)/game_state_reader.Plo
+	-rm -f ./$(DEPDIR)/mcts_manual_test.Plo
+	-rm -f ./$(DEPDIR)/mcts_search.Plo
 	-rm -f ./$(DEPDIR)/real_game_action_executor.Plo
+	-rm -f ./$(DEPDIR)/simple_combat_evaluator.Plo
 	-rm -f ./$(DEPDIR)/simulation_action_executor.Plo
 	-rm -f ./$(DEPDIR)/snapshot_test.Po
 	-rm -f ./$(DEPDIR)/unit_snapshot.Plo
@@ -793,8 +863,13 @@ maintainer-clean: maintainer-clean-am
 		-rm -f ./$(DEPDIR)/action_executor_factory.Plo
 	-rm -f ./$(DEPDIR)/action_executor_test.Po
 	-rm -f ./$(DEPDIR)/action_types.Plo
+	-rm -f ./$(DEPDIR)/evaluator_factory.Plo
+	-rm -f ./$(DEPDIR)/evaluator_test.Po
 	-rm -f ./$(DEPDIR)/game_state_reader.Plo
+	-rm -f ./$(DEPDIR)/mcts_manual_test.Plo
+	-rm -f ./$(DEPDIR)/mcts_search.Plo
 	-rm -f ./$(DEPDIR)/real_game_action_executor.Plo
+	-rm -f ./$(DEPDIR)/simple_combat_evaluator.Plo
 	-rm -f ./$(DEPDIR)/simulation_action_executor.Plo
 	-rm -f ./$(DEPDIR)/snapshot_test.Po
 	-rm -f ./$(DEPDIR)/unit_snapshot.Plo
@@ -834,6 +909,10 @@ uninstall-am:
 
 .PRECIOUS: Makefile
 
+
+# Phase 1 test (DISABLED - needs full ASC library)
+# mcts_test_SOURCES = core/mcts_test.cpp
+# mcts_test_LDADD = libmcts.la $(top_builddir)/source/libasc.la
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
