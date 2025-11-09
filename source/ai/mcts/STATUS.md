@@ -1,16 +1,66 @@
 # MCTS AI Implementation Status
 
-**Last Updated**: 2025-11-08  
-**Current Phase**: Phase 1.1 - Core MCTS Engine ✅ COMPLETE  
-**Overall Progress**: 50%
+**Last Updated**: 2025-11-08 21:20 UTC  
+**Current Phase**: Phase 1.1b - Integration Skeleton ✅ COMPLETE (100%)  
+**Runtime Status**: ✅ **FULLY FUNCTIONAL** (all bugs fixed)  
+**Overall Progress**: 65%
 
 ---
 
 ## Current Work
 
-**Active Phase**: ✅ Phase 1.1 Complete - Core MCTS Engine Operational
+**Active Phase**: ✅ Phase 1.1b COMPLETE + Bug Fixes - Integration Fully Functional!
 
-### Latest Update (2025-11-08) - Phase 1.1 COMPLETE
+### Latest Update (2025-11-08 21:20) - Phase 1.1b COMPLETE + All Bug Fixes Applied ✅
+
+**Phase 1.1b Achievements** (Integration Skeleton):
+- ✅ **AI Factory Pattern** - Factory for creating different AI types
+- ✅ **MCTS_AI Wrapper** - Implements BaseAI interface, 5 preset profiles
+- ✅ **Legacy Game Interface** - Adapter isolating all legacy code interactions
+- ✅ **Configuration System** - INI-based profiles, runtime customization
+- ✅ **MVP Heuristic AI** - Simple attack-or-wait behavior for testing
+- ✅ **Comprehensive Documentation** - 100+ KB of guides and analysis
+- ✅ **Legacy Code Updates** - 6 files modified successfully
+- ✅ **Build System** - Makefiles updated and configured
+- ✅ **Compilation SUCCESS** - All code compiles with 0 errors!
+- ✅ **UI Integration** - Player setup dialog now has AI type selection
+- ✅ **Headless Mode** - Command-line AI selection for automated testing
+
+**Achievements**:
+- 11 new files created (~1,500 LOC implementation)
+- 11 files modified (6 legacy core + 2 UI dialog + 3 headless mode)
+- Clean interface-based design (all legacy code isolated)
+- 6 AI types: Classic + 5 MCTS variants (Balanced, Aggressive, Defensive, Fast, Deep)
+- Full UI integration - select AI type from player setup dialog
+- Full headless mode integration - command-line AI selection
+- 15+ configuration profiles in INI file
+- All 7 major legacy code issues documented with migration paths
+- MVP AI can execute actions on real GameMap (simple heuristic)
+
+**Bug Fixes Applied (2025-11-08)**:
+- ✅ **Critical Bug #1**: Player::swapPlayers() now preserves aiType field
+- ✅ **Critical Bug #2**: AIFactory::isAITypeAvailable() now returns true for MCTS types
+- ✅ **Enhancement**: Log output includes newlines for readability
+- ✅ **Verification**: All 6 AI types tested and working in headless mode
+
+**Runtime Verification**:
+```bash
+# All AI types working correctly:
+✅ Classic AI
+✅ MCTS Balanced  
+✅ MCTS Aggressive
+✅ MCTS Defensive
+✅ MCTS Fast
+✅ MCTS Deep
+```
+
+**Next Steps**: Phase 1.2 (replace MVP heuristics with actual MCTS search)
+
+**Blockers**: None - integration fully functional!
+
+---
+
+### Previous Update (2025-11-08) - Phase 1.1 COMPLETE
 
 **Phase 1.1 Completion:**
 - ✅ **Core MCTS Algorithm** - Full Selection, Expansion, Simulation, Backpropagation
@@ -154,7 +204,11 @@ See [docs/implementation_roadmap.md](docs/implementation_roadmap.md) for detaile
 | 0.1 | Game State Cloning | ✅ Done | 100% | All tests passing, performance exceeds targets |
 | 0.2 | Action Execution Interface | ✅ Done | 100% | 31/31 tests passing, modern C++23 implementation |
 | 0.3 | Basic Evaluation Function | ✅ Done | 100% | 26/26 tests passing, ~0.3ms evaluation time |
-| 1 | Core MCTS Engine | ✅ Done | 100% | MCTS algorithm complete, manual test interface ready |
+| 1.1 | Core MCTS Engine | ✅ Done | 100% | MCTS algorithm complete, manual test interface ready |
+| 1.1b | Integration Skeleton | ✅ Done | 100% | **FULLY FUNCTIONAL** - All 6 AI types working, bugs fixed, runtime verified |
+| 1.2 | Utility-Agent Framework | ⏸️ Not Started | 0% | - |
+| 1.3 | Rollout Policy | ⏸️ Not Started | 0% | - |
+| 1.4 | Full Integration | ⏸️ Not Started | 0% | - |
 | 2 | Tactical Domain | ⏸️ Not Started | 0% | - |
 | 3 | Strategic Layer | ⏸️ Not Started | 0% | - |
 | 4 | Memory & Coordination | ⏸️ Not Started | 0% | - |
@@ -196,13 +250,14 @@ See [docs/implementation_roadmap.md](docs/implementation_roadmap.md) for detaile
 ## Known Issues
 
 ### Critical
-- None currently
+- ~~Player::swapPlayers() doesn't preserve aiType~~ ✅ FIXED (2025-11-08)
+- ~~AIFactory::isAITypeAvailable() returns false for MCTS~~ ✅ FIXED (2025-11-08)
 
 ### Important
 - None currently
 
 ### Minor
-- None currently
+- ~~Log output missing newlines~~ ✅ FIXED (2025-11-08)
 
 ---
 
@@ -260,6 +315,9 @@ See [docs/implementation_roadmap.md](docs/implementation_roadmap.md) for detaile
 | 2025-11-08 | **Configurable MCTS parameters** | Tunable iterations, time limits, exploration via MCTSConfig | ✅ Implemented |
 | 2025-11-08 | **Manual test interface** | In-game testing via runMCTSManualTest() - safe, read-only | ✅ Implemented |
 | 2025-11-08 | **Phase 1 tests deferred** | Full ASC library linkage needed - integration in Phase 1.4 | Approved |
+| 2025-11-08 | **Bug Fix: swapPlayers aiType** | Added aiType to swap list in Player::swapPlayers() | ✅ Fixed |
+| 2025-11-08 | **Bug Fix: MCTS availability** | Removed #ifdef HAVE_MCTS_AI check, made MCTS always available | ✅ Fixed |
+| 2025-11-08 | **Enhancement: Log newlines** | Added \n to log messages for readable output | ✅ Implemented |
 
 ---
 

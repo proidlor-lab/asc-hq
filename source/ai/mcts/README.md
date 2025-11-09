@@ -7,24 +7,38 @@
 ## 🚀 Quick Start
 
 ```bash
-# Build
-cd source/ai/mcts
-make
+# Build ASC with MCTS AI
+cd /path/to/asc-hq
+./bootstrap && ./configure && make
 
-# Run tests
-./snapshot_test
+# Test AI types in headless mode
+./source/unix/asc/asc --headless \
+    --mapfile data/maps/tutorial.ascmap \
+    --player1 mcts_balanced \
+    --player2 classic \
+    --turnlimit 10
 
-# See: QUICKSTART.md for details
+# All AI types available:
+# classic, mcts_balanced, mcts_aggressive, mcts_defensive, mcts_fast, mcts_deep
+
+# See: QUICKSTART.md, HEADLESS_MODE_INTEGRATION.md for details
 ```
 
 ---
 
 ## 📊 Status
 
-**Phase 0.1**: ✅ Complete (Game State Snapshots)  
+**Phase 1.1b**: ✅ **COMPLETE** (Integration Skeleton)  
+**Runtime**: ✅ **FULLY FUNCTIONAL** (all bugs fixed)  
 **Build**: ✅ Successful  
 **Tests**: ✅ All Passing  
-**Performance**: ✅ Exceeds targets
+**AI Types**: ✅ 6 variants working (Classic + 5 MCTS profiles)
+
+**Latest**: All critical bugs fixed (2025-11-08 21:20 UTC)
+- ✅ Player::swapPlayers() preserves aiType
+- ✅ AIFactory correctly creates MCTS AI types
+- ✅ Log output readable with newlines
+- ✅ All 6 AI types verified in headless mode
 
 See [STATUS.md](STATUS.md) for detailed progress.
 
@@ -32,20 +46,31 @@ See [STATUS.md](STATUS.md) for detailed progress.
 
 ## 📚 Documentation
 
-### Essential
+### Essential (Start Here)
+- **[README.md](README.md)** - This file (quick overview)
 - **[QUICKSTART.md](QUICKSTART.md)** - Build, test, troubleshoot
-- **[STATUS.md](STATUS.md)** - Current progress
+- **[STATUS.md](STATUS.md)** - Current progress & next steps
 - **[PROJECT_CHARTER.md](PROJECT_CHARTER.md)** - Goals & scope
 
-### Implementation
-- **[IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md)** - Phase 0.1 technical details
-- **[CPP23_NOTES.md](docs/CPP23_NOTES.md)** - C++23 modernization notes
+### Implementation Guides
+- **[INTEGRATION_NOTES.md](INTEGRATION_NOTES.md)** - Legacy code integration status
+- **[HEADLESS_MODE_INTEGRATION.md](HEADLESS_MODE_INTEGRATION.md)** - Command-line AI selection
+- **[VERIFICATION_GUIDE.md](VERIFICATION_GUIDE.md)** - How to verify MCTS is working
+- **[SPECIFICATION_GAPS.md](SPECIFICATION_GAPS.md)** - Known limitations & future work (TODOs)
 
 ### Technical Design (`docs/`)
-- **[hierarchical_state_design.md](docs/hierarchical_state_design.md)** - Architecture
+- **[hierarchical_state_design.md](docs/hierarchical_state_design.md)** - Architecture overview
 - **[implementation_roadmap.md](docs/implementation_roadmap.md)** - Full roadmap
 - **[game_description.md](docs/game_description.md)** - ASC mechanics
 - **[code_structure.md](docs/code_structure.md)** - Codebase analysis
+- **[CPP23_NOTES.md](docs/CPP23_NOTES.md)** - C++23 modernization notes
+
+### Historical Documentation (`docs/history/`)
+- **[INDEX.md](docs/history/INDEX.md)** - Index of all historical docs
+- Phase completion reports (0.1, 0.2, 0.3, 1.1b)
+- Bug fix documentation
+- Build milestone reports
+- See `docs/history/` for complete archive
 
 ---
 
@@ -71,11 +96,16 @@ ASC Game Integration
 
 ```
 source/ai/mcts/
-├── domain/          ✅ Game state snapshots (Phase 0.1 complete)
-├── core/            ⏸️  MCTS engine (Phase 1)
+├── domain/          ✅ Game state snapshots, actions, evaluation
+├── core/            ✅ MCTS engine (Phase 1.1 complete)
+├── infrastructure/  ✅ Legacy game interface, config
 ├── agents/          ⏸️  Agent logic (Phase 2)
-├── coordination/    ⏸️  Multi-agent (Phase 4)
-└── infrastructure/  ⏸️  Config, logging (ongoing)
+└── coordination/    ⏸️  Multi-agent (Phase 4)
+
+source/ai/
+├── ai_factory.h/cpp ✅ Factory pattern for AI creation
+├── mcts_ai.h/cpp    ✅ MCTS AI wrapper (implements BaseAI)
+└── ai_config.h      ✅ Configuration system
 ```
 
 ---

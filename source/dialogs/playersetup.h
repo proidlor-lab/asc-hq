@@ -34,6 +34,8 @@ class PlayerSetupWidget : public PG_ScrollWidget {
       struct PlayerWidgets {
          PG_LineEdit* name;
          PG_DropDown* type;
+         PG_DropDown* aiType;  // NEW: AI type selection (shown only for computer players)
+         PG_Label* aiTypeLabel;  // NEW: Label for AI type dropdown
          int pos;
       };
          
@@ -48,7 +50,9 @@ class PlayerSetupWidget : public PG_ScrollWidget {
       static int guessHeight( GameMap* gamemap );
       
    private:
-      Mode mode;   
+      Mode mode;
+      void updateAITypeVisibility( PlayerWidgets& pw, int selectedStatus );
+      bool SIGC_onPlayerTypeChanged( PG_ListBoxBaseItem* item, PlayerWidgets* pw );   
 };
 
 extern void setupPlayers( GameMap* actmap, bool supervisor = false );

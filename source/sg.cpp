@@ -151,6 +151,7 @@
 
 #include "mapdisplay.h"
 #include "headlessstats.h"
+#include "ai/ai_factory.h"
 
 #ifndef __RUNAI_DECLARED
 #define __RUNAI_DECLARED
@@ -1594,14 +1595,57 @@ bool normalizePlayerSpec( const std::string& input, const std::string& fallback,
 {
    std::string value = input.empty() ? fallback : input;
    std::string lower = toLowerCopy( value );
+   
+   // Legacy compatibility: "ai" defaults to classic AI
    if ( lower == "ai" )
-      lower = "ai1";
+      lower = "classic";
+   
+   // Support legacy "ai1" and "ai2" (map to classic AI)
    if ( lower == "ai1" || lower == "ai2" ) {
+      lower = "classic";
+   }
+   
+   // Validate AI type name
+   if ( lower == "classic" || 
+        lower == "mcts_balanced" || lower == "mcts-balanced" ||
+        lower == "mcts_aggressive" || lower == "mcts-aggressive" ||
+        lower == "mcts_defensive" || lower == "mcts-defensive" ||
+        lower == "mcts_fast" || lower == "mcts-fast" ||
+        lower == "mcts_deep" || lower == "mcts-deep" ) {
+      // Normalize underscores to match our internal naming
+      if ( lower.find('-') != std::string::npos ) {
+         // Replace dashes with underscores
+         for ( size_t i = 0; i < lower.size(); ++i ) {
+            if ( lower[i] == '-' )
+               lower[i] = '_';
+         }
+      }
       normalized = lower;
       return true;
    }
-   errorMessage = ASCString( "Unsupported AI specification: " ) + value;
+   
+   errorMessage = ASCString( "Unsupported AI specification: " ) + value + 
+                  "\nValid options: classic, mcts_balanced, mcts_aggressive, mcts_defensive, mcts_fast, mcts_deep";
    return false;
+}
+
+int aiNameToType( const std::string& aiName )
+{
+   // Convert AI name to AIFactory::AIType enum value
+   if ( aiName == "classic" )
+      return AIFactory::AI_CLASSIC;
+   else if ( aiName == "mcts_balanced" )
+      return AIFactory::AI_MCTS_BALANCED;
+   else if ( aiName == "mcts_aggressive" )
+      return AIFactory::AI_MCTS_AGGRESSIVE;
+   else if ( aiName == "mcts_defensive" )
+      return AIFactory::AI_MCTS_DEFENSIVE;
+   else if ( aiName == "mcts_fast" )
+      return AIFactory::AI_MCTS_FAST;
+   else if ( aiName == "mcts_deep" )
+      return AIFactory::AI_MCTS_DEEP;
+   else
+      return AIFactory::AI_CLASSIC;  // Default to classic
 }
 
 int countLivingParticipants( const GameMap& map, const std::vector<int>& participants, int* lastAlive )
@@ -1696,17 +1740,18 @@ static int runHeadlessMode( Cmdline& cl )
    ASCString normalizeError;
    std::string player1Spec;
    std::string player2Spec;
-   if ( !normalizePlayerSpec( cl.player1(), "ai1", player1Spec, normalizeError ) ) {
+   if ( !normalizePlayerSpec( cl.player1(), "classic", player1Spec, normalizeError ) ) {
       errorMessage( normalizeError );
       return 1;
    }
-   if ( !normalizePlayerSpec( cl.player2(), "ai2", player2Spec, normalizeError ) ) {
+   if ( !normalizePlayerSpec( cl.player2(), "classic", player2Spec, normalizeError ) ) {
       errorMessage( normalizeError );
       return 1;
    }
 
    ASCString startMessage( "Headless: map=" );
    startMessage += cl.l().c_str();
+   startMessage += "\n";
    displayLogMessage( 1, startMessage );
 
    try {
@@ -1761,8 +1806,11 @@ static int runHeadlessMode( Cmdline& cl )
 
    const std::string statsLogPath = "headless_stats.log";
 
-   for ( std::vector<int>::const_iterator it = participants.begin(); it != participants.end(); ++it ) {
-      int idx = *it;
+   // Configure AI types for participants
+   std::string playerSpecs[2] = { player1Spec, player2Spec };
+   
+   for ( size_t i = 0; i < participants.size() && i < 2; ++i ) {
+      int idx = participants[i];
       if ( idx < 0 || idx >= actmap->getPlayerCount() )
          continue;
       Player& player = actmap->player[idx];
@@ -1771,13 +1819,20 @@ static int runHeadlessMode( Cmdline& cl )
          player.ai = NULL;
       }
       player.stat = Player::computer;
+      
+      // Set AI type based on command-line specification
+      player.aiType = aiNameToType( playerSpecs[i] );
+      
+      ASCString aiTypeLog;
+      aiTypeLog.format( "  Player %d AI type set to: %s (type=%d)\n", idx, playerSpecs[i].c_str(), player.aiType );
+      displayLogMessage( 1, aiTypeLog );
    }
 
    headlessStatsBegin( actmap, actmap->getPlayerCount(), participants, statsLogPath );
    HeadlessStatsGuard statsGuard;
 
    ASCString participantLog;
-   participantLog.format( "Headless participants: player 1 -> %s, player 2 -> %s", player1Spec.c_str(), player2Spec.c_str() );
+   participantLog.format( "Headless participants: player 1 -> %s, player 2 -> %s\n", player1Spec.c_str(), player2Spec.c_str() );
    displayLogMessage( 1, participantLog );
 
    int turnLimit = cl.turnLimit();

@@ -34,6 +34,7 @@
 #include "spfst.h"
 #include "dlg_box.h"
 #include "ai/ai.h"
+#include "ai/ai_factory.h"
 #include "dialog.h"
 #include "strtmesg.h"
 #include "loaders.h"
@@ -101,8 +102,16 @@ void runai( GameMap* actmap, int playerView, MapDisplayInterface* display )
 
    computeview( actmap );
 
-   if ( !actmap->player[ actmap->actplayer ].ai )
-      actmap->player[ actmap->actplayer ].ai = new AI ( actmap, actmap->actplayer );
+   if ( !actmap->player[ actmap->actplayer ].ai ) {
+      // Create AI using factory based on player's aiType
+      int playerAiType = actmap->player[ actmap->actplayer ].aiType;
+      displayLogMessage( 1, ASCString("DEBUG: Creating AI for player ") + ASCString::toString(actmap->actplayer) + 
+                            ", aiType field = " + ASCString::toString(playerAiType) + "\n");
+      
+      AIFactory::AIType aiType = static_cast<AIFactory::AIType>(playerAiType);
+      actmap->player[ actmap->actplayer ].ai = 
+         AIFactory::createAI( aiType, actmap, actmap->actplayer );
+   }
 
    actmap->player[ actmap->actplayer ].ai->run( display );
    updateFieldInfo();

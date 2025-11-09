@@ -21,8 +21,10 @@
 
 #include <sstream>
 #include <pgimage.h>
+#include <pglabel.h>
 
 #include "playersetup.h"
+#include "../ai/ai_factory.h"
 
 
 
@@ -35,7 +37,8 @@ int PlayerSetupWidget::guessHeight( GameMap* gamemap )
       if ( gamemap->player[i].exist() )
          ++counter;
    
-   return yoffset + counter * spacing + 5;
+   // Increased spacing to accommodate AI type dropdown
+   return yoffset + counter * (spacing + 25) + 5;
 }
 
 PlayerSetupWidget::PlayerSetupWidget( GameMap* gamemap, Mode mode, PG_Widget *parent, const PG_Rect &r, const std::string &style ) : PG_ScrollWidget( parent, r, style ) , actmap ( gamemap )
@@ -49,9 +52,9 @@ PlayerSetupWidget::PlayerSetupWidget( GameMap* gamemap, Mode mode, PG_Widget *pa
          PlayerWidgets pw;
          pw.pos  = i;
          
-         int y = yoffset + counter * spacing;
+         int y = yoffset + counter * (spacing + 25);  // Increased spacing for AI type dropdown
          
-         ColoredBar* colbar = new ColoredBar( actmap->player[i].getColor(), this, PG_Rect( 20, y, Width() - 60, 30 ));
+         ColoredBar* colbar = new ColoredBar( actmap->player[i].getColor(), this, PG_Rect( 20, y, Width() - 60, 60 ));
          colbar->SetTransparency( 128 );
          
          
@@ -86,7 +89,46 @@ PlayerSetupWidget::PlayerSetupWidget( GameMap* gamemap, Mode mode, PG_Widget *pa
          col->SetBackgroundColor ( actmap->player[i].getColor());
          col->SetBorderSize(0);
 
+         // NEW: Add AI type selection dropdown (initially hidden)
+         if ( mode != SelfEditable  || actmap->actplayer == i ) {
+            int aiY = 35;  // Position below player status dropdown
+            
+            pw.aiTypeLabel = new PG_Label( colbar, PG_Rect( y1 + 20, aiY, 60, 15 ), "AI Type:" );
+            pw.aiTypeLabel->SetFontSize(10);
+            
+            pw.aiType = new PG_DropDown( colbar, PG_Rect( y1 + 85, aiY, colbar->Width() - y1 - 105, 20 ));
+            pw.aiType->SetEditable(false);
+            
+            // Populate AI types
+            pw.aiType->AddItem( "Classic AI" );
+            pw.aiType->AddItem( "MCTS Balanced" );
+            pw.aiType->AddItem( "MCTS Aggressive" );
+            pw.aiType->AddItem( "MCTS Defensive" );
+            pw.aiType->AddItem( "MCTS Fast" );
+            pw.aiType->AddItem( "MCTS Deep" );
+            
+            // Set current AI type
+            int aiTypeIndex = actmap->player[i].aiType;
+            if (aiTypeIndex >= 0 && aiTypeIndex < 6) {
+               pw.aiType->SelectItem( aiTypeIndex );
+            } else {
+               pw.aiType->SelectItem( 0 );  // Default to Classic
+            }
+            
+            // Initial visibility update
+            updateAITypeVisibility( pw, actmap->player[i].stat );
+         } else {
+            pw.aiType = NULL;
+            pw.aiTypeLabel = NULL;
+         }
+
          playerWidgets.push_back( pw );
+         
+         // Connect signal AFTER adding to vector so we have valid pointer
+         if ( pw.type ) {
+            PlayerWidgets* pwPtr = &playerWidgets.back();
+            pw.type->sigSelectItem.connect( sigc::bind( sigc::mem_fun( *this, &PlayerSetupWidget::SIGC_onPlayerTypeChanged ), pwPtr ));
+         }
                         
          ++counter;
       } else
@@ -120,11 +162,45 @@ bool PlayerSetupWidget::Apply() {
       
    for ( vector<PlayerWidgets>::iterator i = playerWidgets.begin(); i != playerWidgets.end(); ++i ) {
       actmap->player[i->pos].setName( i->name->GetText() );
-      if ( i->type )
+      if ( i->type ) {
          actmap->player[i->pos].stat = Player::PlayerStatus( i->type->GetSelectedItemIndex() );
+         
+         // NEW: Save AI type selection
+         if ( i->aiType ) {
+            actmap->player[i->pos].aiType = i->aiType->GetSelectedItemIndex();
+         }
+      }
    }
    return true;
 };
+
+// NEW: Update visibility of AI type dropdown based on player status
+void PlayerSetupWidget::updateAITypeVisibility( PlayerWidgets& pw, int selectedStatus )
+{
+   if ( !pw.aiType || !pw.aiTypeLabel )
+      return;
+      
+   // Show AI type dropdown only when player is "computer"
+   bool isComputer = (selectedStatus == Player::computer);
+   
+   if ( isComputer ) {
+      pw.aiType->Show();
+      pw.aiTypeLabel->Show();
+   } else {
+      pw.aiType->Hide();
+      pw.aiTypeLabel->Hide();
+   }
+}
+
+// NEW: Signal handler for player type changes
+bool PlayerSetupWidget::SIGC_onPlayerTypeChanged( PG_ListBoxBaseItem* item, PlayerWidgets* pw )
+{
+   if ( pw && pw->type ) {
+      int selectedIndex = pw->type->GetSelectedItemIndex();
+      updateAITypeVisibility( *pw, selectedIndex );
+   }
+   return true;
+}
 
 
 class PlayerSetupWindow : public ASC_PG_Dialog {

@@ -58,6 +58,7 @@
 
 #ifdef sgmain
 # include "ai/ai.h"
+# include "ai/ai_factory.h"
 #endif
 
 
@@ -404,8 +405,11 @@ void tgameloaders :: writeAI ( )
    stream->writeInt ( a );
 
    for ( int i = 0; i < 8; i++ )
-      if ( spfld->player[i].ai )
+      if ( spfld->player[i].ai ) {
+         // Write AI type for future loading
+         stream->writeInt( spfld->player[i].aiType );
          spfld->player[i].ai->write( *stream );
+      }
 #else
    stream->writeInt(0);
 #endif
@@ -417,11 +421,31 @@ void tgameloaders :: readAI ( )
    int a = stream->readInt();
    for ( int i = 0; i< 8; i++ )
       if ( a & ( 1 << i ) ) {
-         AI* ai = new AI ( spfld, i );
-         ai->read ( *stream );
-         spfld->player[i].ai = ai;
+         // Read AI type (with backward compatibility for old save files)
+         int aiTypeValue = 0; // Default to classic AI
+         
+         // Try to read AI type - if this fails, it's an old save file
+         // Old saves will throw or return invalid data, we'll catch it
+         try {
+            aiTypeValue = stream->readInt();
+            
+            // Validate AI type - if invalid, use classic
+            if ( !AIFactory::isValidAIType( aiTypeValue ) ) {
+               aiTypeValue = 0;
+            }
+         } catch (...) {
+            // Old save file format - default to classic AI
+            aiTypeValue = 0;
+         }
+         
+         // Create AI using factory
+         AIFactory::AIType aiType = static_cast<AIFactory::AIType>( aiTypeValue );
+         spfld->player[i].aiType = aiTypeValue;
+         spfld->player[i].ai = AIFactory::createAI( aiType, spfld, i );
+         spfld->player[i].ai->read ( *stream );
       } else {
          spfld->player[i].ai = NULL;
+         spfld->player[i].aiType = 0;
       }
 #else
    for ( int i = 0; i< 9; i++ )

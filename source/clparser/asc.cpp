@@ -65,8 +65,8 @@ Cmdline::Cmdline(int argc, char *argv[])
   _h = false;
   _v = false;
   _headless = false;
-  _player1 = "";
-  _player2 = "";
+  _player1 = "classic";
+  _player2 = "classic";
   _turnLimit = 0;
 
   while ((c = getopt_long(argc, argv, "x:y:l:c:r:wfqhvHM:P:Q:T:", long_options, &option_index)) != EOF)
@@ -298,17 +298,19 @@ void Cmdline::usage()
   cout << "(";
   cout << "type=";
   cout << "STRING,";
-  cout << " default=ai1";
+  cout << " default=classic";
   cout << ")\n";
-  cout << "         Configure player 1 controller for headless mode.\n";
+  cout << "         Configure player 1 AI type for headless mode.\n";
+  cout << "         Options: classic, mcts_balanced, mcts_aggressive, mcts_defensive, mcts_fast, mcts_deep\n";
   cout << "  [ -Q ] ";
   cout << "[ --player2 ]  ";
   cout << "(";
   cout << "type=";
   cout << "STRING,";
-  cout << " default=ai2";
+  cout << " default=classic";
   cout << ")\n";
-  cout << "         Configure player 2 controller for headless mode.\n";
+  cout << "         Configure player 2 AI type for headless mode.\n";
+  cout << "         Options: classic, mcts_balanced, mcts_aggressive, mcts_defensive, mcts_fast, mcts_deep\n";
   cout << "  [ -T ] ";
   cout << "[ --turnlimit ]  ";
   cout << "(";

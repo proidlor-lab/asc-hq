@@ -26,6 +26,7 @@ libmcts_la_SOURCES = \
 	domain/simple_combat_evaluator.cpp \
 	domain/evaluator_factory.cpp \
 	core/mcts_search.cpp \
+	infrastructure/legacy_game_interface.cpp \
 	mcts_manual_test.cpp
 
 # Header files (for distribution)

@@ -145,6 +145,10 @@ class Player : public sigc::trackable {
 
       //! if the player is run by an AI, this is the pointer to it
       BaseAI*      ai;
+      
+      //! the type of AI (for factory creation and persistence)
+      //! 0 = Classic AI, 1+ = MCTS variants (see AIFactory::AIType)
+      int          aiType;
 
       //! the status of the player
       enum PlayerStatus { human, computer, off, supervisor, suspended } stat;

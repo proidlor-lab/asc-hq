@@ -239,6 +239,8 @@ class FieldMarkingSuppressor {
 
 void AI:: run ( bool benchMark, MapDisplayInterface* myMapDisplay )
 {
+   displayLogMessage(1, "=== Classic AI turn starting for player " + ASCString::toString(player) + " ===");
+   
    AI_KeyboardWatcher kw ( CloseScreenCallback( this, &AI::removeDisplay )); 
 
    this->benchMark = benchMark;

@@ -193,6 +193,7 @@ Player :: Player()
         : diplomacy( *this )
 {
    ai = NULL;
+   aiType = 0;  // Default to classic AI
    parentMap = NULL;
    queuedEvents = 0;
    ASCversion = 0;
@@ -429,6 +430,7 @@ void Player::swap ( Player& secondPlayer )
    secondPlayer.ai = NULL;
 
    swapData( stat, secondPlayer.stat );
+   swapData( aiType, secondPlayer.aiType );  // NEW: Preserve AI type when swapping players
    swapData( passwordcrc, secondPlayer.passwordcrc );
    swapData( dissections, secondPlayer.dissections );
    swapData( unreadmessage, secondPlayer.unreadmessage );

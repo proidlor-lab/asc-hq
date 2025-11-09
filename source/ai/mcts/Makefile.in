@@ -111,7 +111,7 @@ am_libmcts_la_OBJECTS = unit_snapshot.lo game_state_reader.lo \
 	action_types.lo simulation_action_executor.lo \
 	real_game_action_executor.lo action_executor_factory.lo \
 	simple_combat_evaluator.lo evaluator_factory.lo mcts_search.lo \
-	mcts_manual_test.lo
+	legacy_game_interface.lo mcts_manual_test.lo
 libmcts_la_OBJECTS = $(am_libmcts_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -146,6 +146,7 @@ am__depfiles_remade = ./$(DEPDIR)/action_executor_factory.Plo \
 	./$(DEPDIR)/action_types.Plo ./$(DEPDIR)/evaluator_factory.Plo \
 	./$(DEPDIR)/evaluator_test.Po \
 	./$(DEPDIR)/game_state_reader.Plo \
+	./$(DEPDIR)/legacy_game_interface.Plo \
 	./$(DEPDIR)/mcts_manual_test.Plo ./$(DEPDIR)/mcts_search.Plo \
 	./$(DEPDIR)/real_game_action_executor.Plo \
 	./$(DEPDIR)/simple_combat_evaluator.Plo \
@@ -423,6 +424,7 @@ libmcts_la_SOURCES = \
 	domain/simple_combat_evaluator.cpp \
 	domain/evaluator_factory.cpp \
 	core/mcts_search.cpp \
+	infrastructure/legacy_game_interface.cpp \
 	mcts_manual_test.cpp
 
 
@@ -531,6 +533,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evaluator_factory.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evaluator_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/game_state_reader.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/legacy_game_interface.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcts_manual_test.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcts_search.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/real_game_action_executor.Plo@am__quote@ # am--include-marker
@@ -628,6 +631,13 @@ mcts_search.lo: core/mcts_search.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='core/mcts_search.cpp' object='mcts_search.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mcts_search.lo `test -f 'core/mcts_search.cpp' || echo '$(srcdir)/'`core/mcts_search.cpp
+
+legacy_game_interface.lo: infrastructure/legacy_game_interface.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT legacy_game_interface.lo -MD -MP -MF $(DEPDIR)/legacy_game_interface.Tpo -c -o legacy_game_interface.lo `test -f 'infrastructure/legacy_game_interface.cpp' || echo '$(srcdir)/'`infrastructure/legacy_game_interface.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/legacy_game_interface.Tpo $(DEPDIR)/legacy_game_interface.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='infrastructure/legacy_game_interface.cpp' object='legacy_game_interface.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o legacy_game_interface.lo `test -f 'infrastructure/legacy_game_interface.cpp' || echo '$(srcdir)/'`infrastructure/legacy_game_interface.cpp
 
 action_executor_test.o: domain/action_executor_test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT action_executor_test.o -MD -MP -MF $(DEPDIR)/action_executor_test.Tpo -c -o action_executor_test.o `test -f 'domain/action_executor_test.cpp' || echo '$(srcdir)/'`domain/action_executor_test.cpp
@@ -808,6 +818,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/evaluator_factory.Plo
 	-rm -f ./$(DEPDIR)/evaluator_test.Po
 	-rm -f ./$(DEPDIR)/game_state_reader.Plo
+	-rm -f ./$(DEPDIR)/legacy_game_interface.Plo
 	-rm -f ./$(DEPDIR)/mcts_manual_test.Plo
 	-rm -f ./$(DEPDIR)/mcts_search.Plo
 	-rm -f ./$(DEPDIR)/real_game_action_executor.Plo
@@ -866,6 +877,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/evaluator_factory.Plo
 	-rm -f ./$(DEPDIR)/evaluator_test.Po
 	-rm -f ./$(DEPDIR)/game_state_reader.Plo
+	-rm -f ./$(DEPDIR)/legacy_game_interface.Plo
 	-rm -f ./$(DEPDIR)/mcts_manual_test.Plo
 	-rm -f ./$(DEPDIR)/mcts_search.Plo
 	-rm -f ./$(DEPDIR)/real_game_action_executor.Plo

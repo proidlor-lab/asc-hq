@@ -104,7 +104,8 @@ CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libai_la_DEPENDENCIES = mcts/libmcts.la
 am_libai_la_OBJECTS = base.lo misc.lo strategy.lo valuation.lo \
-	buildingcapture.lo service.lo tactics.lo
+	buildingcapture.lo service.lo tactics.lo ai_factory.lo \
+	mcts_ai.lo
 libai_la_OBJECTS = $(am_libai_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -125,10 +126,11 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/base.Plo \
-	./$(DEPDIR)/buildingcapture.Plo ./$(DEPDIR)/misc.Plo \
-	./$(DEPDIR)/service.Plo ./$(DEPDIR)/strategy.Plo \
-	./$(DEPDIR)/tactics.Plo ./$(DEPDIR)/valuation.Plo
+am__depfiles_remade = ./$(DEPDIR)/ai_factory.Plo ./$(DEPDIR)/base.Plo \
+	./$(DEPDIR)/buildingcapture.Plo ./$(DEPDIR)/mcts_ai.Plo \
+	./$(DEPDIR)/misc.Plo ./$(DEPDIR)/service.Plo \
+	./$(DEPDIR)/strategy.Plo ./$(DEPDIR)/tactics.Plo \
+	./$(DEPDIR)/valuation.Plo
 am__mv = mv -f
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -419,7 +421,9 @@ SUBDIRS = mcts
 AM_CXXFLAGS = @SDL_CFLAGS@ @SIGC_CFLAGS@ -Dsgmain @LokiInclude@
 AM_CPPFLAGS = -I$(top_srcdir)/source/libs/paragui/include 
 noinst_LTLIBRARIES = libai.la
-libai_la_SOURCES = base.cpp misc.cpp strategy.cpp valuation.cpp buildingcapture.cpp service.cpp tactics.cpp
+libai_la_SOURCES = base.cpp misc.cpp strategy.cpp valuation.cpp buildingcapture.cpp service.cpp tactics.cpp \
+                          ai_factory.cpp mcts_ai.cpp
+
 libai_la_LIBADD = @SDL_LIBS@ mcts/libmcts.la
 EXTRA_DIST = $(srcdir)/*.h
 all: all-recursive
@@ -476,8 +480,10 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ai_factory.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/base.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/buildingcapture.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcts_ai.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/misc.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/service.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strategy.Plo@am__quote@ # am--include-marker
@@ -715,8 +721,10 @@ clean-am: clean-generic clean-libtool clean-noinstLTLIBRARIES \
 	mostlyclean-am
 
 distclean: distclean-recursive
-		-rm -f ./$(DEPDIR)/base.Plo
+		-rm -f ./$(DEPDIR)/ai_factory.Plo
+	-rm -f ./$(DEPDIR)/base.Plo
 	-rm -f ./$(DEPDIR)/buildingcapture.Plo
+	-rm -f ./$(DEPDIR)/mcts_ai.Plo
 	-rm -f ./$(DEPDIR)/misc.Plo
 	-rm -f ./$(DEPDIR)/service.Plo
 	-rm -f ./$(DEPDIR)/strategy.Plo
@@ -767,8 +775,10 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-recursive
-		-rm -f ./$(DEPDIR)/base.Plo
+		-rm -f ./$(DEPDIR)/ai_factory.Plo
+	-rm -f ./$(DEPDIR)/base.Plo
 	-rm -f ./$(DEPDIR)/buildingcapture.Plo
+	-rm -f ./$(DEPDIR)/mcts_ai.Plo
 	-rm -f ./$(DEPDIR)/misc.Plo
 	-rm -f ./$(DEPDIR)/service.Plo
 	-rm -f ./$(DEPDIR)/strategy.Plo
