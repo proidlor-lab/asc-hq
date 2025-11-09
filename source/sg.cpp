@@ -112,6 +112,7 @@
 #include "viewcalculation.h"
 #include "replay.h"
 #include "graphicset.h"
+#include "graphics/blitter.h"
 #include "loadbi3.h"
 #include "itemrepository.h"
 #include "music.h"
@@ -1346,6 +1347,17 @@ void loadLegacyFonts()
    
 }
 
+void unloadLegacyFonts()
+{
+   freefont( schriften.smallarial );   schriften.smallarial = NULL;
+   freefont( schriften.smallsystem );  schriften.smallsystem = NULL;
+   freefont( schriften.large );        schriften.large = NULL;
+   freefont( schriften.arial8 );       schriften.arial8 = NULL;
+   freefont( schriften.guifont );      schriften.guifont = NULL;
+   freefont( schriften.guicolfont );   schriften.guicolfont = NULL;
+   freefont( schriften.monogui );      schriften.monogui = NULL;
+   activefontsettings.markfont = NULL;
+}
 
 
 
@@ -1778,6 +1790,8 @@ int main(int argc, char *argv[] )
    }
 
    writegameoptions ( );
+   unloadLegacyFonts();
+   clearRotationCache();
 
    return( returncode );
 }

@@ -202,6 +202,7 @@ extern void         showtext3c( const char *       txt, int xpos, int ypos);
 
 extern int gettextwdth ( const char* txt, pfont font );
 extern void shrinkfont ( pfont font, int diff );
+void freefont( pfont font );
 
 
 extern const char* fontid;

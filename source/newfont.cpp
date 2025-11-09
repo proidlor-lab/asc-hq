@@ -201,6 +201,33 @@ pfont        loadfont( tnstream* stream )
    return font2;
 }
 
+void freefont( pfont font )
+{
+   if ( !font )
+      return;
+
+   if ( font->name ) {
+      free( font->name );
+      font->name = NULL;
+   }
+
+   if ( font->palette ) {
+      delete[] reinterpret_cast<char*>( font->palette );
+      font->palette = NULL;
+   }
+
+   for ( int i = 0; i < 256; ++i ) {
+      if ( font->character[i].memposition ) {
+         delete[] font->character[i].memposition;
+         font->character[i].memposition = NULL;
+      }
+      font->character[i].size = 0;
+      font->character[i].width = 0;
+   }
+
+   delete font;
+}
+
 
 
 void shrinkfont ( pfont font, int diff )

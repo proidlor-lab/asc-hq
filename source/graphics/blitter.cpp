@@ -29,6 +29,21 @@
   
  NullParamType nullParam;
 
+void RotationCache::clear()
+{
+   for ( map<int,int*>::iterator it = cache.begin(); it != cache.end(); ++it ) {
+      delete[] it->second;
+   }
+   cache.clear();
+   xsize = -1;
+   ysize = -1;
+}
+ 
+void clearRotationCache()
+{
+   RotationCache::clear();
+}
+ 
  
  int foobar_func()
  {
@@ -41,4 +56,3 @@
 
  // base 16:
  const int ColorMerger_Alpha_XLAT_Table_shadings[8] = { 14, 12, 9, 6, 18, 20, 23, 28 };
-

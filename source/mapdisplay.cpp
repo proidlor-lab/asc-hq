@@ -23,7 +23,9 @@
 // #define debugmapdisplay
 
 
+#include <algorithm>
 #include <cmath>
+#include <cstdint>
 #include <limits>
 #include <sstream>
 
@@ -58,6 +60,176 @@
 #include <iostream>
 #endif
 
+
+namespace {
+
+Surface convertToRGBA(const Surface& source)
+{
+   Surface working(source);
+   if (!working.valid())
+      return working;
+   if (working.GetPixelFormat().BitsPerPixel() == 32)
+      return working;
+
+   Surface converted = Surface::createSurface(working.w(), working.h(), 32);
+   converted.FillTransparent();
+   converted.Blit(working);
+   return converted;
+}
+
+bool isMostlyMonochrome(const Surface& surface, double threshold = 0.985)
+{
+   Surface rgba = convertToRGBA(surface);
+   if (!rgba.valid())
+      return true;
+
+   SurfaceLock lock(rgba);
+   SDL_Surface* raw = rgba.getBaseSurface();
+   if (!raw || !raw->pixels)
+      return true;
+
+   SDLmm::PixelFormat format = rgba.GetPixelFormat();
+   const Uint32 alphaMask = format.Amask();
+   const Uint32 rgbMask = ~alphaMask;
+   const int width = raw->w;
+   const int height = raw->h;
+
+   bool haveReference = false;
+   Uint32 reference = 0;
+   int sampleCount = 0;
+   int matching = 0;
+
+   for (int y = 0; y < height; ++y) {
+      const Uint32* row = reinterpret_cast<const Uint32*>(static_cast<const Uint8*>(raw->pixels) + y * raw->pitch);
+      for (int x = 0; x < width; ++x) {
+         Uint32 pixel = row[x];
+         if (alphaMask) {
+            Uint32 alpha = (pixel & alphaMask) >> format.Ashift();
+            if (alpha == 0)
+               continue;
+         }
+
+         const Uint32 rgb = pixel & rgbMask;
+         if (!haveReference) {
+            reference = rgb;
+            haveReference = true;
+            ++matching;
+         } else if (rgb == reference) {
+            ++matching;
+         }
+         ++sampleCount;
+      }
+   }
+
+   if (sampleCount == 0)
+      return true;
+
+   return static_cast<double>(matching) / static_cast<double>(sampleCount) >= threshold;
+}
+
+Surface buildProceduralBackground(int width, int height)
+{
+   if (width <= 0)
+      width = fieldsizex;
+   if (height <= 0)
+      height = fieldsizey;
+
+   Surface tile = Surface::createSurface(width, height, 32, 0);
+   SDL_Surface* raw = tile.getBaseSurface();
+   if (!raw)
+      return tile;
+
+   const Uint32 baseColor = SDL_MapSurfaceRGBA(raw, 0x34, 0x3c, 0x1d, SDL_ALPHA_OPAQUE);
+   const Uint32 accentColor = SDL_MapSurfaceRGBA(raw, 0x4a, 0x54, 0x26, SDL_ALPHA_OPAQUE);
+   const Uint32 lowlightColor = SDL_MapSurfaceRGBA(raw, 0x28, 0x2f, 0x16, SDL_ALPHA_OPAQUE);
+
+   SurfaceLock lock(tile);
+   for (int y = 0; y < height; ++y) {
+      Uint32* row = reinterpret_cast<Uint32*>(static_cast<Uint8*>(raw->pixels) + y * raw->pitch);
+      for (int x = 0; x < width; ++x) {
+         const std::uint32_t noise = (static_cast<std::uint32_t>(x) * 73856093u) ^ (static_cast<std::uint32_t>(y) * 19349663u);
+         const int stagger = (x + y * 2) % 7;
+
+         Uint32 color = baseColor;
+         if (stagger == 0)
+            color = accentColor;
+         else if ((noise & 0x0f) == 0)
+            color = lowlightColor;
+         else if ((noise & 0x1f) == 3)
+            color = accentColor;
+
+         row[x] = color;
+      }
+   }
+
+   return tile;
+}
+
+Surface buildProceduralFog(int widthHint, int heightHint)
+{
+   Surface& mask = getFieldMask();
+   const int width = widthHint > 0 ? widthHint : mask.w();
+   const int height = heightHint > 0 ? heightHint : mask.h();
+
+   Surface fog = Surface::createSurface(width, height, 32, 0);
+   fog.FillTransparent();
+   SDL_Surface* raw = fog.getBaseSurface();
+   if (!raw)
+      return fog;
+
+   const float cx = (width - 1) * 0.5f;
+   const float cy = (height - 1) * 0.5f;
+   const float maxDist = std::max(1.0f, std::sqrt(cx * cx + cy * cy));
+
+   SurfaceLock lock(fog);
+   for (int y = 0; y < height; ++y) {
+      Uint32* row = reinterpret_cast<Uint32*>(static_cast<Uint8*>(raw->pixels) + y * raw->pitch);
+      for (int x = 0; x < width; ++x) {
+         const float dx = static_cast<float>(x) - cx;
+         const float dy = static_cast<float>(y) - cy;
+         const float distNorm = std::sqrt(dx * dx + dy * dy) / maxDist;
+         const float alpha = std::clamp(235.0f - distNorm * 90.0f, 150.0f, 235.0f);
+         const float shade = std::clamp(130.0f - distNorm * 25.0f, 100.0f, 150.0f);
+         row[x] = SDL_MapSurfaceRGBA(raw,
+                                     static_cast<Uint8>(shade),
+                                     static_cast<Uint8>(shade),
+                                     static_cast<Uint8>(shade),
+                                     static_cast<Uint8>(alpha));
+      }
+   }
+
+   applyFieldMask(fog, 0, 0, false);
+   return fog;
+}
+
+Surface selectBackgroundSurface()
+{
+   try {
+      Surface& candidate = IconRepository::getIcon("mapbkgr.raw");
+      if (!candidate.valid() || isMostlyMonochrome(candidate))
+         return buildProceduralBackground(candidate.valid() ? candidate.w() : fieldsizex,
+                                          candidate.valid() ? candidate.h() : fieldsizey);
+      return candidate;
+   } catch (...) {
+      return buildProceduralBackground(fieldsizex, fieldsizey);
+   }
+}
+
+Surface selectFogSurface()
+{
+   try {
+      Surface& candidate = IconRepository::getIcon("hexinvis.raw");
+      if (!candidate.valid() || isMostlyMonochrome(candidate))
+         return buildProceduralFog(candidate.valid() ? candidate.w() : 0,
+                                   candidate.valid() ? candidate.h() : 0);
+      candidate.detectColorKey();
+      return candidate;
+   } catch (...) {
+      return buildProceduralFog(0, 0);
+   }
+}
+
+} // namespace
 
 MapRenderer::Icons MapRenderer::icons;
 
@@ -387,8 +559,8 @@ MapRenderer :: MapRenderer()
 void MapRenderer::readData()
 {
    if ( !icons.mapBackground.valid() ) {
-      icons.mapBackground = IconRepository::getIcon("mapbkgr.raw");
-      icons.notVisible    = IconRepository::getIcon("hexinvis.raw");
+      icons.mapBackground = selectBackgroundSurface();
+      icons.notVisible    = selectFogSurface();
       icons.markField     = IconRepository::getIcon("markedfield.png");
       icons.markField.detectColorKey();
       icons.markFieldDark = IconRepository::getIcon("markedfielddark.png");
@@ -509,9 +681,12 @@ void MapRenderer::paintSingleField( const MapRenderer::FieldRenderInfo& fieldInf
    // display view obstructions
    if ( layer == 18 ) {
       if ( fieldInfo.visibility == visible_ago) {
-         MegaBlitter<1,colorDepth,ColorTransform_None,ColorMerger_AlphaShadow> blitter;
-         // PG_Point pnt = ClientToScreen( 0,0 );
-         blitter.blit( icons.notVisible, fieldInfo.surface, pos);
+         if ( icons.notVisible.GetPixelFormat().BytesPerPixel() == 1 ) {
+            MegaBlitter<1,colorDepth,ColorTransform_None,ColorMerger_AlphaShadow> blitter;
+            blitter.blit( icons.notVisible, fieldInfo.surface, pos);
+         } else {
+            fieldInfo.surface.Blit( icons.notVisible, pos );
+         }
          /*
                          // putspriteimage( r + unitrightshift , yp + unitdownshift , view.va8);
                          putshadow( r, yp, icons.view.nv8, &xlattables.a.dark2 );

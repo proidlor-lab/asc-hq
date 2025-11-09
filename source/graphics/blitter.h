@@ -1122,6 +1122,8 @@ class RotationCache
       static map<int,int*> cache;
       static int xsize;
       static int ysize;
+   public:
+      static void clear();
 };
 
 template<int pixelsize>
@@ -1804,5 +1806,7 @@ class TargetPixelSelector_Rect {
  }
  
 */
+
+void clearRotationCache();
 
 #endif
