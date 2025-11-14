@@ -128,16 +128,18 @@ void testSnapshotCloning() {
     // Measure clone time
     Timer timer;
     auto clone = snapshot.clone();
+    auto* cloneSnapshot = dynamic_cast<GameStateSnapshot*>(clone.get());
+    assertTrue(cloneSnapshot != nullptr, "Clone must produce GameStateSnapshot");
     double elapsed = timer.elapsedMs();
     
     std::cout << "Clone time: " << elapsed << " ms\n";
     std::cout << "Original units: " << snapshot.units.size() << "\n";
-    std::cout << "Cloned units: " << clone->units.size() << "\n";
-    std::cout << "Memory size: " << clone->getMemorySize() << " bytes\n";
+    std::cout << "Cloned units: " << cloneSnapshot->units.size() << "\n";
+    std::cout << "Memory size: " << cloneSnapshot->getMemorySize() << " bytes\n";
     
     // Target: <1ms
     assertTrue(elapsed < 1.0, "Clone should take <1ms");
-    assertEqual(clone->units.size(), snapshot.units.size(), "Unit count mismatch");
+    assertEqual(cloneSnapshot->units.size(), snapshot.units.size(), "Unit count mismatch");
     
     std::cout << "PASS\n";
 }

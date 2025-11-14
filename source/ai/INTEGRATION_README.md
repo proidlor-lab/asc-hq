@@ -470,7 +470,7 @@ rolloutDepthLimit=20-30
 
 ## See Also
 
-- [INTEGRATION_NOTES.md](mcts/INTEGRATION_NOTES.md) - Detailed legacy code analysis
+- [INTEGRATION_NOTES.md](mcts/docs/INTEGRATION_NOTES.md) - Detailed legacy code analysis
 - [STATUS.md](mcts/STATUS.md) - Current implementation status
 - [docs/implementation_roadmap.md](mcts/docs/implementation_roadmap.md) - Full roadmap
 

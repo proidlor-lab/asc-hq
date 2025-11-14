@@ -16,7 +16,7 @@
 #ifndef MCTS_NODE_H
 #define MCTS_NODE_H
 
-#include "../domain/game_state_snapshot.h"
+#include "../domain/i_game_state.h"
 #include "../domain/action_types.h"
 #include <memory>
 #include <vector>
@@ -51,7 +51,7 @@ public:
      * @param state Game state at this node
      * @param perspective Player ID for evaluation perspective
      */
-    MCTSNode(std::unique_ptr<GameStateSnapshot> state, PlayerID perspective)
+    MCTSNode(std::unique_ptr<IGameState> state, PlayerID perspective)
         : state_(std::move(state))
         , parent_(nullptr)
         , action_(std::nullopt)
@@ -69,7 +69,7 @@ public:
      * @param action Action that led to this state
      * @param perspective Player ID for evaluation
      */
-    MCTSNode(std::unique_ptr<GameStateSnapshot> state, 
+    MCTSNode(std::unique_ptr<IGameState> state, 
              MCTSNode* parent,
              const Action& action,
              PlayerID perspective)
@@ -92,11 +92,11 @@ public:
     
     // ========== State Access ==========
     
-    const GameStateSnapshot& getState() const noexcept { 
+    const IGameState& getState() const noexcept { 
         return *state_; 
     }
     
-    GameStateSnapshot& getStateMutable() noexcept { 
+    IGameState& getStateMutable() noexcept { 
         return *state_; 
     }
     
@@ -331,7 +331,7 @@ public:
 
 private:
     // State
-    std::unique_ptr<GameStateSnapshot> state_;
+    std::unique_ptr<IGameState> state_;
     
     // Tree structure
     MCTSNode* parent_;  // Raw pointer (parent owns us)

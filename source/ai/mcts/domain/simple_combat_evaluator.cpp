@@ -4,6 +4,7 @@
 
 #include "simple_combat_evaluator.h"
 #include "types.h"
+#include "../../../vehicletype.h"  // For VehicleType::productionCost and weapons
 #include <cmath>
 #include <algorithm>
 
@@ -13,7 +14,7 @@ namespace mcts {
 // ========== Main Evaluation ==========
 
 EvaluationResult SimpleCombatEvaluator::evaluate(
-    const GameStateSnapshot& snapshot,
+    const IGameState& snapshot,
     const EvaluationContext& context) const 
 {
     EvaluationResult result;
@@ -72,13 +73,13 @@ EvaluationResult SimpleCombatEvaluator::evaluate(
     
     // Clamp to valid range
     result.score = std::clamp(result.score, -1.0f, 1.0f);
-    result.unitsEvaluated = static_cast<int>(snapshot.units.size());
+    result.unitsEvaluated = static_cast<int>(snapshot.getUnits().size());
     
     return result;
 }
 
 bool SimpleCombatEvaluator::isTerminalState(
-    const GameStateSnapshot& snapshot,
+    const IGameState& snapshot,
     PlayerID player) const 
 {
     // Terminal if player or all enemies have no units
@@ -98,13 +99,13 @@ bool SimpleCombatEvaluator::isTerminalState(
 // ========== Material Evaluation ==========
 
 float SimpleCombatEvaluator::evaluateMaterial(
-    const GameStateSnapshot& snapshot,
+    const IGameState& snapshot,
     PlayerID player) const 
 {
     float playerMaterial = 0.0f;
     float enemyMaterial = 0.0f;
     
-    for (const auto& unit : snapshot.units) {
+    for (const auto& unit : snapshot.getUnits()) {
         if (unit.isDestroyed()) {
             continue;
         }
@@ -137,7 +138,7 @@ float SimpleCombatEvaluator::evaluateMaterial(
 // ========== Position Evaluation ==========
 
 float SimpleCombatEvaluator::evaluatePosition(
-    const GameStateSnapshot& snapshot,
+    const IGameState& snapshot,
     PlayerID player) const 
 {
     auto playerUnits = snapshot.getPlayerUnits(player);
@@ -198,7 +199,7 @@ float SimpleCombatEvaluator::evaluatePosition(
 // ========== Health Evaluation ==========
 
 float SimpleCombatEvaluator::evaluateHealth(
-    const GameStateSnapshot& snapshot,
+    const IGameState& snapshot,
     PlayerID player) const 
 {
     auto playerUnits = snapshot.getPlayerUnits(player);
@@ -234,7 +235,7 @@ float SimpleCombatEvaluator::evaluateHealth(
 // ========== Threat Evaluation ==========
 
 float SimpleCombatEvaluator::evaluateThreat(
-    const GameStateSnapshot& snapshot,
+    const IGameState& snapshot,
     PlayerID player) const 
 {
     auto playerUnits = snapshot.getPlayerUnits(player);
@@ -269,33 +270,33 @@ float SimpleCombatEvaluator::evaluateThreat(
 // ========== Utility Methods ==========
 
 float SimpleCombatEvaluator::getUnitValue(const UnitSnapshot& unit) {
-    // Simplified MVP: estimate value based on type characteristics
-    // Post-MVP: use actual VehicleType->productionCost or combat stats
+    // Use actual production cost from VehicleType
     
     if (unit.type == nullptr) {
-        return 100.0f;  // Default value
+        return 100.0f;  // Default value for unknown type
     }
     
-    // Rough heuristic based on typical ASC unit values
-    // Light units: 100-300
-    // Medium units: 300-600
-    // Heavy units: 600-1000
+    // Calculate value from production cost (energy + material)
+    // This reflects the actual game mechanics cost of the unit
+    const auto& cost = unit.type->productionCost;
+    float value = static_cast<float>(cost.energy + cost.material);
     
-    // For MVP, return constant value (will be improved post-MVP)
-    // TODO: Integrate actual unit costs from VehicleType
-    return 500.0f;
+    // If cost is zero or negative, use a small default
+    if (value <= 0.0f) {
+        return 100.0f;
+    }
+    
+    return value;
 }
 
 bool SimpleCombatEvaluator::isInReactionFireZone(
     const UnitSnapshot& unit,
-    const GameStateSnapshot& snapshot) 
+    const IGameState& snapshot) 
 {
-    // Simplified MVP: check if enemies within 10 hexes
-    // Post-MVP: use actual weapon ranges and RF rules
+    // Check if any enemy units can reaction fire at this position
+    // Uses actual weapon ranges from VehicleType
     
-    const int RF_RANGE = 10;
-    
-    for (const auto& enemy : snapshot.units) {
+    for (const auto& enemy : snapshot.getUnits()) {
         if (enemy.owner == unit.owner || enemy.isDestroyed()) {
             continue;
         }
@@ -305,8 +306,34 @@ bool SimpleCombatEvaluator::isInReactionFireZone(
         int dy = std::abs(enemy.y - unit.y);
         int distance = std::max(dx, dy);  // Hex distance (approximate)
         
-        if (distance <= RF_RANGE) {
-            return true;
+        // Fallback for testing/legacy: If no type data, use reasonable defaults
+        if (enemy.type == nullptr || enemy.type->weapons.count == 0) {
+            // Default fallback: range 1-10 (only used when VehicleType not available)
+            const int DEFAULT_MIN_RANGE = 1;
+            const int DEFAULT_MAX_RANGE = 10;
+            
+            if (distance >= DEFAULT_MIN_RANGE && 
+                distance <= DEFAULT_MAX_RANGE && 
+                enemy.ammoMask != 0) {
+                return true;
+            }
+            continue;
+        }
+        
+        // Check if any of the enemy's weapons can reach us
+        for (int i = 0; i < enemy.type->weapons.count && i < 16; ++i) {
+            const auto& weapon = enemy.type->weapons.weapon[i];
+            
+            // Convert weapon ranges (stored as multiples of 10: 10 = 1 hex, 100 = 10 hexes)
+            int minRange = (weapon.mindistance + 9) / 10;  // Round up
+            int maxRange = weapon.maxdistance / 10;
+            
+            // Check if this weapon has range to hit us and has ammo
+            if (distance >= minRange && 
+                distance <= maxRange &&
+                (enemy.ammoMask & (1 << i))) {
+                return true;
+            }
         }
     }
     
@@ -315,7 +342,7 @@ bool SimpleCombatEvaluator::isInReactionFireZone(
 
 float SimpleCombatEvaluator::getHeightAdvantage(
     const UnitSnapshot& unit,
-    const GameStateSnapshot& snapshot) 
+    const IGameState& snapshot) 
 {
     // Height advantage: higher is better (for visibility and range)
     // Normalize to 0.0 (low) to 1.0 (high)
@@ -327,7 +354,7 @@ float SimpleCombatEvaluator::getHeightAdvantage(
 
 float SimpleCombatEvaluator::getTerrainBonus(
     const UnitSnapshot& unit,
-    const GameStateSnapshot& snapshot) 
+    const IGameState& snapshot) 
 {
     // Check terrain at unit position
     const auto* field = snapshot.getTerrainAt(unit.getPosition());
@@ -346,12 +373,12 @@ float SimpleCombatEvaluator::getTerrainBonus(
 
 int SimpleCombatEvaluator::countNearbyEnemies(
     const UnitSnapshot& unit,
-    const GameStateSnapshot& snapshot,
+    const IGameState& snapshot,
     int range) 
 {
     int count = 0;
     
-    for (const auto& other : snapshot.units) {
+    for (const auto& other : snapshot.getUnits()) {
         if (other.owner == unit.owner || other.isDestroyed()) {
             continue;  // Skip friendlies and destroyed units
         }
@@ -370,12 +397,12 @@ int SimpleCombatEvaluator::countNearbyEnemies(
 }
 
 std::vector<const UnitSnapshot*> SimpleCombatEvaluator::getEnemyUnits(
-    const GameStateSnapshot& snapshot,
+    const IGameState& snapshot,
     PlayerID player) 
 {
     std::vector<const UnitSnapshot*> enemies;
     
-    for (const auto& unit : snapshot.units) {
+    for (const auto& unit : snapshot.getUnits()) {
         if (unit.owner != player && !unit.isDestroyed()) {
             enemies.push_back(&unit);
         }

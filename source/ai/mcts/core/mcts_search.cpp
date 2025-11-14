@@ -1,10 +1,12 @@
 /***************************************************************************
  * mcts_search.cpp - Implementation of MCTS search algorithm
+ * Updated: Phase 1.2 - Capability-based action generation
  ***************************************************************************/
 
 #include "mcts_search.h"
 #include "../domain/i_action_executor.h"
 #include "../domain/simulation_action_executor.h"
+#include "../domain/abilities/ability_registry.h"
 #include <algorithm>
 #include <random>
 #include <chrono>
@@ -14,7 +16,7 @@ namespace mcts {
 
 // ========== Main Search API ==========
 
-MCTSResult MCTSSearch::search(const GameStateSnapshot& initialState, 
+MCTSResult MCTSSearch::search(const IGameState& initialState, 
                              PlayerID perspective) {
     // Reset previous search
     reset();
@@ -204,7 +206,7 @@ double MCTSSearch::simulate(MCTSNode* node) {
         }
         
         // Get current player's units
-        auto units = currentState.getPlayerUnits(currentState.currentPlayer);
+        auto units = currentState.getPlayerUnits(currentState.getCurrentPlayer());
         if (units.empty()) {
             break;  // No units to move
         }
@@ -333,20 +335,14 @@ bool MCTSSearch::shouldTerminateEarly() const {
 }
 
 std::vector<Action> MCTSSearch::getUnexpandedActions(MCTSNode* node) const {
-    // Clone state and create executor
-    auto stateClone = node->getState().clone();
-    auto executor = ActionExecutorFactory::createSimulationExecutor(std::move(stateClone));
-    auto* simExec = static_cast<SimulationActionExecutor*>(executor.get());
+    // UPDATED (Phase 1.2): Use ability-based generation directly
+    // This avoids creating a temporary executor just for action generation
     
-    // Get all units for current player
-    auto units = simExec->getState().getPlayerUnits(simExec->getState().currentPlayer);
-    
-    // Collect all legal actions
-    std::vector<Action> allActions;
-    for (const auto* unit : units) {
-        auto unitActions = executor->generateLegalActions(unit->networkID);
-        allActions.insert(allActions.end(), unitActions.begin(), unitActions.end());
-    }
+    // Ability-based generation (more efficient, no executor needed)
+    auto allActions = AbilityActionGenerator::generatePlayerActions(
+        node->getState(), 
+        node->getState().getCurrentPlayer()
+    );
     
     // Filter out actions already tried (have child nodes)
     std::vector<Action> unexpandedActions;

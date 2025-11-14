@@ -17,6 +17,9 @@
 #include <vector>
 #include <deque>
 
+// Forward declarations
+class GameMap;
+
 namespace asc {
 namespace mcts {
 
@@ -42,8 +45,11 @@ public:
      * Constructor
      * 
      * @param initialState Initial game state (executor takes ownership)
+     * @param legacyMap Optional GameMap for pathfinding (not owned)
      */
-    explicit SimulationActionExecutor(std::unique_ptr<GameStateSnapshot> initialState);
+    explicit SimulationActionExecutor(
+        std::unique_ptr<GameStateSnapshot> initialState,
+        GameMap* legacyMap = nullptr);
     
     ~SimulationActionExecutor() override = default;
     
@@ -71,7 +77,7 @@ public:
     
     bool undo() override;
     
-    [[nodiscard]] const GameStateSnapshot& getState() const override {
+    [[nodiscard]] const IGameState& getState() const override {
         return *state_;
     }
     
@@ -108,6 +114,7 @@ private:
     
     std::unique_ptr<GameStateSnapshot> state_;
     std::vector<Action> actionHistory_;
+    GameMap* legacyMap_;  // Optional, for pathfinding (not owned)
     
     // Undo stack (stores pre-action snapshots)
     // Limited depth to avoid memory bloat

@@ -152,11 +152,11 @@ void testExecutorCreation(TestReporter& reporter) {
     auto executor = std::make_unique<SimulationActionExecutor>(std::move(snapshot));
     
     const auto& state = executor->getState();
-    assert(state.units.size() == 2);
+    assert(state.getUnits().size() == 2);
     reporter.pass("SimulationActionExecutor created with 2 units");
     
-    assert(state.mapWidth == 20);
-    assert(state.mapHeight == 20);
+    assert(state.getMapWidth() == 20);
+    assert(state.getMapHeight() == 20);
     reporter.pass("Map dimensions correct");
 }
 
@@ -398,7 +398,7 @@ void testExecutorCloning(TestReporter& reporter) {
     }
     
     // Verify state is copied
-    if (executor2->getState().units.size() == 2) {
+    if (executor2->getState().getUnits().size() == 2) {
         reporter.pass("Cloned state has correct unit count");
     } else {
         reporter.fail("Cloned state has wrong unit count");

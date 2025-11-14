@@ -2,12 +2,16 @@
  * simulation_action_executor.cpp - Implementation of simulation executor
  * 
  * Part of: ASC MCTS AI (Phase 0.2 - Action Execution Interface)
+ * Updated: Phase 1.2 - Capability-based action generation
  ***************************************************************************/
 
 #include "simulation_action_executor.h"
+#include "abilities/ability_registry.h"
+#include "combat_calculator.h"
 #include <algorithm>
 #include <cmath>
 #include <sstream>
+#include <stdexcept>
 
 // Forward declarations from ASC
 #include "../../../vehicletype.h"
@@ -15,11 +19,26 @@
 namespace asc {
 namespace mcts {
 
+namespace {
+
+std::unique_ptr<GameStateSnapshot> cloneSnapshot(const IGameState& state) {
+    auto cloned = state.clone();
+    auto* concrete = dynamic_cast<GameStateSnapshot*>(cloned.release());
+    if (!concrete) {
+        throw std::runtime_error("Clone produced incompatible game state type");
+    }
+    return std::unique_ptr<GameStateSnapshot>(concrete);
+}
+
+} // unnamed namespace
+
 // ========== Constructor ==========
 
 SimulationActionExecutor::SimulationActionExecutor(
-    std::unique_ptr<GameStateSnapshot> initialState
-) : state_(std::move(initialState))
+    std::unique_ptr<GameStateSnapshot> initialState,
+    GameMap* legacyMap
+) : state_(std::move(initialState)),
+    legacyMap_(legacyMap)
 {
     if (!state_) {
         throw std::invalid_argument("SimulationActionExecutor: initialState cannot be null");
@@ -74,23 +93,29 @@ std::vector<Action> SimulationActionExecutor::generateLegalActions(
     UnitID unitID,
     bool includeWait
 ) const {
+    // UPDATED (Phase 1.3): Use ability-based action generation with pathfinding context
+    // If legacyMap available, use full pathfinding; otherwise use adjacent-only fallback
+    
     std::vector<Action> actions;
     
-    // Generate moves
-    auto moves = generateMoveActions(unitID);
-    for (const auto& move : moves) {
-        actions.emplace_back(move);
+    if (legacyMap_) {
+        // Full pathfinding with legacy map context
+        actions = AbilityActionGenerator::generateAllActionsWithContext(
+            *state_, unitID, legacyMap_);
+    } else {
+        // Fallback: adjacent-only generation (no pathfinding)
+        actions = AbilityActionGenerator::generateAllActions(*state_, unitID);
     }
     
-    // Generate attacks
-    auto attacks = generateAttackActions(unitID);
-    for (const auto& attack : attacks) {
-        actions.emplace_back(attack);
-    }
-    
-    // Add wait action
-    if (includeWait) {
-        actions.emplace_back(WaitAction{unitID});
+    // Filter wait action if not requested
+    if (!includeWait) {
+        actions.erase(
+            std::remove_if(actions.begin(), actions.end(),
+                [](const Action& a) { 
+                    return std::holds_alternative<WaitAction>(a); 
+                }),
+            actions.end()
+        );
     }
     
     return actions;
@@ -116,8 +141,8 @@ bool SimulationActionExecutor::undo() {
 // ========== Cloning ==========
 
 std::unique_ptr<SimulationActionExecutor> SimulationActionExecutor::clone() const {
-    auto clonedState = state_->clone();
-    return std::make_unique<SimulationActionExecutor>(std::move(clonedState));
+    auto clonedState = cloneSnapshot(*state_);
+    return std::make_unique<SimulationActionExecutor>(std::move(clonedState), legacyMap_);
 }
 
 void SimulationActionExecutor::reset(std::unique_ptr<GameStateSnapshot> newState) {
@@ -436,25 +461,26 @@ int SimulationActionExecutor::calculateDamage(
     const UnitSnapshot& defender,
     int weaponIndex
 ) const {
-    // Simplified damage calculation for MVP
-    // Post-MVP: Use actual ASC combat formulas from VehicleType
+    // Use CombatCalculator which implements ASC's actual combat formula
     
-    // Base damage: 20-40 points
-    int baseDamage = 30;
+    // Calculate distance
+    int dx = std::abs(defender.x - attacker.x);
+    int dy = std::abs(defender.y - attacker.y);
+    int distance = std::max(dx, dy);
     
-    // Random variation (simplified - in real impl, use proper RNG)
-    // For MVP: deterministic damage for reproducibility
+    // TODO: Get terrain defense bonus from actual terrain
+    // For now, use 0 (no terrain bonus)
+    int terrainDefenseBonus = 0;
     
-    // Experience bonus
-    int expBonus = attacker.experienceOffensive / 100;
+    // TODO: Calculate hemming factor (flanking bonus)
+    // For now, use 1.0 (no hemming)
+    float hemmingFactor = 1.0f;
     
-    // Defender's defensive experience reduces damage
-    int defReduction = defender.experienceDefensive / 200;
-    
-    int totalDamage = baseDamage + expBonus - defReduction;
-    
-    // Clamp to 5-80 range (never instant kill, but can be significant)
-    return std::clamp(totalDamage, 5, 80);
+    // Use the actual ASC combat formula
+    return CombatCalculator::calculateDamage(
+        attacker, defender, weaponIndex, 
+        distance, terrainDefenseBonus, hemmingFactor
+    );
 }
 
 int SimulationActionExecutor::canHitTarget(
@@ -462,40 +488,107 @@ int SimulationActionExecutor::canHitTarget(
     const MapCoordinate& target,
     int weaponIndex
 ) const {
-    // Simplified range check for MVP
-    // Post-MVP: Use actual weapon ranges from VehicleType
+    // Use actual weapon ranges from VehicleType and check target compatibility
     
     int distance = hexDistance(attacker.getPosition(), target);
-    
-    // Simplified: assume max range of 10 hexes for all weapons
-    // Post-MVP: Query VehicleType->weapons[i].maxdistance
-    const int MAX_WEAPON_RANGE = 10;
-    
-    if (distance > MAX_WEAPON_RANGE) {
-        return -1;
-    }
     
     // Minimum range (can't attack own position)
     if (distance == 0) {
         return -1;
     }
     
-    // If specific weapon requested, check if available
-    if (weaponIndex >= 0) {
-        if (weaponIndex >= 16 || !(attacker.ammoMask & (1 << weaponIndex))) {
-            return -1;
+    // Find target unit at this position (for type checking)
+    const UnitSnapshot* targetUnit = state_->getUnitAt(target);
+    
+    // Fallback for testing/legacy: If no type data, use reasonable defaults
+    if (attacker.type == nullptr || attacker.type->weapons.count == 0) {
+        // Default fallback: range 1-10, weapon index 0
+        // Only used when VehicleType is not available (e.g., unit tests)
+        const int DEFAULT_MIN_RANGE = 1;
+        const int DEFAULT_MAX_RANGE = 10;
+        
+        if (distance >= DEFAULT_MIN_RANGE && distance <= DEFAULT_MAX_RANGE) {
+            // Check ammo for weapon 0
+            if (weaponIndex >= 0) {
+                if (weaponIndex >= 16 || !(attacker.ammoMask & (1 << weaponIndex))) {
+                    return -1;
+                }
+                return weaponIndex;
+            } else {
+                // Auto-select first weapon with ammo
+                for (int i = 0; i < 16; ++i) {
+                    if (attacker.ammoMask & (1 << i)) {
+                        return i;
+                    }
+                }
+            }
         }
+        return -1;
+    }
+    
+    // If specific weapon requested, check if it can reach and target
+    if (weaponIndex >= 0) {
+        if (weaponIndex >= 16 || weaponIndex >= attacker.type->weapons.count) {
+            return -1;  // Weapon doesn't exist
+        }
+        
+        // Check ammo
+        if (!(attacker.ammoMask & (1 << weaponIndex))) {
+            return -1;  // No ammo
+        }
+        
+        const auto& weapon = attacker.type->weapons.weapon[weaponIndex];
+        
+        // Check range (weapon ranges are stored as multiples of 10: 10 = 1 hex, 100 = 10 hexes)
+        int minRange = (weapon.mindistance + 9) / 10;  // Round up
+        int maxRange = weapon.maxdistance / 10;
+        
+        if (distance < minRange || distance > maxRange) {
+            return -1;  // Out of range
+        }
+        
+        // Check if weapon can target this unit type
+        if (targetUnit != nullptr && targetUnit->type != nullptr) {
+            auto targetCheck = CombatCalculator::canWeaponTarget(
+                weapon, attacker.height, targetUnit->height, targetUnit->type->movemalustyp
+            );
+            if (!targetCheck.canTarget) {
+                return -1;  // Cannot target this unit type/height
+            }
+        }
+        
         return weaponIndex;
     }
     
-    // Auto-select first available weapon
-    for (int i = 0; i < 16; ++i) {
-        if (attacker.ammoMask & (1 << i)) {
-            return i;
+    // Auto-select first available weapon that can reach and target
+    for (int i = 0; i < attacker.type->weapons.count && i < 16; ++i) {
+        const auto& weapon = attacker.type->weapons.weapon[i];
+        
+        // Convert weapon ranges (stored as multiples of 10)
+        int minRange = (weapon.mindistance + 9) / 10;
+        int maxRange = weapon.maxdistance / 10;
+        
+        // Check range and ammo
+        if (!(attacker.ammoMask & (1 << i)) ||
+            distance < minRange || 
+            distance > maxRange) {
+            continue;
         }
+        
+        // Check if weapon can target this unit type
+        if (targetUnit != nullptr && targetUnit->type != nullptr) {
+            auto targetCheck = CombatCalculator::canWeaponTarget(
+                weapon, attacker.height, targetUnit->height, targetUnit->type->movemalustyp
+            );
+            if (!targetCheck.canTarget) {
+                continue;  // Try next weapon
+            }
+        }
+        
+        return i;  // Found valid weapon
     }
     
-    return -1;
+    return -1;  // No weapon can reach target
 }
 
 bool SimulationActionExecutor::simulateReactionFire(
@@ -523,10 +616,10 @@ bool SimulationActionExecutor::simulateReactionFire(
             int weaponIdx = canHitTarget(enemy, pathPoint, -1);
             if (weaponIdx >= 0) {
                 // Enemy can reaction fire!
-                // Simplified: 30% chance to hit and deal 20 damage
-                // For MVP: deterministic (always hit for reproducibility)
+                // Use actual weapon damage calculation
+                // Note: RF hit chance is simplified (deterministic for now)
                 
-                int damage = 20;
+                int damage = calculateDamage(enemy, movingUnit, weaponIdx);
                 movingUnit.damage = static_cast<uint8_t>(
                     std::min(100, static_cast<int>(movingUnit.damage) + damage)
                 );
@@ -591,7 +684,7 @@ std::vector<MapCoordinate> SimulationActionExecutor::getNeighbors(
 }
 
 void SimulationActionExecutor::saveUndoState() {
-    undoStack_.push_back(state_->clone());
+    undoStack_.push_back(cloneSnapshot(*state_));
     
     // Limit undo stack size
     while (undoStack_.size() > MAX_UNDO_DEPTH) {

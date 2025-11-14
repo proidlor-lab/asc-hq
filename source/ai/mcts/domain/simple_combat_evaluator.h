@@ -19,7 +19,6 @@
 #define MCTS_SIMPLE_COMBAT_EVALUATOR_H
 
 #include "i_tactical_evaluator.h"
-#include "game_state_snapshot.h"
 #include <vector>
 
 namespace asc {
@@ -44,11 +43,11 @@ public:
     // ========== ITacticalEvaluator Interface ==========
     
     EvaluationResult evaluate(
-        const GameStateSnapshot& snapshot,
+        const IGameState& snapshot,
         const EvaluationContext& context) const override;
     
     bool isTerminalState(
-        const GameStateSnapshot& snapshot,
+        const IGameState& snapshot,
         PlayerID player) const override;
     
     std::unique_ptr<ITacticalEvaluator> clone() const override {
@@ -72,7 +71,7 @@ private:
      * @return Score (-1.0 to +1.0)
      */
     float evaluateMaterial(
-        const GameStateSnapshot& snapshot,
+        const IGameState& snapshot,
         PlayerID player) const;
     
     /**
@@ -89,7 +88,7 @@ private:
      * @return Score (-1.0 to +1.0)
      */
     float evaluatePosition(
-        const GameStateSnapshot& snapshot,
+        const IGameState& snapshot,
         PlayerID player) const;
     
     /**
@@ -102,7 +101,7 @@ private:
      * @return Score (-1.0 to +1.0)
      */
     float evaluateHealth(
-        const GameStateSnapshot& snapshot,
+        const IGameState& snapshot,
         PlayerID player) const;
     
     /**
@@ -118,7 +117,7 @@ private:
      * @return Score (-1.0 to +1.0, lower = more threatened)
      */
     float evaluateThreat(
-        const GameStateSnapshot& snapshot,
+        const IGameState& snapshot,
         PlayerID player) const;
     
     // ========== Utility Methods ==========
@@ -146,7 +145,7 @@ private:
      */
     static bool isInReactionFireZone(
         const UnitSnapshot& unit,
-        const GameStateSnapshot& snapshot);
+        const IGameState& snapshot);
     
     /**
      * Get height advantage for unit
@@ -157,7 +156,7 @@ private:
      */
     static float getHeightAdvantage(
         const UnitSnapshot& unit,
-        const GameStateSnapshot& snapshot);
+        const IGameState& snapshot);
     
     /**
      * Get defensive terrain bonus
@@ -168,7 +167,7 @@ private:
      */
     static float getTerrainBonus(
         const UnitSnapshot& unit,
-        const GameStateSnapshot& snapshot);
+        const IGameState& snapshot);
     
     /**
      * Count enemies within range of unit
@@ -180,7 +179,7 @@ private:
      */
     static int countNearbyEnemies(
         const UnitSnapshot& unit,
-        const GameStateSnapshot& snapshot,
+        const IGameState& snapshot,
         int range);
     
     /**
@@ -191,7 +190,7 @@ private:
      * @return Vector of enemy units
      */
     static std::vector<const UnitSnapshot*> getEnemyUnits(
-        const GameStateSnapshot& snapshot,
+        const IGameState& snapshot,
         PlayerID player);
     
     /**

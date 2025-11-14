@@ -67,7 +67,7 @@ public:
     // Undo not supported for real game executor
     bool undo() override { return false; }
     
-    [[nodiscard]] const GameStateSnapshot& getState() const override;
+    [[nodiscard]] const IGameState& getState() const override;
     
 private:
     GameMap* gameMap_;  // Non-owning pointer to real game map

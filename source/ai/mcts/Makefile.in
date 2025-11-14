@@ -108,10 +108,13 @@ PROGRAMS = $(noinst_PROGRAMS)
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libmcts_la_LIBADD =
 am_libmcts_la_OBJECTS = unit_snapshot.lo game_state_reader.lo \
-	action_types.lo simulation_action_executor.lo \
-	real_game_action_executor.lo action_executor_factory.lo \
-	simple_combat_evaluator.lo evaluator_factory.lo mcts_search.lo \
-	legacy_game_interface.lo mcts_manual_test.lo
+	action_types.lo combat_calculator.lo \
+	simulation_action_executor.lo real_game_action_executor.lo \
+	action_executor_factory.lo simple_combat_evaluator.lo \
+	evaluator_factory.lo i_ability.lo ability_registry.lo \
+	movement_ability.lo combat_ability.lo mcts_search.lo \
+	legacy_game_interface.lo pathfinding_adapter.lo \
+	mcts_manual_test.lo
 libmcts_la_OBJECTS = $(am_libmcts_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -141,13 +144,18 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/action_executor_factory.Plo \
+am__depfiles_remade = ./$(DEPDIR)/ability_registry.Plo \
+	./$(DEPDIR)/action_executor_factory.Plo \
 	./$(DEPDIR)/action_executor_test.Po \
-	./$(DEPDIR)/action_types.Plo ./$(DEPDIR)/evaluator_factory.Plo \
+	./$(DEPDIR)/action_types.Plo ./$(DEPDIR)/combat_ability.Plo \
+	./$(DEPDIR)/combat_calculator.Plo \
+	./$(DEPDIR)/evaluator_factory.Plo \
 	./$(DEPDIR)/evaluator_test.Po \
-	./$(DEPDIR)/game_state_reader.Plo \
+	./$(DEPDIR)/game_state_reader.Plo ./$(DEPDIR)/i_ability.Plo \
 	./$(DEPDIR)/legacy_game_interface.Plo \
 	./$(DEPDIR)/mcts_manual_test.Plo ./$(DEPDIR)/mcts_search.Plo \
+	./$(DEPDIR)/movement_ability.Plo \
+	./$(DEPDIR)/pathfinding_adapter.Plo \
 	./$(DEPDIR)/real_game_action_executor.Plo \
 	./$(DEPDIR)/simple_combat_evaluator.Plo \
 	./$(DEPDIR)/simulation_action_executor.Plo \
@@ -172,9 +180,11 @@ am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
 SOURCES = $(libmcts_la_SOURCES) $(action_executor_test_SOURCES) \
-	$(evaluator_test_SOURCES) $(snapshot_test_SOURCES)
+	$(evaluator_test_SOURCES) \
+	$(snapshot_test_SOURCES)
 DIST_SOURCES = $(libmcts_la_SOURCES) $(action_executor_test_SOURCES) \
-	$(evaluator_test_SOURCES) $(snapshot_test_SOURCES)
+	$(evaluator_test_SOURCES) \
+	$(snapshot_test_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -414,17 +424,24 @@ noinst_LTLIBRARIES = libmcts.la
 # Phase 0.2: Action Execution Interface
 # Phase 0.3: Basic Evaluation Function
 # Phase 1: Core MCTS Engine
+# Phase 1.2: Capability-Based Action Generation
 libmcts_la_SOURCES = \
 	domain/unit_snapshot.cpp \
 	domain/game_state_reader.cpp \
 	domain/action_types.cpp \
+	domain/combat_calculator.cpp \
 	domain/simulation_action_executor.cpp \
 	domain/real_game_action_executor.cpp \
 	domain/action_executor_factory.cpp \
 	domain/simple_combat_evaluator.cpp \
 	domain/evaluator_factory.cpp \
+	domain/abilities/i_ability.cpp \
+	domain/abilities/ability_registry.cpp \
+	domain/abilities/movement_ability.cpp \
+	domain/abilities/combat_ability.cpp \
 	core/mcts_search.cpp \
 	infrastructure/legacy_game_interface.cpp \
+	infrastructure/pathfinding_adapter.cpp \
 	mcts_manual_test.cpp
 
 
@@ -432,6 +449,8 @@ libmcts_la_SOURCES = \
 EXTRA_DIST = \
 	$(srcdir)/domain/*.h \
 	$(srcdir)/domain/*.cpp \
+	$(srcdir)/domain/abilities/*.h \
+	$(srcdir)/domain/abilities/*.cpp \
 	$(srcdir)/core/*.h \
 	$(srcdir)/agents/*.h \
 	$(srcdir)/coordination/*.h \
@@ -452,6 +471,10 @@ action_executor_test_LDADD = libmcts.la
 # Phase 0.3 test
 evaluator_test_SOURCES = domain/evaluator_test.cpp
 evaluator_test_LDADD = libmcts.la
+
+# Phase 1.3 test (Pathfinding integration)
+pathfinding_integration_test_SOURCES = domain/pathfinding_integration_test.cpp
+pathfinding_integration_test_LDADD = libmcts.la
 all: all-am
 
 .SUFFIXES:
@@ -527,15 +550,21 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ability_registry.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/action_executor_factory.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/action_executor_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/action_types.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/combat_ability.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/combat_calculator.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evaluator_factory.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evaluator_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/game_state_reader.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/i_ability.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/legacy_game_interface.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcts_manual_test.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcts_search.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/movement_ability.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pathfinding_adapter.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/real_game_action_executor.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_combat_evaluator.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simulation_action_executor.Plo@am__quote@ # am--include-marker
@@ -590,6 +619,13 @@ action_types.lo: domain/action_types.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o action_types.lo `test -f 'domain/action_types.cpp' || echo '$(srcdir)/'`domain/action_types.cpp
 
+combat_calculator.lo: domain/combat_calculator.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT combat_calculator.lo -MD -MP -MF $(DEPDIR)/combat_calculator.Tpo -c -o combat_calculator.lo `test -f 'domain/combat_calculator.cpp' || echo '$(srcdir)/'`domain/combat_calculator.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/combat_calculator.Tpo $(DEPDIR)/combat_calculator.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='domain/combat_calculator.cpp' object='combat_calculator.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o combat_calculator.lo `test -f 'domain/combat_calculator.cpp' || echo '$(srcdir)/'`domain/combat_calculator.cpp
+
 simulation_action_executor.lo: domain/simulation_action_executor.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT simulation_action_executor.lo -MD -MP -MF $(DEPDIR)/simulation_action_executor.Tpo -c -o simulation_action_executor.lo `test -f 'domain/simulation_action_executor.cpp' || echo '$(srcdir)/'`domain/simulation_action_executor.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simulation_action_executor.Tpo $(DEPDIR)/simulation_action_executor.Plo
@@ -625,6 +661,34 @@ evaluator_factory.lo: domain/evaluator_factory.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o evaluator_factory.lo `test -f 'domain/evaluator_factory.cpp' || echo '$(srcdir)/'`domain/evaluator_factory.cpp
 
+i_ability.lo: domain/abilities/i_ability.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT i_ability.lo -MD -MP -MF $(DEPDIR)/i_ability.Tpo -c -o i_ability.lo `test -f 'domain/abilities/i_ability.cpp' || echo '$(srcdir)/'`domain/abilities/i_ability.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/i_ability.Tpo $(DEPDIR)/i_ability.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='domain/abilities/i_ability.cpp' object='i_ability.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o i_ability.lo `test -f 'domain/abilities/i_ability.cpp' || echo '$(srcdir)/'`domain/abilities/i_ability.cpp
+
+ability_registry.lo: domain/abilities/ability_registry.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ability_registry.lo -MD -MP -MF $(DEPDIR)/ability_registry.Tpo -c -o ability_registry.lo `test -f 'domain/abilities/ability_registry.cpp' || echo '$(srcdir)/'`domain/abilities/ability_registry.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/ability_registry.Tpo $(DEPDIR)/ability_registry.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='domain/abilities/ability_registry.cpp' object='ability_registry.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ability_registry.lo `test -f 'domain/abilities/ability_registry.cpp' || echo '$(srcdir)/'`domain/abilities/ability_registry.cpp
+
+movement_ability.lo: domain/abilities/movement_ability.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT movement_ability.lo -MD -MP -MF $(DEPDIR)/movement_ability.Tpo -c -o movement_ability.lo `test -f 'domain/abilities/movement_ability.cpp' || echo '$(srcdir)/'`domain/abilities/movement_ability.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/movement_ability.Tpo $(DEPDIR)/movement_ability.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='domain/abilities/movement_ability.cpp' object='movement_ability.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o movement_ability.lo `test -f 'domain/abilities/movement_ability.cpp' || echo '$(srcdir)/'`domain/abilities/movement_ability.cpp
+
+combat_ability.lo: domain/abilities/combat_ability.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT combat_ability.lo -MD -MP -MF $(DEPDIR)/combat_ability.Tpo -c -o combat_ability.lo `test -f 'domain/abilities/combat_ability.cpp' || echo '$(srcdir)/'`domain/abilities/combat_ability.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/combat_ability.Tpo $(DEPDIR)/combat_ability.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='domain/abilities/combat_ability.cpp' object='combat_ability.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o combat_ability.lo `test -f 'domain/abilities/combat_ability.cpp' || echo '$(srcdir)/'`domain/abilities/combat_ability.cpp
+
 mcts_search.lo: core/mcts_search.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mcts_search.lo -MD -MP -MF $(DEPDIR)/mcts_search.Tpo -c -o mcts_search.lo `test -f 'core/mcts_search.cpp' || echo '$(srcdir)/'`core/mcts_search.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mcts_search.Tpo $(DEPDIR)/mcts_search.Plo
@@ -638,6 +702,13 @@ legacy_game_interface.lo: infrastructure/legacy_game_interface.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='infrastructure/legacy_game_interface.cpp' object='legacy_game_interface.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o legacy_game_interface.lo `test -f 'infrastructure/legacy_game_interface.cpp' || echo '$(srcdir)/'`infrastructure/legacy_game_interface.cpp
+
+pathfinding_adapter.lo: infrastructure/pathfinding_adapter.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT pathfinding_adapter.lo -MD -MP -MF $(DEPDIR)/pathfinding_adapter.Tpo -c -o pathfinding_adapter.lo `test -f 'infrastructure/pathfinding_adapter.cpp' || echo '$(srcdir)/'`infrastructure/pathfinding_adapter.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/pathfinding_adapter.Tpo $(DEPDIR)/pathfinding_adapter.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='infrastructure/pathfinding_adapter.cpp' object='pathfinding_adapter.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o pathfinding_adapter.lo `test -f 'infrastructure/pathfinding_adapter.cpp' || echo '$(srcdir)/'`infrastructure/pathfinding_adapter.cpp
 
 action_executor_test.o: domain/action_executor_test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT action_executor_test.o -MD -MP -MF $(DEPDIR)/action_executor_test.Tpo -c -o action_executor_test.o `test -f 'domain/action_executor_test.cpp' || echo '$(srcdir)/'`domain/action_executor_test.cpp
@@ -812,15 +883,21 @@ clean-am: clean-generic clean-libtool clean-noinstLTLIBRARIES \
 	clean-noinstPROGRAMS mostlyclean-am
 
 distclean: distclean-am
-		-rm -f ./$(DEPDIR)/action_executor_factory.Plo
+		-rm -f ./$(DEPDIR)/ability_registry.Plo
+	-rm -f ./$(DEPDIR)/action_executor_factory.Plo
 	-rm -f ./$(DEPDIR)/action_executor_test.Po
 	-rm -f ./$(DEPDIR)/action_types.Plo
+	-rm -f ./$(DEPDIR)/combat_ability.Plo
+	-rm -f ./$(DEPDIR)/combat_calculator.Plo
 	-rm -f ./$(DEPDIR)/evaluator_factory.Plo
 	-rm -f ./$(DEPDIR)/evaluator_test.Po
 	-rm -f ./$(DEPDIR)/game_state_reader.Plo
+	-rm -f ./$(DEPDIR)/i_ability.Plo
 	-rm -f ./$(DEPDIR)/legacy_game_interface.Plo
 	-rm -f ./$(DEPDIR)/mcts_manual_test.Plo
 	-rm -f ./$(DEPDIR)/mcts_search.Plo
+	-rm -f ./$(DEPDIR)/movement_ability.Plo
+	-rm -f ./$(DEPDIR)/pathfinding_adapter.Plo
 	-rm -f ./$(DEPDIR)/real_game_action_executor.Plo
 	-rm -f ./$(DEPDIR)/simple_combat_evaluator.Plo
 	-rm -f ./$(DEPDIR)/simulation_action_executor.Plo
@@ -871,15 +948,21 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-		-rm -f ./$(DEPDIR)/action_executor_factory.Plo
+		-rm -f ./$(DEPDIR)/ability_registry.Plo
+	-rm -f ./$(DEPDIR)/action_executor_factory.Plo
 	-rm -f ./$(DEPDIR)/action_executor_test.Po
 	-rm -f ./$(DEPDIR)/action_types.Plo
+	-rm -f ./$(DEPDIR)/combat_ability.Plo
+	-rm -f ./$(DEPDIR)/combat_calculator.Plo
 	-rm -f ./$(DEPDIR)/evaluator_factory.Plo
 	-rm -f ./$(DEPDIR)/evaluator_test.Po
 	-rm -f ./$(DEPDIR)/game_state_reader.Plo
+	-rm -f ./$(DEPDIR)/i_ability.Plo
 	-rm -f ./$(DEPDIR)/legacy_game_interface.Plo
 	-rm -f ./$(DEPDIR)/mcts_manual_test.Plo
 	-rm -f ./$(DEPDIR)/mcts_search.Plo
+	-rm -f ./$(DEPDIR)/movement_ability.Plo
+	-rm -f ./$(DEPDIR)/pathfinding_adapter.Plo
 	-rm -f ./$(DEPDIR)/real_game_action_executor.Plo
 	-rm -f ./$(DEPDIR)/simple_combat_evaluator.Plo
 	-rm -f ./$(DEPDIR)/simulation_action_executor.Plo

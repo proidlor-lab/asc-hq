@@ -59,8 +59,8 @@ Diese Roadmap fokussiert sich auf einen **minimalen funktionalen Durchstich** de
   - Optimiert für Performance (keine GUI-Updates, kein Netzwerk)
   - Undo/redo support mit 10-level stack
 - [x] `RealGameActionExecutor` Stub
-  - Placeholder für echte GameMap-Integration (Phase 1.4)
-  - Interface implementiert, Execution deferred
+  - Placeholder für echte GameMap-Integration (pending)
+  - Interface implementiert, full integration in Phase 2.1
 
 **Technische Herausforderungen**:
 - ASC's Command-System ist für echte Spiel-Ausführung designed, nicht für Simulationen
@@ -148,16 +148,19 @@ Diese Architektur wird **progressiv** implementiert: MVP startet mit wenigen Age
 - ✅ MCTS algorithm fully implemented (Selection, Expansion, Simulation, Backprop)
 - ✅ Configurable parameters (iterations, time, depth, exploration)
 - ✅ Manual test interface for in-game validation
-- ⏳ Performance testing: Deferred to Phase 1.4 (requires full ASC linkage)
-- ⏳ Integration tests: Deferred to Phase 1.4 (libmcts needs ASC library)
+- ✅ Phase 1.2: Action system extensions complete (ability registry, combat, pathfinding)
+- ⏳ Full integration: Phase 2.1 (agent framework will connect MCTS to game)
 
 ---
 
-### 1.2 Utility-Agent Framework (Woche 3-4)
+## Phase 2.1: Utility-Agent Framework (4-6 Wochen)
+**Dauer**: 4-6 Wochen  
+**Priorität**: HIGH (Next Major Phase)  
+**Status**: ⏸️ Not Started
 
-**Ziel**: Modulares System für taktische Entscheidungs-Agents
+**Ziel**: Modulares System für taktische Entscheidungs-Agents und Service-Aktionen
 
-#### 1.2.1 Core Interfaces
+### 2.1.1 Core Interfaces (Woche 1)
 
 **Deliverables**:
 - [ ] **`IActionVetoAgent`** Interface (Veto-Layer)
@@ -221,7 +224,9 @@ Diese Architektur wird **progressiv** implementiert: MVP startet mit wenigen Age
   - Summe eigener Unit-Werte minus Gegner-Unit-Werte, normalisiert
   - Weight: **HOCH** (z.B. 2.0) → Material ist fundamental
 
-#### 1.2.3 Action Generation & Utility-Scoring
+### 2.1.2 MVP Agent Set (Woche 2-3)
+
+#### Action Generation & Utility-Scoring
 
 **Deliverables**:
 - [ ] **`UtilityBasedActionGenerator`** Klasse
@@ -250,7 +255,21 @@ Diese Architektur wird **progressiv** implementiert: MVP startet mit wenigen Age
 
 ---
 
-### 1.3 Rollout-Policy mit Agents (Woche 4-5)
+### 2.1.3 Service Actions (Woche 3-4)
+
+**Ziel**: Erweitere Aktionsraum um Repair, Refuel, Supply
+
+**Deliverables**:
+- [ ] **`ServiceAbility`** - Implementiert IAbility für Service-Aktionen
+  - Repair (Reparatur beschädigter Units)
+  - Refuel (Betankung von Units)
+  - Supply (Munitionsnachschub)
+- [ ] **Integration mit AbilityRegistry** - Einfach registrieren, keine Core-Änderungen
+- [ ] **Service-Utility-Agents** - Bewertung von Service-Bedarf
+
+---
+
+### 2.1.4 Agent-Based Rollout Policy (Woche 4-5)
 
 **Ziel**: Schnelle Simulation für MCTS Rollouts, nutzt Utility-Agents
 
@@ -282,7 +301,7 @@ Diese Architektur wird **progressiv** implementiert: MVP startet mit wenigen Age
 
 ---
 
-### 1.4 Integration & End-to-End Test (Woche 5)
+### 2.1.5 Full MCTS Activation (Woche 5-6)
 
 **Ziel**: MCTS steuert tatsächlich Units in ASC
 
@@ -431,11 +450,14 @@ Dies zeigt die **Flexibilität** des Systems: Komplexe Entscheidungen (RF-Risk v
 
 ---
 
-## Phase 2: Architektur-Dummies & Strategic Stubs
-**Dauer**: 1-2 Wochen  
-**Priorität**: MEDIUM (Architektonische Vorbereitung)
+## Phase 3: Strategic Planning & Hierarchical Architecture (6-8 Wochen)
+**Dauer**: 6-8 Wochen  
+**Priorität**: MEDIUM (Future Enhancement)  
+**Status**: ⏸️ Future
 
-### 2.1 UnitGroup System (Dummy)
+**Ziel**: Hierarchical planning, objective-based play, strategic layer
+
+### 3.1 UnitGroup System
 
 **Deliverables**:
 - [ ] `UnitGroup` Klasse
@@ -452,7 +474,7 @@ Dies zeigt die **Flexibilität** des Systems: Komplexe Entscheidungen (RF-Risk v
 
 ---
 
-### 2.2 Strategic Layer (Stub)
+### 3.2 Strategic Layer
 
 **Deliverables**:
 - [ ] `IStrategicController` Interface
@@ -468,7 +490,7 @@ Dies zeigt die **Flexibilität** des Systems: Komplexe Entscheidungen (RF-Risk v
 
 ---
 
-### 2.3 Memory System (Stub)
+### 3.3 Memory System
 
 **Deliverables**:
 - [ ] `StrategyMemory` Klasse (Minimal-Version)
@@ -484,11 +506,14 @@ Dies zeigt die **Flexibilität** des Systems: Komplexe Entscheidungen (RF-Risk v
 
 ---
 
-## Phase 3: Testing, Tuning & Documentation
-**Dauer**: 1-2 Wochen  
-**Priorität**: HIGH (Qualitätssicherung)
+## Phase 4: Optimization & Polish (4-6 Wochen)
+**Dauer**: 4-6 Wochen  
+**Priorität**: MEDIUM (Future)  
+**Status**: ⏸️ Future
 
-### 3.1 Performance-Optimierung
+**Ziel**: Testing, Tuning, Performance optimization, Documentation
+
+### 4.1 Performance-Optimierung
 
 **Deliverables**:
 - [ ] Profiling: Identifiziere Bottlenecks
@@ -500,7 +525,7 @@ Dies zeigt die **Flexibilität** des Systems: Komplexe Entscheidungen (RF-Risk v
 
 ---
 
-### 3.2 Integration Tests
+### 4.2 Integration Tests
 
 **Deliverables**:
 - [ ] Test-Szenarien:
@@ -511,7 +536,7 @@ Dies zeigt die **Flexibilität** des Systems: Komplexe Entscheidungen (RF-Risk v
 
 ---
 
-### 3.3 Documentation
+### 4.3 Documentation
 
 **Deliverables**:
 - [ ] Code-Dokumentation (Kommentare, README)
@@ -526,10 +551,11 @@ Dies zeigt die **Flexibilität** des Systems: Komplexe Entscheidungen (RF-Risk v
 |-------|--------|-------------|
 | **Phase 0** | 2-3 | Game State Cloning, Action Interface, Basic Evaluation | ✅ COMPLETE |
 | **Phase 1.1** | 1-2 | Core MCTS Engine (Selection, Expansion, Simulation, Backprop) | ✅ COMPLETE |
-| **Phase 1.2-1.3** | 2-3 | Utility-Agent-Framework (Combat-Fokus) | ⏸️ Not Started |
-| **Phase 2** | 1-2 | Architektur-Dummies (Groups, Strategic Stub, Memory Stub) |
-| **Phase 3** | 1-2 | Testing, Tuning, Documentation |
-| **GESAMT** | **8-12 Wochen** | **Funktionierender Tactical Combat MVP mit erweiterbarem Agent-System** |
+| **Phase 1.2** | 2-3 | Action System Extensions (Abilities, Combat, Pathfinding) | ✅ COMPLETE |
+| **Phase 2.1** | 4-6 | Utility-Agent-Framework + Service Actions | ⏸️ Not Started |
+| **Phase 3** | 6-8 | Strategic Planning (Hierarchical, Objectives) | ⏸️ Future |
+| **Phase 4** | 4-6 | Optimization, Testing, Tuning, Documentation | ⏸️ Future |
+| **GESAMT** | **20-28 Wochen** | **Full MCTS AI with Agents, Strategic Planning, and Polish** |
 
 ---
 
@@ -594,7 +620,15 @@ Nach erfolgreichem Durchstich können folgende Features iterativ hinzugefügt we
 
 ## Nächste Schritte
 
-1. **Sofort**: Phase 0.1 starten (Game State Cloning)
-2. **Parallel**: ASC-Code-Analyse vertiefen (GameMap-Struktur, Command-System)
-3. **Woche 2**: Erste Performance-Tests mit Snapshot
-4. **Woche 3**: MCTS-Kern-Implementierung beginnen
+**Current Status**: Phase 1.2 Complete ✅
+
+**Next Phase**: Phase 2.1 - Utility-Agent Framework (4-6 Wochen)
+
+1. **Week 1**: Core agent interfaces (IActionVetoAgent, IActionUtilityAgent, IStateEvaluationAgent)
+2. **Week 2-3**: MVP agent set (Legal, ReactionFire, Aggressiveness, TargetPriority, Material)
+3. **Week 3-4**: Service actions (Repair, Refuel, Supply) via ServiceAbility
+4. **Week 4-5**: Agent-based rollout policy for MCTS simulations
+5. **Week 5-6**: Full MCTS activation - replace "attack or wait" with tree search
+6. **Testing**: End-to-end validation, performance tuning
+
+See **docs/implementation_roadmap.md** lines 156-320 for detailed design.

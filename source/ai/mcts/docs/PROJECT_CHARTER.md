@@ -79,16 +79,16 @@ Create a **hierarchical MCTS-based AI** that:
 
 ## 5. Technical Approach
 
-**Architecture:** See [docs/hierarchical_state_design.md](docs/hierarchical_state_design.md)
+**Architecture:** See [docs/hierarchical_state_design.md](hierarchical_state_design.md)
 - Strategic layer: Group/sector level MCTS (100-200 actions)
 - Tactical layer: Unit-level MCTS per group (30-50 actions)
 - Persistent memory: StrategyMemory across turns
 
-**Implementation:** See [docs/implementation_roadmap.md](docs/implementation_roadmap.md)
+**Implementation:** See [docs/implementation_roadmap.md](implementation_roadmap.md)
 - Phases 0-6: Foundation → Tactical → Strategic → Memory → Optimization
 - Total estimate: 16-18 weeks focused development
 
-**Integration:** See [docs/code_structure.md](docs/code_structure.md)
+**Integration:** See [docs/code_structure.md](code_structure.md)
 - Wrapper around ASC GameMap/Player/Vehicle
 - Coexist with legacy AI (player-selectable)
 - Reuse ASC Action system
@@ -116,7 +116,7 @@ Create a **hierarchical MCTS-based AI** that:
 **Team:** Solo development with LLM assistance  
 **Expertise:** ASC gameplay knowledge available  
 
-**Phases:** See [docs/implementation_roadmap.md](docs/implementation_roadmap.md) for details
+**Phases:** See [docs/implementation_roadmap.md](implementation_roadmap.md) for details
 - Phase 0: Infrastructure (2-3 weeks)
 - Phase 1: Core MCTS (3-4 weeks)
 - Phase 2: Tactical Domain (4-5 weeks)
@@ -138,7 +138,7 @@ Create a **hierarchical MCTS-based AI** that:
 
 ## 9. Risk Management
 
-**Top Risks:** See [docs/implementation_roadmap.md](docs/implementation_roadmap.md) Section "Technische Herausforderungen"
+**Top Risks:** See [docs/implementation_roadmap.md](implementation_roadmap.md) Section "Technische Herausforderungen"
 
 1. **State cloning performance** → Mitigated via lightweight snapshots
 2. **Hierarchical coordination complexity** → Start simple, add coordination incrementally  
@@ -151,11 +151,11 @@ Create a **hierarchical MCTS-based AI** that:
 ## 10. Documentation Structure
 
 - **[PROJECT_CHARTER.md](PROJECT_CHARTER.md)** (this file) - Project overview, goals, decisions
-- **[STATUS.md](STATUS.md)** - Current progress, active work, next steps
-- **[docs/game_description.md](docs/game_description.md)** - ASC mechanics, requirements
-- **[docs/hierarchical_state_design.md](docs/hierarchical_state_design.md)** - Architecture design
-- **[docs/implementation_roadmap.md](docs/implementation_roadmap.md)** - Phase plan, risks, deliverables
-- **[docs/code_structure.md](docs/code_structure.md)** - ASC codebase analysis
+- **[STATUS.md](../STATUS.md)** - Current progress, active work, next steps
+- **[docs/game_description.md](game_description.md)** - ASC mechanics, requirements
+- **[docs/hierarchical_state_design.md](hierarchical_state_design.md)** - Architecture design
+- **[docs/implementation_roadmap.md](implementation_roadmap.md)** - Phase plan, risks, deliverables
+- **[docs/code_structure.md](code_structure.md)** - ASC codebase analysis
 
 ---
 

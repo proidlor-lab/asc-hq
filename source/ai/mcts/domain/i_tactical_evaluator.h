@@ -16,7 +16,7 @@
 #ifndef MCTS_I_TACTICAL_EVALUATOR_H
 #define MCTS_I_TACTICAL_EVALUATOR_H
 
-#include "game_state_snapshot.h"
+#include "i_game_state.h"
 #include "types.h"
 #include <memory>
 
@@ -104,7 +104,7 @@ public:
      * Score range: -1.0 (losing) to +1.0 (winning)
      */
     virtual EvaluationResult evaluate(
-        const GameStateSnapshot& snapshot,
+        const IGameState& snapshot,
         const EvaluationContext& context) const = 0;
     
     /**
@@ -115,7 +115,7 @@ public:
      * @return true if player has won/lost (no units left, etc.)
      */
     virtual bool isTerminalState(
-        const GameStateSnapshot& snapshot,
+        const IGameState& snapshot,
         PlayerID player) const = 0;
     
     /**

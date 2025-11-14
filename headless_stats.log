@@ -1,0 +1,226 @@
+Timestamp: 2025-11-08 20:24:07
+Map: /home/vboxuser/.asc/SeaBattle.map
+Participants: player 1 -> mcts_balanced, player 2 -> classic
+Result: Headless simulation reached the turn limit after 2 rounds.
+Rounds: 2 (turn limit 2 reached)
+Statistics:
+Player 1 (human 0): damage done 1041, damage taken 1125, units destroyed 3, units lost 6
+    reaction fire: damage done 497, damage taken 437, kills 0, losses 3
+Player 2 (human 1): damage done 1125, damage taken 1041, units destroyed 6, units lost 3
+    reaction fire: damage done 437, damage taken 497, kills 3, losses 0
+
+Timestamp: 2025-11-08 20:24:49
+Map: /home/vboxuser/.asc/SeaBattle.map
+Participants: player 1 -> mcts_deep, player 2 -> classic
+Result: Headless simulation reached the turn limit after 2 rounds.
+Rounds: 2 (turn limit 2 reached)
+Statistics:
+Player 1 (human 0): damage done 1041, damage taken 1125, units destroyed 3, units lost 6
+    reaction fire: damage done 497, damage taken 437, kills 0, losses 3
+Player 2 (human 1): damage done 1125, damage taken 1041, units destroyed 6, units lost 3
+    reaction fire: damage done 437, damage taken 497, kills 3, losses 0
+
+Timestamp: 2025-11-08 20:25:30
+Map: /home/vboxuser/.asc/SeaBattle.map
+Participants: player 1 -> classic, player 2 -> classic
+Result: Headless simulation reached the turn limit after 2 rounds.
+Rounds: 2 (turn limit 2 reached)
+Statistics:
+Player 1 (human 0): damage done 1041, damage taken 1125, units destroyed 3, units lost 6
+    reaction fire: damage done 497, damage taken 437, kills 0, losses 3
+Player 2 (human 1): damage done 1125, damage taken 1041, units destroyed 6, units lost 3
+    reaction fire: damage done 437, damage taken 497, kills 3, losses 0
+
+Timestamp: 2025-11-08 20:29:48
+Map: /home/vboxuser/.asc/SeaBattle.map
+Participants: player 1 -> mcts_defensive, player 2 -> classic
+Result: Headless simulation reached the turn limit after 2 rounds.
+Rounds: 2 (turn limit 2 reached)
+Statistics:
+Player 1 (human 0): damage done 1041, damage taken 1125, units destroyed 3, units lost 6
+    reaction fire: damage done 497, damage taken 437, kills 0, losses 3
+Player 2 (human 1): damage done 1125, damage taken 1041, units destroyed 6, units lost 3
+    reaction fire: damage done 437, damage taken 497, kills 3, losses 0
+
+Timestamp: 2025-11-08 20:32:29
+Map: /home/vboxuser/.asc/SeaBattle.map
+Participants: player 1 -> mcts_defensive, player 2 -> classic
+Result: Headless simulation reached the turn limit after 2 rounds.
+Rounds: 2 (turn limit 2 reached)
+Statistics:
+Player 1 (human 0): damage done 1041, damage taken 1125, units destroyed 3, units lost 6
+    reaction fire: damage done 497, damage taken 437, kills 0, losses 3
+Player 2 (human 1): damage done 1125, damage taken 1041, units destroyed 6, units lost 3
+    reaction fire: damage done 437, damage taken 497, kills 3, losses 0
+
+Timestamp: 2025-11-08 20:33:05
+Map: /home/vboxuser/.asc/SeaBattle.map
+Participants: player 1 -> mcts_defensive, player 2 -> classic
+Result: Headless simulation reached the turn limit after 2 rounds.
+Rounds: 2 (turn limit 2 reached)
+Statistics:
+Player 1 (human 0): damage done 1041, damage taken 1125, units destroyed 3, units lost 6
+    reaction fire: damage done 497, damage taken 437, kills 0, losses 3
+Player 2 (human 1): damage done 1125, damage taken 1041, units destroyed 6, units lost 3
+    reaction fire: damage done 437, damage taken 497, kills 3, losses 0
+
+Timestamp: 2025-11-08 20:37:38
+Map: /home/vboxuser/.asc/SeaBattle.map
+Participants: player 1 -> mcts_defensive, player 2 -> classic
+Result: Headless simulation reached the turn limit after 2 rounds.
+Rounds: 2 (turn limit 2 reached)
+Statistics:
+Player 1 (human 0): damage done 1041, damage taken 1125, units destroyed 3, units lost 6
+    reaction fire: damage done 497, damage taken 437, kills 0, losses 3
+Player 2 (human 1): damage done 1125, damage taken 1041, units destroyed 6, units lost 3
+    reaction fire: damage done 437, damage taken 497, kills 3, losses 0
+
+Timestamp: 2025-11-08 20:38:37
+Map: /home/vboxuser/.asc/SeaBattle.map
+Participants: player 1 -> mcts_defensive, player 2 -> classic
+Result: Headless simulation reached the turn limit after 2 rounds.
+Rounds: 2 (turn limit 2 reached)
+Statistics:
+Player 1 (human 0): damage done 1041, damage taken 1125, units destroyed 3, units lost 6
+    reaction fire: damage done 497, damage taken 437, kills 0, losses 3
+Player 2 (human 1): damage done 1125, damage taken 1041, units destroyed 6, units lost 3
+    reaction fire: damage done 437, damage taken 497, kills 3, losses 0
+
+Timestamp: 2025-11-08 20:44:22
+Map: /home/vboxuser/.asc/SeaBattle.map
+Participants: player 1 -> mcts_defensive, player 2 -> classic
+Result: Headless simulation reached the turn limit after 1 rounds.
+Rounds: 1 (turn limit 1 reached)
+Statistics:
+Player 1 (human 0): damage done 195, damage taken 269, units destroyed 1, units lost 0
+    reaction fire: damage done 95, damage taken 0, kills 0, losses 0
+Player 2 (human 1): damage done 269, damage taken 195, units destroyed 0, units lost 1
+    reaction fire: damage done 0, damage taken 95, kills 0, losses 0
+
+Timestamp: 2025-11-08 20:45:30
+Map: /home/vboxuser/.asc/SeaBattle.map
+Participants: player 1 -> mcts_defensive, player 2 -> classic
+Result: Headless simulation reached the turn limit after 1 rounds.
+Rounds: 1 (turn limit 1 reached)
+Statistics:
+Player 1 (human 0): damage done 195, damage taken 269, units destroyed 1, units lost 0
+    reaction fire: damage done 95, damage taken 0, kills 0, losses 0
+Player 2 (human 1): damage done 269, damage taken 195, units destroyed 0, units lost 1
+    reaction fire: damage done 0, damage taken 95, kills 0, losses 0
+
+Timestamp: 2025-11-08 20:47:13
+Map: /home/vboxuser/.asc/SeaBattle.map
+Participants: player 1 -> mcts_defensive, player 2 -> classic
+Result: Headless simulation reached the turn limit after 1 rounds.
+Rounds: 1 (turn limit 1 reached)
+Statistics:
+Player 1 (human 0): damage done 195, damage taken 269, units destroyed 1, units lost 0
+    reaction fire: damage done 95, damage taken 0, kills 0, losses 0
+Player 2 (human 1): damage done 269, damage taken 195, units destroyed 0, units lost 1
+    reaction fire: damage done 0, damage taken 95, kills 0, losses 0
+
+Timestamp: 2025-11-08 20:59:27
+Map: /home/vboxuser/.asc/SeaBattle.map
+Participants: player 1 -> mcts_defensive, player 2 -> classic
+Result: Headless simulation reached the turn limit after 1 rounds.
+Rounds: 1 (turn limit 1 reached)
+Statistics:
+Player 1 (human 0): damage done 0, damage taken 200, units destroyed 0, units lost 2
+Player 2 (human 1): damage done 200, damage taken 0, units destroyed 2, units lost 0
+
+Timestamp: 2025-11-08 20:59:45
+Map: /home/vboxuser/.asc/SeaBattle.map
+Participants: player 1 -> mcts_balanced, player 2 -> classic
+Result: Headless simulation reached the turn limit after 1 rounds.
+Rounds: 1 (turn limit 1 reached)
+Statistics:
+Player 1 (human 0): damage done 0, damage taken 200, units destroyed 0, units lost 2
+Player 2 (human 1): damage done 200, damage taken 0, units destroyed 2, units lost 0
+
+Timestamp: 2025-11-08 20:59:51
+Map: /home/vboxuser/.asc/SeaBattle.map
+Participants: player 1 -> mcts_aggressive, player 2 -> classic
+Result: Headless simulation reached the turn limit after 1 rounds.
+Rounds: 1 (turn limit 1 reached)
+Statistics:
+Player 1 (human 0): damage done 0, damage taken 200, units destroyed 0, units lost 2
+Player 2 (human 1): damage done 200, damage taken 0, units destroyed 2, units lost 0
+
+Timestamp: 2025-11-08 20:59:56
+Map: /home/vboxuser/.asc/SeaBattle.map
+Participants: player 1 -> mcts_defensive, player 2 -> classic
+Result: Headless simulation reached the turn limit after 1 rounds.
+Rounds: 1 (turn limit 1 reached)
+Statistics:
+Player 1 (human 0): damage done 0, damage taken 200, units destroyed 0, units lost 2
+Player 2 (human 1): damage done 200, damage taken 0, units destroyed 2, units lost 0
+
+Timestamp: 2025-11-08 21:00:05
+Map: /home/vboxuser/.asc/SeaBattle.map
+Participants: player 1 -> mcts_fast, player 2 -> classic
+Result: Headless simulation reached the turn limit after 1 rounds.
+Rounds: 1 (turn limit 1 reached)
+Statistics:
+Player 1 (human 0): damage done 0, damage taken 200, units destroyed 0, units lost 2
+Player 2 (human 1): damage done 200, damage taken 0, units destroyed 2, units lost 0
+
+Timestamp: 2025-11-08 21:00:09
+Map: /home/vboxuser/.asc/SeaBattle.map
+Participants: player 1 -> mcts_deep, player 2 -> classic
+Result: Headless simulation reached the turn limit after 1 rounds.
+Rounds: 1 (turn limit 1 reached)
+Statistics:
+Player 1 (human 0): damage done 0, damage taken 200, units destroyed 0, units lost 2
+Player 2 (human 1): damage done 200, damage taken 0, units destroyed 2, units lost 0
+
+Timestamp: 2025-11-08 21:02:44
+Map: /home/vboxuser/.asc/SeaBattle.map
+Participants: player 1 -> mcts_defensive, player 2 -> classic
+Result: Headless simulation reached the turn limit after 2 rounds.
+Rounds: 2 (turn limit 2 reached)
+Statistics:
+Player 1 (human 0): damage done 370, damage taken 260, units destroyed 3, units lost 2
+    reaction fire: damage done 353, damage taken 0, kills 3, losses 0
+Player 2 (human 1): damage done 260, damage taken 370, units destroyed 2, units lost 3
+    reaction fire: damage done 0, damage taken 353, kills 0, losses 3
+
+Timestamp: 2025-11-08 21:03:38
+Map: /home/vboxuser/.asc/SeaBattle.map
+Participants: player 1 -> mcts_defensive, player 2 -> classic
+Result: Headless simulation reached the turn limit after 2 rounds.
+Rounds: 2 (turn limit 2 reached)
+Statistics:
+Player 1 (human 0): damage done 370, damage taken 260, units destroyed 3, units lost 2
+    reaction fire: damage done 353, damage taken 0, kills 3, losses 0
+Player 2 (human 1): damage done 260, damage taken 370, units destroyed 2, units lost 3
+    reaction fire: damage done 0, damage taken 353, kills 0, losses 3
+
+Timestamp: 2025-11-08 21:04:02
+Map: /home/vboxuser/.asc/SeaBattle.map
+Participants: player 1 -> mcts_defensive, player 2 -> classic
+Result: Headless simulation reached the turn limit after 4 rounds.
+Rounds: 4 (turn limit 4 reached)
+Statistics:
+Player 1 (human 0): damage done 1532, damage taken 772, units destroyed 11, units lost 2
+    reaction fire: damage done 1179, damage taken 0, kills 8, losses 0
+Player 2 (human 1): damage done 772, damage taken 1532, units destroyed 2, units lost 11
+    reaction fire: damage done 0, damage taken 1179, kills 0, losses 8
+
+Timestamp: 2025-11-09 21:39:30
+Map: data/canyon.map
+Participants: player 1 -> mcts_balanced, player 2 -> classic
+Result: Headless simulation reached the turn limit after 2 rounds.
+Rounds: 2 (turn limit 2 reached)
+Statistics:
+Player 1 (player 0): damage done 0, damage taken 0, units destroyed 0, units lost 0
+Player 2 (player 1): damage done 0, damage taken 0, units destroyed 0, units lost 0
+
+Timestamp: 2025-11-09 21:39:41
+Map: data/canyon.map
+Participants: player 1 -> mcts_balanced, player 2 -> classic
+Result: Headless simulation reached the turn limit after 1 rounds.
+Rounds: 1 (turn limit 1 reached)
+Statistics:
+Player 1 (player 0): damage done 0, damage taken 0, units destroyed 0, units lost 0
+Player 2 (player 1): damage done 0, damage taken 0, units destroyed 0, units lost 0
+

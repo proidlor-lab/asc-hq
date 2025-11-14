@@ -132,7 +132,7 @@ public:
      * @param perspective Player ID to search for
      * @return Search result with best action and statistics
      */
-    MCTSResult search(const GameStateSnapshot& initialState, 
+    MCTSResult search(const IGameState& initialState, 
                      PlayerID perspective);
     
     /**

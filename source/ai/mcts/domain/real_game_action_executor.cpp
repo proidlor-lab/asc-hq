@@ -70,7 +70,7 @@ std::vector<Action> RealGameActionExecutor::generateLegalActions(
     return actions;
 }
 
-const GameStateSnapshot& RealGameActionExecutor::getState() const {
+const IGameState& RealGameActionExecutor::getState() const {
     if (snapshotDirty_ || !cachedSnapshot_) {
         refreshSnapshot();
     }

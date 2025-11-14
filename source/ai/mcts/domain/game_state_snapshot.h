@@ -11,8 +11,7 @@
 #ifndef MCTS_GAME_STATE_SNAPSHOT_H
 #define MCTS_GAME_STATE_SNAPSHOT_H
 
-#include "types.h"
-#include "unit_snapshot.h"
+#include "i_game_state.h"
 #include "cpp23_compat.h"  // C++23 compatibility (fast_map)
 #include <vector>
 #include <memory>
@@ -24,24 +23,6 @@ class TerrainType;
 
 namespace asc {
 namespace mcts {
-
-/**
- * Sparse terrain data for a single field
- * 
- * Only stores terrain that differs from default or is tactically relevant
- */
-struct FieldSnapshot {
-    const TerrainType* terrain;      // 8 bytes - Pointer to immutable terrain data
-    uint16_t visibilityMask;         // 2 bytes - Which players can see this field
-    UnitID unitID;                   // 4 bytes - Unit on field (-1 if empty)
-    bool hasMine;                    // 1 byte  - Mine present (simplified for MVP)
-    uint8_t _padding[3];             // 3 bytes - Alignment
-    
-    constexpr FieldSnapshot() noexcept  // C++23: constexpr
-        : terrain(nullptr), visibilityMask(0), unitID(-1), 
-          hasMine(false), _padding{0, 0, 0}
-    {}
-};
 
 /**
  * Lightweight game state snapshot for MCTS
@@ -62,7 +43,7 @@ struct FieldSnapshot {
  * - fast_map (std::flat_map when available, falls back to std::map on GCC 13)
  * - constexpr where possible (compile-time optimization)
  */
-class GameStateSnapshot {
+class GameStateSnapshot : public IGameState {
 public:
     // ========== Metadata ==========
     
@@ -105,7 +86,7 @@ public:
     /**
      * Add unit to snapshot and keep lookup caches consistent
      */
-    void addUnit(const UnitSnapshot& unit) {
+    void addUnit(const UnitSnapshot& unit) override {
         units.push_back(unit);
         invalidateUnitIndexes();
     }
@@ -124,7 +105,7 @@ public:
      * 
      * @return New snapshot (caller owns)
      */
-    std::unique_ptr<GameStateSnapshot> clone() const {
+    std::unique_ptr<IGameState> clone() const override {
         auto copy = std::make_unique<GameStateSnapshot>();
         
         copy->mapWidth = mapWidth;
@@ -152,7 +133,7 @@ public:
      * @param networkID Unit identifier
      * @return Pointer to snapshot or nullptr
      */
-    const UnitSnapshot* findUnit(UnitID networkID) const {
+    const UnitSnapshot* findUnit(UnitID networkID) const override {
         ensureUnitIndexes();
         auto it = unitIndexById.find(networkID);
         if (it != unitIndexById.end()) {
@@ -164,7 +145,7 @@ public:
     /**
      * Find mutable unit by network ID
      */
-    UnitSnapshot* findUnitMutable(UnitID networkID) {
+    UnitSnapshot* findUnitMutable(UnitID networkID) override {
         ensureUnitIndexes();
         auto it = unitIndexById.find(networkID);
         if (it != unitIndexById.end()) {
@@ -180,7 +161,7 @@ public:
      * @param pos Map coordinate
      * @return Pointer to snapshot or nullptr
      */
-    const UnitSnapshot* getUnitAt(const MapCoordinate& pos) const {
+    const UnitSnapshot* getUnitAt(const MapCoordinate& pos) const override {
         ensureUnitIndexes();
         auto it = unitIndexByPosition.find(pos);
         if (it != unitIndexByPosition.end()) {
@@ -197,7 +178,7 @@ public:
      * @param pos Map coordinate
      * @return Field snapshot pointer or nullptr if not in sparse map
      */
-    const FieldSnapshot* getTerrainAt(const MapCoordinate& pos) const {
+    const FieldSnapshot* getTerrainAt(const MapCoordinate& pos) const override {
         auto it = terrain.find(pos);
         if (it != terrain.end()) {
             return &it->second;
@@ -211,7 +192,7 @@ public:
      * @param player Player ID
      * @return Vector of pointers to units (do not delete - owned by snapshot)
      */
-    std::vector<const UnitSnapshot*> getPlayerUnits(PlayerID player) const {
+    std::vector<const UnitSnapshot*> getPlayerUnits(PlayerID player) const override {
         std::vector<const UnitSnapshot*> result;
         for (const auto& unit : units) {
             if (unit.owner == player) {
@@ -224,7 +205,7 @@ public:
     /**
      * Check if coordinate is valid (C++23: constexpr)
      */
-    constexpr bool isValidCoordinate(const MapCoordinate& pos) const noexcept {
+    constexpr bool isValidCoordinate(const MapCoordinate& pos) const noexcept override {
         return pos.x >= 0 && pos.x < mapWidth && 
                pos.y >= 0 && pos.y < mapHeight;
     }
@@ -250,18 +231,40 @@ public:
     /**
      * Get statistics for debugging
      */
-    struct Stats {
-        size_t unitCount;
-        size_t terrainFieldCount;
-        size_t memoryBytes;
-    };
-    
-    constexpr Stats getStats() const {  // C++23: constexpr
-        return Stats{
+    GameStateStats getStats() const override {
+        return GameStateStats{
             units.size(),
             terrain.size(),
             getMemorySize()
         };
+    }
+
+    int getMapWidth() const override { return mapWidth; }
+    int getMapHeight() const override { return mapHeight; }
+
+    PlayerID getCurrentPlayer() const override { return currentPlayer; }
+    void setCurrentPlayer(PlayerID player) override { currentPlayer = player; }
+
+    PlayerID getPerspective() const override { return perspective; }
+    void setPerspective(PlayerID player) override { perspective = player; }
+
+    const std::vector<UnitSnapshot>& getUnits() const override { return units; }
+    std::vector<UnitSnapshot>& getUnitsMutable() override {
+        invalidateUnitIndexes();
+        return units;
+    }
+
+    ResourceSnapshot getPlayerResources(PlayerID player) const override {
+        if (player < 8) {
+            return playerResources[player];
+        }
+        return ResourceSnapshot();
+    }
+
+    void setPlayerResources(PlayerID player, const ResourceSnapshot& resources) override {
+        if (player < 8) {
+            playerResources[player] = resources;
+        }
     }
 
 private:

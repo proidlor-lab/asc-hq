@@ -12,6 +12,7 @@
 #define MCTS_I_ACTION_EXECUTOR_H
 
 #include "action_types.h"
+#include "i_game_state.h"
 #include "game_state_snapshot.h"
 #include <memory>
 #include <vector>
@@ -120,7 +121,7 @@ public:
      * For simulation executors, this returns the snapshot
      * For real executors, this may create a snapshot from GameMap
      */
-    [[nodiscard]] virtual const GameStateSnapshot& getState() const = 0;
+    [[nodiscard]] virtual const IGameState& getState() const = 0;
 };
 
 /**
@@ -134,10 +135,12 @@ public:
      * Create simulation executor (operates on snapshot)
      * 
      * @param snapshot Initial state (executor takes ownership)
+     * @param legacyMap Optional GameMap for pathfinding (not owned)
      * @return Unique pointer to executor
      */
     [[nodiscard]] static std::unique_ptr<IActionExecutor> createSimulationExecutor(
-        std::unique_ptr<GameStateSnapshot> snapshot
+        std::unique_ptr<IGameState> snapshot,
+        GameMap* legacyMap = nullptr
     );
     
     /**
