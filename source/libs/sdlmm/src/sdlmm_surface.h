@@ -1,6 +1,6 @@
 /*
  * SDmm - a C++ wrapper for SDL and related libraries
- * Copyright © 2001 David Hedbor <david@hedbor.org>
+ * Copyright ï¿½ 2001 David Hedbor <david@hedbor.org>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -53,27 +53,36 @@ namespace SDLmm {
     }
 
     Surface(const Surface& other)
-      : BaseSurface(other) {
-      /*
-      if (me)
-        ++(me->refcount);
-      */  
+      : BaseSurface(0) {
+      // Deep copy: create independent surface instead of sharing
+      if (other.me) {
+        me = SDL_DuplicateSurface(other.me);
+      }
     }
-    
+
     //! Create an uninitialized surface.
     /*!
-      
+
       \warning Trying to use an uninitialized surface will result in
       crashes. Most functions to not have any checks to see whether
       the surface is initialized or not.
     */
     Surface(): BaseSurface(0) {   }
-    
+
     //! Implementation of operator=
     Surface &operator=(const Surface& other) {
-      BaseSurface::operator=(other);
-      if (me)
-        ++(me->refcount);
+      if (this != &other) {
+        // Free current surface
+        if (me) {
+          SDL_FreeSurface(me);
+        }
+        // Deep copy: create independent surface
+        if (other.me) {
+          me = SDL_DuplicateSurface(other.me);
+        } else {
+          me = nullptr;
+        }
+      }
       return *this;
     }
 

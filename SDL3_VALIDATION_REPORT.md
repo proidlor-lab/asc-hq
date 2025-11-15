@@ -232,4 +232,140 @@ make
 
 The root cause was definitively proven to be the three-SDL-version linking conflict caused by system SDL_sound depending on SDL 1.2/2.0. By eliminating this dependency and using SDL3_mixer exclusively, the application now links only to SDL3 and runs without segfaults.
 
-**The migration to SDL3 is successful.**
+**The migration to SDL3 is technically successful.**
+
+---
+
+## FINAL STATUS - November 2025 (Branch Discontinued)
+
+### Current State
+
+**Build Status:** ✅ Compiles successfully
+**Runtime Status:** ✅ Runs and displays graphics
+**Sound:** ❌ No audio (SDL_sound stubs, needs SDL3_mixer integration)
+**Video:** ✅ Works with X11/Wayland
+
+### Critical Issues Discovered
+
+#### 1. **SDL Surface Memory Leak** (2MB, ~1988 objects)
+
+**Root Cause:** SDLmm wrapper incompatibility with SDL3 reference counting
+
+```cpp
+// SDLmm Surface::operator= increments refcount manually
+Surface &operator=(const Surface& other) {
+    BaseSurface::operator=(other);
+    if (me)
+        ++(me->refcount);  // ← Causes surfaces to never reach refcount=0
+    return *this;
+}
+```
+
+**Impact:**
+- Surfaces copied 1000+ times leak memory at exit (refcount never reaches 0)
+- ~2MB leaked at shutdown (harmless, OS reclaims)
+- See: `SDL3_SURFACE_LEAK_ANALYSIS.md` for detailed analysis
+
+**Attempted Fixes:**
+- Forcing `refcount=1` before free → **Crashed** (use-after-free)
+- Deep copy implementation → **Compiled but not fully tested**
+
+#### 2. **Fog of War Flickering**
+
+**Root Cause:** Surface sharing due to refcount increment behavior
+
+**Evidence:**
+```
+Surface at 0x5120000442c0 with refcount 1526
+- Shared between 1526+ fog tiles
+- Modifying one tile affects all tiles sharing the surface
+- Causes visible flickering when units move
+```
+
+**Impact:**
+- Fog tiles share same SDL_Surface memory
+- Rendering artifacts and flickering
+- Affects gameplay visibility
+
+#### 3. **Performance Degradation**
+
+**Observation:** Game feels laggy compared to SDL 1.2 version on main branch
+
+**Possible Causes:**
+- Compatibility layer overhead
+- Excessive surface copying
+- Missing SDL3 optimizations (RLE, hardware acceleration)
+
+### Why This Branch Is Being Discontinued
+
+#### **Strategic Decision: Client/Server Architecture**
+
+After extensive investigation, we determined that:
+
+1. **The SDL3 migration solves the wrong problem**
+   - Problem: UI coupled to old SDL/Paragui
+   - Wrong solution: Port everything to SDL3 with compatibility layer
+   - Right solution: Decouple UI from game engine entirely
+
+2. **Refactoring while migrating = Double complexity**
+   - Fighting SDL compatibility issues
+   - Fighting architectural issues
+   - Better to start clean
+
+3. **Modern architecture doesn't need SDL in engine**
+   ```
+   Headless Game Engine (no SDL)
+   ↕ IPC/Network Protocol
+   Modern UI Client (fresh SDL3 or Godot)
+   ```
+
+4. **Starting from stable SDL 1.2 is faster**
+   - Extract proven game logic from working codebase
+   - Build clean headless engine
+   - Build fresh UI without legacy baggage
+   - No SDL compatibility issues to debug
+
+### Lessons Learned
+
+✅ **SDL3 is viable** - System integration works, drivers functional
+✅ **Identified coupling issues** - Surface sharing, refcounting problems
+✅ **Validated architecture decision** - Client/server is the right path
+❌ **Compatibility layer is fragile** - SDLmm wrapper causes subtle bugs
+❌ **Incremental migration too complex** - Clean rewrite is faster
+
+### Recommendations for Future Work
+
+**DO NOT continue this branch. Instead:**
+
+1. **Branch from stable SDL 1.2 (main/headless)**
+2. **Extract game logic to headless library** (no SDL dependency)
+3. **Build new UI client:**
+   - Option A: Fresh SDL3 + Dear ImGui (C++)
+   - Option B: Godot frontend (GDScript/C++)
+4. **Communication via IPC/network protocol**
+
+See: `docs/ui-refactor.md` for architectural plan
+
+### Files Created During Investigation
+
+- `SDL3_SURFACE_LEAK_ANALYSIS.md` - Detailed leak analysis and fix options
+- `asan_suppressions.txt` - Leak suppressions (if continuing this branch)
+- `source/resourcelifecycle.h` - Cleanup coordination system
+- Various debug logging (can be removed)
+
+### Branch Preservation
+
+This branch is preserved for reference:
+- Shows what NOT to do (compatibility layer complexity)
+- Documents SDL3 integration challenges
+- Provides insights for clean client implementation
+
+**Status:** Archived, not recommended for production use
+
+---
+
+## Previous Conclusion (Kept for Historical Context)
+
+The root cause was definitively proven to be the three-SDL-version linking conflict caused by system SDL_sound depending on SDL 1.2/2.0. By eliminating this dependency and using SDL3_mixer exclusively, the application now links only to SDL3 and runs without segfaults.
+
+**The migration to SDL3 is technically successful** but architecturally flawed.

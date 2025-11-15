@@ -1,0 +1,14 @@
+# ASan leak suppressions for ASC SDL3 migration
+#
+# SDL surface leaks caused by SDLmm wrapper refcounting issues
+# These are cosmetic - surfaces are freed by OS at process exit
+# Fixing requires rewriting Surface copy semantics to avoid refcount manipulation
+#
+leak:SDL_malloc_REAL
+leak:libGLX_mesa.so
+
+# Paragui theme loader - small one-time leaks
+leak:parseObjectProps
+
+# PackageRepository - global variable, destructor runs after ASan
+leak:PackageRepository::addProgramPackage

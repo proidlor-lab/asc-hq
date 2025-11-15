@@ -27,6 +27,7 @@
 #include "sdlmm_color.h"
 #include "sdlmm_pixelformat.h"
 #include <string>
+#include <cstdio>
 
 namespace SDLmm {
   //! An abstract base class for graphical surfaces

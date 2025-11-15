@@ -21,7 +21,9 @@
 
 #include "applicationstarter.h"
 
+#include "sdl/compat/SDL.h"
 #include "graphicset.h"
+#include "iconrepository.h"
 #include "itemrepository.h"
 #include "music.h"
 #include "loadbi3.h"
@@ -30,6 +32,37 @@
 #include "unitset.h"
 #include "replay.h"
 #include "guifunctions.h"
+#include "packagerepository.h"
+#include "resourcelifecycle.h"
+
+namespace {
+
+void unloadRepositories()
+{
+   vehicleTypeRepository.clear();
+   terrainTypeRepository.clear();
+   objectTypeRepository.clear();
+   buildingTypeRepository.clear();
+   technologyRepository.clear();
+    mineTypeRepository.clear();
+    techAdapterContainer.clear_and_delete();
+    packageRepository.clear_and_delete();
+    ItemFiltrationSystem::itemFilters.clear_and_delete();
+}
+
+void registerCoreCleanups()
+{
+   ResourceLifecycle& lifecycle = ResourceLifecycle::Instance();
+   // SDL_Quit must be registered first so it runs LAST (cleanups run in reverse order)
+   lifecycle.registerCleanup( [](){
+      SDL_Quit();
+   } );
+   lifecycle.registerCleanup( unloadRepositories );
+   lifecycle.registerCleanup( [](){ GraphicSetManager::Instance().clear(); } );
+   lifecycle.registerCleanup( IconRepository::clear );
+}
+
+}
 
 
 void loaddata()
@@ -59,5 +92,6 @@ void loaddata()
    registerGuiFunctions( GuiFunctions::primaryGuiIcons );
 
    hookReplayToSystem();
+   
+   registerCoreCleanups();
 }
-
