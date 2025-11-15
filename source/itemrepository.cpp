@@ -22,6 +22,7 @@
 #include <cstdio>
 #include <map>
 #include <vector>
+#include <algorithm>
 #include "typen.h"
 #include "itemrepository.h"
 #include "textfileparser.h"
@@ -30,6 +31,7 @@
 #include "util/messaginghub.h"
 #include "packagemanager.h"
 #include "packagerepository.h"
+#include "resourcelifecycle.h"
 
 
 sigc::signal<void> dataLoaderTicker;
@@ -40,6 +42,25 @@ const char* cacheFileName = "asc2.cache";
 typedef vector<TextFileDataLoader*> DataLoaders;
 DataLoaders dataLoaders;
 DataLoaders dataLoadersToDelete;
+
+class DataLoaderCleanupRegistrar {
+      std::vector<TextFileDataLoader*> entries;
+      bool alreadyRegistered;
+   public:
+      DataLoaderCleanupRegistrar() : alreadyRegistered(false) {}
+      void add( TextFileDataLoader* loader ) { entries.push_back(loader); }
+      void registerShutdownHooks()
+      {
+         if ( alreadyRegistered )
+            return;
+         alreadyRegistered = true;
+         ResourceLifecycle::Instance().registerCleanup( [this]() {
+            entries.clear();
+         } );
+      }
+};
+
+static DataLoaderCleanupRegistrar dataLoaderCleaner;
 
 
 typedef map<ASCString,TextPropertyList> TextFileRepository;
@@ -306,11 +327,13 @@ void registerDataLoader( TextFileDataLoader* dataLoader )
 {
    dataLoaders.push_back ( dataLoader );
    dataLoadersToDelete.push_back ( dataLoader );
+   dataLoaderCleaner.add( dataLoader );
 }
 
 void registerDataLoader( TextFileDataLoader& dataLoader )
 {
    dataLoaders.push_back ( &dataLoader );
+   dataLoaderCleaner.add( &dataLoader );
 }
 
 
@@ -326,6 +349,7 @@ void  loadAllData( bool useCache )
    registerDataLoader( technologyRepository );
    registerDataLoader( new TechAdapterLoader() );
    registerDataLoader( new ItemFiltrationSystem::DataLoader() );
+   dataLoaderCleaner.registerShutdownHooks();
 
 
    if ( cache.isCurrent() && useCache ) {

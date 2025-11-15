@@ -77,6 +77,14 @@ bool IconRepository::exists( const ASCString& name )
    return repository.find(name) != repository.end();
 }
 
+void IconRepository::clear()
+{
+   for ( Repository::iterator i = repository.begin(); i != repository.end(); ++i )
+      delete i->second;
+   repository.clear();
+   errorsShown.clear();
+}
+
 void IconRepository::insert( const ASCString& name, Surface* s )
 {
    repository[name] = s;
@@ -89,4 +97,3 @@ int IconRepository::getMemoryFootprint()
       size += i->second->getMemoryFootprint();
    return size;
 }
-

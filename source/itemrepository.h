@@ -80,6 +80,7 @@ class ItemRepository  {
 
    public:
       ItemRepository( const ASCString& typeName_ ) : typeName( typeName_ ) {};
+      void clear();
       
       T* getObject_byPos( int pos ) const { return container[pos]; };
 
@@ -98,15 +99,24 @@ class ItemRepository  {
       size_t getNum() const { return container.size(); };
 
       vector<T*>& getVector() { return container; };
-      virtual ~ItemRepository() {    
-         for ( typename ItemContainerType::iterator i = container.begin(); i != container.end(); ++i )
-            delete *i;
+      virtual ~ItemRepository() {
+         clear();
       };
 
 
       void addIdTranslation( int from, int to );
       ASCString getTypeName() { return typeName; };
 };
+
+template<class T>
+void ItemRepository<T>::clear()
+{
+   for ( typename ItemContainerType::iterator i = container.begin(); i != container.end(); ++i )
+      delete *i;
+   container.clear();
+   hash.clear();
+   idTranslation.clear();
+}
 
 template<class T>
 class ItemRepositoryLoader: public ItemRepository<T>, public TextFileDataLoader {

@@ -72,6 +72,7 @@
      friend struct Loki::CreateUsingNew<GraphicSetManager_Base>;
      // friend struct CreateUsingNew;
 
+     void clear();
      ~GraphicSetManager_Base();
  };
 

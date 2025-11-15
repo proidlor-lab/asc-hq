@@ -125,6 +125,7 @@
 #include "gamedialog.h"
 #include "unitset.h"
 #include "applicationstarter.h"
+#include "resourcelifecycle.h"
 #include "replaymapdisplay.h"
 
 #ifdef WEATHERGENERATOR
@@ -1403,6 +1404,7 @@ int gamethread ( void* data )
 
       startupScreen.reset( new StartupScreen( "title.jpg", dataLoaderTicker ));
       loadLegacyFonts();
+      ResourceLifecycle::Instance().registerCleanup( unloadLegacyFonts );
       loaddata();
       
       suppressMapTriggerExecution = false;
@@ -1775,6 +1777,8 @@ int main(int argc, char *argv[] )
    GameThreadParams gtp ( app );
    gtp.filename = cl->l();
 
+   ResourceLifecycle::Instance().registerCleanup( clearRotationCache );
+
    if ( cl->next_param() < argc )
       for ( int i = cl->next_param(); i < argc; i++ )
          gtp.filename = argv[i];
@@ -1790,8 +1794,7 @@ int main(int argc, char *argv[] )
    }
 
    writegameoptions ( );
-   unloadLegacyFonts();
-   clearRotationCache();
+   ResourceLifecycle::Instance().shutdown();
 
    return( returncode );
 }

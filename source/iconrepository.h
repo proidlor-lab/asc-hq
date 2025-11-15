@@ -36,7 +36,7 @@ class IconRepository {
         static Repository repository;
      public:
         static Surface& getIcon( const ASCString& name );
-        static void clear() { repository.clear(); };
+        static void clear();
         static bool exists( const ASCString& name );
         static void insert( const ASCString& name, Surface* s );
         static int getMemoryFootprint();
@@ -44,4 +44,3 @@ class IconRepository {
 
 
 #endif
-

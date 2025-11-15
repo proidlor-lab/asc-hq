@@ -314,10 +314,15 @@ template< typename T>
 class deallocating_vector : public vector<T> {
    public:
       ~deallocating_vector() {
+         clear_and_delete();
+      };
+
+      void clear_and_delete() {
          for ( typename vector<T>::iterator i = vector<T>::begin(); i != vector<T>::end(); ++i )
             delete *i;
-      };      
-};
+         vector<T>::clear();
+      }
+}; 
 
 //! a map that stores pointers as values and deletes the pointed-to objects on destruction
 template< typename T, typename U>
