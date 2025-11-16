@@ -19,12 +19,12 @@
 #include <string>
 #include <map>
 #include <memory>
+#include <vector>
+#include "core/mcts_config.h"
 
-// Forward declaration
+// Forward declaration no longer needed - MCTSConfig included above
 namespace asc {
 namespace mcts {
-
-struct MCTSConfig;
 
 /**
  * @brief Configuration loader for MCTS AI profiles

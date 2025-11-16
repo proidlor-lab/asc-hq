@@ -10,6 +10,7 @@
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+#include <vector>
 
 namespace asc {
 namespace mcts {
