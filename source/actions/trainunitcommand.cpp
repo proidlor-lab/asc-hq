@@ -18,7 +18,6 @@
      Boston, MA  02111-1307  USA
 */
 
-
 #include "trainunitcommand.h"
 
 #include "../vehicle.h"
@@ -33,181 +32,161 @@
 #include "consumeammo.h"
 #include "changeunitproperty.h"
 
-bool TrainUnitCommand :: avail ( const ContainerBase* carrier, const Vehicle* unit )
-{
-   if ( !carrier || !unit )
+bool TrainUnitCommand ::avail(const ContainerBase* carrier, const Vehicle* unit) {
+   if (!carrier || !unit)
       return false;
-   
-   if ( carrier->getMap()->getgameparameter( cgp_bi3_training ) )
+
+   if (carrier->getMap()->getgameparameter(cgp_bi3_training))
       return false;
-   
-   if ( !carrier->findUnit( unit->networkid, false ) )
+
+   if (!carrier->findUnit(unit->networkid, false))
       return false;
-   
-   if ( unit->getCarrier() != carrier )
+
+   if (unit->getCarrier() != carrier)
       return false;
-   
-   int maxExp = min( unit->getMap()->getgameparameter( cgp_maxtrainingexperience ), maxunitexperience);
-   if(    unit->getExperience_offensive() >= maxExp
-       && unit->getExperience_defensive() >= maxExp )
+
+   int maxExp = min(unit->getMap()->getgameparameter(cgp_maxtrainingexperience), maxunitexperience);
+   if (unit->getExperience_offensive() >= maxExp && unit->getExperience_defensive() >= maxExp)
       return false;
-   
-   if ( unit->attacked )
+
+   if (unit->attacked)
       return false;
-   
-   
-   if ( !carrier->baseType->hasFunction(ContainerBaseType::TrainingCenter) )
+
+   if (!carrier->baseType->hasFunction(ContainerBaseType::TrainingCenter))
       return false;
-   
+
    int num = 0;
    int numsh = 0;
-   for (int i = 0; i < unit->typ->weapons.count; i++ )
-      if ( unit->typ->weapons.weapon[i].shootable()  && (unit->typ->weapons.weapon[i].count > 0 )) {
-         if ( unit->ammo[i] )
+   for (int i = 0; i < unit->typ->weapons.count; i++)
+      if (unit->typ->weapons.weapon[i].shootable() && (unit->typ->weapons.weapon[i].count > 0)) {
+         if (unit->ammo[i])
             numsh++;
          else
             num++;
       }
-      
-   if ( num == 0  &&  numsh > 0 )
+
+   if (num == 0 && numsh > 0)
       return true;
    else
       return false;
 }
 
+TrainUnitCommand ::TrainUnitCommand(ContainerBase* container)
+   : ContainerCommand(container), unitID(-1) {}
 
-
-TrainUnitCommand :: TrainUnitCommand ( ContainerBase* container )
-   : ContainerCommand ( container ), unitID(-1)
-{
-
-}
-
-
-
- 
-
-ActionResult TrainUnitCommand::go ( const Context& context )
-{
-   if ( getState() != SetUp )
+ActionResult TrainUnitCommand::go(const Context& context) {
+   if (getState() != SetUp)
       return ActionResult(22000);
 
-   Vehicle* unit = getMap()->getUnit( unitID );
-   if ( !unit )
-      return ActionResult( 22100 );
-   
-   if ( !avail( getContainer(), unit ))
-      return ActionResult( 22101 );
-   
-   int newexp_o = unit->getExperience_offensive() + getMap()->getgameparameter( cgp_trainingIncrement );
-   int newexp_d = unit->getExperience_defensive() + getMap()->getgameparameter( cgp_trainingIncrement );
-   
-   int maxexp = min( unit->getMap()->getgameparameter( cgp_maxtrainingexperience ), maxunitexperience);
-   if ( newexp_o > maxexp )
+   Vehicle* unit = getMap()->getUnit(unitID);
+   if (!unit)
+      return ActionResult(22100);
+
+   if (!avail(getContainer(), unit))
+      return ActionResult(22101);
+
+   int newexp_o =
+      unit->getExperience_offensive() + getMap()->getgameparameter(cgp_trainingIncrement);
+   int newexp_d =
+      unit->getExperience_defensive() + getMap()->getgameparameter(cgp_trainingIncrement);
+
+   int maxexp = min(unit->getMap()->getgameparameter(cgp_maxtrainingexperience), maxunitexperience);
+   if (newexp_o > maxexp)
       newexp_o = maxexp;
-   
-   if ( newexp_d > maxexp )
+
+   if (newexp_d > maxexp)
       newexp_d = maxexp;
-   
-   if ( newexp_o >= unit->getExperience_offensive() ) {
-      std::unique_ptr<ChangeUnitProperty> train ( new ChangeUnitProperty( unit, ChangeUnitProperty::ExperienceOffensive, newexp_o ));
-      ActionResult res = train->execute( context );
-      if ( res.successful() )
+
+   if (newexp_o >= unit->getExperience_offensive()) {
+      std::unique_ptr<ChangeUnitProperty> train(
+         new ChangeUnitProperty(unit, ChangeUnitProperty::ExperienceOffensive, newexp_o));
+      ActionResult res = train->execute(context);
+      if (res.successful())
          train.release();
    }
-         
-   if ( newexp_d >= unit->getExperience_defensive() ) {
-      std::unique_ptr<ChangeUnitProperty> train ( new ChangeUnitProperty( unit, ChangeUnitProperty::ExperienceDefensive, newexp_d ));
-      ActionResult res = train->execute( context );
-      if ( res.successful() )
+
+   if (newexp_d >= unit->getExperience_defensive()) {
+      std::unique_ptr<ChangeUnitProperty> train(
+         new ChangeUnitProperty(unit, ChangeUnitProperty::ExperienceDefensive, newexp_d));
+      ActionResult res = train->execute(context);
+      if (res.successful())
          train.release();
    }
-   
-   std::unique_ptr<ChangeUnitProperty> train2 ( new ChangeUnitProperty( unit, ChangeUnitProperty::AttackedFlag, 1 ));
-   ActionResult res = train2->execute( context );
-   if ( res.successful() )
+
+   std::unique_ptr<ChangeUnitProperty> train2(
+      new ChangeUnitProperty(unit, ChangeUnitProperty::AttackedFlag, 1));
+   ActionResult res = train2->execute(context);
+   if (res.successful())
       train2.release();
-   
-   std::unique_ptr<ChangeUnitProperty> move ( new ChangeUnitProperty( unit, ChangeUnitProperty::Movement, 0 ));
-   res = move->execute( context );
-   if ( res.successful() )
+
+   std::unique_ptr<ChangeUnitProperty> move(
+      new ChangeUnitProperty(unit, ChangeUnitProperty::Movement, 0));
+   res = move->execute(context);
+   if (res.successful())
       move.release();
-   
-   
-   for (int i = 0; i < unit->typ->weapons.count; i++ ) {
-      if ( unit->typ->weapons.weapon[i].shootable() && (unit->typ->weapons.weapon[i].count > 0 )) {
-         std::unique_ptr<ConsumeAmmo> consumer ( new ConsumeAmmo( unit, unit->typ->weapons.weapon[i].getScalarWeaponType(), i, 1 ));
-         res = consumer->execute( context );
-         if ( res.successful() )
+
+   for (int i = 0; i < unit->typ->weapons.count; i++) {
+      if (unit->typ->weapons.weapon[i].shootable() && (unit->typ->weapons.weapon[i].count > 0)) {
+         std::unique_ptr<ConsumeAmmo> consumer(
+            new ConsumeAmmo(unit, unit->typ->weapons.weapon[i].getScalarWeaponType(), i, 1));
+         res = consumer->execute(context);
+         if (res.successful())
             consumer.release();
-         else 
+         else
             break;
       }
    }
-   
-   
-   if ( res.successful() )
-      setState( Finished );
+
+   if (res.successful())
+      setState(Finished);
    else
-      setState( Failed );
-   
+      setState(Failed);
+
    return res;
 }
 
-
-
 static const int TrainUnitCommandVersion = 1;
 
-void TrainUnitCommand :: readData ( tnstream& stream )
-{
-   ContainerCommand::readData( stream );
+void TrainUnitCommand ::readData(tnstream& stream) {
+   ContainerCommand::readData(stream);
    int version = stream.readInt();
-   if ( version > TrainUnitCommandVersion )
-      throw tinvalidversion ( "TrainUnitCommand", TrainUnitCommandVersion, version );
+   if (version > TrainUnitCommandVersion)
+      throw tinvalidversion("TrainUnitCommand", TrainUnitCommandVersion, version);
    unitID = stream.readInt();
 }
 
-void TrainUnitCommand :: writeData ( tnstream& stream ) const
-{
-   ContainerCommand::writeData( stream );
-   stream.writeInt( TrainUnitCommandVersion );
-   stream.writeInt( unitID );
+void TrainUnitCommand ::writeData(tnstream& stream) const {
+   ContainerCommand::writeData(stream);
+   stream.writeInt(TrainUnitCommandVersion);
+   stream.writeInt(unitID);
 }
 
-void TrainUnitCommand :: setUnit( Vehicle* unit )
-{
+void TrainUnitCommand ::setUnit(Vehicle* unit) {
    unitID = unit->networkid;
-   setState( SetUp );
+   setState(SetUp);
 }
 
-
-ASCString TrainUnitCommand :: getCommandString() const
-{
+ASCString TrainUnitCommand ::getCommandString() const {
    ASCString c;
-   c.format("trainUnit ( map, %d, %d )", getContainerID(), unitID );
+   c.format("trainUnit ( map, %d, %d )", getContainerID(), unitID);
    return c;
-
 }
 
-GameActionID TrainUnitCommand::getID() const
-{
+GameActionID TrainUnitCommand::getID() const {
    return ActionRegistry::TrainUnitCommand;
 }
 
-ASCString TrainUnitCommand::getDescription() const
-{
+ASCString TrainUnitCommand::getDescription() const {
    ASCString s = "Train ";
-   
-   if ( getMap()->getUnit( unitID ))
-      s += getMap()->getUnit( unitID )->getName();
+
+   if (getMap()->getUnit(unitID))
+      s += getMap()->getUnit(unitID)->getName();
    else
       s += "unit id " + ASCString::toString(unitID);
-   
+
    return s;
 }
 
-namespace
-{
-   const bool r1 = registerAction<TrainUnitCommand> ( ActionRegistry::TrainUnitCommand );
+namespace {
+const bool r1 = registerAction<TrainUnitCommand>(ActionRegistry::TrainUnitCommand);
 }
-

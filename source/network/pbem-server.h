@@ -13,12 +13,10 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
-
-
 
 #ifndef pbemserver_h
 #define pbemserver_h
@@ -28,29 +26,28 @@
 class ASC_PBEM;
 
 class PBEMServer : public GameTransferMechanism {
-      ASCString serverAddress;
-      ASCString filename;
-      int gameID;
-      
-   protected:   
-      void readChildData ( tnstream& stream );
-      void writeChildData ( tnstream& stream ) const;
-      
-      ASC_PBEM* getSession();
-   public:
-      
-      PBEMServer();
-      
-      void setup();
-      
-      void send( const GameMap* map, int lastPlayer, int lastturn  );
-      GameMap* receive();
-      ASCString getMechanismID() const { return mechanismID(); };
-      static ASCString mechanismID() { return "PBEM-Server"; };
-      
-      
-      static ASCString getDefaultServerAddress();
-      void setServerAddress( const ASCString& address );
+   ASCString serverAddress;
+   ASCString filename;
+   int gameID;
+
+  protected:
+   void readChildData(tnstream& stream);
+   void writeChildData(tnstream& stream) const;
+
+   ASC_PBEM* getSession();
+
+  public:
+   PBEMServer();
+
+   void setup();
+
+   void send(const GameMap* map, int lastPlayer, int lastturn);
+   GameMap* receive();
+   ASCString getMechanismID() const { return mechanismID(); };
+   static ASCString mechanismID() { return "PBEM-Server"; };
+
+   static ASCString getDefaultServerAddress();
+   void setServerAddress(const ASCString& address);
 };
 
 #endif

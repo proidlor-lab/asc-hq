@@ -29,27 +29,23 @@ namespace mcts {
  * interface can expose read-only access without revealing internal layout.
  */
 struct FieldSnapshot {
-    const TerrainType* terrain;
-    uint16_t visibilityMask;
-    UnitID unitID;
-    bool hasMine;
-    uint8_t _padding[3];
+   const TerrainType* terrain;
+   uint16_t visibilityMask;
+   UnitID unitID;
+   bool hasMine;
+   uint8_t _padding[3];
 
-    constexpr FieldSnapshot() noexcept
-        : terrain(nullptr),
-          visibilityMask(0),
-          unitID(-1),
-          hasMine(false),
-          _padding{0, 0, 0} {}
+   constexpr FieldSnapshot() noexcept
+      : terrain(nullptr), visibilityMask(0), unitID(-1), hasMine(false), _padding{0, 0, 0} {}
 };
 
 /**
  * Lightweight statistics useful for profiling different state backends.
  */
 struct GameStateStats {
-    size_t unitCount;
-    size_t terrainFieldCount;
-    size_t memoryBytes;
+   size_t unitCount;
+   size_t terrainFieldCount;
+   size_t memoryBytes;
 };
 
 /**
@@ -60,45 +56,45 @@ struct GameStateStats {
  * agnostic of the underlying storage.
  */
 class IGameState {
-public:
-    virtual ~IGameState() = default;
+  public:
+   virtual ~IGameState() = default;
 
-    /// Clone the complete state (used heavily by MCTS).
-    [[nodiscard]] virtual std::unique_ptr<IGameState> clone() const = 0;
+   /// Clone the complete state (used heavily by MCTS).
+   [[nodiscard]] virtual std::unique_ptr<IGameState> clone() const = 0;
 
-    // --- Metadata ---------------------------------------------------------
-    virtual int getMapWidth() const = 0;
-    virtual int getMapHeight() const = 0;
+   // --- Metadata ---------------------------------------------------------
+   virtual int getMapWidth() const = 0;
+   virtual int getMapHeight() const = 0;
 
-    virtual PlayerID getCurrentPlayer() const = 0;
-    virtual void setCurrentPlayer(PlayerID player) = 0;
+   virtual PlayerID getCurrentPlayer() const = 0;
+   virtual void setCurrentPlayer(PlayerID player) = 0;
 
-    virtual PlayerID getPerspective() const = 0;
-    virtual void setPerspective(PlayerID player) = 0;
+   virtual PlayerID getPerspective() const = 0;
+   virtual void setPerspective(PlayerID player) = 0;
 
-    // --- Unit access ------------------------------------------------------
-    virtual void addUnit(const UnitSnapshot& unit) = 0;
-    virtual const UnitSnapshot* findUnit(UnitID id) const = 0;
-    virtual UnitSnapshot* findUnitMutable(UnitID id) = 0;
-    virtual const UnitSnapshot* getUnitAt(const MapCoordinate& pos) const = 0;
-    virtual std::vector<const UnitSnapshot*> getPlayerUnits(PlayerID player) const = 0;
+   // --- Unit access ------------------------------------------------------
+   virtual void addUnit(const UnitSnapshot& unit) = 0;
+   virtual const UnitSnapshot* findUnit(UnitID id) const = 0;
+   virtual UnitSnapshot* findUnitMutable(UnitID id) = 0;
+   virtual const UnitSnapshot* getUnitAt(const MapCoordinate& pos) const = 0;
+   virtual std::vector<const UnitSnapshot*> getPlayerUnits(PlayerID player) const = 0;
 
-    virtual const std::vector<UnitSnapshot>& getUnits() const = 0;
-    virtual std::vector<UnitSnapshot>& getUnitsMutable() = 0;
+   virtual const std::vector<UnitSnapshot>& getUnits() const = 0;
+   virtual std::vector<UnitSnapshot>& getUnitsMutable() = 0;
 
-    // --- Terrain / validity ----------------------------------------------
-    virtual const FieldSnapshot* getTerrainAt(const MapCoordinate& pos) const = 0;
-    [[nodiscard]] virtual bool isValidCoordinate(const MapCoordinate& pos) const noexcept = 0;
+   // --- Terrain / validity ----------------------------------------------
+   virtual const FieldSnapshot* getTerrainAt(const MapCoordinate& pos) const = 0;
+   [[nodiscard]] virtual bool isValidCoordinate(const MapCoordinate& pos) const noexcept = 0;
 
-    // --- Resources --------------------------------------------------------
-    virtual ResourceSnapshot getPlayerResources(PlayerID player) const = 0;
-    virtual void setPlayerResources(PlayerID player, const ResourceSnapshot& resources) = 0;
+   // --- Resources --------------------------------------------------------
+   virtual ResourceSnapshot getPlayerResources(PlayerID player) const = 0;
+   virtual void setPlayerResources(PlayerID player, const ResourceSnapshot& resources) = 0;
 
-    // --- Profiling --------------------------------------------------------
-    virtual GameStateStats getStats() const = 0;
+   // --- Profiling --------------------------------------------------------
+   virtual GameStateStats getStats() const = 0;
 };
 
-} // namespace mcts
-} // namespace asc
+}  // namespace mcts
+}  // namespace asc
 
-#endif // MCTS_I_GAME_STATE_H
+#endif  // MCTS_I_GAME_STATE_H

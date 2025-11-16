@@ -16,49 +16,41 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef explosiveminesH
- #define explosiveminesH
+#define explosiveminesH
 
-
- #include "objects.h"
- #include "basestreaminterface.h"
- 
-
-
+#include "objects.h"
+#include "basestreaminterface.h"
 
 class Mine : public AgeableItem {
-      Mine();
-   public:
-      Mine( MineTypes type, int strength, int player, GameMap* gamemap );
+   Mine();
 
-      Mine( MineTypes type, int strength, int player, GameMap* gamemap, int identifier );
+  public:
+   Mine(MineTypes type, int strength, int player, GameMap* gamemap);
 
-      static Mine newFromStream ( tnstream& stream );
-      
-      //! a unique identifier that allows the identification of a single mine
-      int identifier;
-      
-      MineTypes type;
+   Mine(MineTypes type, int strength, int player, GameMap* gamemap, int identifier);
 
-      //! the effective punch of the mine
-      int strength;
+   static Mine newFromStream(tnstream& stream);
 
-      //! the player who placed the mine; range 0 .. 7
-      int player;
+   //! a unique identifier that allows the identification of a single mine
+   int identifier;
 
-      //! can the mine attack this unit
-      bool attacksunit ( const Vehicle* veh ) const;
-      
-      //! display the mine
-      void paint( Surface& surf, SPoint pos ) const;
+   MineTypes type;
 
-      void read ( tnstream& stream );
-      void write ( tnstream& stream ) const;
-      
+   //! the effective punch of the mine
+   int strength;
+
+   //! the player who placed the mine; range 0 .. 7
+   int player;
+
+   //! can the mine attack this unit
+   bool attacksunit(const Vehicle* veh) const;
+
+   //! display the mine
+   void paint(Surface& surf, SPoint pos) const;
+
+   void read(tnstream& stream);
+   void write(tnstream& stream) const;
 };
 
-
-
 #endif
-

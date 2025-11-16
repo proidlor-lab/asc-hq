@@ -1,0 +1,1531 @@
+make  all-recursive
+make[1]: Entering directory '/home/vboxuser/projects/asc-hq-codex'
+Making all in source
+make[2]: Entering directory '/home/vboxuser/projects/asc-hq-codex/source'
+Making all in docs
+make[3]: Entering directory '/home/vboxuser/projects/asc-hq-codex/source/docs'
+Making all in en
+make[4]: Entering directory '/home/vboxuser/projects/asc-hq-codex/source/docs/en'
+make[4]: Nothing to be done for 'all'.
+make[4]: Leaving directory '/home/vboxuser/projects/asc-hq-codex/source/docs/en'
+make[4]: Entering directory '/home/vboxuser/projects/asc-hq-codex/source/docs'
+make[4]: Nothing to be done for 'all-am'.
+make[4]: Leaving directory '/home/vboxuser/projects/asc-hq-codex/source/docs'
+make[3]: Leaving directory '/home/vboxuser/projects/asc-hq-codex/source/docs'
+Making all in libs
+make[3]: Entering directory '/home/vboxuser/projects/asc-hq-codex/source/libs'
+Making all in triangul
+make[4]: Entering directory '/home/vboxuser/projects/asc-hq-codex/source/libs/triangul'
+/bin/bash ../../../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I../../..   -I/usr/lib/x86_64-linux-gnu/wx/include/gtk3-unicode-3.2 -I/usr/include/wx-3.2 -D_FILE_OFFSET_BITS=64 -DWXUSINGDLL -D__WXGTK__  -g -O2 -D_UNIX_ -D_SDL_   -MT trimisc.lo -MD -MP -MF .deps/trimisc.Tpo -c -o trimisc.lo trimisc.c
+/bin/bash ../../../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I../../..   -I/usr/lib/x86_64-linux-gnu/wx/include/gtk3-unicode-3.2 -I/usr/include/wx-3.2 -D_FILE_OFFSET_BITS=64 -DWXUSINGDLL -D__WXGTK__  -g -O2 -D_UNIX_ -D_SDL_   -MT tri.lo -MD -MP -MF .deps/tri.Tpo -c -o tri.lo tri.c
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I../../.. -I/usr/lib/x86_64-linux-gnu/wx/include/gtk3-unicode-3.2 -I/usr/include/wx-3.2 -D_FILE_OFFSET_BITS=64 -DWXUSINGDLL -D__WXGTK__ -g -O2 -D_UNIX_ -D_SDL_ -MT trimisc.lo -MD -MP -MF .deps/trimisc.Tpo -c trimisc.c -o trimisc.o
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I../../.. -I/usr/lib/x86_64-linux-gnu/wx/include/gtk3-unicode-3.2 -I/usr/include/wx-3.2 -D_FILE_OFFSET_BITS=64 -DWXUSINGDLL -D__WXGTK__ -g -O2 -D_UNIX_ -D_SDL_ -MT tri.lo -MD -MP -MF .deps/tri.Tpo -c tri.c -o tri.o
+trimisc.c: In function 'read_segments':
+trimisc.c:74:3: warning: ignoring return value of 'fscanf' declared with attribute 'warn_unused_result' [-Wunused-result]
+   74 |   fscanf(infile, "%d", &ncontours);
+      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+trimisc.c:90:7: warning: ignoring return value of 'fscanf' declared with attribute 'warn_unused_result' [-Wunused-result]
+   90 |       fscanf(infile, "%d", &npoints);
+      |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+trimisc.c:95:11: warning: ignoring return value of 'fscanf' declared with attribute 'warn_unused_result' [-Wunused-result]
+   95 |           fscanf(infile, "%lf%lf", &seg[i].v0.x, &seg[i].v0.y);
+      |           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mv -f .deps/tri.Tpo .deps/tri.Plo
+/bin/bash ../../../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I../../..   -I/usr/lib/x86_64-linux-gnu/wx/include/gtk3-unicode-3.2 -I/usr/include/wx-3.2 -D_FILE_OFFSET_BITS=64 -DWXUSINGDLL -D__WXGTK__  -g -O2 -D_UNIX_ -D_SDL_   -MT monotone.lo -MD -MP -MF .deps/monotone.Tpo -c -o monotone.lo monotone.c
+mv -f .deps/trimisc.Tpo .deps/trimisc.Plo
+/bin/bash ../../../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I../../..   -I/usr/lib/x86_64-linux-gnu/wx/include/gtk3-unicode-3.2 -I/usr/include/wx-3.2 -D_FILE_OFFSET_BITS=64 -DWXUSINGDLL -D__WXGTK__  -g -O2 -D_UNIX_ -D_SDL_   -MT construc.lo -MD -MP -MF .deps/construc.Tpo -c -o construc.lo construc.c
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I../../.. -I/usr/lib/x86_64-linux-gnu/wx/include/gtk3-unicode-3.2 -I/usr/include/wx-3.2 -D_FILE_OFFSET_BITS=64 -DWXUSINGDLL -D__WXGTK__ -g -O2 -D_UNIX_ -D_SDL_ -MT monotone.lo -MD -MP -MF .deps/monotone.Tpo -c monotone.c -o monotone.o
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I../../.. -I/usr/lib/x86_64-linux-gnu/wx/include/gtk3-unicode-3.2 -I/usr/include/wx-3.2 -D_FILE_OFFSET_BITS=64 -DWXUSINGDLL -D__WXGTK__ -g -O2 -D_UNIX_ -D_SDL_ -MT construc.lo -MD -MP -MF .deps/construc.Tpo -c construc.c -o construc.o
+mv -f .deps/monotone.Tpo .deps/monotone.Plo
+mv -f .deps/construc.Tpo .deps/construc.Plo
+/bin/bash ../../../libtool  --tag=CC   --mode=link gcc  -g -O2 -D_UNIX_ -D_SDL_     -o libtriangul.la  trimisc.lo tri.lo monotone.lo construc.lo  -lpng -lbz2  
+libtool: link: ar cr .libs/libtriangul.a  trimisc.o tri.o monotone.o construc.o
+libtool: link: ranlib .libs/libtriangul.a
+libtool: link: ( cd ".libs" && rm -f "libtriangul.la" && ln -s "../libtriangul.la" "libtriangul.la" )
+make[4]: Leaving directory '/home/vboxuser/projects/asc-hq-codex/source/libs/triangul'
+Making all in sdlmm
+make[4]: Entering directory '/home/vboxuser/projects/asc-hq-codex/source/libs/sdlmm'
+Making all in src
+make[5]: Entering directory '/home/vboxuser/projects/asc-hq-codex/source/libs/sdlmm/src'
+/bin/bash ../../../../libtool  --tag=CXX   --mode=compile g++ -DHAVE_CONFIG_H -I. -I../../../..   -I/usr/lib/x86_64-linux-gnu/wx/include/gtk3-unicode-3.2 -I/usr/include/wx-3.2 -D_FILE_OFFSET_BITS=64 -DWXUSINGDLL -D__WXGTK__ -I/usr/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT  -g -O2 -Wno-sign-compare -D_UNIX_ -D_SDL_ -I/usr/include/freetype2 -I/usr/include/libpng16   -DSIZE_T_not_identical_to_INT -DXVIDEXPORT -MT sdlmm_global.lo -MD -MP -MF .deps/sdlmm_global.Tpo -c -o sdlmm_global.lo sdlmm_global.cpp
+/bin/bash ../../../../libtool  --tag=CXX   --mode=compile g++ -DHAVE_CONFIG_H -I. -I../../../..   -I/usr/lib/x86_64-linux-gnu/wx/include/gtk3-unicode-3.2 -I/usr/include/wx-3.2 -D_FILE_OFFSET_BITS=64 -DWXUSINGDLL -D__WXGTK__ -I/usr/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT  -g -O2 -Wno-sign-compare -D_UNIX_ -D_SDL_ -I/usr/include/freetype2 -I/usr/include/libpng16   -DSIZE_T_not_identical_to_INT -DXVIDEXPORT -MT sdlmm_basesurface.lo -MD -MP -MF .deps/sdlmm_basesurface.Tpo -c -o sdlmm_basesurface.lo sdlmm_basesurface.cpp
+libtool: compile:  g++ -DHAVE_CONFIG_H -I. -I../../../.. -I/usr/lib/x86_64-linux-gnu/wx/include/gtk3-unicode-3.2 -I/usr/include/wx-3.2 -D_FILE_OFFSET_BITS=64 -DWXUSINGDLL -D__WXGTK__ -I/usr/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT -g -O2 -Wno-sign-compare -D_UNIX_ -D_SDL_ -I/usr/include/freetype2 -I/usr/include/libpng16 -DSIZE_T_not_identical_to_INT -DXVIDEXPORT -MT sdlmm_global.lo -MD -MP -MF .deps/sdlmm_global.Tpo -c sdlmm_global.cpp -o sdlmm_global.o
+libtool: compile:  g++ -DHAVE_CONFIG_H -I. -I../../../.. -I/usr/lib/x86_64-linux-gnu/wx/include/gtk3-unicode-3.2 -I/usr/include/wx-3.2 -D_FILE_OFFSET_BITS=64 -DWXUSINGDLL -D__WXGTK__ -I/usr/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT -g -O2 -Wno-sign-compare -D_UNIX_ -D_SDL_ -I/usr/include/freetype2 -I/usr/include/libpng16 -DSIZE_T_not_identical_to_INT -DXVIDEXPORT -MT sdlmm_basesurface.lo -MD -MP -MF .deps/sdlmm_basesurface.Tpo -c sdlmm_basesurface.cpp -o sdlmm_basesurface.o
+In file included from sdlmm_global.cpp:25:
+sdlmm_global.h:43:11: error: 'Uint32' was not declared in this scope
+   43 | bool Init(Uint32 flags);
+      |           ^~~~~~
+sdlmm_global.h:68:1: error: 'Uint32' does not name a type
+   68 | Uint32 WasInit(Uint32 flags);
+      | ^~~~~~
+In file included from sdlmm_pixelformat.h:24,
+                 from sdlmm_videoinfo.h:26,
+                 from sdlmm_global.cpp:26:
+sdlmm_color.h:25:9: error: 'Uint32' does not name a type
+   25 | typedef Uint32 Color;
+      |         ^~~~~~
+sdlmm_color.h:49:18: error: expected ')' before 'nr'
+   49 |    ColorRGB(Uint8 nr, Uint8 ng, Uint8 nb) : r(nr), g(ng), b(nb) {}
+      |            ~     ^~~
+      |                  )
+sdlmm_color.h:69:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   69 |    Uint8 r;
+      |    ^~~~~
+      |    int
+sdlmm_color.h:70:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   70 |    Uint8 g;
+      |    ^~~~~
+      |    int
+sdlmm_color.h:71:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   71 |    Uint8 b;
+      |    ^~~~~
+      |    int
+sdlmm_color.h: In constructor 'SDLmm::ColorRGB::ColorRGB()':
+sdlmm_color.h:36:17: error: class 'SDLmm::ColorRGB' does not have any field named 'r'
+   36 |    ColorRGB() : r(0), g(0), b(0) {}
+      |                 ^
+sdlmm_color.h:36:23: error: class 'SDLmm::ColorRGB' does not have any field named 'g'
+   36 |    ColorRGB() : r(0), g(0), b(0) {}
+      |                       ^
+sdlmm_color.h:36:29: error: class 'SDLmm::ColorRGB' does not have any field named 'b'
+   36 |    ColorRGB() : r(0), g(0), b(0) {}
+      |                             ^
+sdlmm_color.h: In copy constructor 'SDLmm::ColorRGB::ColorRGB(const SDLmm::ColorRGB&)':
+sdlmm_color.h:41:38: error: class 'SDLmm::ColorRGB' does not have any field named 'r'
+   41 |    ColorRGB(const ColorRGB& color) : r(color.r), g(color.g), b(color.b) {}
+      |                                      ^
+sdlmm_color.h:41:46: error: 'const class SDLmm::ColorRGB' has no member named 'r'
+   41 |    ColorRGB(const ColorRGB& color) : r(color.r), g(color.g), b(color.b) {}
+      |                                              ^
+sdlmm_color.h:41:50: error: class 'SDLmm::ColorRGB' does not have any field named 'g'
+   41 |    ColorRGB(const ColorRGB& color) : r(color.r), g(color.g), b(color.b) {}
+      |                                                  ^
+sdlmm_color.h:41:58: error: 'const class SDLmm::ColorRGB' has no member named 'g'
+   41 |    ColorRGB(const ColorRGB& color) : r(color.r), g(color.g), b(color.b) {}
+      |                                                          ^
+sdlmm_color.h:41:62: error: class 'SDLmm::ColorRGB' does not have any field named 'b'
+   41 |    ColorRGB(const ColorRGB& color) : r(color.r), g(color.g), b(color.b) {}
+      |                                                              ^
+sdlmm_color.h:41:70: error: 'const class SDLmm::ColorRGB' has no member named 'b'
+   41 |    ColorRGB(const ColorRGB& color) : r(color.r), g(color.g), b(color.b) {}
+      |                                                                      ^
+sdlmm_color.h: In member function 'SDLmm::ColorRGB& SDLmm::ColorRGB::operator=(const SDLmm::ColorRGB&)':
+sdlmm_color.h:54:10: error: 'r' was not declared in this scope
+   54 |          r = color.r;
+      |          ^
+sdlmm_color.h:54:20: error: 'const class SDLmm::ColorRGB' has no member named 'r'
+   54 |          r = color.r;
+      |                    ^
+sdlmm_color.h:55:10: error: 'g' was not declared in this scope
+   55 |          g = color.g;
+      |          ^
+sdlmm_color.h:55:20: error: 'const class SDLmm::ColorRGB' has no member named 'g'
+   55 |          g = color.g;
+      |                    ^
+sdlmm_color.h:56:10: error: 'b' was not declared in this scope
+   56 |          b = color.b;
+      |          ^
+sdlmm_color.h:56:20: error: 'const class SDLmm::ColorRGB' has no member named 'b'
+   56 |          b = color.b;
+      |                    ^
+sdlmm_color.h: In member function 'bool SDLmm::ColorRGB::operator==(const SDLmm::ColorRGB&) const':
+sdlmm_color.h:66:16: error: 'r' was not declared in this scope
+   66 |       return ((r == color.r) && (g == color.g) && (b == color.b));
+      |                ^
+sdlmm_color.h:66:27: error: 'const class SDLmm::ColorRGB' has no member named 'r'
+   66 |       return ((r == color.r) && (g == color.g) && (b == color.b));
+      |                           ^
+sdlmm_color.h:66:34: error: 'g' was not declared in this scope
+   66 |       return ((r == color.r) && (g == color.g) && (b == color.b));
+      |                                  ^
+sdlmm_color.h:66:45: error: 'const class SDLmm::ColorRGB' has no member named 'g'
+   66 |       return ((r == color.r) && (g == color.g) && (b == color.b));
+      |                                             ^
+sdlmm_color.h:66:52: error: 'b' was not declared in this scope
+   66 |       return ((r == color.r) && (g == color.g) && (b == color.b));
+      |                                                    ^
+sdlmm_color.h:66:63: error: 'const class SDLmm::ColorRGB' has no member named 'b'
+   66 |       return ((r == color.r) && (g == color.g) && (b == color.b));
+      |                                                               ^
+sdlmm_color.h: At global scope:
+sdlmm_color.h:97:19: error: expected ')' before 'nr'
+   97 |    ColorRGBA(Uint8 nr, Uint8 ng, Uint8 nb, Uint8 na) : ColorRGB(nr, ng, nb), a(na) {}
+      |             ~     ^~~
+      |                   )
+sdlmm_color.h:116:4: error: 'Uint8' does not name a type; did you mean 'int'?
+  116 |    Uint8 a;
+      |    ^~~~~
+      |    int
+sdlmm_color.h: In constructor 'SDLmm::ColorRGBA::ColorRGBA()':
+sdlmm_color.h:83:30: error: class 'SDLmm::ColorRGBA' does not have any field named 'a'
+   83 |    ColorRGBA() : ColorRGB(), a(0) {}
+      |                              ^
+sdlmm_color.h: In copy constructor 'SDLmm::ColorRGBA::ColorRGBA(const SDLmm::ColorRGBA&)':
+sdlmm_color.h:88:57: error: class 'SDLmm::ColorRGBA' does not have any field named 'a'
+   88 |    ColorRGBA(const ColorRGBA& color) : ColorRGB(color), a(color.a) {}
+      |                                                         ^
+sdlmm_color.h:88:65: error: 'const class SDLmm::ColorRGBA' has no member named 'a'
+   88 |    ColorRGBA(const ColorRGBA& color) : ColorRGB(color), a(color.a) {}
+      |                                                                 ^
+sdlmm_color.h: In member function 'SDLmm::ColorRGBA& SDLmm::ColorRGBA::operator=(const SDLmm::ColorRGBA&)':
+sdlmm_color.h:103:10: error: 'a' was not declared in this scope
+  103 |          a = color.a;
+      |          ^
+sdlmm_color.h:103:20: error: 'const class SDLmm::ColorRGBA' has no member named 'a'
+  103 |          a = color.a;
+      |                    ^
+sdlmm_color.h: In member function 'bool SDLmm::ColorRGBA::operator==(const SDLmm::ColorRGBA&) const':
+sdlmm_color.h:113:47: error: 'a' was not declared in this scope
+  113 |       return (ColorRGB::operator==(color) && (a == color.a));
+      |                                               ^
+sdlmm_color.h:113:58: error: 'const class SDLmm::ColorRGBA' has no member named 'a'
+  113 |       return (ColorRGB::operator==(color) && (a == color.a));
+      |                                                          ^
+sdlmm_pixelformat.h: At global scope:
+sdlmm_pixelformat.h:36:4: error: 'SDL_PixelFormat' does not name a type; did you mean 'PixelFormat'?
+   36 |    SDL_PixelFormat* me;
+      |    ^~~~~~~~~~~~~~~
+      |    PixelFormat
+sdlmm_pixelformat.h:45:40: error: expected ')' before '*' token
+   45 |    explicit PixelFormat(SDL_PixelFormat* pixelformat) : me(pixelformat) {}
+      |                        ~               ^
+      |                                        )
+sdlmm_pixelformat.h:57:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   57 |    Uint8 BitsPerPixel() const { return me->BitsPerPixel; }
+      |    ^~~~~
+      |    int
+sdlmm_pixelformat.h:58:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   58 |    Uint8 BytesPerPixel() const { return me->BytesPerPixel; }
+      |    ^~~~~
+      |    int
+sdlmm_pixelformat.h:59:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   59 |    Uint8 Rshift() const { return me->Rshift; }
+      |    ^~~~~
+      |    int
+sdlmm_pixelformat.h:60:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   60 |    Uint8 Gshift() const { return me->Gshift; }
+      |    ^~~~~
+      |    int
+sdlmm_pixelformat.h:61:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   61 |    Uint8 Bshift() const { return me->Bshift; }
+      |    ^~~~~
+      |    int
+sdlmm_pixelformat.h:62:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   62 |    Uint8 Ashift() const { return me->Ashift; }
+      |    ^~~~~
+      |    int
+sdlmm_pixelformat.h:64:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   64 |    Uint8 Rloss() const { return me->Rloss; }
+      |    ^~~~~
+      |    int
+sdlmm_pixelformat.h:65:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   65 |    Uint8 Gloss() const { return me->Gloss; }
+      |    ^~~~~
+      |    int
+sdlmm_pixelformat.h:66:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   66 |    Uint8 Bloss() const { return me->Bloss; }
+      |    ^~~~~
+      |    int
+sdlmm_pixelformat.h:67:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   67 |    Uint8 Aloss() const { return me->Aloss; }
+      |    ^~~~~
+      |    int
+sdlmm_pixelformat.h:69:4: error: 'Uint32' does not name a type
+   69 |    Uint32 Rmask() const { return me->Rmask; }
+      |    ^~~~~~
+sdlmm_pixelformat.h:70:4: error: 'Uint32' does not name a type
+   70 |    Uint32 Gmask() const { return me->Gmask; }
+      |    ^~~~~~
+sdlmm_pixelformat.h:71:4: error: 'Uint32' does not name a type
+   71 |    Uint32 Bmask() const { return me->Bmask; }
+      |    ^~~~~~
+sdlmm_pixelformat.h:72:4: error: 'Uint32' does not name a type
+   72 |    Uint32 Amask() const { return me->Amask; }
+      |    ^~~~~~
+sdlmm_pixelformat.h:74:4: error: 'Color' does not name a type; did you mean 'ColorRGB'?
+   74 |    Color colorkey() const { return me->colorkey; }
+      |    ^~~~~
+      |    ColorRGB
+sdlmm_pixelformat.h:75:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   75 |    Uint8 alpha() const { return me->alpha; }
+      |    ^~~~~
+      |    int
+sdlmm_pixelformat.h:76:4: error: 'SDL_Palette' does not name a type
+   76 |    SDL_Palette* palette() const { return me->palette; }
+      |    ^~~~~~~~~~~
+sdlmm_pixelformat.h:99:4: error: 'Color' does not name a type; did you mean 'ColorRGB'?
+   99 |    Color MapRGB(Uint8 r, Uint8 g, Uint8 b) const;
+      |    ^~~~~
+      |    ColorRGB
+sdlmm_pixelformat.h:101:4: error: 'Color' does not name a type; did you mean 'ColorRGB'?
+  101 |    Color MapRGB(const ColorRGB& colorrgb) const {
+      |    ^~~~~
+      |    ColorRGB
+sdlmm_pixelformat.h:105:4: error: 'Color' does not name a type; did you mean 'ColorRGB'?
+  105 |    Color MapRGB(const SDL_Color& colorrgb) const {
+      |    ^~~~~
+      |    ColorRGB
+sdlmm_pixelformat.h:130:4: error: 'Color' does not name a type; did you mean 'ColorRGB'?
+  130 |    Color MapRGBA(Uint8 r, Uint8 g, Uint8 b, Uint8 a) const;
+      |    ^~~~~
+      |    ColorRGB
+sdlmm_pixelformat.h:132:4: error: 'Color' does not name a type; did you mean 'ColorRGB'?
+  132 |    Color MapRGBA(const ColorRGBA& colorrgba) const {
+      |    ^~~~~
+      |    ColorRGB
+sdlmm_pixelformat.h:149:16: error: 'Color' has not been declared
+  149 |    void GetRGB(Color pixel, Uint8& r, Uint8& g, Uint8& b) const;
+      |                ^~~~~
+sdlmm_pixelformat.h:149:29: error: 'Uint8' has not been declared
+  149 |    void GetRGB(Color pixel, Uint8& r, Uint8& g, Uint8& b) const;
+      |                             ^~~~~
+sdlmm_pixelformat.h:149:39: error: 'Uint8' has not been declared
+  149 |    void GetRGB(Color pixel, Uint8& r, Uint8& g, Uint8& b) const;
+      |                                       ^~~~~
+sdlmm_pixelformat.h:149:49: error: 'Uint8' has not been declared
+  149 |    void GetRGB(Color pixel, Uint8& r, Uint8& g, Uint8& b) const;
+      |                                                 ^~~~~
+sdlmm_pixelformat.h:151:26: error: 'Color' has not been declared
+  151 |    const ColorRGB GetRGB(Color pixel) const {
+      |                          ^~~~~
+sdlmm_pixelformat.h:171:17: error: 'Color' has not been declared
+  171 |    void GetRGBA(Color pixel, Uint8& r, Uint8& g, Uint8& b, Uint8& a) const;
+      |                 ^~~~~
+sdlmm_pixelformat.h:171:30: error: 'Uint8' has not been declared
+  171 |    void GetRGBA(Color pixel, Uint8& r, Uint8& g, Uint8& b, Uint8& a) const;
+      |                              ^~~~~
+sdlmm_pixelformat.h:171:40: error: 'Uint8' has not been declared
+  171 |    void GetRGBA(Color pixel, Uint8& r, Uint8& g, Uint8& b, Uint8& a) const;
+      |                                        ^~~~~
+sdlmm_pixelformat.h:171:50: error: 'Uint8' has not been declared
+  171 |    void GetRGBA(Color pixel, Uint8& r, Uint8& g, Uint8& b, Uint8& a) const;
+      |                                                  ^~~~~
+sdlmm_pixelformat.h:171:60: error: 'Uint8' has not been declared
+  171 |    void GetRGBA(Color pixel, Uint8& r, Uint8& g, Uint8& b, Uint8& a) const;
+      |                                                            ^~~~~
+sdlmm_pixelformat.h:173:28: error: 'Color' has not been declared
+  173 |    const ColorRGBA GetRGBA(Color pixel) const {
+      |                            ^~~~~
+sdlmm_pixelformat.h: In member function 'bool SDLmm::PixelFormat::valid() const':
+sdlmm_pixelformat.h:54:32: error: 'me' was not declared in this scope
+   54 |    bool valid() const { return me != 0; }
+      |                                ^~
+sdlmm_pixelformat.h: In member function 'const SDLmm::ColorRGB SDLmm::PixelFormat::GetRGB(int) const':
+sdlmm_pixelformat.h:153:30: error: 'class SDLmm::ColorRGB' has no member named 'r'
+  153 |       GetRGB(pixel, colorrgb.r, colorrgb.g, colorrgb.b);
+      |                              ^
+sdlmm_pixelformat.h:153:42: error: 'class SDLmm::ColorRGB' has no member named 'g'
+  153 |       GetRGB(pixel, colorrgb.r, colorrgb.g, colorrgb.b);
+      |                                          ^
+sdlmm_pixelformat.h:153:54: error: 'class SDLmm::ColorRGB' has no member named 'b'
+  153 |       GetRGB(pixel, colorrgb.r, colorrgb.g, colorrgb.b);
+      |                                                      ^
+sdlmm_pixelformat.h: In member function 'const SDLmm::ColorRGBA SDLmm::PixelFormat::GetRGBA(int) const':
+sdlmm_pixelformat.h:175:32: error: 'class SDLmm::ColorRGBA' has no member named 'r'
+  175 |       GetRGBA(pixel, colorrgba.r, colorrgba.g, colorrgba.b, colorrgba.a);
+      |                                ^
+sdlmm_pixelformat.h:175:45: error: 'class SDLmm::ColorRGBA' has no member named 'g'
+  175 |       GetRGBA(pixel, colorrgba.r, colorrgba.g, colorrgba.b, colorrgba.a);
+      |                                             ^
+sdlmm_pixelformat.h:175:58: error: 'class SDLmm::ColorRGBA' has no member named 'b'
+  175 |       GetRGBA(pixel, colorrgba.r, colorrgba.g, colorrgba.b, colorrgba.a);
+      |                                                          ^
+sdlmm_pixelformat.h:175:71: error: 'class SDLmm::ColorRGBA' has no member named 'a'
+  175 |       GetRGBA(pixel, colorrgba.r, colorrgba.g, colorrgba.b, colorrgba.a);
+      |                                                                       ^
+sdlmm_videoinfo.h: At global scope:
+sdlmm_videoinfo.h:52:10: error: 'SDL_VideoInfo' does not name a type; did you mean 'VideoInfo'?
+   52 |    const SDL_VideoInfo* me;
+      |          ^~~~~~~~~~~~~
+      |          VideoInfo
+sdlmm_videoinfo.h:93:4: error: 'Uint32' does not name a type
+   93 |    Uint32 video_mem();
+      |    ^~~~~~
+sdlmm_videoinfo.h: In member function 'const SDLmm::PixelFormat SDLmm::VideoInfo::GetPixelFormat() const':
+sdlmm_videoinfo.h:96:66: error: 'me' was not declared in this scope
+   96 |    const PixelFormat GetPixelFormat() const { return PixelFormat(me->vfmt); }
+      |                                                                  ^~
+sdlmm_videoinfo.h: In member function 'SDLmm::PixelFormat SDLmm::VideoInfo::GetPixelFormat()':
+sdlmm_videoinfo.h:97:54: error: 'me' was not declared in this scope
+   97 |    PixelFormat GetPixelFormat() { return PixelFormat(me->vfmt); }
+      |                                                      ^~
+In file included from sdlmm_basesurface.h:23,
+                 from sdlmm_basesurface.cpp:21:
+sdlmm_color.h:25:9: error: 'Uint32' does not name a type
+   25 | typedef Uint32 Color;
+      |         ^~~~~~
+sdlmm_color.h:49:18: error: expected ')' before 'nr'
+   49 |    ColorRGB(Uint8 nr, Uint8 ng, Uint8 nb) : r(nr), g(ng), b(nb) {}
+      |            ~     ^~~
+      |                  )
+sdlmm_color.h:69:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   69 |    Uint8 r;
+      |    ^~~~~
+      |    int
+sdlmm_color.h:70:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   70 |    Uint8 g;
+      |    ^~~~~
+      |    int
+sdlmm_color.h:71:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   71 |    Uint8 b;
+      |    ^~~~~
+      |    int
+sdlmm_color.h: In constructor 'SDLmm::ColorRGB::ColorRGB()':
+sdlmm_color.h:36:17: error: class 'SDLmm::ColorRGB' does not have any field named 'r'
+   36 |    ColorRGB() : r(0), g(0), b(0) {}
+      |                 ^
+sdlmm_color.h:36:23: error: class 'SDLmm::ColorRGB' does not have any field named 'g'
+   36 |    ColorRGB() : r(0), g(0), b(0) {}
+      |                       ^
+sdlmm_color.h:36:29: error: class 'SDLmm::ColorRGB' does not have any field named 'b'
+   36 |    ColorRGB() : r(0), g(0), b(0) {}
+      |                             ^
+sdlmm_color.h: In copy constructor 'SDLmm::ColorRGB::ColorRGB(const SDLmm::ColorRGB&)':
+sdlmm_color.h:41:38: error: class 'SDLmm::ColorRGB' does not have any field named 'r'
+   41 |    ColorRGB(const ColorRGB& color) : r(color.r), g(color.g), b(color.b) {}
+      |                                      ^
+sdlmm_color.h:41:46: error: 'const class SDLmm::ColorRGB' has no member named 'r'
+   41 |    ColorRGB(const ColorRGB& color) : r(color.r), g(color.g), b(color.b) {}
+      |                                              ^
+sdlmm_color.h:41:50: error: class 'SDLmm::ColorRGB' does not have any field named 'g'
+   41 |    ColorRGB(const ColorRGB& color) : r(color.r), g(color.g), b(color.b) {}
+      |                                                  ^
+sdlmm_color.h:41:58: error: 'const class SDLmm::ColorRGB' has no member named 'g'
+   41 |    ColorRGB(const ColorRGB& color) : r(color.r), g(color.g), b(color.b) {}
+      |                                                          ^
+sdlmm_color.h:41:62: error: class 'SDLmm::ColorRGB' does not have any field named 'b'
+   41 |    ColorRGB(const ColorRGB& color) : r(color.r), g(color.g), b(color.b) {}
+      |                                                              ^
+sdlmm_color.h:41:70: error: 'const class SDLmm::ColorRGB' has no member named 'b'
+   41 |    ColorRGB(const ColorRGB& color) : r(color.r), g(color.g), b(color.b) {}
+      |                                                                      ^
+sdlmm_color.h: In member function 'SDLmm::ColorRGB& SDLmm::ColorRGB::operator=(const SDLmm::ColorRGB&)':
+sdlmm_color.h:54:10: error: 'r' was not declared in this scope
+   54 |          r = color.r;
+      |          ^
+sdlmm_color.h:54:20: error: 'const class SDLmm::ColorRGB' has no member named 'r'
+   54 |          r = color.r;
+      |                    ^
+sdlmm_color.h:55:10: error: 'g' was not declared in this scope
+   55 |          g = color.g;
+      |          ^
+sdlmm_color.h:55:20: error: 'const class SDLmm::ColorRGB' has no member named 'g'
+   55 |          g = color.g;
+      |                    ^
+sdlmm_color.h:56:10: error: 'b' was not declared in this scope
+   56 |          b = color.b;
+      |          ^
+sdlmm_color.h:56:20: error: 'const class SDLmm::ColorRGB' has no member named 'b'
+   56 |          b = color.b;
+      |                    ^
+sdlmm_color.h: In member function 'bool SDLmm::ColorRGB::operator==(const SDLmm::ColorRGB&) const':
+sdlmm_color.h:66:16: error: 'r' was not declared in this scope
+   66 |       return ((r == color.r) && (g == color.g) && (b == color.b));
+      |                ^
+sdlmm_color.h:66:27: error: 'const class SDLmm::ColorRGB' has no member named 'r'
+   66 |       return ((r == color.r) && (g == color.g) && (b == color.b));
+      |                           ^
+sdlmm_color.h:66:34: error: 'g' was not declared in this scope
+   66 |       return ((r == color.r) && (g == color.g) && (b == color.b));
+      |                                  ^
+sdlmm_color.h:66:45: error: 'const class SDLmm::ColorRGB' has no member named 'g'
+   66 |       return ((r == color.r) && (g == color.g) && (b == color.b));
+      |                                             ^
+sdlmm_color.h:66:52: error: 'b' was not declared in this scope
+   66 |       return ((r == color.r) && (g == color.g) && (b == color.b));
+      |                                                    ^
+sdlmm_color.h:66:63: error: 'const class SDLmm::ColorRGB' has no member named 'b'
+   66 |       return ((r == color.r) && (g == color.g) && (b == color.b));
+      |                                                               ^
+sdlmm_color.h: At global scope:
+sdlmm_color.h:97:19: error: expected ')' before 'nr'
+   97 |    ColorRGBA(Uint8 nr, Uint8 ng, Uint8 nb, Uint8 na) : ColorRGB(nr, ng, nb), a(na) {}
+      |             ~     ^~~
+      |                   )
+sdlmm_color.h:116:4: error: 'Uint8' does not name a type; did you mean 'int'?
+  116 |    Uint8 a;
+      |    ^~~~~
+      |    int
+sdlmm_color.h: In constructor 'SDLmm::ColorRGBA::ColorRGBA()':
+sdlmm_color.h:83:30: error: class 'SDLmm::ColorRGBA' does not have any field named 'a'
+   83 |    ColorRGBA() : ColorRGB(), a(0) {}
+      |                              ^
+sdlmm_color.h: In copy constructor 'SDLmm::ColorRGBA::ColorRGBA(const SDLmm::ColorRGBA&)':
+sdlmm_color.h:88:57: error: class 'SDLmm::ColorRGBA' does not have any field named 'a'
+   88 |    ColorRGBA(const ColorRGBA& color) : ColorRGB(color), a(color.a) {}
+      |                                                         ^
+sdlmm_color.h:88:65: error: 'const class SDLmm::ColorRGBA' has no member named 'a'
+   88 |    ColorRGBA(const ColorRGBA& color) : ColorRGB(color), a(color.a) {}
+      |                                                                 ^
+sdlmm_color.h: In member function 'SDLmm::ColorRGBA& SDLmm::ColorRGBA::operator=(const SDLmm::ColorRGBA&)':
+sdlmm_color.h:103:10: error: 'a' was not declared in this scope
+  103 |          a = color.a;
+      |          ^
+sdlmm_color.h:103:20: error: 'const class SDLmm::ColorRGBA' has no member named 'a'
+  103 |          a = color.a;
+      |                    ^
+sdlmm_color.h: In member function 'bool SDLmm::ColorRGBA::operator==(const SDLmm::ColorRGBA&) const':
+sdlmm_color.h:113:47: error: 'a' was not declared in this scope
+  113 |       return (ColorRGB::operator==(color) && (a == color.a));
+      |                                               ^
+sdlmm_color.h:113:58: error: 'const class SDLmm::ColorRGBA' has no member named 'a'
+  113 |       return (ColorRGB::operator==(color) && (a == color.a));
+      |                                                          ^
+In file included from sdlmm_basesurface.h:24:
+sdlmm_pixelformat.h: At global scope:
+sdlmm_pixelformat.h:36:4: error: 'SDL_PixelFormat' does not name a type; did you mean 'PixelFormat'?
+   36 |    SDL_PixelFormat* me;
+      |    ^~~~~~~~~~~~~~~
+      |    PixelFormat
+sdlmm_pixelformat.h:45:40: error: expected ')' before '*' token
+   45 |    explicit PixelFormat(SDL_PixelFormat* pixelformat) : me(pixelformat) {}
+      |                        ~               ^
+      |                                        )
+sdlmm_pixelformat.h:57:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   57 |    Uint8 BitsPerPixel() const { return me->BitsPerPixel; }
+      |    ^~~~~
+      |    int
+sdlmm_pixelformat.h:58:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   58 |    Uint8 BytesPerPixel() const { return me->BytesPerPixel; }
+      |    ^~~~~
+      |    int
+sdlmm_pixelformat.h:59:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   59 |    Uint8 Rshift() const { return me->Rshift; }
+      |    ^~~~~
+      |    int
+sdlmm_pixelformat.h:60:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   60 |    Uint8 Gshift() const { return me->Gshift; }
+      |    ^~~~~
+      |    int
+sdlmm_pixelformat.h:61:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   61 |    Uint8 Bshift() const { return me->Bshift; }
+      |    ^~~~~
+      |    int
+sdlmm_pixelformat.h:62:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   62 |    Uint8 Ashift() const { return me->Ashift; }
+      |    ^~~~~
+      |    int
+sdlmm_pixelformat.h:64:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   64 |    Uint8 Rloss() const { return me->Rloss; }
+      |    ^~~~~
+      |    int
+sdlmm_pixelformat.h:65:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   65 |    Uint8 Gloss() const { return me->Gloss; }
+      |    ^~~~~
+      |    int
+sdlmm_pixelformat.h:66:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   66 |    Uint8 Bloss() const { return me->Bloss; }
+      |    ^~~~~
+      |    int
+sdlmm_pixelformat.h:67:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   67 |    Uint8 Aloss() const { return me->Aloss; }
+      |    ^~~~~
+      |    int
+sdlmm_pixelformat.h:69:4: error: 'Uint32' does not name a type
+   69 |    Uint32 Rmask() const { return me->Rmask; }
+      |    ^~~~~~
+sdlmm_pixelformat.h:70:4: error: 'Uint32' does not name a type
+   70 |    Uint32 Gmask() const { return me->Gmask; }
+      |    ^~~~~~
+sdlmm_global.cpp: At global scope:
+sdlmm_global.cpp:32:23: error: 'bool SDLmm::Init(Uint32)' redeclared as different kind of entity
+   32 | bool Init(Uint32 flags) {
+      |                       ^
+sdlmm_pixelformat.h:71:4: error: 'Uint32' does not name a type
+   71 |    Uint32 Bmask() const { return me->Bmask; }
+      |    ^~~~~~
+sdlmm_global.h:43:6: note: previous declaration 'bool SDLmm::Init'
+   43 | bool Init(Uint32 flags);
+      |      ^~~~
+sdlmm_pixelformat.h:72:4: error: 'Uint32' does not name a type
+   72 |    Uint32 Amask() const { return me->Amask; }
+      |    ^~~~~~
+sdlmm_pixelformat.h:74:4: error: 'Color' does not name a type; did you mean 'ColorRGB'?
+   74 |    Color colorkey() const { return me->colorkey; }
+      |    ^~~~~
+      |    ColorRGB
+sdlmm_pixelformat.h:75:4: error: 'Uint8' does not name a type; did you mean 'int'?
+   75 |    Uint8 alpha() const { return me->alpha; }
+      |    ^~~~~
+      |    int
+sdlmm_pixelformat.h:76:4: error: 'SDL_Palette' does not name a type
+   76 |    SDL_Palette* palette() const { return me->palette; }
+      |    ^~~~~~~~~~~
+sdlmm_pixelformat.h:99:4: error: 'Color' does not name a type; did you mean 'ColorRGB'?
+   99 |    Color MapRGB(Uint8 r, Uint8 g, Uint8 b) const;
+      |    ^~~~~
+      |    ColorRGB
+sdlmm_pixelformat.h:101:4: error: 'Color' does not name a type; did you mean 'ColorRGB'?
+  101 |    Color MapRGB(const ColorRGB& colorrgb) const {
+      |    ^~~~~
+      |    ColorRGB
+sdlmm_pixelformat.h:105:4: error: 'Color' does not name a type; did you mean 'ColorRGB'?
+  105 |    Color MapRGB(const SDL_Color& colorrgb) const {
+      |    ^~~~~
+      |    ColorRGB
+sdlmm_pixelformat.h:130:4: error: 'Color' does not name a type; did you mean 'ColorRGB'?
+  130 |    Color MapRGBA(Uint8 r, Uint8 g, Uint8 b, Uint8 a) const;
+      |    ^~~~~
+      |    ColorRGB
+sdlmm_pixelformat.h:132:4: error: 'Color' does not name a type; did you mean 'ColorRGB'?
+  132 |    Color MapRGBA(const ColorRGBA& colorrgba) const {
+      |    ^~~~~
+      |    ColorRGB
+sdlmm_pixelformat.h:149:16: error: 'Color' has not been declared
+  149 |    void GetRGB(Color pixel, Uint8& r, Uint8& g, Uint8& b) const;
+      |                ^~~~~
+sdlmm_pixelformat.h:149:29: error: 'Uint8' has not been declared
+  149 |    void GetRGB(Color pixel, Uint8& r, Uint8& g, Uint8& b) const;
+      |                             ^~~~~
+sdlmm_pixelformat.h:149:39: error: 'Uint8' has not been declared
+  149 |    void GetRGB(Color pixel, Uint8& r, Uint8& g, Uint8& b) const;
+      |                                       ^~~~~
+sdlmm_pixelformat.h:149:49: error: 'Uint8' has not been declared
+  149 |    void GetRGB(Color pixel, Uint8& r, Uint8& g, Uint8& b) const;
+      |                                                 ^~~~~
+sdlmm_pixelformat.h:151:26: error: 'Color' has not been declared
+  151 |    const ColorRGB GetRGB(Color pixel) const {
+      |                          ^~~~~
+sdlmm_pixelformat.h:171:17: error: 'Color' has not been declared
+  171 |    void GetRGBA(Color pixel, Uint8& r, Uint8& g, Uint8& b, Uint8& a) const;
+      |                 ^~~~~
+sdlmm_pixelformat.h:171:30: error: 'Uint8' has not been declared
+  171 |    void GetRGBA(Color pixel, Uint8& r, Uint8& g, Uint8& b, Uint8& a) const;
+      |                              ^~~~~
+sdlmm_pixelformat.h:171:40: error: 'Uint8' has not been declared
+  171 |    void GetRGBA(Color pixel, Uint8& r, Uint8& g, Uint8& b, Uint8& a) const;
+      |                                        ^~~~~
+sdlmm_pixelformat.h:171:50: error: 'Uint8' has not been declared
+  171 |    void GetRGBA(Color pixel, Uint8& r, Uint8& g, Uint8& b, Uint8& a) const;
+      |                                                  ^~~~~
+sdlmm_pixelformat.h:171:60: error: 'Uint8' has not been declared
+  171 |    void GetRGBA(Color pixel, Uint8& r, Uint8& g, Uint8& b, Uint8& a) const;
+      |                                                            ^~~~~
+sdlmm_pixelformat.h:173:28: error: 'Color' has not been declared
+  173 |    const ColorRGBA GetRGBA(Color pixel) const {
+      |                            ^~~~~
+sdlmm_pixelformat.h: In member function 'bool SDLmm::PixelFormat::valid() const':
+sdlmm_pixelformat.h:54:32: error: 'me' was not declared in this scope
+   54 |    bool valid() const { return me != 0; }
+      |                                ^~
+sdlmm_pixelformat.h: In member function 'const SDLmm::ColorRGB SDLmm::PixelFormat::GetRGB(int) const':
+sdlmm_pixelformat.h:153:30: error: 'class SDLmm::ColorRGB' has no member named 'r'
+  153 |       GetRGB(pixel, colorrgb.r, colorrgb.g, colorrgb.b);
+      |                              ^
+sdlmm_pixelformat.h:153:42: error: 'class SDLmm::ColorRGB' has no member named 'g'
+  153 |       GetRGB(pixel, colorrgb.r, colorrgb.g, colorrgb.b);
+      |                                          ^
+sdlmm_pixelformat.h:153:54: error: 'class SDLmm::ColorRGB' has no member named 'b'
+  153 |       GetRGB(pixel, colorrgb.r, colorrgb.g, colorrgb.b);
+      |                                                      ^
+sdlmm_pixelformat.h: In member function 'const SDLmm::ColorRGBA SDLmm::PixelFormat::GetRGBA(int) const':
+sdlmm_pixelformat.h:175:32: error: 'class SDLmm::ColorRGBA' has no member named 'r'
+  175 |       GetRGBA(pixel, colorrgba.r, colorrgba.g, colorrgba.b, colorrgba.a);
+      |                                ^
+sdlmm_pixelformat.h:175:45: error: 'class SDLmm::ColorRGBA' has no member named 'g'
+  175 |       GetRGBA(pixel, colorrgba.r, colorrgba.g, colorrgba.b, colorrgba.a);
+      |                                             ^
+sdlmm_pixelformat.h:175:58: error: 'class SDLmm::ColorRGBA' has no member named 'b'
+  175 |       GetRGBA(pixel, colorrgba.r, colorrgba.g, colorrgba.b, colorrgba.a);
+      |                                                          ^
+sdlmm_pixelformat.h:175:71: error: 'class SDLmm::ColorRGBA' has no member named 'a'
+  175 |       GetRGBA(pixel, colorrgba.r, colorrgba.g, colorrgba.b, colorrgba.a);
+      |                                                                       ^
+In file included from sdlmm_basesurface.h:25:
+sdlmm_spoint.h: At global scope:
+sdlmm_spoint.h:46:17: error: expected ')' before 'nx'
+   46 |    SPoint(Sint16 nx, Sint16 ny) : x(nx), y(ny) {}
+      |          ~      ^~~
+      |                 )
+sdlmm_spoint.h:102:23: error: 'Sint16' has not been declared
+  102 |    SPoint& operator*=(Sint16 scalar) {
+      |                       ^~~~~~
+sdlmm_spoint.h:108:23: error: 'Sint16' has not been declared
+  108 |    SPoint& operator/=(Sint16 scalar) {
+      |                       ^~~~~~
+sdlmm_spoint.h:114:21: error: 'Sint16' has not been declared
+  114 |    SPoint operator*(Sint16 scalar) const { return SPoint(x * scalar, y * scalar); }
+      |                     ^~~~~~
+sdlmm_spoint.h:116:21: error: 'Sint16' has not been declared
+  116 |    SPoint operator/(Sint16 scalar) const { return SPoint(x / scalar, y / scalar); }
+      |                     ^~~~~~
+sdlmm_spoint.h:118:4: error: 'Sint16' does not name a type
+  118 |    Sint16 x;
+      |    ^~~~~~
+sdlmm_spoint.h:119:4: error: 'Sint16' does not name a type
+  119 |    Sint16 y;
+      |    ^~~~~~
+sdlmm_spoint.h: In constructor 'SDLmm::SPoint::SPoint()':
+sdlmm_spoint.h:34:15: error: class 'SDLmm::SPoint' does not have any field named 'x'
+   34 |    SPoint() : x(0), y(0) {}
+      |               ^
+sdlmm_spoint.h:34:21: error: class 'SDLmm::SPoint' does not have any field named 'y'
+   34 |    SPoint() : x(0), y(0) {}
+      |                     ^
+sdlmm_spoint.h: In copy constructor 'SDLmm::SPoint::SPoint(const SDLmm::SPoint&)':
+sdlmm_spoint.h:39:34: error: class 'SDLmm::SPoint' does not have any field named 'x'
+   39 |    SPoint(const SPoint& point) : x(point.x), y(point.y) {}
+      |                                  ^
+sdlmm_spoint.h:39:42: error: 'const class SDLmm::SPoint' has no member named 'x'
+   39 |    SPoint(const SPoint& point) : x(point.x), y(point.y) {}
+      |                                          ^
+sdlmm_spoint.h:39:46: error: class 'SDLmm::SPoint' does not have any field named 'y'
+   39 |    SPoint(const SPoint& point) : x(point.x), y(point.y) {}
+      |                                              ^
+sdlmm_spoint.h:39:54: error: 'const class SDLmm::SPoint' has no member named 'y'
+   39 |    SPoint(const SPoint& point) : x(point.x), y(point.y) {}
+      |                                                      ^
+sdlmm_spoint.h: In member function 'SDLmm::SPoint& SDLmm::SPoint::operator=(const SDLmm::SPoint&)':
+sdlmm_spoint.h:51:10: error: 'x' was not declared in this scope
+   51 |          x = point.x;
+      |          ^
+sdlmm_spoint.h:51:20: error: 'const class SDLmm::SPoint' has no member named 'x'
+   51 |          x = point.x;
+      |                    ^
+make[5]: *** [Makefile:479: sdlmm_global.lo] Error 1
+make[5]: *** Waiting for unfinished jobs....
+sdlmm_spoint.h:52:10: error: 'y' was not declared in this scope
+   52 |          y = point.y;
+      |          ^
+sdlmm_spoint.h:52:20: error: 'const class SDLmm::SPoint' has no member named 'y'
+   52 |          y = point.y;
+      |                    ^
+sdlmm_spoint.h: In member function 'bool SDLmm::SPoint::operator==(const SDLmm::SPoint&) const':
+sdlmm_spoint.h:61:58: error: 'x' was not declared in this scope
+   61 |    bool operator==(const SPoint& point) const { return ((x == point.x) && (y == point.y)); }
+      |                                                          ^
+sdlmm_spoint.h:61:69: error: 'const class SDLmm::SPoint' has no member named 'x'
+   61 |    bool operator==(const SPoint& point) const { return ((x == point.x) && (y == point.y)); }
+      |                                                                     ^
+sdlmm_spoint.h:61:76: error: 'y' was not declared in this scope
+   61 |    bool operator==(const SPoint& point) const { return ((x == point.x) && (y == point.y)); }
+      |                                                                            ^
+sdlmm_spoint.h:61:87: error: 'const class SDLmm::SPoint' has no member named 'y'
+   61 |    bool operator==(const SPoint& point) const { return ((x == point.x) && (y == point.y)); }
+      |                                                                                       ^
+sdlmm_spoint.h: In member function 'bool SDLmm::SPoint::operator<(const SDLmm::SPoint&) const':
+sdlmm_spoint.h:67:55: error: 'x' was not declared in this scope
+   67 |    bool operator<(const SPoint& point) const { return x < point.x && y < point.y; }
+      |                                                       ^
+sdlmm_spoint.h:67:65: error: 'const class SDLmm::SPoint' has no member named 'x'
+   67 |    bool operator<(const SPoint& point) const { return x < point.x && y < point.y; }
+      |                                                                 ^
+sdlmm_spoint.h:67:70: error: 'y' was not declared in this scope
+   67 |    bool operator<(const SPoint& point) const { return x < point.x && y < point.y; }
+      |                                                                      ^
+sdlmm_spoint.h:67:80: error: 'const class SDLmm::SPoint' has no member named 'y'
+   67 |    bool operator<(const SPoint& point) const { return x < point.x && y < point.y; }
+      |                                                                                ^
+sdlmm_spoint.h: In member function 'bool SDLmm::SPoint::operator<=(const SDLmm::SPoint&) const':
+sdlmm_spoint.h:73:56: error: 'x' was not declared in this scope
+   73 |    bool operator<=(const SPoint& point) const { return x <= point.x && y <= point.y; }
+      |                                                        ^
+sdlmm_spoint.h:73:67: error: 'const class SDLmm::SPoint' has no member named 'x'
+   73 |    bool operator<=(const SPoint& point) const { return x <= point.x && y <= point.y; }
+      |                                                                   ^
+sdlmm_spoint.h:73:72: error: 'y' was not declared in this scope
+   73 |    bool operator<=(const SPoint& point) const { return x <= point.x && y <= point.y; }
+      |                                                                        ^
+sdlmm_spoint.h:73:83: error: 'const class SDLmm::SPoint' has no member named 'y'
+   73 |    bool operator<=(const SPoint& point) const { return x <= point.x && y <= point.y; }
+      |                                                                                   ^
+sdlmm_spoint.h: In member function 'SDLmm::SPoint& SDLmm::SPoint::operator+=(const SDLmm::SPoint&)':
+sdlmm_spoint.h:87:7: error: 'x' was not declared in this scope
+   87 |       x += point.x;
+      |       ^
+sdlmm_spoint.h:87:18: error: 'const class SDLmm::SPoint' has no member named 'x'
+   87 |       x += point.x;
+      |                  ^
+sdlmm_spoint.h:88:7: error: 'y' was not declared in this scope
+   88 |       y += point.y;
+      |       ^
+sdlmm_spoint.h:88:18: error: 'const class SDLmm::SPoint' has no member named 'y'
+   88 |       y += point.y;
+      |                  ^
+sdlmm_spoint.h: In member function 'SDLmm::SPoint& SDLmm::SPoint::operator-=(const SDLmm::SPoint&)':
+sdlmm_spoint.h:93:7: error: 'x' was not declared in this scope
+   93 |       x -= point.x;
+      |       ^
+sdlmm_spoint.h:93:18: error: 'const class SDLmm::SPoint' has no member named 'x'
+   93 |       x -= point.x;
+      |                  ^
+sdlmm_spoint.h:94:7: error: 'y' was not declared in this scope
+   94 |       y -= point.y;
+      |       ^
+sdlmm_spoint.h:94:18: error: 'const class SDLmm::SPoint' has no member named 'y'
+   94 |       y -= point.y;
+      |                  ^
+sdlmm_spoint.h: In member function 'SDLmm::SPoint SDLmm::SPoint::operator+(const SDLmm::SPoint&) const':
+sdlmm_spoint.h:98:64: error: 'x' was not declared in this scope
+   98 |    SPoint operator+(const SPoint& point) const { return SPoint(x + point.x, y + point.y); }
+      |                                                                ^
+sdlmm_spoint.h:98:74: error: 'const class SDLmm::SPoint' has no member named 'x'
+   98 |    SPoint operator+(const SPoint& point) const { return SPoint(x + point.x, y + point.y); }
+      |                                                                          ^
+sdlmm_spoint.h:98:77: error: 'y' was not declared in this scope
+   98 |    SPoint operator+(const SPoint& point) const { return SPoint(x + point.x, y + point.y); }
+      |                                                                             ^
+sdlmm_spoint.h:98:87: error: 'const class SDLmm::SPoint' has no member named 'y'
+   98 |    SPoint operator+(const SPoint& point) const { return SPoint(x + point.x, y + point.y); }
+      |                                                                                       ^
+sdlmm_spoint.h: In member function 'SDLmm::SPoint SDLmm::SPoint::operator-(const SDLmm::SPoint&) const':
+sdlmm_spoint.h:100:64: error: 'x' was not declared in this scope
+  100 |    SPoint operator-(const SPoint& point) const { return SPoint(x - point.x, y - point.y); }
+      |                                                                ^
+sdlmm_spoint.h:100:74: error: 'const class SDLmm::SPoint' has no member named 'x'
+  100 |    SPoint operator-(const SPoint& point) const { return SPoint(x - point.x, y - point.y); }
+      |                                                                          ^
+sdlmm_spoint.h:100:77: error: 'y' was not declared in this scope
+  100 |    SPoint operator-(const SPoint& point) const { return SPoint(x - point.x, y - point.y); }
+      |                                                                             ^
+sdlmm_spoint.h:100:87: error: 'const class SDLmm::SPoint' has no member named 'y'
+  100 |    SPoint operator-(const SPoint& point) const { return SPoint(x - point.x, y - point.y); }
+      |                                                                                       ^
+sdlmm_spoint.h: In member function 'SDLmm::SPoint& SDLmm::SPoint::operator*=(int)':
+sdlmm_spoint.h:103:7: error: 'x' was not declared in this scope
+  103 |       x *= scalar;
+      |       ^
+sdlmm_spoint.h:104:7: error: 'y' was not declared in this scope
+  104 |       y *= scalar;
+      |       ^
+sdlmm_spoint.h: In member function 'SDLmm::SPoint& SDLmm::SPoint::operator/=(int)':
+sdlmm_spoint.h:109:7: error: 'x' was not declared in this scope
+  109 |       x /= scalar;
+      |       ^
+sdlmm_spoint.h:110:7: error: 'y' was not declared in this scope
+  110 |       y /= scalar;
+      |       ^
+sdlmm_spoint.h: In member function 'SDLmm::SPoint SDLmm::SPoint::operator*(int) const':
+sdlmm_spoint.h:114:58: error: 'x' was not declared in this scope
+  114 |    SPoint operator*(Sint16 scalar) const { return SPoint(x * scalar, y * scalar); }
+      |                                                          ^
+sdlmm_spoint.h:114:70: error: 'y' was not declared in this scope
+  114 |    SPoint operator*(Sint16 scalar) const { return SPoint(x * scalar, y * scalar); }
+      |                                                                      ^
+sdlmm_spoint.h: In member function 'SDLmm::SPoint SDLmm::SPoint::operator/(int) const':
+sdlmm_spoint.h:116:58: error: 'x' was not declared in this scope
+  116 |    SPoint operator/(Sint16 scalar) const { return SPoint(x / scalar, y / scalar); }
+      |                                                          ^
+sdlmm_spoint.h:116:70: error: 'y' was not declared in this scope
+  116 |    SPoint operator/(Sint16 scalar) const { return SPoint(x / scalar, y / scalar); }
+      |                                                                      ^
+In file included from sdlmm_basesurface.h:26:
+sdlmm_srect.h: At global scope:
+sdlmm_srect.h:43:31: error: expected class-name before '{' token
+   43 | class SRect : public SDL_Rect {
+      |                               ^
+sdlmm_srect.h:56:16: error: 'SDL_Rect' does not name a type; did you mean 'SRect'?
+   56 |    SRect(const SDL_Rect& rect);
+      |                ^~~~~~~~
+      |                SRect
+sdlmm_srect.h:82:31: error: 'Uint16' has not been declared
+   82 |    SRect(const SPoint& point, Uint16 nw, Uint16 nh);
+      |                               ^~~~~~
+sdlmm_srect.h:82:42: error: 'Uint16' has not been declared
+   82 |    SRect(const SPoint& point, Uint16 nw, Uint16 nh);
+      |                                          ^~~~~~
+sdlmm_srect.h:89:16: error: expected ')' before 'nx'
+   89 |    SRect(Sint16 nx, Sint16 ny, Uint16 nw, Uint16 nh);
+      |         ~      ^~~
+      |                )
+sdlmm_srect.h:96:16: error: expected ')' before 'nw'
+   96 |    SRect(Uint16 nw, Uint16 nh);
+      |         ~      ^~~
+      |                )
+sdlmm_srect.h:99:27: error: 'SDL_Rect' does not name a type; did you mean 'SRect'?
+   99 |    SRect& operator=(const SDL_Rect& rect) {
+      |                           ^~~~~~~~
+      |                           SRect
+sdlmm_srect.h:113:26: error: 'SDL_Rect' does not name a type; did you mean 'SRect'?
+  113 |    bool operator==(const SDL_Rect& rect) const {
+      |                          ^~~~~~~~
+      |                          SRect
+sdlmm_srect.h: In member function 'SDLmm::SRect& SDLmm::SRect::operator=(const int&)':
+sdlmm_srect.h:100:16: error: comparison between distinct pointer types 'SDLmm::SRect*' and 'const int*' lacks a cast [-fpermissive]
+  100 |       if (this == &rect)
+      |           ~~~~~^~~~~~~~
+sdlmm_srect.h:102:7: error: 'x' was not declared in this scope
+  102 |       x = rect.x;
+      |       ^
+sdlmm_srect.h:102:16: error: request for member 'x' in 'rect', which is of non-class type 'const int'
+  102 |       x = rect.x;
+      |                ^
+sdlmm_srect.h:103:7: error: 'y' was not declared in this scope
+  103 |       y = rect.y;
+      |       ^
+sdlmm_srect.h:103:16: error: request for member 'y' in 'rect', which is of non-class type 'const int'
+  103 |       y = rect.y;
+      |                ^
+sdlmm_srect.h:104:7: error: 'w' was not declared in this scope
+  104 |       w = rect.w;
+      |       ^
+sdlmm_srect.h:104:16: error: request for member 'w' in 'rect', which is of non-class type 'const int'
+  104 |       w = rect.w;
+      |                ^
+sdlmm_srect.h:105:7: error: 'h' was not declared in this scope
+  105 |       h = rect.h;
+      |       ^
+sdlmm_srect.h:105:16: error: request for member 'h' in 'rect', which is of non-class type 'const int'
+  105 |       h = rect.h;
+      |                ^
+sdlmm_srect.h: In member function 'bool SDLmm::SRect::operator==(const int&) const':
+sdlmm_srect.h:114:16: error: 'x' was not declared in this scope
+  114 |       return ((x == rect.x) && (y == rect.y) && (w == rect.w) && (h == rect.h));
+      |                ^
+sdlmm_srect.h:114:26: error: request for member 'x' in 'rect', which is of non-class type 'const int'
+  114 |       return ((x == rect.x) && (y == rect.y) && (w == rect.w) && (h == rect.h));
+      |                          ^
+sdlmm_srect.h:114:33: error: 'y' was not declared in this scope
+  114 |       return ((x == rect.x) && (y == rect.y) && (w == rect.w) && (h == rect.h));
+      |                                 ^
+sdlmm_srect.h:114:43: error: request for member 'y' in 'rect', which is of non-class type 'const int'
+  114 |       return ((x == rect.x) && (y == rect.y) && (w == rect.w) && (h == rect.h));
+      |                                           ^
+sdlmm_srect.h:114:50: error: 'w' was not declared in this scope
+  114 |       return ((x == rect.x) && (y == rect.y) && (w == rect.w) && (h == rect.h));
+      |                                                  ^
+sdlmm_srect.h:114:60: error: request for member 'w' in 'rect', which is of non-class type 'const int'
+  114 |       return ((x == rect.x) && (y == rect.y) && (w == rect.w) && (h == rect.h));
+      |                                                            ^
+sdlmm_srect.h:114:67: error: 'h' was not declared in this scope
+  114 |       return ((x == rect.x) && (y == rect.y) && (w == rect.w) && (h == rect.h));
+      |                                                                   ^
+sdlmm_srect.h:114:77: error: request for member 'h' in 'rect', which is of non-class type 'const int'
+  114 |       return ((x == rect.x) && (y == rect.y) && (w == rect.w) && (h == rect.h));
+      |                                                                             ^
+sdlmm_srect.h: In member function 'void SDLmm::SRect::Move(const SDLmm::SPoint&)':
+sdlmm_srect.h:122:7: error: 'x' was not declared in this scope
+  122 |       x += point.x;
+      |       ^
+sdlmm_srect.h:122:18: error: 'const class SDLmm::SPoint' has no member named 'x'
+  122 |       x += point.x;
+      |                  ^
+sdlmm_srect.h:123:7: error: 'y' was not declared in this scope
+  123 |       y += point.y;
+      |       ^
+sdlmm_srect.h:123:18: error: 'const class SDLmm::SPoint' has no member named 'y'
+  123 |       y += point.y;
+      |                  ^
+sdlmm_srect.h: In member function 'bool SDLmm::SRect::Contains(const SDLmm::SPoint&) const':
+sdlmm_srect.h:128:15: error: 'x' was not declared in this scope
+  128 |       return (x <= point.x) && (y <= point.y) && ((x + w) > point.x) && ((y + h) > point.y);
+      |               ^
+sdlmm_srect.h:128:26: error: 'const class SDLmm::SPoint' has no member named 'x'
+  128 |       return (x <= point.x) && (y <= point.y) && ((x + w) > point.x) && ((y + h) > point.y);
+      |                          ^
+sdlmm_srect.h:128:33: error: 'y' was not declared in this scope
+  128 |       return (x <= point.x) && (y <= point.y) && ((x + w) > point.x) && ((y + h) > point.y);
+      |                                 ^
+sdlmm_srect.h:128:44: error: 'const class SDLmm::SPoint' has no member named 'y'
+  128 |       return (x <= point.x) && (y <= point.y) && ((x + w) > point.x) && ((y + h) > point.y);
+      |                                            ^
+sdlmm_srect.h:128:56: error: 'w' was not declared in this scope
+  128 |       return (x <= point.x) && (y <= point.y) && ((x + w) > point.x) && ((y + h) > point.y);
+      |                                                        ^
+sdlmm_srect.h:128:67: error: 'const class SDLmm::SPoint' has no member named 'x'
+  128 |       return (x <= point.x) && (y <= point.y) && ((x + w) > point.x) && ((y + h) > point.y);
+      |                                                                   ^
+sdlmm_srect.h:128:79: error: 'h' was not declared in this scope
+  128 |       return (x <= point.x) && (y <= point.y) && ((x + w) > point.x) && ((y + h) > point.y);
+      |                                                                               ^
+sdlmm_srect.h:128:90: error: 'const class SDLmm::SPoint' has no member named 'y'
+  128 |       return (x <= point.x) && (y <= point.y) && ((x + w) > point.x) && ((y + h) > point.y);
+      |                                                                                          ^
+sdlmm_srect.h: In member function 'SDLmm::SPoint SDLmm::SRect::GetUpperLeft() const':
+sdlmm_srect.h:133:48: error: 'x' was not declared in this scope
+  133 |    SPoint GetUpperLeft() const { return SPoint(x, y); }
+      |                                                ^
+sdlmm_srect.h:133:51: error: 'y' was not declared in this scope
+  133 |    SPoint GetUpperLeft() const { return SPoint(x, y); }
+      |                                                   ^
+sdlmm_srect.h: In member function 'SDLmm::SPoint SDLmm::SRect::GetUpperRight() const':
+sdlmm_srect.h:136:49: error: 'x' was not declared in this scope
+  136 |    SPoint GetUpperRight() const { return SPoint(x + w, y); }
+      |                                                 ^
+sdlmm_srect.h:136:53: error: 'w' was not declared in this scope
+  136 |    SPoint GetUpperRight() const { return SPoint(x + w, y); }
+      |                                                     ^
+sdlmm_srect.h:136:56: error: 'y' was not declared in this scope
+  136 |    SPoint GetUpperRight() const { return SPoint(x + w, y); }
+      |                                                        ^
+sdlmm_srect.h: In member function 'SDLmm::SPoint SDLmm::SRect::GetBottomLeft() const':
+sdlmm_srect.h:139:49: error: 'x' was not declared in this scope
+  139 |    SPoint GetBottomLeft() const { return SPoint(x, y + h); }
+      |                                                 ^
+sdlmm_srect.h:139:52: error: 'y' was not declared in this scope
+  139 |    SPoint GetBottomLeft() const { return SPoint(x, y + h); }
+      |                                                    ^
+sdlmm_srect.h:139:56: error: 'h' was not declared in this scope
+  139 |    SPoint GetBottomLeft() const { return SPoint(x, y + h); }
+      |                                                        ^
+sdlmm_srect.h: In member function 'SDLmm::SPoint SDLmm::SRect::GetBottomRight() const':
+sdlmm_srect.h:142:50: error: 'x' was not declared in this scope
+  142 |    SPoint GetBottomRight() const { return SPoint(x + w, y + h); }
+      |                                                  ^
+sdlmm_srect.h:142:54: error: 'w' was not declared in this scope
+  142 |    SPoint GetBottomRight() const { return SPoint(x + w, y + h); }
+      |                                                      ^
+sdlmm_srect.h:142:57: error: 'y' was not declared in this scope
+  142 |    SPoint GetBottomRight() const { return SPoint(x + w, y + h); }
+      |                                                         ^
+sdlmm_srect.h:142:61: error: 'h' was not declared in this scope
+  142 |    SPoint GetBottomRight() const { return SPoint(x + w, y + h); }
+      |                                                             ^
+sdlmm_basesurface.h: At global scope:
+sdlmm_basesurface.h:45:4: error: 'SDL_Surface' does not name a type
+   45 |    SDL_Surface* me;
+      |    ^~~~~~~~~~~
+sdlmm_basesurface.h:46:28: error: 'SDL_Surface' has not been declared
+   46 |    virtual void SetSurface(SDL_Surface* surface) {
+      |                            ^~~~~~~~~~~
+sdlmm_basesurface.h:61:36: error: expected ')' before '*' token
+   61 |    explicit BaseSurface(SDL_Surface* surface) : me(surface) {}
+      |                        ~           ^
+      |                                    )
+sdlmm_basesurface.h:82:4: error: 'SDL_Surface' does not name a type
+   82 |    SDL_Surface* GetSurface() {
+      |    ^~~~~~~~~~~
+sdlmm_basesurface.h:87:10: error: 'SDL_Surface' does not name a type
+   87 |    const SDL_Surface* GetSurface() const {
+      |          ^~~~~~~~~~~
+sdlmm_basesurface.h:106:4: error: 'Uint32' does not name a type; did you mean 'uint'?
+  106 |    Uint32 flags() const { return GetSurface()->flags; }
+      |    ^~~~~~
+      |    uint
+sdlmm_basesurface.h:119:4: error: 'Uint16' does not name a type; did you mean 'uint'?
+  119 |    Uint16 pitch() const { return GetSurface()->pitch; }
+      |    ^~~~~~
+      |    uint
+sdlmm_basesurface.h:144:32: error: 'Color' has not been declared
+  144 |    void SetPixel(int x, int y, Color color);
+      |                                ^~~~~
+sdlmm_basesurface.h:151:33: error: 'Color' has not been declared
+  151 |    void SetPixel1(int x, int y, Color color);
+      |                                 ^~~~~
+sdlmm_basesurface.h:158:33: error: 'Color' has not been declared
+  158 |    void SetPixel2(int x, int y, Color color);
+      |                                 ^~~~~
+sdlmm_basesurface.h:165:33: error: 'Color' has not been declared
+  165 |    void SetPixel3(int x, int y, Color color);
+      |                                 ^~~~~
+sdlmm_basesurface.h:172:33: error: 'Color' has not been declared
+  172 |    void SetPixel4(int x, int y, Color color);
+      |                                 ^~~~~
+sdlmm_basesurface.h:178:38: error: 'Color' has not been declared
+  178 |    void SetPixel(const SRect& point, Color color) { SetPixel(point.x, point.y, color); }
+      |                                      ^~~~~
+sdlmm_basesurface.h:184:4: error: 'Color' does not name a type; did you mean 'ColorRGB'?
+  184 |    Color GetPixel(int x, int y) const;
+      |    ^~~~~
+      |    ColorRGB
+sdlmm_basesurface.h:190:4: error: 'Color' does not name a type; did you mean 'ColorRGB'?
+  190 |    Color GetPixel(const SPoint& point) const { return GetPixel(point.x, point.y); }
+      |    ^~~~~
+      |    ColorRGB
+sdlmm_basesurface.h:203:21: error: 'Uint32' has not been declared
+  203 |    bool SetColorKey(Uint32 flag, Color key);
+      |                     ^~~~~~
+sdlmm_basesurface.h:203:34: error: 'Color' has not been declared
+  203 |    bool SetColorKey(Uint32 flag, Color key);
+      |                                  ^~~~~
+sdlmm_basesurface.h:228:18: error: 'Uint32' has not been declared
+  228 |    bool SetAlpha(Uint32 flag, Uint8 alpha);
+      |                  ^~~~~~
+sdlmm_basesurface.h:228:31: error: 'Uint8' has not been declared
+  228 |    bool SetAlpha(Uint32 flag, Uint8 alpha);
+      |                               ^~~~~
+sdlmm_basesurface.h:251:27: error: 'SDL_Rect' does not name a type; did you mean 'SRect'?
+  251 |    void SetClipRect(const SDL_Rect& rect);
+      |                           ^~~~~~~~
+      |                           SRect
+sdlmm_basesurface.h:263:21: error: 'SDL_Rect' has not been declared
+  263 |    void GetClipRect(SDL_Rect& rect) const;
+      |                     ^~~~~~~~
+sdlmm_basesurface.h:305:37: error: 'SDL_Rect' has not been declared
+  305 |    int Blit(const BaseSurface& src, SDL_Rect& dstrect);
+      |                                     ^~~~~~~~
+sdlmm_basesurface.h:326:61: error: 'SDL_Rect' has not been declared
+  326 |    int Blit(const BaseSurface& src, const SPoint& dstpoint, SDL_Rect& dstrect) {
+      |                                                             ^~~~~~~~
+sdlmm_basesurface.h:374:43: error: 'SDL_Rect' does not name a type; did you mean 'SRect'?
+  374 |    int Blit(const BaseSurface& src, const SDL_Rect& srcrect, SDL_Rect& dstrect);
+      |                                           ^~~~~~~~
+      |                                           SRect
+sdlmm_basesurface.h:374:62: error: 'SDL_Rect' has not been declared
+  374 |    int Blit(const BaseSurface& src, const SDL_Rect& srcrect, SDL_Rect& dstrect);
+      |                                                              ^~~~~~~~
+sdlmm_basesurface.h:398:43: error: 'SDL_Rect' does not name a type; did you mean 'SRect'?
+  398 |    int Blit(const BaseSurface& src, const SDL_Rect& srcrect, const SPoint& dstpoint,
+      |                                           ^~~~~~~~
+      |                                           SRect
+sdlmm_basesurface.h:399:13: error: 'SDL_Rect' has not been declared
+  399 |             SDL_Rect& dstrect) {
+      |             ^~~~~~~~
+sdlmm_basesurface.h:424:43: error: 'SDL_Rect' does not name a type; did you mean 'SRect'?
+  424 |    int Blit(const BaseSurface& src, const SDL_Rect& srcrect, const SPoint& dstpoint);
+      |                                           ^~~~~~~~
+      |                                           SRect
+sdlmm_basesurface.h:433:14: error: 'Color' has not been declared
+  433 |    bool Fill(Color color);
+      |              ^~~~~
+sdlmm_basesurface.h:442:14: error: 'Uint8' has not been declared
+  442 |    bool Fill(Uint8 r, Uint8 g, Uint8 b) { return Fill(GetPixelFormat().MapRGB(r, g, b)); }
+      |              ^~~~~
+sdlmm_basesurface.h:442:23: error: 'Uint8' has not been declared
+  442 |    bool Fill(Uint8 r, Uint8 g, Uint8 b) { return Fill(GetPixelFormat().MapRGB(r, g, b)); }
+      |                       ^~~~~
+sdlmm_basesurface.h:442:32: error: 'Uint8' has not been declared
+  442 |    bool Fill(Uint8 r, Uint8 g, Uint8 b) { return Fill(GetPixelFormat().MapRGB(r, g, b)); }
+      |                                ^~~~~
+sdlmm_basesurface.h:452:14: error: 'Uint8' has not been declared
+  452 |    bool Fill(Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+      |              ^~~~~
+sdlmm_basesurface.h:452:23: error: 'Uint8' has not been declared
+  452 |    bool Fill(Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+      |                       ^~~~~
+sdlmm_basesurface.h:452:32: error: 'Uint8' has not been declared
+  452 |    bool Fill(Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+      |                                ^~~~~
+sdlmm_basesurface.h:452:41: error: 'Uint8' has not been declared
+  452 |    bool Fill(Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+      |                                         ^~~~~
+sdlmm_basesurface.h:466:18: error: 'SDL_Rect' has not been declared
+  466 |    bool FillRect(SDL_Rect& dstrect, Color color);
+      |                  ^~~~~~~~
+sdlmm_basesurface.h:466:37: error: 'Color' has not been declared
+  466 |    bool FillRect(SDL_Rect& dstrect, Color color);
+      |                                     ^~~~~
+sdlmm_basesurface.h:478:18: error: 'SDL_Rect' has not been declared
+  478 |    bool FillRect(SDL_Rect& dstrect, Uint8 r, Uint8 g, Uint8 b) {
+      |                  ^~~~~~~~
+sdlmm_basesurface.h:478:37: error: 'Uint8' has not been declared
+  478 |    bool FillRect(SDL_Rect& dstrect, Uint8 r, Uint8 g, Uint8 b) {
+      |                                     ^~~~~
+sdlmm_basesurface.h:478:46: error: 'Uint8' has not been declared
+  478 |    bool FillRect(SDL_Rect& dstrect, Uint8 r, Uint8 g, Uint8 b) {
+      |                                              ^~~~~
+sdlmm_basesurface.h:478:55: error: 'Uint8' has not been declared
+  478 |    bool FillRect(SDL_Rect& dstrect, Uint8 r, Uint8 g, Uint8 b) {
+      |                                                       ^~~~~
+sdlmm_basesurface.h:493:18: error: 'SDL_Rect' has not been declared
+  493 |    bool FillRect(SDL_Rect& dstrect, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+      |                  ^~~~~~~~
+sdlmm_basesurface.h:493:37: error: 'Uint8' has not been declared
+  493 |    bool FillRect(SDL_Rect& dstrect, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+      |                                     ^~~~~
+sdlmm_basesurface.h:493:46: error: 'Uint8' has not been declared
+  493 |    bool FillRect(SDL_Rect& dstrect, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+      |                                              ^~~~~
+sdlmm_basesurface.h:493:55: error: 'Uint8' has not been declared
+  493 |    bool FillRect(SDL_Rect& dstrect, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+      |                                                       ^~~~~
+sdlmm_basesurface.h:493:64: error: 'Uint8' has not been declared
+  493 |    bool FillRect(SDL_Rect& dstrect, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+      |                                                                ^~~~~
+sdlmm_basesurface.h: In member function 'virtual void SDLmm::BaseSurface::SetSurface(int*)':
+sdlmm_basesurface.h:47:11: error: 'me' was not declared in this scope
+   47 |       if (me) {
+      |           ^~
+sdlmm_basesurface.h:48:10: error: 'SDL_FreeSurface' was not declared in this scope; did you mean 'SDL_BlitSurface'?
+   48 |          SDL_FreeSurface(me);
+      |          ^~~~~~~~~~~~~~~
+      |          SDL_BlitSurface
+sdlmm_basesurface.h:50:7: error: 'me' was not declared in this scope
+   50 |       me = surface;
+      |       ^~
+sdlmm_basesurface.h: In copy constructor 'SDLmm::BaseSurface::BaseSurface(const SDLmm::BaseSurface&)':
+sdlmm_basesurface.h:63:44: error: class 'SDLmm::BaseSurface' does not have any field named 'me'
+   63 |    BaseSurface(const BaseSurface& other) : me(other.me) {
+      |                                            ^~
+sdlmm_basesurface.h:63:53: error: 'const class SDLmm::BaseSurface' has no member named 'me'
+   63 |    BaseSurface(const BaseSurface& other) : me(other.me) {
+      |                                                     ^~
+sdlmm_basesurface.h:64:17: error: 'const class SDLmm::BaseSurface' has no member named 'me'
+   64 |       if (other.me)
+      |                 ^~
+sdlmm_basesurface.h:65:16: error: 'const class SDLmm::BaseSurface' has no member named 'me'
+   65 |          other.me->refcount++;
+      |                ^~
+sdlmm_basesurface.h: In member function 'SDLmm::BaseSurface& SDLmm::BaseSurface::operator=(const SDLmm::BaseSurface&)':
+sdlmm_basesurface.h:70:27: error: 'const class SDLmm::BaseSurface' has no member named 'me'
+   70 |          SetSurface(other.me);
+      |                           ^~
+sdlmm_basesurface.h: In destructor 'virtual SDLmm::BaseSurface::~BaseSurface()':
+sdlmm_basesurface.h:77:11: error: 'me' was not declared in this scope
+   77 |       if (me) {
+      |           ^~
+sdlmm_basesurface.h:78:10: error: 'SDL_FreeSurface' was not declared in this scope; did you mean 'SDL_BlitSurface'?
+   78 |          SDL_FreeSurface(me);
+      |          ^~~~~~~~~~~~~~~
+      |          SDL_BlitSurface
+sdlmm_basesurface.h: In member function 'bool SDLmm::BaseSurface::valid() const':
+sdlmm_basesurface.h:103:32: error: 'me' was not declared in this scope
+  103 |    bool valid() const { return me != 0; }
+      |                                ^~
+sdlmm_basesurface.h: In member function 'const SDLmm::PixelFormat SDLmm::BaseSurface::GetPixelFormat() const':
+sdlmm_basesurface.h:109:66: error: 'GetSurface' was not declared in this scope; did you mean 'SetSurface'?
+  109 |    const PixelFormat GetPixelFormat() const { return PixelFormat(GetSurface()->format); }
+      |                                                                  ^~~~~~~~~~
+      |                                                                  SetSurface
+sdlmm_basesurface.h: In member function 'SDLmm::PixelFormat SDLmm::BaseSurface::GetPixelFormat()':
+sdlmm_basesurface.h:110:54: error: 'GetSurface' was not declared in this scope; did you mean 'SetSurface'?
+  110 |    PixelFormat GetPixelFormat() { return PixelFormat(GetSurface()->format); }
+      |                                                      ^~~~~~~~~~
+      |                                                      SetSurface
+sdlmm_basesurface.h: In member function 'int SDLmm::BaseSurface::w() const':
+sdlmm_basesurface.h:113:27: error: 'GetSurface' was not declared in this scope; did you mean 'SetSurface'?
+  113 |    int w() const { return GetSurface()->w; }
+      |                           ^~~~~~~~~~
+      |                           SetSurface
+sdlmm_basesurface.h: In member function 'int SDLmm::BaseSurface::h() const':
+sdlmm_basesurface.h:116:27: error: 'GetSurface' was not declared in this scope; did you mean 'SetSurface'?
+  116 |    int h() const { return GetSurface()->h; }
+      |                           ^~~~~~~~~~
+      |                           SetSurface
+sdlmm_basesurface.h: In member function 'const SDLmm::SRect SDLmm::BaseSurface::clip_rect() const':
+sdlmm_basesurface.h:122:49: error: 'GetSurface' was not declared in this scope; did you mean 'SetSurface'?
+  122 |    const SRect clip_rect() const { return SRect(GetSurface()->clip_rect); }
+      |                                                 ^~~~~~~~~~
+      |                                                 SetSurface
+sdlmm_basesurface.h: In member function 'void* SDLmm::BaseSurface::pixels()':
+sdlmm_basesurface.h:128:28: error: 'GetSurface' was not declared in this scope; did you mean 'SetSurface'?
+  128 |    void* pixels() { return GetSurface()->pixels; }
+      |                            ^~~~~~~~~~
+      |                            SetSurface
+sdlmm_basesurface.h: In member function 'const void* SDLmm::BaseSurface::pixels() const':
+sdlmm_basesurface.h:134:40: error: 'GetSurface' was not declared in this scope; did you mean 'SetSurface'?
+  134 |    const void* pixels() const { return GetSurface()->pixels; }
+      |                                        ^~~~~~~~~~
+      |                                        SetSurface
+sdlmm_basesurface.h: In member function 'SDLmm::private_hwdata* SDLmm::BaseSurface::hwdata() const':
+sdlmm_basesurface.h:137:51: error: 'GetSurface' was not declared in this scope; did you mean 'SetSurface'?
+  137 |    struct private_hwdata* hwdata() const { return GetSurface()->hwdata; }
+      |                                                   ^~~~~~~~~~
+      |                                                   SetSurface
+sdlmm_basesurface.h: In member function 'void SDLmm::BaseSurface::SetPixel(const SDLmm::SRect&, int)':
+sdlmm_basesurface.h:178:68: error: 'const class SDLmm::SRect' has no member named 'x'
+  178 |    void SetPixel(const SRect& point, Color color) { SetPixel(point.x, point.y, color); }
+      |                                                                    ^
+sdlmm_basesurface.h:178:77: error: 'const class SDLmm::SRect' has no member named 'y'
+  178 |    void SetPixel(const SRect& point, Color color) { SetPixel(point.x, point.y, color); }
+      |                                                                             ^
+sdlmm_basesurface.h: In member function 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const SDLmm::SPoint&, int&)':
+sdlmm_basesurface.h:327:15: error: request for member 'x' in 'dstrect', which is of non-class type 'int'
+  327 |       dstrect.x = dstpoint.x;
+      |               ^
+sdlmm_basesurface.h:327:28: error: 'const class SDLmm::SPoint' has no member named 'x'
+  327 |       dstrect.x = dstpoint.x;
+      |                            ^
+sdlmm_basesurface.h:328:15: error: request for member 'y' in 'dstrect', which is of non-class type 'int'
+  328 |       dstrect.y = dstpoint.y;
+      |               ^
+sdlmm_basesurface.h:328:28: error: 'const class SDLmm::SPoint' has no member named 'y'
+  328 |       dstrect.y = dstpoint.y;
+      |                            ^
+sdlmm_basesurface.h: In member function 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const int&, const SDLmm::SPoint&, int&)':
+sdlmm_basesurface.h:400:15: error: request for member 'x' in 'dstrect', which is of non-class type 'int'
+  400 |       dstrect.x = dstpoint.x;
+      |               ^
+sdlmm_basesurface.h:400:28: error: 'const class SDLmm::SPoint' has no member named 'x'
+  400 |       dstrect.x = dstpoint.x;
+      |                            ^
+sdlmm_basesurface.h:401:15: error: request for member 'y' in 'dstrect', which is of non-class type 'int'
+  401 |       dstrect.y = dstpoint.y;
+      |               ^
+sdlmm_basesurface.h:401:28: error: 'const class SDLmm::SPoint' has no member named 'y'
+  401 |       dstrect.y = dstpoint.y;
+      |                            ^
+sdlmm_basesurface.h: In member function 'bool SDLmm::BaseSurface::Fill(int, int, int)':
+sdlmm_basesurface.h:442:72: error: 'class SDLmm::PixelFormat' has no member named 'MapRGB'
+  442 |    bool Fill(Uint8 r, Uint8 g, Uint8 b) { return Fill(GetPixelFormat().MapRGB(r, g, b)); }
+      |                                                                        ^~~~~~
+sdlmm_basesurface.h: In member function 'bool SDLmm::BaseSurface::Fill(int, int, int, int)':
+sdlmm_basesurface.h:453:36: error: 'class SDLmm::PixelFormat' has no member named 'MapRGBA'
+  453 |       return Fill(GetPixelFormat().MapRGBA(r, g, b, a));
+      |                                    ^~~~~~~
+sdlmm_basesurface.h: In member function 'bool SDLmm::BaseSurface::FillRect(int&, int, int, int)':
+sdlmm_basesurface.h:479:49: error: 'class SDLmm::PixelFormat' has no member named 'MapRGB'
+  479 |       return FillRect(dstrect, GetPixelFormat().MapRGB(r, g, b));
+      |                                                 ^~~~~~
+sdlmm_basesurface.h: In member function 'bool SDLmm::BaseSurface::FillRect(int&, int, int, int, int)':
+sdlmm_basesurface.h:494:49: error: 'class SDLmm::PixelFormat' has no member named 'MapRGBA'
+  494 |       return FillRect(dstrect, GetPixelFormat().MapRGBA(r, g, b, a));
+      |                                                 ^~~~~~~
+In file included from /usr/include/SDL/SDL_mouse.h:31,
+                 from /usr/include/SDL/SDL_events.h:33,
+                 from /usr/include/SDL/SDL.h:36,
+                 from sdlmm_basesurface.cpp:25:
+sdlmm_basesurface.cpp: In member function 'bool SDLmm::BaseSurface::Lock()':
+sdlmm_basesurface.cpp:32:21: error: 'me' was not declared in this scope
+   32 |    if (SDL_MUSTLOCK(me)) {
+      |                     ^~
+/usr/include/SDL/SDL_video.h:246:32: note: in definition of macro 'SDL_MUSTLOCK'
+  246 | #define SDL_MUSTLOCK(surface) (surface->offset || ((surface->flags & (SDL_HWSURFACE|SDL_ASYNCBLIT|SDL_RLEACCEL)) != 0))
+      |                                ^~~~~~~
+sdlmm_basesurface.cpp: In member function 'void SDLmm::BaseSurface::Unlock()':
+sdlmm_basesurface.cpp:39:21: error: 'me' was not declared in this scope
+   39 |    if (SDL_MUSTLOCK(me)) {
+      |                     ^~
+/usr/include/SDL/SDL_video.h:246:32: note: in definition of macro 'SDL_MUSTLOCK'
+  246 | #define SDL_MUSTLOCK(surface) (surface->offset || ((surface->flags & (SDL_HWSURFACE|SDL_ASYNCBLIT|SDL_RLEACCEL)) != 0))
+      |                                ^~~~~~~
+sdlmm_basesurface.cpp: At global scope:
+sdlmm_basesurface.cpp:44:43: error: 'Color' has not been declared
+   44 | void BaseSurface::SetPixel1(int x, int y, Color color) {
+      |                                           ^~~~~
+sdlmm_basesurface.cpp: In member function 'void SDLmm::BaseSurface::SetPixel1(int, int, int)':
+sdlmm_basesurface.cpp:51:30: error: 'pitch' was not declared in this scope
+   51 |    *((Uint8*) pixels() + y * pitch() + x) = color;
+      |                              ^~~~~
+sdlmm_basesurface.cpp: At global scope:
+sdlmm_basesurface.cpp:54:43: error: 'Color' has not been declared
+   54 | void BaseSurface::SetPixel2(int x, int y, Color color) {
+      |                                           ^~~~~
+sdlmm_basesurface.cpp: In member function 'void SDLmm::BaseSurface::SetPixel2(int, int, int)':
+sdlmm_basesurface.cpp:61:31: error: 'pitch' was not declared in this scope
+   61 |    *((Uint16*) pixels() + y * pitch() / 2 + x) = color;
+      |                               ^~~~~
+sdlmm_basesurface.cpp: At global scope:
+sdlmm_basesurface.cpp:64:43: error: 'Color' has not been declared
+   64 | void BaseSurface::SetPixel3(int x, int y, Color color) {
+      |                                           ^~~~~
+sdlmm_basesurface.cpp: In member function 'void SDLmm::BaseSurface::SetPixel3(int, int, int)':
+sdlmm_basesurface.cpp:71:41: error: 'pitch' was not declared in this scope
+   71 |    Uint8* pix = (Uint8*) pixels() + y * pitch() + x * 3;
+      |                                         ^~~~~
+sdlmm_basesurface.cpp: At global scope:
+sdlmm_basesurface.cpp:84:43: error: 'Color' has not been declared
+   84 | void BaseSurface::SetPixel4(int x, int y, Color color) {
+      |                                           ^~~~~
+sdlmm_basesurface.cpp: In member function 'void SDLmm::BaseSurface::SetPixel4(int, int, int)':
+sdlmm_basesurface.cpp:91:31: error: 'pitch' was not declared in this scope
+   91 |    *((Uint32*) pixels() + y * pitch() / 4 + x) = color;
+      |                               ^~~~~
+sdlmm_basesurface.cpp: At global scope:
+sdlmm_basesurface.cpp:94:42: error: 'Color' has not been declared
+   94 | void BaseSurface::SetPixel(int x, int y, Color color) {
+      |                                          ^~~~~
+sdlmm_basesurface.cpp: In member function 'void SDLmm::BaseSurface::SetPixel(int, int, int)':
+sdlmm_basesurface.cpp:101:29: error: 'class SDLmm::PixelFormat' has no member named 'BytesPerPixel'
+  101 |    switch (GetPixelFormat().BytesPerPixel()) {
+      |                             ^~~~~~~~~~~~~
+sdlmm_basesurface.cpp: At global scope:
+sdlmm_basesurface.cpp:124:1: error: 'Color' does not name a type; did you mean 'ColorRGB'?
+  124 | Color BaseSurface::GetPixel(int x, int y) const {
+      | ^~~~~
+      | ColorRGB
+sdlmm_basesurface.cpp:166:5: error: no declaration matches 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const SDL_Rect&, SDL_Rect&)'
+  166 | int BaseSurface::Blit(const BaseSurface& src, const SDL_Rect& srcrect, SDL_Rect& dstrect) {
+      |     ^~~~~~~~~~~
+sdlmm_basesurface.h:424:8: note: candidates are: 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const int&, const SDLmm::SPoint&)'
+  424 |    int Blit(const BaseSurface& src, const SDL_Rect& srcrect, const SPoint& dstpoint);
+      |        ^~~~
+sdlmm_basesurface.h:398:8: note:                 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const int&, const SDLmm::SPoint&, int&)'
+  398 |    int Blit(const BaseSurface& src, const SDL_Rect& srcrect, const SPoint& dstpoint,
+      |        ^~~~
+sdlmm_basesurface.h:374:8: note:                 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const int&, int&)'
+  374 |    int Blit(const BaseSurface& src, const SDL_Rect& srcrect, SDL_Rect& dstrect);
+      |        ^~~~
+sdlmm_basesurface.h:349:8: note:                 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const SDLmm::SPoint&)'
+  349 |    int Blit(const BaseSurface& src, const SPoint& dstpoint);
+      |        ^~~~
+sdlmm_basesurface.h:326:8: note:                 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const SDLmm::SPoint&, int&)'
+  326 |    int Blit(const BaseSurface& src, const SPoint& dstpoint, SDL_Rect& dstrect) {
+      |        ^~~~
+sdlmm_basesurface.h:305:8: note:                 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, int&)'
+  305 |    int Blit(const BaseSurface& src, SDL_Rect& dstrect);
+      |        ^~~~
+sdlmm_basesurface.h:283:8: note:                 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&)'
+  283 |    int Blit(const BaseSurface& src);
+      |        ^~~~
+sdlmm_basesurface.h:42:7: note: 'class SDLmm::BaseSurface' defined here
+   42 | class BaseSurface {
+      |       ^~~~~~~~~~~
+sdlmm_basesurface.cpp:170:5: error: no declaration matches 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const SDL_Rect&, const SDLmm::SPoint&)'
+  170 | int BaseSurface::Blit(const BaseSurface& src, const SDL_Rect& srcrect, const SPoint& dstpoint) {
+      |     ^~~~~~~~~~~
+sdlmm_basesurface.h:424:8: note: candidates are: 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const int&, const SDLmm::SPoint&)'
+  424 |    int Blit(const BaseSurface& src, const SDL_Rect& srcrect, const SPoint& dstpoint);
+      |        ^~~~
+sdlmm_basesurface.h:398:8: note:                 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const int&, const SDLmm::SPoint&, int&)'
+  398 |    int Blit(const BaseSurface& src, const SDL_Rect& srcrect, const SPoint& dstpoint,
+      |        ^~~~
+sdlmm_basesurface.h:374:8: note:                 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const int&, int&)'
+  374 |    int Blit(const BaseSurface& src, const SDL_Rect& srcrect, SDL_Rect& dstrect);
+      |        ^~~~
+sdlmm_basesurface.h:349:8: note:                 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const SDLmm::SPoint&)'
+  349 |    int Blit(const BaseSurface& src, const SPoint& dstpoint);
+      |        ^~~~
+sdlmm_basesurface.h:326:8: note:                 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const SDLmm::SPoint&, int&)'
+  326 |    int Blit(const BaseSurface& src, const SPoint& dstpoint, SDL_Rect& dstrect) {
+      |        ^~~~
+sdlmm_basesurface.h:305:8: note:                 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, int&)'
+  305 |    int Blit(const BaseSurface& src, SDL_Rect& dstrect);
+      |        ^~~~
+sdlmm_basesurface.h:283:8: note:                 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&)'
+  283 |    int Blit(const BaseSurface& src);
+      |        ^~~~
+sdlmm_basesurface.h:42:7: note: 'class SDLmm::BaseSurface' defined here
+   42 | class BaseSurface {
+      |       ^~~~~~~~~~~
+sdlmm_basesurface.cpp:177:5: error: no declaration matches 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, SDL_Rect&)'
+  177 | int BaseSurface::Blit(const BaseSurface& src, SDL_Rect& dstrect) {
+      |     ^~~~~~~~~~~
+sdlmm_basesurface.h:424:8: note: candidates are: 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const int&, const SDLmm::SPoint&)'
+  424 |    int Blit(const BaseSurface& src, const SDL_Rect& srcrect, const SPoint& dstpoint);
+      |        ^~~~
+sdlmm_basesurface.h:398:8: note:                 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const int&, const SDLmm::SPoint&, int&)'
+  398 |    int Blit(const BaseSurface& src, const SDL_Rect& srcrect, const SPoint& dstpoint,
+      |        ^~~~
+sdlmm_basesurface.h:374:8: note:                 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const int&, int&)'
+  374 |    int Blit(const BaseSurface& src, const SDL_Rect& srcrect, SDL_Rect& dstrect);
+      |        ^~~~
+sdlmm_basesurface.h:349:8: note:                 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const SDLmm::SPoint&)'
+  349 |    int Blit(const BaseSurface& src, const SPoint& dstpoint);
+      |        ^~~~
+sdlmm_basesurface.h:326:8: note:                 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const SDLmm::SPoint&, int&)'
+  326 |    int Blit(const BaseSurface& src, const SPoint& dstpoint, SDL_Rect& dstrect) {
+      |        ^~~~
+sdlmm_basesurface.h:305:8: note:                 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, int&)'
+  305 |    int Blit(const BaseSurface& src, SDL_Rect& dstrect);
+      |        ^~~~
+sdlmm_basesurface.h:283:8: note:                 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&)'
+  283 |    int Blit(const BaseSurface& src);
+      |        ^~~~
+sdlmm_basesurface.h:42:7: note: 'class SDLmm::BaseSurface' defined here
+   42 | class BaseSurface {
+      |       ^~~~~~~~~~~
+sdlmm_basesurface.cpp: In member function 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const SDLmm::SPoint&)':
+sdlmm_basesurface.cpp:183:22: error: 'const class SDLmm::SPoint' has no member named 'x'
+  183 |    rect.x = dstpoint.x;
+      |                      ^
+sdlmm_basesurface.cpp:184:22: error: 'const class SDLmm::SPoint' has no member named 'y'
+  184 |    rect.y = dstpoint.y;
+      |                      ^
+sdlmm_basesurface.cpp:185:15: error: no matching function for call to 'SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, SDL_Rect&)'
+  185 |    return Blit(src, rect);
+      |           ~~~~^~~~~~~~~~~
+sdlmm_basesurface.h:305:8: note: candidate: 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, int&)'
+  305 |    int Blit(const BaseSurface& src, SDL_Rect& dstrect);
+      |        ^~~~
+sdlmm_basesurface.h:305:47: note:   no known conversion for argument 2 from 'SDL_Rect' to 'int&'
+  305 |    int Blit(const BaseSurface& src, SDL_Rect& dstrect);
+      |                                     ~~~~~~~~~~^~~~~~~
+sdlmm_basesurface.h:283:8: note: candidate: 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&)'
+  283 |    int Blit(const BaseSurface& src);
+      |        ^~~~
+sdlmm_basesurface.h:283:8: note:   candidate expects 1 argument, 2 provided
+sdlmm_basesurface.h:326:8: note: candidate: 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const SDLmm::SPoint&, int&)'
+  326 |    int Blit(const BaseSurface& src, const SPoint& dstpoint, SDL_Rect& dstrect) {
+      |        ^~~~
+sdlmm_basesurface.h:326:8: note:   candidate expects 3 arguments, 2 provided
+sdlmm_basesurface.cpp:181:5: note: candidate: 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const SDLmm::SPoint&)'
+  181 | int BaseSurface::Blit(const BaseSurface& src, const SPoint& dstpoint) {
+      |     ^~~~~~~~~~~
+sdlmm_basesurface.cpp:181:61: note:   no known conversion for argument 2 from 'SDL_Rect' to 'const SDLmm::SPoint&'
+  181 | int BaseSurface::Blit(const BaseSurface& src, const SPoint& dstpoint) {
+      |                                               ~~~~~~~~~~~~~~^~~~~~~~
+sdlmm_basesurface.h:374:8: note: candidate: 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const int&, int&)'
+  374 |    int Blit(const BaseSurface& src, const SDL_Rect& srcrect, SDL_Rect& dstrect);
+      |        ^~~~
+sdlmm_basesurface.h:374:8: note:   candidate expects 3 arguments, 2 provided
+sdlmm_basesurface.h:398:8: note: candidate: 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const int&, const SDLmm::SPoint&, int&)'
+  398 |    int Blit(const BaseSurface& src, const SDL_Rect& srcrect, const SPoint& dstpoint,
+      |        ^~~~
+sdlmm_basesurface.h:398:8: note:   candidate expects 4 arguments, 2 provided
+sdlmm_basesurface.h:424:8: note: candidate: 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&, const int&, const SDLmm::SPoint&)'
+  424 |    int Blit(const BaseSurface& src, const SDL_Rect& srcrect, const SPoint& dstpoint);
+      |        ^~~~
+sdlmm_basesurface.h:424:8: note:   candidate expects 3 arguments, 2 provided
+sdlmm_basesurface.cpp: In member function 'int SDLmm::BaseSurface::Blit(const SDLmm::BaseSurface&)':
+sdlmm_basesurface.cpp:189:31: error: 'const class SDLmm::BaseSurface' has no member named 'me'
+  189 |    return SDL_BlitSurface(src.me, 0, me, 0);
+      |                               ^~
+sdlmm_basesurface.cpp:189:38: error: 'me' was not declared in this scope
+  189 |    return SDL_BlitSurface(src.me, 0, me, 0);
+      |                                      ^~
+sdlmm_basesurface.cpp: At global scope:
+sdlmm_basesurface.cpp:192:6: error: 'bool SDLmm::BaseSurface::Fill' is not a static data member of 'class SDLmm::BaseSurface'
+  192 | bool BaseSurface::Fill(Color color) {
+      |      ^~~~~~~~~~~
+sdlmm_basesurface.cpp:192:24: error: 'Color' was not declared in this scope; did you mean 'ColorRGB'?
+  192 | bool BaseSurface::Fill(Color color) {
+      |                        ^~~~~
+      |                        ColorRGB
+sdlmm_basesurface.cpp:196:47: error: 'Color' has not been declared
+  196 | bool BaseSurface::FillRect(SDL_Rect& dstrect, Color color) {
+      |                                               ^~~~~
+sdlmm_basesurface.cpp:196:6: error: no declaration matches 'bool SDLmm::BaseSurface::FillRect(SDL_Rect&, int)'
+  196 | bool BaseSurface::FillRect(SDL_Rect& dstrect, Color color) {
+      |      ^~~~~~~~~~~
+sdlmm_basesurface.h:493:9: note: candidates are: 'bool SDLmm::BaseSurface::FillRect(int&, int, int, int, int)'
+  493 |    bool FillRect(SDL_Rect& dstrect, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+      |         ^~~~~~~~
+sdlmm_basesurface.h:478:9: note:                 'bool SDLmm::BaseSurface::FillRect(int&, int, int, int)'
+  478 |    bool FillRect(SDL_Rect& dstrect, Uint8 r, Uint8 g, Uint8 b) {
+      |         ^~~~~~~~
+sdlmm_basesurface.h:466:9: note:                 'bool SDLmm::BaseSurface::FillRect(int&, int)'
+  466 |    bool FillRect(SDL_Rect& dstrect, Color color);
+      |         ^~~~~~~~
+sdlmm_basesurface.h:42:7: note: 'class SDLmm::BaseSurface' defined here
+   42 | class BaseSurface {
+      |       ^~~~~~~~~~~
+sdlmm_basesurface.cpp:201:44: error: 'Color' has not been declared
+  201 | bool BaseSurface::SetColorKey(Uint32 flag, Color key) {
+      |                                            ^~~~~
+sdlmm_basesurface.cpp:201:6: error: no declaration matches 'bool SDLmm::BaseSurface::SetColorKey(Uint32, int)'
+  201 | bool BaseSurface::SetColorKey(Uint32 flag, Color key) {
+      |      ^~~~~~~~~~~
+sdlmm_basesurface.h:203:9: note: candidate is: 'bool SDLmm::BaseSurface::SetColorKey(int, int)'
+  203 |    bool SetColorKey(Uint32 flag, Color key);
+      |         ^~~~~~~~~~~
+sdlmm_basesurface.h:42:7: note: 'class SDLmm::BaseSurface' defined here
+   42 | class BaseSurface {
+      |       ^~~~~~~~~~~
+sdlmm_basesurface.cpp:205:6: error: no declaration matches 'bool SDLmm::BaseSurface::SetAlpha(Uint32, Uint8)'
+  205 | bool BaseSurface::SetAlpha(Uint32 flag, Uint8 alpha) {
+      |      ^~~~~~~~~~~
+sdlmm_basesurface.h:228:9: note: candidate is: 'bool SDLmm::BaseSurface::SetAlpha(int, int)'
+  228 |    bool SetAlpha(Uint32 flag, Uint8 alpha);
+      |         ^~~~~~~~
+sdlmm_basesurface.h:42:7: note: 'class SDLmm::BaseSurface' defined here
+   42 | class BaseSurface {
+      |       ^~~~~~~~~~~
+sdlmm_basesurface.cpp:209:6: error: no declaration matches 'void SDLmm::BaseSurface::SetClipRect(const SDL_Rect&)'
+  209 | void BaseSurface::SetClipRect(const SDL_Rect& rect) {
+      |      ^~~~~~~~~~~
+sdlmm_basesurface.h:251:9: note: candidate is: 'void SDLmm::BaseSurface::SetClipRect(const int&)'
+  251 |    void SetClipRect(const SDL_Rect& rect);
+      |         ^~~~~~~~~~~
+sdlmm_basesurface.h:42:7: note: 'class SDLmm::BaseSurface' defined here
+   42 | class BaseSurface {
+      |       ^~~~~~~~~~~
+sdlmm_basesurface.cpp: In member function 'void SDLmm::BaseSurface::ResetClipRect()':
+sdlmm_basesurface.cpp:214:20: error: 'me' was not declared in this scope
+  214 |    SDL_SetClipRect(me, 0);
+      |                    ^~
+sdlmm_basesurface.cpp: At global scope:
+sdlmm_basesurface.cpp:217:6: error: no declaration matches 'void SDLmm::BaseSurface::GetClipRect(SDL_Rect&) const'
+  217 | void BaseSurface::GetClipRect(SDL_Rect& rect) const {
+      |      ^~~~~~~~~~~
+sdlmm_basesurface.h:263:9: note: candidate is: 'void SDLmm::BaseSurface::GetClipRect(int&) const'
+  263 |    void GetClipRect(SDL_Rect& rect) const;
+      |         ^~~~~~~~~~~
+sdlmm_basesurface.h:42:7: note: 'class SDLmm::BaseSurface' defined here
+   42 | class BaseSurface {
+      |       ^~~~~~~~~~~
+sdlmm_basesurface.cpp: In member function 'bool SDLmm::BaseSurface::SaveBMP(const char*) const':
+sdlmm_basesurface.cpp:222:8: error: 'me' was not declared in this scope
+  222 |    if (me) {
+      |        ^~
+make[5]: *** [Makefile:479: sdlmm_basesurface.lo] Error 1
+make[5]: Leaving directory '/home/vboxuser/projects/asc-hq-codex/source/libs/sdlmm/src'
+make[4]: *** [Makefile:427: all-recursive] Error 1
+make[4]: Leaving directory '/home/vboxuser/projects/asc-hq-codex/source/libs/sdlmm'
+make[3]: *** [Makefile:427: all-recursive] Error 1
+make[3]: Leaving directory '/home/vboxuser/projects/asc-hq-codex/source/libs'
+make[2]: *** [Makefile:428: all-recursive] Error 1
+make[2]: Leaving directory '/home/vboxuser/projects/asc-hq-codex/source'
+make[1]: *** [Makefile:537: all-recursive] Error 1
+make[1]: Leaving directory '/home/vboxuser/projects/asc-hq-codex'
+make: *** [Makefile:440: all] Error 2

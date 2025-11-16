@@ -5,13 +5,12 @@
 class ScannerPrivateData;
 
 class Scanner {
-      
-      ScannerPrivateData* data;
-   public:
-      Scanner();
-      int yylex();
-      ~Scanner();
-};
+   ScannerPrivateData* data;
 
+  public:
+   Scanner();
+   int yylex();
+   ~Scanner();
+};
 
 #endif

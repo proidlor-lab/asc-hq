@@ -23,44 +23,39 @@ namespace asc {
 namespace mcts {
 
 struct ScoredAction {
-    Action action;
-    AggregatedAgentScore score;
+   Action action;
+   AggregatedAgentScore score;
 };
 
 class AgentSuite {
-public:
-    AgentSuite();
-    ~AgentSuite() = default;
+  public:
+   AgentSuite();
+   ~AgentSuite() = default;
 
-    bool loadWeightFile(const std::string& path);
-    void selectProfile(const std::string& profile);
+   bool loadWeightFile(const std::string& path);
+   void selectProfile(const std::string& profile);
 
-    [[nodiscard]] std::vector<ScoredAction> scoreActions(
-        const GameStateSnapshot& state,
-        PlayerID player,
-        const std::vector<Action>& actions,
-        const ICombatCalculator* calculator,
-        const AgentAggregationConfig& config,
-        int searchDepth,
-        bool isRollout = false
-    ) const;
+   [[nodiscard]] std::vector<ScoredAction>
+   scoreActions(const GameStateSnapshot& state, PlayerID player, const std::vector<Action>& actions,
+                const ICombatCalculator* calculator, const AgentAggregationConfig& config,
+                int searchDepth, bool isRollout = false) const;
 
-    [[nodiscard]] const std::vector<std::unique_ptr<IAgent>>& agents() const { return agents_; }
+   [[nodiscard]] const std::vector<std::unique_ptr<IAgent>>& agents() const { return agents_; }
 
-private:
-    void initializeDefaultAgents();
-    void refreshAgentPointers();
-    void applyActiveProfile();
-    static std::vector<std::filesystem::path> defaultWeightPaths();
+  private:
+   void initializeDefaultAgents();
+   void refreshAgentPointers();
+   void applyActiveProfile();
+   static std::vector<std::filesystem::path> defaultWeightPaths();
 
-    AgentWeightConfig weightConfig_;
-    std::string activeProfile_;
-    std::vector<std::unique_ptr<IAgent>> agents_;
-    std::vector<const IAgent*> agentPtrs_;
-    UtilityAggregator aggregator_;
+   AgentWeightConfig weightConfig_;
+   std::string activeProfile_;
+   std::vector<std::unique_ptr<IAgent>> agents_;
+   std::vector<const IAgent*> agentPtrs_;
+   UtilityAggregator aggregator_;
 };
 
-} // namespace mcts
-} // namespace asc
+}  // namespace mcts
+}  // namespace asc
 
-#endif // MCTS_AGENT_SUITE_H
+#endif  // MCTS_AGENT_SUITE_H

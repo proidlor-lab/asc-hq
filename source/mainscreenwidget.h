@@ -18,9 +18,8 @@
     Boston, MA  02111-1307  USA
 */
 
-
 #ifndef mainscreenwidgetH
- #define mainscreenwidgetH
+#define mainscreenwidgetH
 
 #include "paradialog.h"
 #include "util/messaginghub.h"
@@ -31,92 +30,86 @@ class MapDisplayPG;
 class OverviewMapPanel;
 
 class MainScreenWidget : public PG_Widget {
-    PG_Application& app;
-    Surface backgroundImage;
-    SDL_Rect blitRects[4];
-    
-    int lastMessageTime;
-    int lastMouseScrollTime;
+   PG_Application& app;
+   Surface backgroundImage;
+   SDL_Rect blitRects[4];
 
-    StatusMessageWindowHolder createStatusWindow( const ASCString& msg );
-    
-    void buildBackgroundImage( bool messageLine );
-        
-    OverviewMapPanel* overviewMapPanel;
+   int lastMessageTime;
+   int lastMouseScrollTime;
 
-    friend class StandardActionLocker;
-    
-protected:
-    int lockOptions;
-    
-public:
-    MainScreenWidget( PG_Application& application );
+   StatusMessageWindowHolder createStatusWindow(const ASCString& msg);
 
-    void displayMessage( const ASCString& message );
-    
-    void activateMapLayer( const ASCString& name, bool active );
-    void toggleMapLayer( const ASCString& name );
+   void buildBackgroundImage(bool messageLine);
 
-    MapDisplayPG* getMapDisplay() { return mapDisplay; };
+   OverviewMapPanel* overviewMapPanel;
 
-    OverviewMapPanel* getOverviewMapPanel()
-    {
-      return overviewMapPanel;
-    };
+   friend class StandardActionLocker;
 
-    /** Instanciating this class will disable the Controls for interacting with the map
-        or the main menu. Example use is for running the AI, during the player shouldn't be able
-        to do anything on his own. Instances are typically placed as local variable on the stack
-        and will release automatically when the function is left */
-    class StandardActionLocker {
-         MainScreenWidget* widget;
-         bool locked;
-         void operator=( StandardActionLocker& locker ) {};
-         int options;
-       public:
-          /** Disables certain controls on the game's screen
-              \param mainScreenWidget the widget of the main screen 
-                     (there is typically only one \see getMainScreenWidget()
-              \param the sum of all control items that are to be disabled. 
-                     \see MainScreenWidget::LockOptions
-	  */
-          StandardActionLocker( MainScreenWidget* mainScreenWidget, int options );
-          StandardActionLocker( const StandardActionLocker& locker );
-          void lock();
-          void unlock();
-          ~StandardActionLocker();
-    };
-    
-    struct LockOptions {
-      enum Options{ Menu = 1, MapActions = 2, MapControl = 4 };
-    }; 
-    
+  protected:
+   int lockOptions;
 
-    sigc::signal<void,int> lockOptionsChanged;
-    
-    
-protected:
-   virtual void lockStandardActions( int dir, int options = 0 ) {};
-   
+  public:
+   MainScreenWidget(PG_Application& application);
+
+   void displayMessage(const ASCString& message);
+
+   void activateMapLayer(const ASCString& name, bool active);
+   void toggleMapLayer(const ASCString& name);
+
+   MapDisplayPG* getMapDisplay() { return mapDisplay; };
+
+   OverviewMapPanel* getOverviewMapPanel() { return overviewMapPanel; };
+
+   /** Instanciating this class will disable the Controls for interacting with the map
+       or the main menu. Example use is for running the AI, during the player shouldn't be able
+       to do anything on his own. Instances are typically placed as local variable on the stack
+       and will release automatically when the function is left */
+   class StandardActionLocker {
+      MainScreenWidget* widget;
+      bool locked;
+      void operator=(StandardActionLocker& locker) {};
+      int options;
+
+     public:
+      /** Disables certain controls on the game's screen
+          \param mainScreenWidget the widget of the main screen
+                 (there is typically only one \see getMainScreenWidget()
+          \param the sum of all control items that are to be disabled.
+                 \see MainScreenWidget::LockOptions
+ */
+      StandardActionLocker(MainScreenWidget* mainScreenWidget, int options);
+      StandardActionLocker(const StandardActionLocker& locker);
+      void lock();
+      void unlock();
+      ~StandardActionLocker();
+   };
+
+   struct LockOptions {
+      enum Options { Menu = 1, MapActions = 2, MapControl = 4 };
+   };
+
+   sigc::signal<void, int> lockOptionsChanged;
+
+  protected:
+   virtual void lockStandardActions(int dir, int options = 0) {};
+
    MapDisplayPG* mapDisplay;
-    // Menu* menu;
-    PG_Label* messageLine;
+   // Menu* menu;
+   PG_Label* messageLine;
 
-    void spawnOverviewMapPanel ( const ASCString& panelName = "OverviewMap");
-    
-    void setup( bool messageLine, const PG_Rect& mapView );
-    
-    bool idleHandler();
+   void spawnOverviewMapPanel(const ASCString& panelName = "OverviewMap");
 
-    void mouseScrollChecker();
+   void setup(bool messageLine, const PG_Rect& mapView);
 
-    virtual ASCString getBackgroundImageFilename() = 0;
-    void eventBlit (SDL_Surface *surface, const PG_Rect &src, const PG_Rect &dst) ;
-    ~MainScreenWidget() { };
+   bool idleHandler();
+
+   void mouseScrollChecker();
+
+   virtual ASCString getBackgroundImageFilename() = 0;
+   void eventBlit(SDL_Surface* surface, const PG_Rect& src, const PG_Rect& dst);
+   ~MainScreenWidget(){};
 };
-
 
 extern MainScreenWidget* getMainScreenWidget();
 
 #endif
-

@@ -16,31 +16,29 @@
  ***************************************************************************/
 
 #ifndef textfiletagsH
- #define textfiletagsH
+#define textfiletagsH
 
- extern const char* weatherTags[];
- extern const char* terrainProperties[];
- extern const char* weatherAbbrev[];
- extern const char* heightTags[];
- extern const char* vehicleAbilities[]; //!< deprecated
- extern const char* weaponTags[];
- extern const char* unitCategoryTags[];
- extern const char* buildingFunctionTags[]; //!< deprecated
- extern const char* containerFunctionTags[];
- extern const char* objectNetMethod[];
- extern const char* entranceModes[];
+extern const char* weatherTags[];
+extern const char* terrainProperties[];
+extern const char* weatherAbbrev[];
+extern const char* heightTags[];
+extern const char* vehicleAbilities[];  //!< deprecated
+extern const char* weaponTags[];
+extern const char* unitCategoryTags[];
+extern const char* buildingFunctionTags[];  //!< deprecated
+extern const char* containerFunctionTags[];
+extern const char* objectNetMethod[];
+extern const char* entranceModes[];
 
- const int productionCostCalculationMethodNum = 3;
- extern const char* productionCostCalculationMethod[];
+const int productionCostCalculationMethodNum = 3;
+extern const char* productionCostCalculationMethod[];
 
- const int graphicOperationNum = 3;
- extern const char* graphicOperations[];
- 
+const int graphicOperationNum = 3;
+extern const char* graphicOperations[];
 
- extern const char* objectDisplayingMethodTags[];
+extern const char* objectDisplayingMethodTags[];
 
- extern const char* AItasks[];
- extern const char* AIjobs[];
+extern const char* AItasks[];
+extern const char* AIjobs[];
 
 #endif
-

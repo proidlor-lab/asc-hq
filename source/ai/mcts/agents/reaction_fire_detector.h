@@ -20,48 +20,47 @@ namespace mcts {
  * Represents a reaction-fire threat emitted by a hostile unit.
  */
 struct ReactionFireThreat {
-    UnitID attackerId{0};
-    MapCoordinate attackPosition{};
-    int maxRange{0};               ///< Range in hexes
-    bool isStatic{false};          ///< True for turrets/fixed guns
-    const UnitSnapshot* attacker{nullptr};
+   UnitID attackerId{0};
+   MapCoordinate attackPosition{};
+   int maxRange{0};       ///< Range in hexes
+   bool isStatic{false};  ///< True for turrets/fixed guns
+   const UnitSnapshot* attacker{nullptr};
 };
 
 /**
  * Computes and caches reaction-fire zones for the current state.
  */
 class ReactionFireDetector {
-public:
-    ReactionFireDetector() = default;
+  public:
+   ReactionFireDetector() = default;
 
-    void initialize(const GameStateSnapshot* state,
-                    PlayerID friendlyPlayer,
-                    const ICombatCalculator* calculator);
+   void initialize(const GameStateSnapshot* state, PlayerID friendlyPlayer,
+                   const ICombatCalculator* calculator);
 
-    void rebuild();
+   void rebuild();
 
-    [[nodiscard]] const std::vector<ReactionFireThreat>&
-    getThreatsAt(const MapCoordinate& coordinate) const;
+   [[nodiscard]] const std::vector<ReactionFireThreat>&
+   getThreatsAt(const MapCoordinate& coordinate) const;
 
-    void removeThreat(UnitID attackerId);
+   void removeThreat(UnitID attackerId);
 
-    [[nodiscard]] bool hasThreats(const MapCoordinate& coordinate) const;
+   [[nodiscard]] bool hasThreats(const MapCoordinate& coordinate) const;
 
-private:
-    [[nodiscard]] static int hexDistance(const MapCoordinate& a, const MapCoordinate& b) noexcept;
-    [[nodiscard]] bool isStaticUnit(const UnitSnapshot& unit) const;
-    [[nodiscard]] bool supportsReactionFire(const VehicleType* type) const;
-    [[nodiscard]] int getMaxReactionRange(const VehicleType* type) const;
-    void addThreatArea(const UnitSnapshot& unit);
+  private:
+   [[nodiscard]] static int hexDistance(const MapCoordinate& a, const MapCoordinate& b) noexcept;
+   [[nodiscard]] bool isStaticUnit(const UnitSnapshot& unit) const;
+   [[nodiscard]] bool supportsReactionFire(const VehicleType* type) const;
+   [[nodiscard]] int getMaxReactionRange(const VehicleType* type) const;
+   void addThreatArea(const UnitSnapshot& unit);
 
-    const GameStateSnapshot* state_{nullptr};
-    const ICombatCalculator* calculator_{nullptr};
-    PlayerID friendlyPlayer_{0};
-    std::map<MapCoordinate, std::vector<ReactionFireThreat>> threatMap_;
-    std::vector<ReactionFireThreat> emptyThreats_;
+   const GameStateSnapshot* state_{nullptr};
+   const ICombatCalculator* calculator_{nullptr};
+   PlayerID friendlyPlayer_{0};
+   std::map<MapCoordinate, std::vector<ReactionFireThreat>> threatMap_;
+   std::vector<ReactionFireThreat> emptyThreats_;
 };
 
-} // namespace mcts
-} // namespace asc
+}  // namespace mcts
+}  // namespace asc
 
-#endif // MCTS_REACTION_FIRE_DETECTOR_H
+#endif  // MCTS_REACTION_FIRE_DETECTOR_H

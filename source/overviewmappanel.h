@@ -20,35 +20,33 @@
  ***************************************************************************/
 
 #ifndef overviewmappanelH
- #define overviewmappanelH
-
+#define overviewmappanelH
 
 #include "global.h"
 #include "windowing.h"
 
 class MapDisplayPG;
 
-
 class OverviewMapPanel : public LayoutablePanel {
-        MapDisplayPG* mapDisplayWidget;
-        PG_Widget* ovmap;
-        float currentZoom;
-        bool locked;
-     public:
-        OverviewMapPanel( PG_Widget *parent, const PG_Rect &r, MapDisplayPG* mapDisplay, const ASCString& widgetName ) ;
-     protected:
-        void painter ( const PG_Rect &src, const ASCString& name, const PG_Rect &dst);
-        void redraw() { Redraw(true); };
-        bool mouseButtonDown ( PG_MessageObject* o, const SDL_MouseButtonEvent *button);
-        bool mouseMotion ( PG_MessageObject* o, const SDL_MouseMotionEvent *motion);
-        bool mouseClick ( SPoint pos );
+   MapDisplayPG* mapDisplayWidget;
+   PG_Widget* ovmap;
+   float currentZoom;
+   bool locked;
 
-   private:
-      void lockPanel();
-      void unlockPanel();
+  public:
+   OverviewMapPanel(PG_Widget* parent, const PG_Rect& r, MapDisplayPG* mapDisplay,
+                    const ASCString& widgetName);
 
-      
+  protected:
+   void painter(const PG_Rect& src, const ASCString& name, const PG_Rect& dst);
+   void redraw() { Redraw(true); };
+   bool mouseButtonDown(PG_MessageObject* o, const SDL_MouseButtonEvent* button);
+   bool mouseMotion(PG_MessageObject* o, const SDL_MouseMotionEvent* motion);
+   bool mouseClick(SPoint pos);
+
+  private:
+   void lockPanel();
+   void unlockPanel();
 };
-
 
 #endif

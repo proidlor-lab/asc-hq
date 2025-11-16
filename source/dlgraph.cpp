@@ -1,7 +1,7 @@
 /*! \file dlgraph.cpp
     \brief This file is included by dlg_box.cpp !
 
-    It was an attempt to move the graphical dialog functions to their own file, 
+    It was an attempt to move the graphical dialog functions to their own file,
      which was never finished.
 */
 
@@ -89,285 +89,239 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
-void         tdialogbox::rahmen(bool      invers,
-                    int          x1,
-                    int          y1,
-                    int          x2,
-                    int          y2)
-{
-     collategraphicoperations cgs ( x1, y1, x2, y2 );
-     
-	 Uint8 col	=	(invers == false)	?	white	:	darkgray;
-     
-	 line(x1,y1,x1,y2,col);
-     line(x1,y1,x2,y1,col); 
-     
-	 col	=	(invers == true)	?	white	:	darkgray;
-    
-	 line(x2,y1,x2,y2,col); 
-     line(x1,y2,x2,y2,col); 
-} 
+void tdialogbox::rahmen(bool invers, int x1, int y1, int x2, int y2) {
+   collategraphicoperations cgs(x1, y1, x2, y2);
 
-void                 tdialogbox::rahmen(	bool      invers,
-											tmouserect   rect )
-{
-   rahmen ( invers, rect.x1, rect.y1, rect.x2,rect.y2 );
+   Uint8 col = (invers == false) ? white : darkgray;
+
+   line(x1, y1, x1, y2, col);
+   line(x1, y1, x2, y1, col);
+
+   col = (invers == true) ? white : darkgray;
+
+   line(x2, y1, x2, y2, col);
+   line(x1, y2, x2, y2, col);
 }
 
-void         tdialogbox::knopf(int      xx1,
-                   int      yy1,
-                   int      xx2,
-                   int      yy2)
-{ 
-     collategraphicoperations cgs ( xx1, yy1, xx2, yy2 );
+void tdialogbox::rahmen(bool invers, tmouserect rect) {
+   rahmen(invers, rect.x1, rect.y1, rect.x2, rect.y2);
+}
 
-     paintsurface2(xx1,yy1,xx2,yy2);
-     rahmen(false,xx1,yy1,xx2,yy2); 
-} 
-                      
+void tdialogbox::knopf(int xx1, int yy1, int xx2, int yy2) {
+   collategraphicoperations cgs(xx1, yy1, xx2, yy2);
 
-void         tdialogbox::knopfdruck(int      xx1,
-                        int      yy1,
-                        int      xx2,
-                        int      yy2)
-{
+   paintsurface2(xx1, yy1, xx2, yy2);
+   rahmen(false, xx1, yy1, xx2, yy2);
+}
 
-     collategraphicoperations cgs ( xx1, yy1, xx2, yy2 );
+void tdialogbox::knopfdruck(int xx1, int yy1, int xx2, int yy2) {
+   collategraphicoperations cgs(xx1, yy1, xx2, yy2);
 
-    void*      p;
-    int      mt;
+   void* p;
+   int mt;
 
-     mt = mouseparams.taste;
-     mousevisible(false);
+   mt = mouseparams.taste;
+   mousevisible(false);
 
-     void*    pq = malloc ( imagesize ( xx1 , yy1 , xx2 , yy2 ));
-     getimage( xx1 , yy1 , xx2 , yy2 , pq );
+   void* pq = malloc(imagesize(xx1, yy1, xx2, yy2));
+   getimage(xx1, yy1, xx2, yy2, pq);
 
-     p = malloc ( imagesize ( xx1 + 1,yy1 + 1,xx2 - 2,yy2 - 2 ));
-     getimage(xx1 + 1,yy1 + 1,xx2 - 2,yy2 - 2, p);
-     putimage(xx1 + 3,yy1 + 3, p );
-     rahmen(true, xx1, yy1, xx2, yy2); 
-     mousevisible(true); 
-     knopfsuccessful = true; 
-     bool kn = true; 
-     do { 
-           if ((mouseparams.x > xx2) || (mouseparams.x < xx1) || (mouseparams.y > yy2) || (mouseparams.y < yy1)) { 
-              knopfsuccessful = false; 
-              kn = false; 
-           } 
-           if (mouseparams.taste != mt) 
-              kn = false; 
-           releasetimeslice();
-     }  while (kn == true);
-     mousevisible(false); 
+   p = malloc(imagesize(xx1 + 1, yy1 + 1, xx2 - 2, yy2 - 2));
+   getimage(xx1 + 1, yy1 + 1, xx2 - 2, yy2 - 2, p);
+   putimage(xx1 + 3, yy1 + 3, p);
+   rahmen(true, xx1, yy1, xx2, yy2);
+   mousevisible(true);
+   knopfsuccessful = true;
+   bool kn = true;
+   do {
+      if ((mouseparams.x > xx2) || (mouseparams.x < xx1) || (mouseparams.y > yy2) ||
+          (mouseparams.y < yy1)) {
+         knopfsuccessful = false;
+         kn = false;
+      }
+      if (mouseparams.taste != mt)
+         kn = false;
+      releasetimeslice();
+   } while (kn == true);
+   mousevisible(false);
 
-     putimage(xx1 + 1,yy1 + 1, p);
-     free ( p );
+   putimage(xx1 + 1, yy1 + 1, p);
+   free(p);
 
-     putimage( xx1 , yy1 , pq );
-     free ( pq );
+   putimage(xx1, yy1, pq);
+   free(pq);
 
-     mousevisible(true); 
-} 
+   mousevisible(true);
+}
 
+void tdialogbox::newknopf(int xx1, int yy1, int xx2, int yy2) {
+   collategraphicoperations cgs(xx1 - 1, yy1 - 1, xx2 + 1, yy2 + 1);
 
+   paintsurface2(xx1, yy1, xx2, yy2);
 
-void         tdialogbox::newknopf(int      xx1,
-                      int      yy1,
-                      int      xx2,
-                      int      yy2)
-{ 
-     collategraphicoperations cgs ( xx1-1, yy1-1, xx2+1, yy2+1 );
+   rahmen(true, xx1 - 1, yy1 - 1, xx2 + 1, yy2 + 1);
+   rahmen(false, xx1, yy1, xx2, yy2);
+}
 
-     paintsurface2(xx1,yy1,xx2,yy2);
-
-     rahmen(true,  xx1 - 1, yy1 - 1,xx2 + 1,yy2 + 1);
-     rahmen(false, xx1,yy1,  xx2,yy2);
-} 
-
-
-void         tdialogbox::newknopfdruck2(int      xx1,
-                            int      yy1,
-                            int      xx2,
-                            int      yy2)
-{
-
-    void*      p;
-    bool      kn; 
-    int      mt;
-    {
-       collategraphicoperations cgs ( xx1 -1, yy1 -1, xx2 + 1, yy2 + 1 );
-       mt = mouseparams.taste;
-       mousevisible(false);
-       p = malloc ( imagesize ( xx1 + 1,yy1 + 1,xx2 - 2,yy2 - 2 ) );
-       getimage(xx1 + 1,yy1 + 1,xx2 - 2,yy2 - 2, p);
-       putimage(xx1 + 3,yy1 + 3, p);
-
-       line(xx1 - 1,yy1 - 1,xx2 + 1,yy1 - 1, 8);
-       line(xx1 - 1,yy1 - 1,xx1 - 1,yy2 + 1, 8);
-       line(xx2 + 1,yy1 - 1,xx2 + 1,yy2 + 1, 15);
-       line(xx1 - 1,yy2 + 1,xx2 + 1,yy2 + 1, 15);
-
-       line(xx1,yy1,xx2,yy1, 8);
-       line(xx1,yy1,xx1,yy2, 8);
-       line(xx2,yy1,xx2,yy2, 15);
-       line(xx1,yy2,xx2,yy2, 15);
-
-       mousevisible(true);
-       knopfsuccessful = true;
-       kn = true;
-    }
-    do {
-           if ((mouseparams.x > xx2) || (mouseparams.x < xx1) || (mouseparams.y > yy2) || (mouseparams.y < yy1)) { 
-              knopfsuccessful = false; 
-              kn = false; 
-           } 
-           if (mouseparams.taste != mt) 
-              kn = false; 
-           releasetimeslice();
-    }  while (kn == true);
-    {
-       collategraphicoperations cgo ( xx1 - 1, yy1 - 1, xx2 + 1, yy2 + 1 );
-
-       mousevisible(false);
-
-       if (knopfsuccessful == false)
-          putimage (xx1 + 1,yy1 + 1,p);
-       free ( p );
-
-       if (knopfsuccessful == false) {
-          line(xx1 - 1,yy1 - 1,xx2 + 1,yy1 - 1, 8);
-          line(xx1 - 1,yy1 - 1,xx1 - 1,yy2 + 1, 8);
-          line(xx2 + 1,yy1 - 1,xx2 + 1,yy2 + 1, 15);
-          line(xx1 - 1,yy2 + 1,xx2 + 1,yy2 + 1, 15);
-
-          line(xx1,yy1,xx2,yy1, 15);
-          line(xx1,yy1,xx1,yy2, 15);
-          line(xx2,yy1,xx2,yy2, 8);
-          line(xx1,yy2,xx2,yy2, 8);
-       }
-       mousevisible(true);
-    }
-
-} 
-
-
-void         tdialogbox::newknopfdruck3(int      xx1,
-                            int      yy1,
-                            int      xx2,
-                            int      yy2)
-{
-     collategraphicoperations cgs ( xx1, yy1, xx2, yy2 );
-
-   void*      p;
-
-     // vom reingedr?ckten in den Normalzustand
-
-     p = malloc ( imagesize ( xx1 + 4,yy1 + 4,xx2 - 2,yy2 - 2 ));
-     getimage(xx1 + 4,yy1 + 4,xx2 - 2,yy2 - 2, p );
-
-     putimage(xx1 + 2,yy1 + 2,p);
-     free ( p );              
-
-     rahmen(false,xx1,yy1,xx2,yy2); 
-} 
-
-
-
-
-void         tdialogbox::newknopfdruck4(int      xx1,
-                            int      yy1,
-                            int      xx2,
-                            int      yy2)
-{
-     collategraphicoperations cgs ( xx1, yy1, xx2, yy2 );
-
-   void*      p;
-    // reindr?cken
-
-     p = malloc ( imagesize ( xx1 + 2,yy1 + 2,xx2 - 4,yy2 - 4 )) ;
-     getimage(xx1 + 2,yy1 + 2,xx2 - 4,yy2 - 4, p);
-     putimage(xx1 + 4,yy1 + 4, p);
-     free ( p );
-
-     rahmen(true,xx1,yy1,xx2,yy2); 
-} 
-
-
-void         tdialogbox::newknopfdruck(int      xx1,
-                           int      yy1,
-                           int      xx2,
-                           int      yy2)
-{
-
-   void*      p;
-   bool      kn;
-   int      mt;
-   void*    pq ;
+void tdialogbox::newknopfdruck2(int xx1, int yy1, int xx2, int yy2) {
+   void* p;
+   bool kn;
+   int mt;
    {
-     collategraphicoperations cgs( xx1-1, yy1-1, xx2+1, yy2+1 );
-     mt = mouseparams.taste;
-     mousevisible(false); 
+      collategraphicoperations cgs(xx1 - 1, yy1 - 1, xx2 + 1, yy2 + 1);
+      mt = mouseparams.taste;
+      mousevisible(false);
+      p = malloc(imagesize(xx1 + 1, yy1 + 1, xx2 - 2, yy2 - 2));
+      getimage(xx1 + 1, yy1 + 1, xx2 - 2, yy2 - 2, p);
+      putimage(xx1 + 3, yy1 + 3, p);
 
-     pq = malloc ( imagesize ( xx1 , yy1 , xx2 , yy2 ));
-     getimage( xx1 , yy1 , xx2 , yy2 , pq );
+      line(xx1 - 1, yy1 - 1, xx2 + 1, yy1 - 1, 8);
+      line(xx1 - 1, yy1 - 1, xx1 - 1, yy2 + 1, 8);
+      line(xx2 + 1, yy1 - 1, xx2 + 1, yy2 + 1, 15);
+      line(xx1 - 1, yy2 + 1, xx2 + 1, yy2 + 1, 15);
 
+      line(xx1, yy1, xx2, yy1, 8);
+      line(xx1, yy1, xx1, yy2, 8);
+      line(xx2, yy1, xx2, yy2, 15);
+      line(xx1, yy2, xx2, yy2, 15);
 
-     p = malloc ( imagesize ( xx1 + 1,yy1 + 1,xx2 - 2,yy2 - 2 ));
-     getimage(xx1 + 1,yy1 + 1,xx2 - 2,yy2 - 2, p);
-     putimage(xx1 + 3,yy1 + 3, p);
-
-     line(xx1 - 1,yy1 - 1,xx2 + 1,yy1 - 1, 8);
-     line(xx1 - 1,yy1 - 1,xx1 - 1,yy2 + 1, 8);
-
-     line(xx2 + 1,yy1 - 1,xx2 + 1,yy2 + 1, 15);
-     line(xx1 - 1,yy2 + 1,xx2 + 1,yy2 + 1, 15);
-
-     line(xx1,yy1,xx2,yy1, 8);
-     line(xx1,yy1,xx1,yy2, 8);
-
-     line(xx2,yy1,xx2,yy2, 15);
-     line(xx1,yy2,xx2,yy2, 15);
-     mousevisible(true); 
-
-     knopfsuccessful = true; 
-     kn = true;
+      mousevisible(true);
+      knopfsuccessful = true;
+      kn = true;
    }
    do {
-           if ((mouseparams.x > xx2) || (mouseparams.x < xx1) || (mouseparams.y > yy2) || (mouseparams.y < yy1)) { 
-              knopfsuccessful = false; 
-              kn = false; 
-           } 
-           if (mouseparams.taste != mt) 
-              kn = false; 
-           releasetimeslice();
-   }  while (kn == true);
+      if ((mouseparams.x > xx2) || (mouseparams.x < xx1) || (mouseparams.y > yy2) ||
+          (mouseparams.y < yy1)) {
+         knopfsuccessful = false;
+         kn = false;
+      }
+      if (mouseparams.taste != mt)
+         kn = false;
+      releasetimeslice();
+   } while (kn == true);
    {
-     collategraphicoperations cgo( xx1-1, yy1-1, xx2+1, yy2+1 );
-     mousevisible(false); 
-     putimage(xx1 + 1,yy1 + 1,p);
-     free ( p ) ;
+      collategraphicoperations cgo(xx1 - 1, yy1 - 1, xx2 + 1, yy2 + 1);
 
-     line(xx1 - 1,yy1 - 1,xx2 + 1,yy1 - 1, 8);
-     line(xx1 - 1,yy1 - 1,xx1 - 1,yy2 + 1, 8);
+      mousevisible(false);
 
-     line(xx2 + 1,yy1 - 1,xx2 + 1,yy2 + 1, 15);
-     line(xx1 - 1,yy2 + 1,xx2 + 1,yy2 + 1, 15);
+      if (knopfsuccessful == false)
+         putimage(xx1 + 1, yy1 + 1, p);
+      free(p);
 
-     line(xx1,yy1,xx2,yy1, 15);
-     line(xx1,yy1,xx1,yy2, 15);
+      if (knopfsuccessful == false) {
+         line(xx1 - 1, yy1 - 1, xx2 + 1, yy1 - 1, 8);
+         line(xx1 - 1, yy1 - 1, xx1 - 1, yy2 + 1, 8);
+         line(xx2 + 1, yy1 - 1, xx2 + 1, yy2 + 1, 15);
+         line(xx1 - 1, yy2 + 1, xx2 + 1, yy2 + 1, 15);
 
-     line(xx2,yy1,xx2,yy2, 8);
-     line(xx1,yy2,xx2,yy2, 8);
-
-     putimage( xx1 , yy1 , pq );
-     free ( pq );
-
-     mousevisible(true);
+         line(xx1, yy1, xx2, yy1, 15);
+         line(xx1, yy1, xx1, yy2, 15);
+         line(xx2, yy1, xx2, yy2, 8);
+         line(xx1, yy2, xx2, yy2, 8);
+      }
+      mousevisible(true);
    }
-} 
+}
+
+void tdialogbox::newknopfdruck3(int xx1, int yy1, int xx2, int yy2) {
+   collategraphicoperations cgs(xx1, yy1, xx2, yy2);
+
+   void* p;
+
+   // vom reingedr?ckten in den Normalzustand
+
+   p = malloc(imagesize(xx1 + 4, yy1 + 4, xx2 - 2, yy2 - 2));
+   getimage(xx1 + 4, yy1 + 4, xx2 - 2, yy2 - 2, p);
+
+   putimage(xx1 + 2, yy1 + 2, p);
+   free(p);
+
+   rahmen(false, xx1, yy1, xx2, yy2);
+}
+
+void tdialogbox::newknopfdruck4(int xx1, int yy1, int xx2, int yy2) {
+   collategraphicoperations cgs(xx1, yy1, xx2, yy2);
+
+   void* p;
+   // reindr?cken
+
+   p = malloc(imagesize(xx1 + 2, yy1 + 2, xx2 - 4, yy2 - 4));
+   getimage(xx1 + 2, yy1 + 2, xx2 - 4, yy2 - 4, p);
+   putimage(xx1 + 4, yy1 + 4, p);
+   free(p);
+
+   rahmen(true, xx1, yy1, xx2, yy2);
+}
+
+void tdialogbox::newknopfdruck(int xx1, int yy1, int xx2, int yy2) {
+   void* p;
+   bool kn;
+   int mt;
+   void* pq;
+   {
+      collategraphicoperations cgs(xx1 - 1, yy1 - 1, xx2 + 1, yy2 + 1);
+      mt = mouseparams.taste;
+      mousevisible(false);
+
+      pq = malloc(imagesize(xx1, yy1, xx2, yy2));
+      getimage(xx1, yy1, xx2, yy2, pq);
+
+      p = malloc(imagesize(xx1 + 1, yy1 + 1, xx2 - 2, yy2 - 2));
+      getimage(xx1 + 1, yy1 + 1, xx2 - 2, yy2 - 2, p);
+      putimage(xx1 + 3, yy1 + 3, p);
+
+      line(xx1 - 1, yy1 - 1, xx2 + 1, yy1 - 1, 8);
+      line(xx1 - 1, yy1 - 1, xx1 - 1, yy2 + 1, 8);
+
+      line(xx2 + 1, yy1 - 1, xx2 + 1, yy2 + 1, 15);
+      line(xx1 - 1, yy2 + 1, xx2 + 1, yy2 + 1, 15);
+
+      line(xx1, yy1, xx2, yy1, 8);
+      line(xx1, yy1, xx1, yy2, 8);
+
+      line(xx2, yy1, xx2, yy2, 15);
+      line(xx1, yy2, xx2, yy2, 15);
+      mousevisible(true);
+
+      knopfsuccessful = true;
+      kn = true;
+   }
+   do {
+      if ((mouseparams.x > xx2) || (mouseparams.x < xx1) || (mouseparams.y > yy2) ||
+          (mouseparams.y < yy1)) {
+         knopfsuccessful = false;
+         kn = false;
+      }
+      if (mouseparams.taste != mt)
+         kn = false;
+      releasetimeslice();
+   } while (kn == true);
+   {
+      collategraphicoperations cgo(xx1 - 1, yy1 - 1, xx2 + 1, yy2 + 1);
+      mousevisible(false);
+      putimage(xx1 + 1, yy1 + 1, p);
+      free(p);
+
+      line(xx1 - 1, yy1 - 1, xx2 + 1, yy1 - 1, 8);
+      line(xx1 - 1, yy1 - 1, xx1 - 1, yy2 + 1, 8);
+
+      line(xx2 + 1, yy1 - 1, xx2 + 1, yy2 + 1, 15);
+      line(xx1 - 1, yy2 + 1, xx2 + 1, yy2 + 1, 15);
+
+      line(xx1, yy1, xx2, yy1, 15);
+      line(xx1, yy1, xx1, yy2, 15);
+
+      line(xx2, yy1, xx2, yy2, 8);
+      line(xx1, yy2, xx2, yy2, 8);
+
+      putimage(xx1, yy1, pq);
+      free(pq);
+
+      mousevisible(true);
+   }
+}

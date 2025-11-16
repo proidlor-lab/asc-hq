@@ -13,15 +13,14 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
-#if defined(karteneditor) 
- #error the mapeditor should not need to use controls.h !
+#if defined(karteneditor)
+#error the mapeditor should not need to use controls.h !
 #endif
-
 
 #ifndef replaymapdisplayH
 #define replaymapdisplayH
@@ -29,31 +28,39 @@
 #include "mapdisplayinterface.h"
 
 class ReplayMapDisplay : public MapDisplayInterface {
-           MapDisplayInterface* mapDisplay;
-           int cursorDelay;
-           void wait ( int minTime = 0 );
-         public:
-           ReplayMapDisplay ( MapDisplayInterface* md ) { mapDisplay = md; cursorDelay = 20; };
-           int displayMovingUnit ( const MapCoordinate3D& start, const MapCoordinate3D& dest, Vehicle* vehicle, int fieldnum, int totalmove, SoundStartCallback startSound, int duration );
-           void displayPosition ( int x, int y );
-           void displayMap ( Vehicle* additionalVehicle ) { mapDisplay->displayMap( additionalVehicle ); };
-           void displayMap ( void ) { mapDisplay->displayMap(); };
-           void resetMovement ( void ) { mapDisplay->resetMovement(); };
-           void startAction ( void ) { mapDisplay->startAction(); };
-           void stopAction ( void ) { mapDisplay->stopAction(); };
-           void cursor_goto( const MapCoordinate& pos ) { mapDisplay->cursor_goto(pos);};
-           void displayActionCursor ( int x1, int y1, int x2 , int y2 , int secondWait );
-           void displayActionCursor ( int x1, int y1 ) { displayActionCursor ( x1, y1, -1, -1, 0 ); };
-           void displayActionCursor ( int x1, int y1, int x2 , int y2 ) { displayActionCursor ( x1, y1, x2, y2, 0 ); };
-           void removeActionCursor ( void );
-           int checkMapPosition ( int x, int y );
-           void setCursorDelay  ( int time ) { cursorDelay = time; };
-           void updateDashboard() { mapDisplay->updateDashboard(); };
-           void repaintDisplay () { mapDisplay->repaintDisplay(); };
-           void setTempView( bool view )  { mapDisplay->setTempView( view ); };
-           void showBattle( tfight& battle ) { mapDisplay->showBattle( battle ); };
-           void playPositionalSound( const MapCoordinate& pos, Sound* snd );
-           int getUnitMovementDuration() const;
-    };
+   MapDisplayInterface* mapDisplay;
+   int cursorDelay;
+   void wait(int minTime = 0);
+
+  public:
+   ReplayMapDisplay(MapDisplayInterface* md) {
+      mapDisplay = md;
+      cursorDelay = 20;
+   };
+   int displayMovingUnit(const MapCoordinate3D& start, const MapCoordinate3D& dest,
+                         Vehicle* vehicle, int fieldnum, int totalmove,
+                         SoundStartCallback startSound, int duration);
+   void displayPosition(int x, int y);
+   void displayMap(Vehicle* additionalVehicle) { mapDisplay->displayMap(additionalVehicle); };
+   void displayMap(void) { mapDisplay->displayMap(); };
+   void resetMovement(void) { mapDisplay->resetMovement(); };
+   void startAction(void) { mapDisplay->startAction(); };
+   void stopAction(void) { mapDisplay->stopAction(); };
+   void cursor_goto(const MapCoordinate& pos) { mapDisplay->cursor_goto(pos); };
+   void displayActionCursor(int x1, int y1, int x2, int y2, int secondWait);
+   void displayActionCursor(int x1, int y1) { displayActionCursor(x1, y1, -1, -1, 0); };
+   void displayActionCursor(int x1, int y1, int x2, int y2) {
+      displayActionCursor(x1, y1, x2, y2, 0);
+   };
+   void removeActionCursor(void);
+   int checkMapPosition(int x, int y);
+   void setCursorDelay(int time) { cursorDelay = time; };
+   void updateDashboard() { mapDisplay->updateDashboard(); };
+   void repaintDisplay() { mapDisplay->repaintDisplay(); };
+   void setTempView(bool view) { mapDisplay->setTempView(view); };
+   void showBattle(tfight& battle) { mapDisplay->showBattle(battle); };
+   void playPositionalSound(const MapCoordinate& pos, Sound* snd);
+   int getUnitMovementDuration() const;
+};
 
 #endif

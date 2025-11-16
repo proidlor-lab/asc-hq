@@ -8,7 +8,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef loggingoutputH
 #define loggingoutputH
 
@@ -16,14 +15,14 @@
 #include "ascstring.h"
 #include <fstream>
 
- class LoggingOutputHandler : public sigc::trackable {
-       ASCString filename;
-       std::ofstream logfile;
-       void messageLogger( const ASCString& msg, int level );
-       static ASCString getFilename( const ASCString& path );
-    public:
-       LoggingOutputHandler( const ASCString& path );
- };
+class LoggingOutputHandler : public sigc::trackable {
+   ASCString filename;
+   std::ofstream logfile;
+   void messageLogger(const ASCString& msg, int level);
+   static ASCString getFilename(const ASCString& path);
 
+  public:
+   LoggingOutputHandler(const ASCString& path);
+};
 
 #endif

@@ -13,8 +13,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -30,53 +30,39 @@
 int MapComponent::currentPlayer = 0;
 bool MapComponent::initialized = false;
 
-void MapComponent::setPlayer( int player )
-{
+void MapComponent::setPlayer(int player) {
    currentPlayer = player;
 };
 
-void VehicleItem :: display( Surface& s, const SPoint& pos ) const { 
-   if ( actmap ) {
+void VehicleItem ::display(Surface& s, const SPoint& pos) const {
+   if (actmap) {
       int player = selection.getPlayer();
-      if ( player > 7 || player < 0 )
+      if (player > 7 || player < 0)
          player = 0;
-      item->paint ( s, pos, actmap->getPlayer( player ).getPlayerColor()); 
+      item->paint(s, pos, actmap->getPlayer(player).getPlayerColor());
    } else
-      item->paint ( s, pos ); 
+      item->paint(s, pos);
 };
 
-
-MapComponent::MapComponent( const MapItemType* item ) : mapItem( item )
-{
-   if ( !initialized ) {
+MapComponent::MapComponent(const MapItemType* item) : mapItem(item) {
+   if (!initialized) {
       initialized = true;
-      selection.playerChanged.connect( sigc::ptr_fun( &MapComponent::setPlayer ));
-         
+      selection.playerChanged.connect(sigc::ptr_fun(&MapComponent::setPlayer));
    }
 }
 
-LuaBrush::LuaBrush( const ASCString& filename ) : script(filename)
-{
-   
-}
+LuaBrush::LuaBrush(const ASCString& filename) : script(filename) {}
 
-int LuaBrush :: place( const MapCoordinate& mc ) const
-{
+int LuaBrush ::place(const MapCoordinate& mc) const {
    LuaState state;
-   LuaRunner runner( state );
-   runner.runFile( script );
-   if ( !runner.getErrors().empty() )
-      errorMessage( runner.getErrors() );
+   LuaRunner runner(state);
+   runner.runFile(script);
+   if (!runner.getErrors().empty())
+      errorMessage(runner.getErrors());
    updateFieldInfo();
    return 1;
 }
 
-LuaBrush* LuaBrush::clone() const
-{
-	return new LuaBrush( script );
+LuaBrush* LuaBrush::clone() const {
+   return new LuaBrush(script);
 }
-
-
-
-
-      

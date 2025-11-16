@@ -13,8 +13,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -31,31 +31,28 @@
 #include "..\vesa.h"
 #include "..\stack.h"
 
+#define cpy(u) bldn->u = bldo->u
 
-#define cpy(u) bldn-> u = bldo-> u
-
-void main ( void ) 
-{
-  find_t  fileinfo;
-  unsigned rc;        /* return code */
-  Object*type nobj;
-  int i;
-  rc = _dos_findfirst( "*.obl", _A_NORMAL, &fileinfo );
-  while( rc == 0 ) { 
-      nobj = loadobjecttype ( fileinfo.name );
+void main(void) {
+   find_t fileinfo;
+   unsigned rc; /* return code */
+   Object* type nobj;
+   int i;
+   rc = _dos_findfirst("*.obl", _A_NORMAL, &fileinfo);
+   while (rc == 0) {
+      nobj = loadobjecttype(fileinfo.name);
       nobj->objectslinkablenum = 0;
       nobj->objectslinkable = 0;
-/*      nobj->xoffs = 0;
-      nobj->yoffs = 0;*/
-             
+      /*      nobj->xoffs = 0;
+            nobj->yoffs = 0;*/
+
       {
-          tn_file_buf_stream mainstream ( fileinfo.name ,2);
-          writeobject ( nobj, &mainstream, 0 );
+         tn_file_buf_stream mainstream(fileinfo.name, 2);
+         writeobject(nobj, &mainstream, 0);
       }
 
-      printf(" %s written \n",fileinfo.name);
+      printf(" %s written \n", fileinfo.name);
 
-      rc = _dos_findnext( &fileinfo );
-  }
-
+      rc = _dos_findnext(&fileinfo);
+   }
 }

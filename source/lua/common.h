@@ -1,6 +1,6 @@
 /*
      This file is part of Advanced Strategic Command; http://www.asc-hq.de
-     Copyright (C) 1994-2010  Martin Bickel  
+     Copyright (C) 1994-2010  Martin Bickel
 
      This program is free software; you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
      Boston, MA  02111-1307  USA
 */
 
-
 #ifndef commonH
 #define commonH
 
@@ -34,63 +33,63 @@ class TerrainType;
 
 extern GameMap* getActiveMap();
 
-extern const ObjectType* getObjectType( int id );
-extern const BuildingType* getBuildingType( int id );
-extern const VehicleType* getUnitType( int id );
-extern const TerrainType* getTerrainType( int id );
+extern const ObjectType* getObjectType(int id);
+extern const BuildingType* getBuildingType(int id);
+extern const VehicleType* getUnitType(int id);
+extern const TerrainType* getTerrainType(int id);
 
 class StringArray {
-   public:
-      vector<ASCString> values;
-      StringArray(){};
-      void add( const ASCString& s ) { values.push_back( s ); };
-      ASCString getItem( int n ) //!< 1 based, in best LUA tradition 
-      {
-         return (n> 0 && n <= values.size()) ? values[n-1] : ASCString();
-      }
-      int size() { return values.size(); }; //
+  public:
+   vector<ASCString> values;
+   StringArray(){};
+   void add(const ASCString& s) { values.push_back(s); };
+   ASCString getItem(int n)  //!< 1 based, in best LUA tradition
+   {
+      return (n > 0 && n <= values.size()) ? values[n - 1] : ASCString();
+   }
+   int size() { return values.size(); };  //
 };
 
 class PropertyDialog : public ASC_PG_Dialog {
-   private:
-      PG_PropertyEditor* propertyEditor;
-      bool result;
-   
-      bool ok();
-      bool cancel();
-      
-      map<ASCString,bool> boolValues;
-      map<ASCString,int>  intValues;
-      map<ASCString,ASCString> stringValues;
-      
-      void setup();
-      
-   public:
-      PropertyDialog( const ASCString& title );
-      PropertyDialog( const ASCString& title, const PG_Rect& size );
-      void addBool( const ASCString& name, bool defaultValue );
-      void addInteger( const ASCString& name, int defaultValue );
-      void addIntDropdown ( const ASCString& name, const StringArray& names, int defaultValue );
-      void addString( const ASCString& name, const ASCString& defaultValue );
-      
-      std::string getString( const ASCString& name );
-      int getInteger( const ASCString& name );
-      bool getBool( const ASCString& name );
-      bool run();
+  private:
+   PG_PropertyEditor* propertyEditor;
+   bool result;
+
+   bool ok();
+   bool cancel();
+
+   map<ASCString, bool> boolValues;
+   map<ASCString, int> intValues;
+   map<ASCString, ASCString> stringValues;
+
+   void setup();
+
+  public:
+   PropertyDialog(const ASCString& title);
+   PropertyDialog(const ASCString& title, const PG_Rect& size);
+   void addBool(const ASCString& name, bool defaultValue);
+   void addInteger(const ASCString& name, int defaultValue);
+   void addIntDropdown(const ASCString& name, const StringArray& names, int defaultValue);
+   void addString(const ASCString& name, const ASCString& defaultValue);
+
+   std::string getString(const ASCString& name);
+   int getInteger(const ASCString& name);
+   bool getBool(const ASCString& name);
+   bool run();
 };
 
-extern int selectString ( const ASCString& title, const StringArray& entries, int defaultEntry = -1 );
+extern int selectString(const ASCString& title, const StringArray& entries, int defaultEntry = -1);
 
 extern GameMap* getLoadingMap();
 
-extern void setLocalizedEventMessage( GameMap* map, int eventID, const ASCString& message );
-extern void setLocalizedContainerName( GameMap* map, const MapCoordinate& pos, const std::string& name );
+extern void setLocalizedEventMessage(GameMap* map, int eventID, const ASCString& message);
+extern void setLocalizedContainerName(GameMap* map, const MapCoordinate& pos,
+                                      const std::string& name);
 
-extern MapCoordinate getCursorPosition( const GameMap* gamemap );
+extern MapCoordinate getCursorPosition(const GameMap* gamemap);
 
-extern void setCursorPosition( const GameMap* gamemap, const MapCoordinate& pos );
+extern void setCursorPosition(const GameMap* gamemap, const MapCoordinate& pos);
 
-extern void assertSuccess( const ActionResult& result );
+extern void assertSuccess(const ActionResult& result);
 
 #endif
-

@@ -10,7 +10,6 @@
 #ifndef researchTestH
 #define researchTestH
 
- extern void testResearch();
-
+extern void testResearch();
 
 #endif

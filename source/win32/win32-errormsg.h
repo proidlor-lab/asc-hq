@@ -8,21 +8,17 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef win32errorhandlerH
 #define win32errorhandlerH
 
 #include <sigc++/sigc++.h>
 #include "../ascstring.h"
 
+class Win32IoErrorHandler : public sigc::trackable {
+   void printError(const ASCString& msg);
 
-  class Win32IoErrorHandler : public sigc::trackable {
-       void printError( const ASCString& msg );
-     public:
-        Win32IoErrorHandler();
-  };
-
-
-
+  public:
+   Win32IoErrorHandler();
+};
 
 #endif

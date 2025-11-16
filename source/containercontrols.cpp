@@ -20,49 +20,44 @@
 #include "mapdisplayinterface.h"
 #include "itemrepository.h"
 
-
-const GameMap* ContainerConstControls::getMap() const
-{
+const GameMap* ContainerConstControls::getMap() const {
    return container->getMap();
 }
 
-
-const Player& ContainerConstControls::getPlayer() const
-{
-   return getMap()->player[ getMap()->actplayer ];
+const Player& ContainerConstControls::getPlayer() const {
+   return getMap()->player[getMap()->actplayer];
 }
 
-
-bool ContainerConstControls::unitProductionAvailable() const
-{
-   if ( container->getOwner() == container->getMap()->actplayer )
-      if ( container->vehiclesLoaded() < container->baseType->maxLoadableUnits )
-         if ( container->baseType->hasFunction( ContainerBaseType::InternalVehicleProduction ))
-           return true;
+bool ContainerConstControls::unitProductionAvailable() const {
+   if (container->getOwner() == container->getMap()->actplayer)
+      if (container->vehiclesLoaded() < container->baseType->maxLoadableUnits)
+         if (container->baseType->hasFunction(ContainerBaseType::InternalVehicleProduction))
+            return true;
 
    return false;
 }
 
-int  ContainerConstControls::unitProductionPrerequisites( const VehicleType* type, bool internally ) const
-{
+int ContainerConstControls::unitProductionPrerequisites(const VehicleType* type,
+                                                        bool internally) const {
    int l = 0;
-   Resources cost = container->getProductionCost( type );
-   for ( int r = 0; r < resourceTypeNum; r++ )
-      if ( container->getAvailableResource( cost.resource(r), r ) < cost.resource(r) )
+   Resources cost = container->getProductionCost(type);
+   for (int r = 0; r < resourceTypeNum; r++)
+      if (container->getAvailableResource(cost.resource(r), r) < cost.resource(r))
          l |= 1 << r;
-   
-   if ( internally ) {
-      if ( !type->techDependency.available( getPlayer().research ) && getMap()->getgameparameter( cgp_produceOnlyResearchedStuffInternally ) ) 
+
+   if (internally) {
+      if (!type->techDependency.available(getPlayer().research) &&
+          getMap()->getgameparameter(cgp_produceOnlyResearchedStuffInternally))
          l |= 1 << 10;
-   
-      if ( !container->vehicleUnloadable( type ) && !container->baseType->hasFunction( ContainerBaseType::ProduceNonLeavableUnits ))
+
+      if (!container->vehicleUnloadable(type) &&
+          !container->baseType->hasFunction(ContainerBaseType::ProduceNonLeavableUnits))
          l |= 1 << 11;
    } else {
-      if ( !type->techDependency.available( getPlayer().research ) && getMap()->getgameparameter( cgp_produceOnlyResearchedStuffExternally ) ) 
+      if (!type->techDependency.available(getPlayer().research) &&
+          getMap()->getgameparameter(cgp_produceOnlyResearchedStuffExternally))
          l |= 1 << 10;
    }
-      
+
    return l;
 }
-
-

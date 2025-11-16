@@ -18,7 +18,6 @@
      Boston, MA  02111-1307  USA
 */
 
-
 #include "putminecommand.h"
 
 #include "../vehicle.h"
@@ -36,242 +35,227 @@
 #include "consumeammo.h"
 #include "removemine.h"
 
-bool PutMineCommand :: avail ( Vehicle* unit )
-{
-   if ( unit )
+bool PutMineCommand ::avail(Vehicle* unit) {
+   if (unit)
       if (unit->getOwner() == unit->getMap()->actplayer)
-         if (unit->typ->hasFunction( ContainerBaseType::PlaceMines ) )
-            if ( !unit->attacked )
+         if (unit->typ->hasFunction(ContainerBaseType::PlaceMines))
+            if (!unit->attacked)
                return true;
    return false;
 }
 
-
-PutMineCommand :: PutMineCommand ( Vehicle* unit )
-      : UnitCommand ( unit ), mode(Build)
-{
+PutMineCommand ::PutMineCommand(Vehicle* unit) : UnitCommand(unit), mode(Build) {
    object = cmantitankmine;
    putMines = false;
    removeMines = false;
 
    weaponNum = -1;
 
-   for ( int i = 0; i < unit->typ->weapons.count; i++)
-      if ((unit->typ->weapons.weapon[i].getScalarWeaponType() == cwminen) && unit->typ->weapons.weapon[i].shootable() && (unit->typ->weapons.weapon[i].sourceheight & unit->height) ) {
-         if ( !unit->typ->hasFunction( ContainerBaseType::NoMineRemoval ))
+   for (int i = 0; i < unit->typ->weapons.count; i++)
+      if ((unit->typ->weapons.weapon[i].getScalarWeaponType() == cwminen) &&
+          unit->typ->weapons.weapon[i].shootable() &&
+          (unit->typ->weapons.weapon[i].sourceheight & unit->height)) {
+         if (!unit->typ->hasFunction(ContainerBaseType::NoMineRemoval))
             removeMines = true;
-         
+
          if (unit->ammo[i] > 0)
             putMines = true;
-         
+
          weaponNum = i;
       }
 }
 
-
-vector<MapCoordinate> PutMineCommand::getFields()
-{
+vector<MapCoordinate> PutMineCommand::getFields() {
    vector<MapCoordinate> fields = objectsRemovable;
-   
-   for ( map<MapCoordinate,vector<MineTypes> > ::iterator i = objectsCreatable.begin(); i != objectsCreatable.end(); ++i )
-      if ( find(fields.begin(), fields.end(), i->first) == fields.end() )
-         fields.push_back ( i->first );
+
+   for (map<MapCoordinate, vector<MineTypes>>::iterator i = objectsCreatable.begin();
+        i != objectsCreatable.end(); ++i)
+      if (find(fields.begin(), fields.end(), i->first) == fields.end())
+         fields.push_back(i->first);
    return fields;
 }
 
-const vector<MineTypes>& PutMineCommand::getCreatableMines( const MapCoordinate& pos )
-{
-   return objectsCreatable[pos];   
+const vector<MineTypes>& PutMineCommand::getCreatableMines(const MapCoordinate& pos) {
+   return objectsCreatable[pos];
 }
 
-bool PutMineCommand::getRemovableMines( const MapCoordinate& pos )
-{
-   return find( objectsRemovable.begin(), objectsRemovable.end(), pos) != objectsRemovable.end();
+bool PutMineCommand::getRemovableMines(const MapCoordinate& pos) {
+   return find(objectsRemovable.begin(), objectsRemovable.end(), pos) != objectsRemovable.end();
 }
 
-ActionResult PutMineCommand::searchFields()
-{
-   if ( !getUnit() )
+ActionResult PutMineCommand::searchFields() {
+   if (!getUnit())
       return ActionResult(201);
 
-   if (getUnit()->getMovement() < mineputmovedecrease) 
-      return ActionResult( 119 );
-   
+   if (getUnit()->getMovement() < mineputmovedecrease)
+      return ActionResult(119);
 
    objectsCreatable.clear();
    objectsRemovable.clear();
 
-   if ( weaponNum >= 0 ) 
-      circularFieldIterator( getMap(), getUnit()->getPosition(), getUnit()->typ->weapons.weapon[weaponNum].maxdistance/10, getUnit()->typ->weapons.weapon[weaponNum].mindistance/10, FieldIterationFunctor( this, &PutMineCommand::fieldChecker ));
+   if (weaponNum >= 0)
+      circularFieldIterator(getMap(), getUnit()->getPosition(),
+                            getUnit()->typ->weapons.weapon[weaponNum].maxdistance / 10,
+                            getUnit()->typ->weapons.weapon[weaponNum].mindistance / 10,
+                            FieldIterationFunctor(this, &PutMineCommand::fieldChecker));
 
-   if ( objectsRemovable.size() + objectsCreatable.size() ) {
+   if (objectsRemovable.size() + objectsCreatable.size()) {
       setState(Evaluated);
       return ActionResult(0);
    } else
       return ActionResult(21504);
 }
 
-void PutMineCommand :: fieldChecker( const MapCoordinate& pos )
-{
+void PutMineCommand ::fieldChecker(const MapCoordinate& pos) {
    MapField* fld = getMap()->getField(pos);
-   if ( !fld )
+   if (!fld)
       return;
-   
-   if ( fld->vehicle || fld->building )
+
+   if (fld->vehicle || fld->building)
       return;
-   
-   if ( fieldvisiblenow( getMap()->getField(pos)) ) {
-      
-      if ( removeMines && !fld->mines.empty() && fld->getVisibility( getUnit()->getOwner() ) == visible_all)  {
-         objectsRemovable.push_back( pos );
+
+   if (fieldvisiblenow(getMap()->getField(pos))) {
+      if (removeMines && !fld->mines.empty() &&
+          fld->getVisibility(getUnit()->getOwner()) == visible_all) {
+         objectsRemovable.push_back(pos);
       }
-      
-      if (putMines && (fld->mines.empty() || fld->mineowner() == getUnit()->getOwner()) && fld->mines.size() < getMap()->getgameparameter ( cgp_maxminesonfield )) {
-         if ( (fld->bdt & (getTerrainBitType( cbwater ).flip())).any() ) {
-            objectsCreatable[pos].push_back( cmantipersonnelmine );
-            objectsCreatable[pos].push_back( cmantitankmine );
+
+      if (putMines && (fld->mines.empty() || fld->mineowner() == getUnit()->getOwner()) &&
+          fld->mines.size() < getMap()->getgameparameter(cgp_maxminesonfield)) {
+         if ((fld->bdt & (getTerrainBitType(cbwater).flip())).any()) {
+            objectsCreatable[pos].push_back(cmantipersonnelmine);
+            objectsCreatable[pos].push_back(cmantitankmine);
          }
-         if ( (fld->typ->art & getTerrainBitType(cbwater2)).any()
-              || (fld->typ->art & getTerrainBitType(cbwater3)).any() )
-            objectsCreatable[pos].push_back( cmmooredmine );
-         
-         if ( (fld->bdt & getTerrainBitType(cbwater0)).any()
-                 || (fld->bdt & getTerrainBitType(cbwater1)).any()
-                 || (fld->bdt & getTerrainBitType(cbwater2)).any()
-                 || (fld->bdt & getTerrainBitType(cbwater3)).any() 
-                 || (fld->bdt & getTerrainBitType(cbriver)).any() )
-            objectsCreatable[pos].push_back( cmfloatmine );
-         
+         if ((fld->typ->art & getTerrainBitType(cbwater2)).any() ||
+             (fld->typ->art & getTerrainBitType(cbwater3)).any())
+            objectsCreatable[pos].push_back(cmmooredmine);
+
+         if ((fld->bdt & getTerrainBitType(cbwater0)).any() ||
+             (fld->bdt & getTerrainBitType(cbwater1)).any() ||
+             (fld->bdt & getTerrainBitType(cbwater2)).any() ||
+             (fld->bdt & getTerrainBitType(cbwater3)).any() ||
+             (fld->bdt & getTerrainBitType(cbriver)).any())
+            objectsCreatable[pos].push_back(cmfloatmine);
       }
    }
 }
 
-
-void PutMineCommand :: setCreationTarget( const MapCoordinate& target, MineTypes mineType )
-{
+void PutMineCommand ::setCreationTarget(const MapCoordinate& target, MineTypes mineType) {
    MapField* fld = getMap()->getField(target);
-   
-   if( !fld )
+
+   if (!fld)
       throw ActionResult(21002);
-   
+
    this->target = target;
    this->object = mineType;
 
    mode = Build;
-   
-  
-   setState( SetUp );
+
+   setState(SetUp);
 }
 
-void PutMineCommand :: setRemovalTarget( const MapCoordinate& target )
-{
+void PutMineCommand ::setRemovalTarget(const MapCoordinate& target) {
    MapField* fld = getMap()->getField(target);
-   
-   if( !fld )
+
+   if (!fld)
       throw ActionResult(21002);
-   
+
    this->target = target;
    mode = Remove;
-  
-   setState( SetUp );
+
+   setState(SetUp);
 }
 
-
-ActionResult PutMineCommand::go ( const Context& context )
-{
+ActionResult PutMineCommand::go(const Context& context) {
    MapCoordinate targetPosition;
 
-   if ( getState() != SetUp )
+   if (getState() != SetUp)
       return ActionResult(22000);
 
    searchFields();
 
    int strength = getUnit()->typ->weapons.weapon[weaponNum].maxstrength;
-   
+
    ActionResult res(0);
-   if ( mode == Build ) { 
-      res = (new SpawnMine(getMap(), target, object, getUnit()->getOwner(), MineBasePunch[object-1] * strength / 64 ))->execute( context );
-      
-      computeview( getMap(), 0, false, &context );
-            
-      if ( res.successful() ) 
-         res = (new ConsumeAmmo( getUnit(), getUnit()->typ->weapons.weapon[weaponNum].getScalarWeaponType(), weaponNum, 1 ))->execute(context);
+   if (mode == Build) {
+      res = (new SpawnMine(getMap(), target, object, getUnit()->getOwner(),
+                           MineBasePunch[object - 1] * strength / 64))
+               ->execute(context);
+
+      computeview(getMap(), 0, false, &context);
+
+      if (res.successful())
+         res = (new ConsumeAmmo(getUnit(),
+                                getUnit()->typ->weapons.weapon[weaponNum].getScalarWeaponType(),
+                                weaponNum, 1))
+                  ->execute(context);
    } else
-      res = (new RemoveMine(getMap(), target, 0 ))->execute( context );
-   
-   
-   if ( res.successful() )
-      res = (new ChangeUnitMovement( getUnit(), mineputmovedecrease, true ))->execute(context);
-   
-   if ( res.successful() ) 
-      setState( Finished );
+      res = (new RemoveMine(getMap(), target, 0))->execute(context);
+
+   if (res.successful())
+      res = (new ChangeUnitMovement(getUnit(), mineputmovedecrease, true))->execute(context);
+
+   if (res.successful())
+      setState(Finished);
    else
-      setState( Failed );
-      
-   if( context.display && fieldvisiblenow( getMap()->getField(target), context.viewingPlayer ))
+      setState(Failed);
+
+   if (context.display && fieldvisiblenow(getMap()->getField(target), context.viewingPlayer))
       context.display->displayMap();
    return res;
-
 }
 
 static const int putObjectCommandVersion = 1;
 
-void PutMineCommand :: readData ( tnstream& stream )
-{
-   UnitCommand::readData( stream );
+void PutMineCommand ::readData(tnstream& stream) {
+   UnitCommand::readData(stream);
    int version = stream.readInt();
-   if ( version > putObjectCommandVersion )
-      throw tinvalidversion ( "PutMineCommand", putObjectCommandVersion, version );
-   target.read( stream );
+   if (version > putObjectCommandVersion)
+      throw tinvalidversion("PutMineCommand", putObjectCommandVersion, version);
+   target.read(stream);
    object = (MineTypes) stream.readInt();
    mode = (Mode) stream.readInt();
    putMines = stream.readInt();
-   removeMines = stream.readInt();;
-   weaponNum = stream.readInt(); 
-   
+   removeMines = stream.readInt();
+   ;
+   weaponNum = stream.readInt();
 }
 
-void PutMineCommand :: writeData ( tnstream& stream ) const
-{
-   UnitCommand::writeData( stream );
-   stream.writeInt( putObjectCommandVersion );
-   target.write( stream );
-   stream.writeInt( object );
-   stream.writeInt( mode );
-   stream.writeInt( putMines );
-   stream.writeInt( removeMines );
-   stream.writeInt( weaponNum );
-   
+void PutMineCommand ::writeData(tnstream& stream) const {
+   UnitCommand::writeData(stream);
+   stream.writeInt(putObjectCommandVersion);
+   target.write(stream);
+   stream.writeInt(object);
+   stream.writeInt(mode);
+   stream.writeInt(putMines);
+   stream.writeInt(removeMines);
+   stream.writeInt(weaponNum);
 }
 
-ASCString PutMineCommand :: getCommandString() const
-{
+ASCString PutMineCommand ::getCommandString() const {
    ASCString c;
-   if ( mode == Build )
-      c.format("unitPutMine ( map, %d, asc.MapCoordinate(%d, %d), %d )", getUnitID(), target.x, target.y, (int)object );
+   if (mode == Build)
+      c.format("unitPutMine ( map, %d, asc.MapCoordinate(%d, %d), %d )", getUnitID(), target.x,
+               target.y, (int) object);
    else
-      c.format("unitRemoveMine ( map, %d, asc.MapCoordinate(%d, %d) )", getUnitID(), target.x, target.y );
+      c.format("unitRemoveMine ( map, %d, asc.MapCoordinate(%d, %d) )", getUnitID(), target.x,
+               target.y);
    return c;
-
 }
 
-GameActionID PutMineCommand::getID() const
-{
+GameActionID PutMineCommand::getID() const {
    return ActionRegistry::PutMineCommand;
 }
 
-ASCString PutMineCommand::getDescription() const
-{
+ASCString PutMineCommand::getDescription() const {
    ASCString s = (mode == Build) ? "Put Mine" : "Remove Mine";
-   if ( getUnit() ) {
+   if (getUnit()) {
       s += " by " + getUnit()->getName();
    }
    s += " on " + target.toString();
    return s;
 }
 
-namespace
-{
-const bool r1 = registerAction<PutMineCommand> ( ActionRegistry::PutMineCommand );
+namespace {
+const bool r1 = registerAction<PutMineCommand>(ActionRegistry::PutMineCommand);
 }
-

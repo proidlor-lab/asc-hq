@@ -15,17 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
+const char* filereadmode = "rb";
+const char* filewritemode = "wb";
+const char* filereadmodetext = "rt";
+const char* filewritemodetext = "wt";
+const char pathdelimitter = '\\';
+const char* pathdelimitterstring = "\\";
+const char foreignPathDelimitter = '/';
+const char* foreignPathDelimitterString = "/";
 
- const char* filereadmode = "rb";
- const char* filewritemode = "wb";
- const char* filereadmodetext = "rt";
- const char* filewritemodetext = "wt";
- const char pathdelimitter = '\\';
- const char* pathdelimitterstring = "\\";
- const char  foreignPathDelimitter = '/';
- const char* foreignPathDelimitterString = "/";
-
- const int maxfilenamelength = 255;
- const char* asc_configurationfile = "asc2.ini";
- const bool has_drive_letters = true;
-
+const int maxfilenamelength = 255;
+const char* asc_configurationfile = "asc2.ini";
+const bool has_drive_letters = true;

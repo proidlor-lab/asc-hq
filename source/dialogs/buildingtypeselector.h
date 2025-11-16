@@ -23,69 +23,71 @@
 #include "../buildingtype.h"
 #include "../paradialog.h"
 
+class BuildingTypeBaseWidget : public SelectionWidget {
+   const BuildingType* vt;
+   static Surface clippingSurface;
+   Surface& getClippingSurface() { return clippingSurface; };
+   const Player& actplayer;
 
+  public:
+   BuildingTypeBaseWidget(PG_Widget* parent, const PG_Point& pos, int width,
+                          const BuildingType* BuildingType, const Player& player);
+   ASCString getName() const;
+   const BuildingType* getBuildingType() const { return vt; };
 
-
-
-
-class BuildingTypeBaseWidget: public SelectionWidget  {
-      const BuildingType* vt;
-      static Surface clippingSurface;
-      Surface& getClippingSurface() { return clippingSurface; };
-      const Player& actplayer;
-   public:
-      BuildingTypeBaseWidget( PG_Widget* parent, const PG_Point& pos, int width, const BuildingType* BuildingType, const Player& player );
-      ASCString getName() const;
-      const BuildingType* getBuildingType() const { return vt; };
-   protected:
-      void display( SDL_Surface * surface, const PG_Rect & src, const PG_Rect & dst );
-      static int getBuildingHeight( const BuildingType* type );
+  protected:
+   void display(SDL_Surface* surface, const PG_Rect& src, const PG_Rect& dst);
+   static int getBuildingHeight(const BuildingType* type);
 };
 
-class BuildingTypeResourceWidget: public BuildingTypeBaseWidget  {
-   public:
-      BuildingTypeResourceWidget( PG_Widget* parent, const PG_Point& pos, int width, const BuildingType* BuildingType, int lackingResources, const Resources& cost, const Player& player );
+class BuildingTypeResourceWidget : public BuildingTypeBaseWidget {
+  public:
+   BuildingTypeResourceWidget(PG_Widget* parent, const PG_Point& pos, int width,
+                              const BuildingType* BuildingType, int lackingResources,
+                              const Resources& cost, const Player& player);
 };
 
-
-class BuildingTypeCountWidget: public BuildingTypeBaseWidget  {
-   public:
-      BuildingTypeCountWidget( PG_Widget* parent, const PG_Point& pos, int width, const BuildingType* BuildingType, const Player& player, int number );
+class BuildingTypeCountWidget : public BuildingTypeBaseWidget {
+  public:
+   BuildingTypeCountWidget(PG_Widget* parent, const PG_Point& pos, int width,
+                           const BuildingType* BuildingType, const Player& player, int number);
 };
 
+class BuildingTypeSelectionItemFactory : public SelectionItemFactory, public sigc::trackable {
+   Resources plantResources;
+   const Player& actplayer;
 
-class BuildingTypeSelectionItemFactory: public SelectionItemFactory, public sigc::trackable  {
-      Resources plantResources;
-      const Player& actplayer;
-   public:
-      typedef vector<const BuildingType*> Container;
+  public:
+   typedef vector<const BuildingType*> Container;
 
-   protected:
-      Container::iterator it;
-      Container items;
+  protected:
+   Container::iterator it;
+   Container items;
 
-      virtual void BuildingTypeSelected( const BuildingType* type ) = 0;
-      
-      virtual Resources getCost( const BuildingType* type );
-   
-   private:
-      const Container& original_items;
-      
-   public:
-      BuildingTypeSelectionItemFactory( Resources plantResources, const Container& types, const Player& player );
-      
-      sigc::signal<void> reloadAllItems;
+   virtual void BuildingTypeSelected(const BuildingType* type) = 0;
 
-      void restart();
-   
-      void setAvailableResource( const Resources& plantResources ) { this->plantResources = plantResources; };
-      
-      
-      SelectionWidget* spawnNextItem( PG_Widget* parent, const PG_Point& pos );
-      
-      void itemSelected( const SelectionWidget* widget, bool mouse );
+   virtual Resources getCost(const BuildingType* type);
+
+  private:
+   const Container& original_items;
+
+  public:
+   BuildingTypeSelectionItemFactory(Resources plantResources, const Container& types,
+                                    const Player& player);
+
+   sigc::signal<void> reloadAllItems;
+
+   void restart();
+
+   void setAvailableResource(const Resources& plantResources) {
+      this->plantResources = plantResources;
+   };
+
+   SelectionWidget* spawnNextItem(PG_Widget* parent, const PG_Point& pos);
+
+   void itemSelected(const SelectionWidget* widget, bool mouse);
 };
 
-bool BuildingComp ( const BuildingType* v1, const BuildingType* v2 );
+bool BuildingComp(const BuildingType* v1, const BuildingType* v2);
 
 #endif

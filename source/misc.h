@@ -22,40 +22,36 @@
     Boston, MA  02111-1307  USA
 */
 
-
-
 #ifndef miscH
-   #define miscH
+#define miscH
 
-   #include "global.h"
-   #include <string>
+#include "global.h"
+#include <string>
 
-   #define dblue lightgray
-   //153
-   
+#define dblue lightgray
+// 153
 
-   //! Count the number of zero bits on the LSB side of "zahl"
-   extern int getFirstBit(int i);
+//! Count the number of zero bits on the LSB side of "zahl"
+extern int getFirstBit(int i);
 
-  
-   extern const char* digit[] ; 
-   extern const char* letter[] ;
+extern const char* digit[];
+extern const char* letter[];
 
-   /** converts a to a string.
-      \returns a pointer to a static array, which will be overwritten in the next call
-    */
-   extern char* strrr ( int a ) ;
-   // extern char* strrr ( Uint32 a );
+/** converts a to a string.
+   \returns a pointer to a static array, which will be overwritten in the next call
+ */
+extern char* strrr(int a);
+// extern char* strrr ( Uint32 a );
 
-   /** converts a to a string.
-      \returns a pointer to a static array, which will be overwritten in the next call
-    */
-   extern char* strrr ( double a ) ;
+/** converts a to a string.
+   \returns a pointer to a static array, which will be overwritten in the next call
+ */
+extern char* strrr(double a);
 
-   extern int  crc32buf( const void *vbuf, int len);
-   
-   extern int atoi ( const std::string& s );
-   extern double atof ( const std::string& s );
+extern int crc32buf(const void* vbuf, int len);
+
+extern int atoi(const std::string& s);
+extern double atof(const std::string& s);
 
 #ifdef min
 #undef min
@@ -76,10 +72,9 @@ T min ( T a, T b )
 }
 */
 
-template<typename T>
-const T& min ( const T& a, const T& b, const T&  c )
-{
-   return min ( a, min ( b, c ));
+template <typename T>
+const T& min(const T& a, const T& b, const T& c) {
+   return min(a, min(b, c));
 }
 
 /*
@@ -93,17 +88,15 @@ T max ( T a, T b )
 }
 */
 
-template<typename T>
-const T& max ( const T& a, const T& b, const T& c )
-{
-   return max ( a, max ( b, c ));
+template <typename T>
+const T& max(const T& a, const T& b, const T& c) {
+   return max(a, max(b, c));
 }
 
+extern char* strupr(const char* a);
 
-   extern char *strupr (const char *a);
-
-  #ifndef HAVE_ITOA
-   extern char* itoa ( int a, char* b, int c);
-  #endif
+#ifndef HAVE_ITOA
+extern char* itoa(int a, char* b, int c);
+#endif
 
 #endif

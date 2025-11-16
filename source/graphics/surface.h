@@ -19,162 +19,160 @@
 */
 
 #ifndef surfaceH
- #define surfaceH
+#define surfaceH
 
- #include "../libs/sdlmm/src/sdlmm.h"
- #include "../basestreaminterface.h"
+#include "../libs/sdlmm/src/sdlmm.h"
+#include "../basestreaminterface.h"
 
- typedef SDLmm::SPoint SPoint;
+typedef SDLmm::SPoint SPoint;
 
- //! A Device Independent color. Shamelessly pinched from Paragui to reduce coupling
+//! A Device Independent color. Shamelessly pinched from Paragui to reduce coupling
 class DI_Color : public SDL_Color {
-public:
-	DI_Color();
-	DI_Color(const SDL_Color& c);
-	DI_Color(Uint32 c);
-	DI_Color(Uint8 r, Uint8 g, Uint8 b);
+  public:
+   DI_Color();
+   DI_Color(const SDL_Color& c);
+   DI_Color(Uint32 c);
+   DI_Color(Uint8 r, Uint8 g, Uint8 b);
 
-	DI_Color& operator=(const SDL_Color& c);
+   DI_Color& operator=(const SDL_Color& c);
 
-	DI_Color& operator=(Uint32 c);
+   DI_Color& operator=(Uint32 c);
 
-	// operator Uint32() const;
+   // operator Uint32() const;
 
-	inline Uint32 MapRGB(SDL_PixelFormat* format) const {
-		return SDL_MapRGB(format, r, g, b);
-	}
+   inline Uint32 MapRGB(SDL_PixelFormat* format) const { return SDL_MapRGB(format, r, g, b); }
 
-	inline Uint32 MapRGBA(SDL_PixelFormat* format, Uint8 a) const {
-		return SDL_MapRGBA(format, r, g, b, a);
-	}
+   inline Uint32 MapRGBA(SDL_PixelFormat* format, Uint8 a) const {
+      return SDL_MapRGBA(format, r, g, b, a);
+   }
 
-	inline bool operator!=(const DI_Color& c) const {
-      return !operator==(c);// ((r != c.r) || (g != c.g) || (b != c.b));
-	}
-   
+   inline bool operator!=(const DI_Color& c) const {
+      return !operator==(c);  // ((r != c.r) || (g != c.g) || (b != c.b));
+   }
+
    inline bool operator==(const DI_Color& c) const {
       return ((r == c.r) && (g == c.g) && (b == c.b));
    }
-   
 };
 
+class Surface : public SDLmm::Surface {
+   void* pixelDataPointer;  // in some situations
+  public:
+   static const Uint32 transparent = 0;
+   static const Uint32 opaque = 255l;
+   explicit Surface(SDL_Surface* surface);
+   Surface(const SDLmm::Surface& other);
+   Surface() : SDLmm::Surface(NULL), pixelDataPointer(NULL){};
 
- class Surface: public SDLmm::Surface {
-      void* pixelDataPointer; // in some situations
-    public:
-      static const Uint32 transparent = 0;
-      static const Uint32 opaque = 255l;
-      explicit Surface( SDL_Surface *surface);
-      Surface(const SDLmm::Surface& other);
-      Surface() : SDLmm::Surface(NULL), pixelDataPointer(NULL) {};
+   Surface Duplicate() const;
 
-      Surface Duplicate() const;
+   static Surface createSurface(int width, int height, SDLmm::Color color = 255);
+   static Surface createSurface(int width, int height, int depth, SDLmm::Color color = 0xff0000ff);
 
-      static Surface createSurface( int width, int height, SDLmm::Color color = 255 );
-      static Surface createSurface( int width, int height, int depth, SDLmm::Color color = 0xff0000ff );
-      
-      static Surface Wrap( SDL_Surface *surface) { surface->refcount++; return Surface(surface);};
-      
-      static void SetScreen( SDL_Surface* screen );
-      
-      /**
-         Creates an image from an BGI image structure.
-      */
-      void  newFromBGI( void* img );
-      void* toBGI() const;
+   static Surface Wrap(SDL_Surface* surface) {
+      surface->refcount++;
+      return Surface(surface);
+   };
 
-      void FillTransparent();
-      
-      void read ( tnstream& stream ) ;
-      void readImageFile ( tnstream& stream ) ;
-      void write ( tnstream& stream ) const;
-      void strech ( int width, int height );
+   static void SetScreen(SDL_Surface* screen);
 
-      void writeDefaultPixelFormat ( tnstream& stream ) ;
-      static void readDefaultPixelFormat ( tnstream& stream );
+   /**
+      Creates an image from an BGI image structure.
+   */
+   void newFromBGI(void* img);
+   void* toBGI() const;
 
-      //! assigns the default ASC palette to the surface (only for 8 Bit surfaces)
-      void assignDefaultPalette();
+   void FillTransparent();
 
-      void assignPalette(SDL_Color* colors, int startColor = 0, int colorNum = 256 );
+   void read(tnstream& stream);
+   void readImageFile(tnstream& stream);
+   void write(tnstream& stream) const;
+   void strech(int width, int height);
 
-      //! tries to automatically detect the color key of the surface
-      void detectColorKey( bool RLE = false );
+   void writeDefaultPixelFormat(tnstream& stream);
+   static void readDefaultPixelFormat(tnstream& stream);
 
-      bool isTransparent( SDLmm::Color col ) const;
+   //! assigns the default ASC palette to the surface (only for 8 Bit surfaces)
+   void assignDefaultPalette();
 
-      void ColorKey2AlphaChannel() ;
+   void assignPalette(SDL_Color* colors, int startColor = 0, int colorNum = 256);
 
-      bool hasAlpha();
-      /*
-      SDLmm::ColorRGB GetRGB(SDLmm::Color pixel) const;
-      SDLmm::ColorRGBA GetRGBA(SDLmm::Color pixel) const;
-      */
+   //! tries to automatically detect the color key of the surface
+   void detectColorKey(bool RLE = false);
 
-      int getMemoryFootprint() const;
-      
-      SDL_Surface* getBaseSurface() { return me; };
-      const SDL_Surface* getBaseSurface() const { return me; };
-      ~Surface();
-   protected:
-      virtual int getDepthFormat() { return -1; };
-      void convert();
-           
-   private:
-      static SDLmm::PixelFormat* default8bit;
-      static SDLmm::PixelFormat* default32bit;
+   bool isTransparent(SDLmm::Color col) const;
 
- };
+   void ColorKey2AlphaChannel();
 
- class TypedSurfaceBase  : public Surface{
-    protected:
-      explicit TypedSurfaceBase( SDL_Surface *surface) : Surface(surface) {};
-      TypedSurfaceBase(const SDLmm::Surface& other) : Surface( other ) {};
-      TypedSurfaceBase() : Surface(NULL) {};
- };     
- 
- template<int colorDepth> class TypedSurface : public TypedSurfaceBase {
-    public:
-      static const int depth = colorDepth;
-      explicit TypedSurface( SDL_Surface *surface) : TypedSurfaceBase(surface) {};
-      
-      //! the parameter depthcheck is primarily there to prevent accidential usage of this constructor
-      explicit TypedSurface( SDLmm::Surface& surface , int depthCheck ) : TypedSurfaceBase(surface) {
-         assert ( surface.GetPixelFormat().BytesPerPixel() == depth );
-         assert ( depthCheck == depth );
-      };
-      
-      TypedSurface(const TypedSurface<colorDepth>& other) : TypedSurfaceBase( other ) {};
-      TypedSurface() : TypedSurfaceBase(NULL) {};
-   protected:
-      virtual int getDepthFormat() { return depth; };
- };
- 
- typedef TypedSurface<1> Surface8;
- typedef TypedSurface<4> Surface32;
- 
- 
- template<int depth> TypedSurface<depth>& castSurface( Surface& s ) {
-    assert ( s.GetPixelFormat().BytesPerPixel() == depth );
-    return static_cast<TypedSurface<depth>& >(s);
- };
- 
- 
- void applyFieldMask( Surface& s, int x = 0, int y = 0, bool detectColorKey = true );
- 
- //! applies a field mask that uses FEFEFE Color as Colorkey to load old images
- void applyLegacyFieldMask( Surface& s, int x = 0, int y = 0, bool detectColorKey = false );
+   bool hasAlpha();
+   /*
+   SDLmm::ColorRGB GetRGB(SDLmm::Color pixel) const;
+   SDLmm::ColorRGBA GetRGBA(SDLmm::Color pixel) const;
+   */
 
- Surface rotateSurface( Surface& s, int degrees );
+   int getMemoryFootprint() const;
+
+   SDL_Surface* getBaseSurface() { return me; };
+   const SDL_Surface* getBaseSurface() const { return me; };
+   ~Surface();
+
+  protected:
+   virtual int getDepthFormat() { return -1; };
+   void convert();
+
+  private:
+   static SDLmm::PixelFormat* default8bit;
+   static SDLmm::PixelFormat* default32bit;
+};
+
+class TypedSurfaceBase : public Surface {
+  protected:
+   explicit TypedSurfaceBase(SDL_Surface* surface) : Surface(surface){};
+   TypedSurfaceBase(const SDLmm::Surface& other) : Surface(other){};
+   TypedSurfaceBase() : Surface(NULL){};
+};
+
+template <int colorDepth>
+class TypedSurface : public TypedSurfaceBase {
+  public:
+   static const int depth = colorDepth;
+   explicit TypedSurface(SDL_Surface* surface) : TypedSurfaceBase(surface){};
+
+   //! the parameter depthcheck is primarily there to prevent accidential usage of this constructor
+   explicit TypedSurface(SDLmm::Surface& surface, int depthCheck) : TypedSurfaceBase(surface) {
+      assert(surface.GetPixelFormat().BytesPerPixel() == depth);
+      assert(depthCheck == depth);
+   };
+
+   TypedSurface(const TypedSurface<colorDepth>& other) : TypedSurfaceBase(other){};
+   TypedSurface() : TypedSurfaceBase(NULL){};
+
+  protected:
+   virtual int getDepthFormat() { return depth; };
+};
+
+typedef TypedSurface<1> Surface8;
+typedef TypedSurface<4> Surface32;
+
+template <int depth>
+TypedSurface<depth>& castSurface(Surface& s) {
+   assert(s.GetPixelFormat().BytesPerPixel() == depth);
+   return static_cast<TypedSurface<depth>&>(s);
+};
+
+void applyFieldMask(Surface& s, int x = 0, int y = 0, bool detectColorKey = true);
+
+//! applies a field mask that uses FEFEFE Color as Colorkey to load old images
+void applyLegacyFieldMask(Surface& s, int x = 0, int y = 0, bool detectColorKey = false);
+
+Surface rotateSurface(Surface& s, int degrees);
 
 class SurfaceLock {
-      Surface& surf;
-   public:
-      SurfaceLock( Surface& s ) : surf(s) { s.Lock(); };
-      ~SurfaceLock() { surf.Unlock(); };
+   Surface& surf;
+
+  public:
+   SurfaceLock(Surface& s) : surf(s) { s.Lock(); };
+   ~SurfaceLock() { surf.Unlock(); };
 };
 
- 
- 
 #endif
-

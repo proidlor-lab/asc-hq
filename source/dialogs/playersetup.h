@@ -1,23 +1,22 @@
 /*
      This file is part of Advanced Strategic Command; http://www.asc-hq.de
      Copyright (C) 1994-2010  Martin Bickel  and  Marc Schellenberger
- 
+
      This program is free software; you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by
      the Free Software Foundation; either version 2 of the License, or
      (at your option) any later version.
- 
+
      This program is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
      GNU General Public License for more details.
- 
+
      You should have received a copy of the GNU General Public License
-     along with this program; see the file COPYING. If not, write to the 
-     Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+     along with this program; see the file COPYING. If not, write to the
+     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
      Boston, MA  02111-1307  USA
 */
-
 
 #ifndef PLAYERSETUP_H
 #define PLAYERSETUP_H
@@ -27,36 +26,35 @@
 #include "../paradialog.h"
 
 class PlayerSetupWidget : public PG_ScrollWidget {
-      GameMap* actmap;
-      static const int spacing = 40;
-      static const int yoffset = 20;
-      
-      struct PlayerWidgets {
-         PG_LineEdit* name;
-         PG_DropDown* type;
-         PG_DropDown* aiType;  // NEW: AI type selection (shown only for computer players)
-         PG_Label* aiTypeLabel;  // NEW: Label for AI type dropdown
-         int pos;
-      };
-         
-      
-      vector<PlayerWidgets> playerWidgets;
-   public:
-      enum Mode{ AllEditable, AllEditableSinglePlayer, SelfEditable };
-      PlayerSetupWidget( GameMap* gamemap, Mode mode, PG_Widget *parent, const PG_Rect &r, const std::string &style="ScrollWidget" );
-      bool Valid();
-      bool Apply();
+   GameMap* actmap;
+   static const int spacing = 40;
+   static const int yoffset = 20;
 
-      static int guessHeight( GameMap* gamemap );
-      
-   private:
-      Mode mode;
-      void updateAITypeVisibility( PlayerWidgets& pw, int selectedStatus );
-      bool SIGC_onPlayerTypeChanged( PG_ListBoxBaseItem* item, PlayerWidgets* pw );   
+   struct PlayerWidgets {
+      PG_LineEdit* name;
+      PG_DropDown* type;
+      PG_DropDown* aiType;    // NEW: AI type selection (shown only for computer players)
+      PG_Label* aiTypeLabel;  // NEW: Label for AI type dropdown
+      int pos;
+   };
+
+   vector<PlayerWidgets> playerWidgets;
+
+  public:
+   enum Mode { AllEditable, AllEditableSinglePlayer, SelfEditable };
+   PlayerSetupWidget(GameMap* gamemap, Mode mode, PG_Widget* parent, const PG_Rect& r,
+                     const std::string& style = "ScrollWidget");
+   bool Valid();
+   bool Apply();
+
+   static int guessHeight(GameMap* gamemap);
+
+  private:
+   Mode mode;
+   void updateAITypeVisibility(PlayerWidgets& pw, int selectedStatus);
+   bool SIGC_onPlayerTypeChanged(PG_ListBoxBaseItem* item, PlayerWidgets* pw);
 };
 
-extern void setupPlayers( GameMap* actmap, bool supervisor = false );
-
+extern void setupPlayers(GameMap* actmap, bool supervisor = false);
 
 #endif
-

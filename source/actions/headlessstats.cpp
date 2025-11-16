@@ -27,49 +27,48 @@ std::vector<HeadlessStatsContext> g_contextStack;
 std::set<const ContainerBase*> g_recentlyRecordedKills;
 sigc::connection g_destroyConnection;
 
-void onContainerDestroyed( ContainerBase* container )
-{
-   if ( !g_enabled || !container )
+void onContainerDestroyed(ContainerBase* container) {
+   if (!g_enabled || !container)
       return;
 
-   if ( g_map && container->getMap() != g_map )
+   if (g_map && container->getMap() != g_map)
       return;
 
-   std::set<const ContainerBase*>::iterator recorded = g_recentlyRecordedKills.find( container );
-   if ( recorded != g_recentlyRecordedKills.end() ) {
-      g_recentlyRecordedKills.erase( recorded );
+   std::set<const ContainerBase*>::iterator recorded = g_recentlyRecordedKills.find(container);
+   if (recorded != g_recentlyRecordedKills.end()) {
+      g_recentlyRecordedKills.erase(recorded);
       return;
    }
 
    int owner = container->getOwner();
-   if ( owner >= 0 && owner < static_cast<int>( g_stats.size() ) )
+   if (owner >= 0 && owner < static_cast<int>(g_stats.size()))
       g_stats[owner].unitsLost++;
 }
 
-}
+}  // namespace
 
-void headlessStatsBegin( GameMap* map, int playerCount, const std::vector<int>& participants, const std::string& logFilePath )
-{
-   if ( g_destroyConnection.connected() )
+void headlessStatsBegin(GameMap* map, int playerCount, const std::vector<int>& participants,
+                        const std::string& logFilePath) {
+   if (g_destroyConnection.connected())
       g_destroyConnection.disconnect();
 
    g_enabled = true;
    g_map = map;
-   g_stats.assign( playerCount, HeadlessPlayerStats() );
+   g_stats.assign(playerCount, HeadlessPlayerStats());
    g_participants = participants;
    g_logFile = logFilePath;
 
-   g_damageMatrix.assign( playerCount, std::vector<long long>( playerCount, 0 ) );
-   g_killMatrix.assign( playerCount, std::vector<long long>( playerCount, 0 ) );
+   g_damageMatrix.assign(playerCount, std::vector<long long>(playerCount, 0));
+   g_killMatrix.assign(playerCount, std::vector<long long>(playerCount, 0));
    g_contextStack.clear();
    g_recentlyRecordedKills.clear();
 
-   g_destroyConnection = ContainerBase::anyContainerDestroyed.connect( sigc::ptr_fun( &onContainerDestroyed ));
+   g_destroyConnection =
+      ContainerBase::anyContainerDestroyed.connect(sigc::ptr_fun(&onContainerDestroyed));
 }
 
-void headlessStatsEnd()
-{
-   if ( g_destroyConnection.connected() )
+void headlessStatsEnd() {
+   if (g_destroyConnection.connected())
       g_destroyConnection.disconnect();
 
    g_enabled = false;
@@ -78,124 +77,116 @@ void headlessStatsEnd()
    g_participants.clear();
    g_logFile.clear();
    g_damageMatrix.clear();
-    g_killMatrix.clear();
+   g_killMatrix.clear();
    g_contextStack.clear();
 }
 
-void headlessStatsRecordDamage( int attackerPlayerIndex, int defenderPlayerIndex, int amount )
-{
-   if ( !g_enabled || amount <= 0 )
+void headlessStatsRecordDamage(int attackerPlayerIndex, int defenderPlayerIndex, int amount) {
+   if (!g_enabled || amount <= 0)
       return;
 
    int effectiveAttacker = attackerPlayerIndex;
    int effectiveDefender = defenderPlayerIndex;
    bool reactionFire = false;
 
-   if ( !g_contextStack.empty() ) {
+   if (!g_contextStack.empty()) {
       const HeadlessStatsContext& ctx = g_contextStack.back();
-      if ( ctx.attacker >= 0 )
+      if (ctx.attacker >= 0)
          effectiveAttacker = ctx.attacker;
-      if ( ctx.defender >= 0 )
+      if (ctx.defender >= 0)
          effectiveDefender = ctx.defender;
       reactionFire = ctx.reactionFire;
    }
 
-   if ( effectiveDefender >= 0 && effectiveDefender < static_cast<int>( g_stats.size() ) ) {
+   if (effectiveDefender >= 0 && effectiveDefender < static_cast<int>(g_stats.size())) {
       g_stats[effectiveDefender].damageTaken += amount;
-      if ( reactionFire )
+      if (reactionFire)
          g_stats[effectiveDefender].reactionFireDamageTaken += amount;
    }
 
-   if ( effectiveAttacker >= 0 && effectiveAttacker < static_cast<int>( g_stats.size() ) ) {
+   if (effectiveAttacker >= 0 && effectiveAttacker < static_cast<int>(g_stats.size())) {
       g_stats[effectiveAttacker].damageDone += amount;
-      if ( reactionFire )
+      if (reactionFire)
          g_stats[effectiveAttacker].reactionFireDamageDone += amount;
 
-      if ( effectiveDefender >= 0 && effectiveDefender < static_cast<int>( g_stats.size() ) )
+      if (effectiveDefender >= 0 && effectiveDefender < static_cast<int>(g_stats.size()))
          g_damageMatrix[effectiveAttacker][effectiveDefender] += amount;
    }
 }
 
-void headlessStatsRecordKill( int attackerPlayerIndex, int defenderPlayerIndex, ContainerBase* destroyedContainer )
-{
-   if ( !g_enabled )
+void headlessStatsRecordKill(int attackerPlayerIndex, int defenderPlayerIndex,
+                             ContainerBase* destroyedContainer) {
+   if (!g_enabled)
       return;
 
    int effectiveAttacker = attackerPlayerIndex;
    int effectiveDefender = defenderPlayerIndex;
    bool reactionFire = false;
 
-   if ( !g_contextStack.empty() ) {
+   if (!g_contextStack.empty()) {
       const HeadlessStatsContext& ctx = g_contextStack.back();
-      if ( ctx.attacker >= 0 )
+      if (ctx.attacker >= 0)
          effectiveAttacker = ctx.attacker;
-      if ( ctx.defender >= 0 )
+      if (ctx.defender >= 0)
          effectiveDefender = ctx.defender;
       reactionFire = ctx.reactionFire;
    }
 
-    if ( effectiveAttacker >= 0 && effectiveAttacker < static_cast<int>( g_stats.size() ) ) {
+   if (effectiveAttacker >= 0 && effectiveAttacker < static_cast<int>(g_stats.size())) {
       g_stats[effectiveAttacker].unitsDestroyed++;
-      if ( reactionFire )
+      if (reactionFire)
          g_stats[effectiveAttacker].reactionFireKills++;
    }
 
-   if ( effectiveDefender >= 0 && effectiveDefender < static_cast<int>( g_stats.size() ) ) {
+   if (effectiveDefender >= 0 && effectiveDefender < static_cast<int>(g_stats.size())) {
       g_stats[effectiveDefender].unitsLost++;
-      if ( reactionFire )
+      if (reactionFire)
          g_stats[effectiveDefender].reactionFireLosses++;
    }
 
-   if ( effectiveAttacker >= 0 && effectiveAttacker < static_cast<int>( g_stats.size() ) &&
-        effectiveDefender >= 0 && effectiveDefender < static_cast<int>( g_stats.size() ) )
+   if (effectiveAttacker >= 0 && effectiveAttacker < static_cast<int>(g_stats.size()) &&
+       effectiveDefender >= 0 && effectiveDefender < static_cast<int>(g_stats.size()))
       g_killMatrix[effectiveAttacker][effectiveDefender]++;
 
-   if ( destroyedContainer )
-      g_recentlyRecordedKills.insert( destroyedContainer );
+   if (destroyedContainer)
+      g_recentlyRecordedKills.insert(destroyedContainer);
 }
 
-void headlessStatsPushContext( int attackerPlayerIndex, int defenderPlayerIndex, bool reactionFire )
-{
-   if ( !g_enabled )
+void headlessStatsPushContext(int attackerPlayerIndex, int defenderPlayerIndex, bool reactionFire) {
+   if (!g_enabled)
       return;
 
-   g_contextStack.push_back( HeadlessStatsContext{ attackerPlayerIndex, defenderPlayerIndex, reactionFire } );
+   g_contextStack.push_back(
+      HeadlessStatsContext{attackerPlayerIndex, defenderPlayerIndex, reactionFire});
 }
 
-void headlessStatsPopContext()
-{
-   if ( !g_enabled )
+void headlessStatsPopContext() {
+   if (!g_enabled)
       return;
 
-   if ( !g_contextStack.empty() )
+   if (!g_contextStack.empty())
       g_contextStack.pop_back();
 }
-const std::vector<HeadlessPlayerStats>& headlessStatsData()
-{
+const std::vector<HeadlessPlayerStats>& headlessStatsData() {
    return g_stats;
 }
 
-const std::vector<int>& headlessStatsParticipants()
-{
+const std::vector<int>& headlessStatsParticipants() {
    return g_participants;
 }
 
-const std::string& headlessStatsLogFile()
-{
+const std::string& headlessStatsLogFile() {
    return g_logFile;
 }
 
-const std::vector<std::vector<long long>>& headlessStatsDamageMatrix()
-{
+const std::vector<std::vector<long long>>& headlessStatsDamageMatrix() {
    return g_damageMatrix;
 }
 
-const std::vector<std::vector<long long>>& headlessStatsKillMatrix()
-{
+const std::vector<std::vector<long long>>& headlessStatsKillMatrix() {
    return g_killMatrix;
 }
 
-bool headlessStatsEnabled()
-{
+bool headlessStatsEnabled() {
    return g_enabled;
 }

@@ -20,108 +20,98 @@
  * To avoid double deallocation, we must intercept the event and release the auto_ptr
  */
 class MapHolder : public sigc::trackable {
-		std::unique_ptr<GameMap> game;
-	public:
-		MapHolder( GameMap* gamemap ) : game( gamemap ){
-			   GameMap::sigMapDeletion.connect( sigc::mem_fun( *this, &MapHolder::reset ));
-		}
+   std::unique_ptr<GameMap> game;
 
-		GameMap* get() {
-			return game.get();
-		}
-
-	     GameMap* operator->() const
-	      {
-	    	 return game.operator->();
-	      }
-
-	private:
-		void reset( GameMap& gamemap ) {
-			if ( &gamemap == game.get() )
-				game.release();
-		}
-};
-
-void testAutoRepair()
-{
-   MapHolder game ( startMap("unittest-repair.map"));
-   
-   Vehicle* veh = game->getField(3,6)->vehicle;
-   assertOrThrow( veh != NULL );
-
-   assertOrThrow ( veh->damage == 40 );
-
-   next_turn( game.get(), NextTurnStrategy_Abort(), NULL, -1 );
-   
-   assertOrThrow ( veh->damage == 35 );
-
-   for ( int i = 0; i < 10; ++i) {
-	   // std::cout << "experience in turn " << i << " is " << veh->getExperience_offensive_raw() << "\n";
-	   next_turn( game.get(), NextTurnStrategy_Abort(), NULL, -1 );
+  public:
+   MapHolder(GameMap* gamemap) : game(gamemap) {
+      GameMap::sigMapDeletion.connect(sigc::mem_fun(*this, &MapHolder::reset));
    }
 
-   assertOrThrow ( veh->damage == 10 );
-   
+   GameMap* get() { return game.get(); }
+
+   GameMap* operator->() const { return game.operator->(); }
+
+  private:
+   void reset(GameMap& gamemap) {
+      if (&gamemap == game.get())
+         game.release();
+   }
+};
+
+void testAutoRepair() {
+   MapHolder game(startMap("unittest-repair.map"));
+
+   Vehicle* veh = game->getField(3, 6)->vehicle;
+   assertOrThrow(veh != NULL);
+
+   assertOrThrow(veh->damage == 40);
+
+   next_turn(game.get(), NextTurnStrategy_Abort(), NULL, -1);
+
+   assertOrThrow(veh->damage == 35);
+
+   for (int i = 0; i < 10; ++i) {
+      // std::cout << "experience in turn " << i << " is " << veh->getExperience_offensive_raw() <<
+      // "\n";
+      next_turn(game.get(), NextTurnStrategy_Abort(), NULL, -1);
+   }
+
+   assertOrThrow(veh->damage == 10);
 }
 
+void testManualRepair() {
+   MapHolder game(startMap("unittest-repair.map"));
 
-void testManualRepair()
-{
-   MapHolder game ( startMap("unittest-repair.map"));
-
-   Vehicle* carrier = game->getField(1,9)->vehicle;
-   assertOrThrow( carrier != NULL );
+   Vehicle* carrier = game->getField(1, 9)->vehicle;
+   assertOrThrow(carrier != NULL);
 
    Vehicle* aircraft = carrier->getCargo(0);
-   assertOrThrow( aircraft != NULL );
-   assertOrThrow ( aircraft->getExperience_offensive() == 10 );
-   assertOrThrow ( aircraft->getExperience_defensive() == 10 );
-   assertOrThrow ( aircraft->damage == 50 );
+   assertOrThrow(aircraft != NULL);
+   assertOrThrow(aircraft->getExperience_offensive() == 10);
+   assertOrThrow(aircraft->getExperience_defensive() == 10);
+   assertOrThrow(aircraft->damage == 50);
 
-   assertOrThrow( RepairUnitCommand::avail(carrier) );
-   std::unique_ptr<RepairUnitCommand> ruc ( new RepairUnitCommand( carrier ));
+   assertOrThrow(RepairUnitCommand::avail(carrier));
+   std::unique_ptr<RepairUnitCommand> ruc(new RepairUnitCommand(carrier));
 
-   assertOrThrow( ruc->getInternalTargets().size() == 1 );
-   assertOrThrow( ruc->getInternalTargets()[0] == aircraft );
+   assertOrThrow(ruc->getInternalTargets().size() == 1);
+   assertOrThrow(ruc->getInternalTargets()[0] == aircraft);
 
    ruc->setTarget(aircraft);
 
-   ActionResult res = ruc->execute( createTestingContext( game.get() ));
-   if ( res.successful() )
+   ActionResult res = ruc->execute(createTestingContext(game.get()));
+   if (res.successful())
       ruc.release();
    else
       throw ActionResult(res);
 
-   assertOrThrow ( aircraft->damage == 0 );
-   assertOrThrow ( aircraft->getExperience_offensive() == 9 );
-   assertOrThrow ( aircraft->getExperience_defensive() == 9 );
-
+   assertOrThrow(aircraft->damage == 0);
+   assertOrThrow(aircraft->getExperience_offensive() == 9);
+   assertOrThrow(aircraft->getExperience_defensive() == 9);
 }
 
 void testSelfDamage() {
-    MapHolder game ( startMap("unittest-selfdamage.map"));
-    Vehicle* u1 = game->getField(4,7)->vehicle;
-    Vehicle* u2 = game->getField(5,6)->vehicle;
+   MapHolder game(startMap("unittest-selfdamage.map"));
+   Vehicle* u1 = game->getField(4, 7)->vehicle;
+   Vehicle* u2 = game->getField(5, 6)->vehicle;
 
-    assertOrThrow( u1->damage == 0 );
-    assertOrThrow ( u2->damage == 79 );
+   assertOrThrow(u1->damage == 0);
+   assertOrThrow(u2->damage == 79);
 
-    next_turn( game.get(), NextTurnStrategy_Abort(), NULL, -1 );
+   next_turn(game.get(), NextTurnStrategy_Abort(), NULL, -1);
 
-    assertOrThrow( u1->damage == 10 );
-    assertOrThrow ( u2->damage == 89 );
+   assertOrThrow(u1->damage == 10);
+   assertOrThrow(u2->damage == 89);
 
-    next_turn( game.get(), NextTurnStrategy_Abort(), NULL, -1 );
-    next_turn( game.get(), NextTurnStrategy_Abort(), NULL, -1 );
+   next_turn(game.get(), NextTurnStrategy_Abort(), NULL, -1);
+   next_turn(game.get(), NextTurnStrategy_Abort(), NULL, -1);
 
-    u2 = game->getField(5,6)->vehicle;
-    assertOrThrow( u2 == NULL );
-
-
+   u2 = game->getField(5, 6)->vehicle;
+   assertOrThrow(u2 == NULL);
 }
 
 void testUnitRepair() {
-	testAutoRepair();
-	testManualRepair();
-	testSelfDamage();
+   testAutoRepair();
+   testManualRepair();
+   testSelfDamage();
 }

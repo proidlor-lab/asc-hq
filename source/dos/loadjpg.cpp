@@ -13,18 +13,16 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
+#include <conio.h>
+#include <string.h>
 
- #include <conio.h>
- #include <string.h>
-
- #include "../basegfx.h"
- #include "vesa.h"
-
+#include "../basegfx.h"
+#include "vesa.h"
 
 /*
  * example.c
@@ -34,7 +32,7 @@
  * conjunction with the documentation file libjpeg.doc.
  *
  * This code will not do anything useful as-is, but it may be helpful as a
- * skeleton for constructing routines that call the JPEG library.  
+ * skeleton for constructing routines that call the JPEG library.
  *
  * We present these routines in the same coding style used in the JPEG code
  * (ANSI function definitions, etc); but you are of course free to code your
@@ -60,15 +58,12 @@
 
 #include <setjmp.h>
 
-
-
 /******************** JPEG COMPRESSION SAMPLE INTERFACE *******************/
 
 /* This half of the example shows how to feed data into the JPEG compressor.
  * We present a minimal version that does not worry about refinements such
  * as error recovery (the JPEG code will just exit() if it gets an error).
  */
-
 
 /*
  * IMAGE DATA FORMATS:
@@ -86,11 +81,9 @@
  * RGB color and is described by:
  */
 
-extern JSAMPLE * image_buffer;	/* Points to large array of R,G,B-order data */
-extern int image_height;	/* Number of rows in image */
-extern int image_width;		/* Number of columns in image */
-
-
+extern JSAMPLE* image_buffer; /* Points to large array of R,G,B-order data */
+extern int image_height;      /* Number of rows in image */
+extern int image_width;       /* Number of columns in image */
 
 /******************** JPEG DECOMPRESSION SAMPLE INTERFACE *******************/
 
@@ -107,7 +100,6 @@ extern int image_width;		/* Number of columns in image */
  * because we don't need to remember to deallocate the buffer separately: it
  * will go away automatically when the JPEG object is cleaned up.
  */
-
 
 /*
  * ERROR HANDLING:
@@ -133,127 +125,118 @@ extern int image_width;		/* Number of columns in image */
  */
 
 struct my_error_mgr {
-  struct jpeg_error_mgr pub;	/* "public" fields */
+   struct jpeg_error_mgr pub; /* "public" fields */
 
-  jmp_buf setjmp_buffer;	/* for return to caller */
+   jmp_buf setjmp_buffer; /* for return to caller */
 };
 
-typedef struct my_error_mgr * my_error_ptr;
+typedef struct my_error_mgr* my_error_ptr;
 
 /*
  * Here's the routine that will replace the standard error_exit method:
  */
 
 METHODDEF(void)
-my_error_exit (j_common_ptr cinfo)
-{
-  /* cinfo->err really points to a my_error_mgr struct, so coerce pointer */
-  my_error_ptr myerr = (my_error_ptr) cinfo->err;
+my_error_exit(j_common_ptr cinfo) {
+   /* cinfo->err really points to a my_error_mgr struct, so coerce pointer */
+   my_error_ptr myerr = (my_error_ptr) cinfo->err;
 
-  /* Always display the message. */
-  /* We could postpone this until after returning, if we chose. */
-  (*cinfo->err->output_message) (cinfo);
+   /* Always display the message. */
+   /* We could postpone this until after returning, if we chose. */
+   (*cinfo->err->output_message)(cinfo);
 
-  /* Return control to the setjmp point */
-  longjmp(myerr->setjmp_buffer, 1);
+   /* Return control to the setjmp point */
+   longjmp(myerr->setjmp_buffer, 1);
 }
-
 
 /*
  * Sample routine for JPEG decompression.  We assume that the source file name
  * is passed in.  We want to return 1 on success, 0 on error.
  */
 
-
 /*
 extern "C" void putpixel(int x1, int y1, int color);
 #pragma aux putpixel parm [ ebx ] [ eax ] [ edx ] modify [ ecx ]
 */
 
-int linenum ;
-
+int linenum;
 
 struct {
-     int actpos;
-     int linelen;
-     int page;
+   int actpos;
+   int linelen;
+   int page;
 } bankparams;
 
-
-void put_scanline_someplace ( char* ptr, int width )
-{
+void put_scanline_someplace(char* ptr, int width) {
    width /= 3;
 
-   if ( agmp->windowstatus == 100 ) {
-         int rfp = agmp->redfieldposition;
-         int gfp = agmp->greenfieldposition;
-         int bfp = agmp->bluefieldposition; 
+   if (agmp->windowstatus == 100) {
+      int rfp = agmp->redfieldposition;
+      int gfp = agmp->greenfieldposition;
+      int bfp = agmp->bluefieldposition;
 
-         char* dst = (char*) ( agmp->linearaddress + linenum * agmp->bytesperscanline );
-         for ( int m = 0; m < width; m++ ) {
-            int pp = 0;
-            pp += (*ptr++) << rfp;
-            pp += (*ptr++) << gfp;
-            pp += (*ptr++) << bfp;
+      char* dst = (char*) (agmp->linearaddress + linenum * agmp->bytesperscanline);
+      for (int m = 0; m < width; m++) {
+         int pp = 0;
+         pp += (*ptr++) << rfp;
+         pp += (*ptr++) << gfp;
+         pp += (*ptr++) << bfp;
 
-            int* pi = (int*) dst;
-            *pi = pp;
-            
-            dst += agmp->byteperpix;
-         }
+         int* pi = (int*) dst;
+         *pi = pp;
+
+         dst += agmp->byteperpix;
+      }
 
    } else {
-
       bankparams.actpos = linenum * bankparams.linelen;
       int p = bankparams.actpos >> 16;
-      if ( bankparams.page != p ) {
-         setvirtualpagepos( p );
+      if (bankparams.page != p) {
+         setvirtualpagepos(p);
          bankparams.page = p;
-      } 
+      }
       bankparams.actpos -= p << 16;
 
-      if ( bankparams.actpos + bankparams.linelen >= 0x10000 ) {
-
+      if (bankparams.actpos + bankparams.linelen >= 0x10000) {
          int hop[4];
          hop[0] = agmp->redfieldposition / 8;
-         hop[1] = agmp->greenfieldposition / 8 - agmp-> redfieldposition / 8;
-         hop[2] = agmp->bluefieldposition / 8 - agmp-> greenfieldposition / 8;
-         hop[3] = agmp->byteperpix - agmp-> bluefieldposition / 8 ;
+         hop[1] = agmp->greenfieldposition / 8 - agmp->redfieldposition / 8;
+         hop[2] = agmp->bluefieldposition / 8 - agmp->greenfieldposition / 8;
+         hop[3] = agmp->byteperpix - agmp->bluefieldposition / 8;
 
-         for ( int m = 0; m < width; m++ ) {
-            for ( int j = 0; j < 4; j++ ) {
+         for (int m = 0; m < width; m++) {
+            for (int j = 0; j < 4; j++) {
                bankparams.actpos += hop[j];
-               if ( bankparams.actpos < 0 ) {
-                  setvirtualpagepos( --bankparams.page );
+               if (bankparams.actpos < 0) {
+                  setvirtualpagepos(--bankparams.page);
                   bankparams.actpos += 0x10000;
-               } else
-                  if ( bankparams.actpos > 0x10000 ) {
-                     setvirtualpagepos( ++bankparams.page );
-                     bankparams.actpos -= 0x10000;
-                  } 
+               } else if (bankparams.actpos > 0x10000) {
+                  setvirtualpagepos(++bankparams.page);
+                  bankparams.actpos -= 0x10000;
+               }
 
-               if ( j < 3 ) 
-                 *((char*)(agmp->linearaddress + bankparams.actpos)) = *ptr++;
+               if (j < 3)
+                  *((char*) (agmp->linearaddress + bankparams.actpos)) = *ptr++;
             }
          }
       } else {
          int rfp = agmp->redfieldposition;
          int gfp = agmp->greenfieldposition;
-         int bfp = agmp->bluefieldposition; 
+         int bfp = agmp->bluefieldposition;
 
-/*
-         char* dst = (char*) ( agmp->linearaddress + bankparams.actpos );
-         for ( int m = 0; m < width; m++ ) {
-            for ( int j = 0; j < 3; j++ ) {
-               dst += hop[j];
-               *dst = *ptr++;
-            }
-            dst += hop[3];
-         }
-         */
+         /*
+                  char* dst = (char*) ( agmp->linearaddress + bankparams.actpos );
+                  for ( int m = 0; m < width; m++ ) {
+                     for ( int j = 0; j < 3; j++ ) {
+                        dst += hop[j];
+                        *dst = *ptr++;
+                     }
+                     dst += hop[3];
+                  }
+                  */
 
-         char* dst = (char*) ( agmp->linearaddress + bankparams.actpos );
-         for ( int m = 0; m < width; m++ ) {
+         char* dst = (char*) (agmp->linearaddress + bankparams.actpos);
+         for (int m = 0; m < width; m++) {
             int pp = 0;
             pp += (*ptr++) << rfp;
             pp += (*ptr++) << gfp;
@@ -261,135 +244,129 @@ void put_scanline_someplace ( char* ptr, int width )
 
             int* pi = (int*) dst;
             *pi = pp;
-            
+
             dst += agmp->byteperpix;
          }
-
       }
-
    }
 
    linenum++;
 }
 
-
 GLOBAL(int)
-read_JPEG_file ( pnstream strm )
-{
-  bankparams.linelen = agmp->bytesperscanline;
-  bankparams.actpos = 0;
-  bankparams.page = 0;
-  linenum = 0;
-  setvirtualpagepos( 0 );
+read_JPEG_file(pnstream strm) {
+   bankparams.linelen = agmp->bytesperscanline;
+   bankparams.actpos = 0;
+   bankparams.page = 0;
+   linenum = 0;
+   setvirtualpagepos(0);
 
-  /* This struct contains the JPEG decompression parameters and pointers to
-   * working space (which is allocated as needed by the JPEG library).
-   */
-  struct jpeg_decompress_struct cinfo;
-  /* We use our private extension JPEG error handler.
-   * Note that this struct must live as long as the main JPEG parameter
-   * struct, to avoid dangling-pointer problems.
-   */
-  struct my_error_mgr jerr;
-  /* More stuff */
-  JSAMPARRAY buffer;		/* Output row buffer */
-  int row_stride;		/* physical row width in output buffer */
+   /* This struct contains the JPEG decompression parameters and pointers to
+    * working space (which is allocated as needed by the JPEG library).
+    */
+   struct jpeg_decompress_struct cinfo;
+   /* We use our private extension JPEG error handler.
+    * Note that this struct must live as long as the main JPEG parameter
+    * struct, to avoid dangling-pointer problems.
+    */
+   struct my_error_mgr jerr;
+   /* More stuff */
+   JSAMPARRAY buffer; /* Output row buffer */
+   int row_stride;    /* physical row width in output buffer */
 
-  /* In this example we want to open the input file before doing anything else,
-   * so that the setjmp() error recovery below can assume the file is open.
-   * VERY IMPORTANT: use "b" option to fopen() if you are on a machine that
-   * requires it in order to read binary files.
-   */
+   /* In this example we want to open the input file before doing anything else,
+    * so that the setjmp() error recovery below can assume the file is open.
+    * VERY IMPORTANT: use "b" option to fopen() if you are on a machine that
+    * requires it in order to read binary files.
+    */
 
-  /* Step 1: allocate and initialize JPEG decompression object */
+   /* Step 1: allocate and initialize JPEG decompression object */
 
-  /* We set up the normal JPEG error routines, then override error_exit. */
-  cinfo.err = jpeg_std_error(&jerr.pub);
-  jerr.pub.error_exit = my_error_exit;
-  /* Establish the setjmp return context for my_error_exit to use. */
-  /* Now we can initialize the JPEG decompression object. */
-  jpeg_create_decompress(&cinfo);
+   /* We set up the normal JPEG error routines, then override error_exit. */
+   cinfo.err = jpeg_std_error(&jerr.pub);
+   jerr.pub.error_exit = my_error_exit;
+   /* Establish the setjmp return context for my_error_exit to use. */
+   /* Now we can initialize the JPEG decompression object. */
+   jpeg_create_decompress(&cinfo);
 
-  /* Step 2: specify data source (eg, a file) */
+   /* Step 2: specify data source (eg, a file) */
 
-  jpeg_stdio_src(&cinfo, strm );
+   jpeg_stdio_src(&cinfo, strm);
 
-  /* Step 3: read file parameters with jpeg_read_header() */
+   /* Step 3: read file parameters with jpeg_read_header() */
 
-  (void) jpeg_read_header(&cinfo, TRUE);
-  /* We can ignore the return value from jpeg_read_header since
-   *   (a) suspension is not possible with the stdio data source, and
-   *   (b) we passed TRUE to reject a tables-only JPEG file as an error.
-   * See libjpeg.doc for more info.
-   */
+   (void) jpeg_read_header(&cinfo, TRUE);
+   /* We can ignore the return value from jpeg_read_header since
+    *   (a) suspension is not possible with the stdio data source, and
+    *   (b) we passed TRUE to reject a tables-only JPEG file as an error.
+    * See libjpeg.doc for more info.
+    */
 
-  /* Step 4: set parameters for decompression */
+   /* Step 4: set parameters for decompression */
 
-  /* In this example, we don't need to change any of the defaults set by
-   * jpeg_read_header(), so we do nothing here.
-   */
+   /* In this example, we don't need to change any of the defaults set by
+    * jpeg_read_header(), so we do nothing here.
+    */
 
-  /* Step 5: Start decompressor */
+   /* Step 5: Start decompressor */
 
-  (void) jpeg_start_decompress(&cinfo);
-  /* We can ignore the return value since suspension is not possible
-   * with the stdio data source.
-   */
+   (void) jpeg_start_decompress(&cinfo);
+   /* We can ignore the return value since suspension is not possible
+    * with the stdio data source.
+    */
 
-  /* We may need to do some setup of our own at this point before reading
-   * the data.  After jpeg_start_decompress() we have the correct scaled
-   * output image dimensions available, as well as the output colormap
-   * if we asked for color quantization.
-   * In this example, we need to make an output work buffer of the right size.
-   */ 
-  /* JSAMPLEs per row in output buffer */
-  row_stride = cinfo.output_width * cinfo.output_components;
-  /* Make a one-row-high sample array that will go away when done with image */
-  buffer = (*cinfo.mem->alloc_sarray)
-		((j_common_ptr) &cinfo, JPOOL_IMAGE, row_stride, 1);
+   /* We may need to do some setup of our own at this point before reading
+    * the data.  After jpeg_start_decompress() we have the correct scaled
+    * output image dimensions available, as well as the output colormap
+    * if we asked for color quantization.
+    * In this example, we need to make an output work buffer of the right size.
+    */
+   /* JSAMPLEs per row in output buffer */
+   row_stride = cinfo.output_width * cinfo.output_components;
+   /* Make a one-row-high sample array that will go away when done with image */
+   buffer = (*cinfo.mem->alloc_sarray)((j_common_ptr) &cinfo, JPOOL_IMAGE, row_stride, 1);
 
-  /* Step 6: while (scan lines remain to be read) */
-  /*           jpeg_read_scanlines(...); */
+   /* Step 6: while (scan lines remain to be read) */
+   /*           jpeg_read_scanlines(...); */
 
-  /* Here we use the library's state variable cinfo.output_scanline as the
-   * loop counter, so that we don't have to keep track ourselves.
-   */
-  while (cinfo.output_scanline < cinfo.output_height) {
-    /* jpeg_read_scanlines expects an array of pointers to scanlines.
-     * Here the array is only one element long, but you could ask for
-     * more than one scanline at a time if that's more convenient.
-     */
-    (void) jpeg_read_scanlines(&cinfo, buffer, 1);
-    /* Assume put_scanline_someplace wants a pointer and sample count. */
-    put_scanline_someplace((char*) buffer[0], row_stride);
-  }
+   /* Here we use the library's state variable cinfo.output_scanline as the
+    * loop counter, so that we don't have to keep track ourselves.
+    */
+   while (cinfo.output_scanline < cinfo.output_height) {
+      /* jpeg_read_scanlines expects an array of pointers to scanlines.
+       * Here the array is only one element long, but you could ask for
+       * more than one scanline at a time if that's more convenient.
+       */
+      (void) jpeg_read_scanlines(&cinfo, buffer, 1);
+      /* Assume put_scanline_someplace wants a pointer and sample count. */
+      put_scanline_someplace((char*) buffer[0], row_stride);
+   }
 
-  /* Step 7: Finish decompression */
+   /* Step 7: Finish decompression */
 
-  (void) jpeg_finish_decompress(&cinfo);
-  /* We can ignore the return value since suspension is not possible
-   * with the stdio data source.
-   */
+   (void) jpeg_finish_decompress(&cinfo);
+   /* We can ignore the return value since suspension is not possible
+    * with the stdio data source.
+    */
 
-  /* Step 8: Release JPEG decompression object */
+   /* Step 8: Release JPEG decompression object */
 
-  /* This is an important step since it will release a good deal of memory. */
-  jpeg_destroy_decompress(&cinfo);
+   /* This is an important step since it will release a good deal of memory. */
+   jpeg_destroy_decompress(&cinfo);
 
-  /* After finish_decompress, we can close the input file.
-   * Here we postpone it until after no more JPEG errors are possible,
-   * so as to simplify the setjmp error logic above.  (actively, I don't
-   * think that jpeg_destroy can do an error exit, but why assume anything...)
-   */
+   /* After finish_decompress, we can close the input file.
+    * Here we postpone it until after no more JPEG errors are possible,
+    * so as to simplify the setjmp error logic above.  (actively, I don't
+    * think that jpeg_destroy can do an error exit, but why assume anything...)
+    */
 
-  /* At this point you may want to check to see whether any corrupt-data
-   * warnings occurred (test whether jerr.pub.num_warnings is nonzero).
-   */
+   /* At this point you may want to check to see whether any corrupt-data
+    * warnings occurred (test whether jerr.pub.num_warnings is nonzero).
+    */
 
-  /* And we're done! */
-  return 1;
+   /* And we're done! */
+   return 1;
 }
-
 
 /*
  * SOME FINE POINTS:
@@ -428,39 +405,29 @@ int main( void )
 }
 */
 
-
-
-
-
-
-
-
-
-int getbestpictname ( char* filename , char* c, char* e )
-{
+int getbestpictname(char* filename, char* c, char* e) {
    char* d = c;
-   strcpy ( c, filename );
+   strcpy(c, filename);
 
-   while ( *d != 0  &&  *d != '.' ) 
+   while (*d != 0 && *d != '.')
       d++;
 
-//   if ( *d == '.' ) {
-      *d = 0;
-      strcpy ( e, c );
-      strcat ( e, ".jpg" );
-      strcat ( c, ".pcx" );
-//   }
+   //   if ( *d == '.' ) {
+   *d = 0;
+   strcpy(e, c);
+   strcat(e, ".jpg");
+   strcat(c, ".pcx");
+   //   }
 
    int n = 0;
 
-   tfindfile ff ( c );
-   if ( ff.getnextname()) 
+   tfindfile ff(c);
+   if (ff.getnextname())
       n += 1;
 
-   tfindfile fff ( e );
-   if ( fff.getnextname()) 
+   tfindfile fff(e);
+   if (fff.getnextname())
       n += 2;
 
-   return n;   
+   return n;
 }
-

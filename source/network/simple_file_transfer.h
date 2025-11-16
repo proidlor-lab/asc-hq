@@ -13,37 +13,36 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
-
-
 
 #ifndef network_h
 #define network_h
 
 #include "../networkinterface.h"
 
-
 class FileTransfer : public GameTransferMechanism {
-      ASCString filename;
-   protected:   
-      void readChildData ( tnstream& stream );
-      void writeChildData ( tnstream& stream ) const;
-      bool enterfilename();
-      ASCString constructFileName( const GameMap* actmap, int lastPlayer, int lastturn ) const;
-   public:
-      void setup();
-      void setup( const ASCString& filename );
-      
-      void send( const GameMap* map, int lastPlayer, int lastturn  );
-      GameMap* receive();
-      GameMap* loadPBEMFile( const ASCString& filename );
-      ASCString getMechanismID() const { return mechanismID(); };
-      static ASCString mechanismID() { return "FileTransfer"; };
+   ASCString filename;
+
+  protected:
+   void readChildData(tnstream& stream);
+   void writeChildData(tnstream& stream) const;
+   bool enterfilename();
+   ASCString constructFileName(const GameMap* actmap, int lastPlayer, int lastturn) const;
+
+  public:
+   void setup();
+   void setup(const ASCString& filename);
+
+   void send(const GameMap* map, int lastPlayer, int lastturn);
+   GameMap* receive();
+   GameMap* loadPBEMFile(const ASCString& filename);
+   ASCString getMechanismID() const { return mechanismID(); };
+   static ASCString mechanismID() { return "FileTransfer"; };
 };
 
-extern void networksupervisor ( void );
+extern void networksupervisor(void);
 
 #endif

@@ -1,6 +1,5 @@
 
 
-
 #include <cstdio>
 #include <string.h>
 #include <cstdlib>
@@ -27,41 +26,36 @@
 #include "../basestrm.h"
 #include "../stdio-errorhandler.h"
 
-
 #ifdef WIN32
 #undef main
 #endif
 
-
-typedef map<int,Surface> IMGS;
+typedef map<int, Surface> IMGS;
 IMGS images;
 
-bool decodeFileName ( const ASCString& f, int& num )
-{
+bool decodeFileName(const ASCString& f, int& num) {
    ASCString s = f;
-   for ( int i = 0; i < s.length(); i++ ) {
-      if ( s[i] == '.' ) {
-         s.erase ( i );
+   for (int i = 0; i < s.length(); i++) {
+      if (s[i] == '.') {
+         s.erase(i);
          break;
       }
-      if ( s[i] < '0' || s[i] > '9' )
+      if (s[i] < '0' || s[i] > '9')
          return false;
    }
-   num = atoi ( s.c_str() );
+   num = atoi(s.c_str());
    return true;
 }
 
-
-vector<ASCString> splitString( const ASCString& s, const ASCString& regex )
-{
+vector<ASCString> splitString(const ASCString& s, const ASCString& regex) {
    vector<ASCString> result;
 
-   static boost::regex sepearator ( regex );
-   boost::sregex_token_iterator i( s.begin(), s.end(), sepearator, -1);
+   static boost::regex sepearator(regex);
+   boost::sregex_token_iterator i(s.begin(), s.end(), sepearator, -1);
    boost::sregex_token_iterator j;
-   while ( i != j ) {
+   while (i != j) {
       ASCString s2 = *i++;
-      result.push_back( s2 );
+      result.push_back(s2);
    }
 
    return result;
@@ -69,16 +63,13 @@ vector<ASCString> splitString( const ASCString& s, const ASCString& regex )
 
 int highestImage = 0;
 
-
-SPoint num2pos(int num, bool doubleSize = false)
-{
+SPoint num2pos(int num, bool doubleSize = false) {
    int colnum = 10;
    int x0 = 30;
-   int xd = ( 400 - 2 * x0 ) / colnum ;
-
+   int xd = (400 - 2 * x0) / colnum;
 
    int y0 = 10;
-   int yd = fieldsizey/2 + 5;
+   int yd = fieldsizey / 2 + 5;
 
    int x = num % colnum;
    int y = num / colnum;
@@ -86,216 +77,190 @@ SPoint num2pos(int num, bool doubleSize = false)
    int xp = x0 + x * xd;
    int yp = y0 + y * yd;
 
-   if ( doubleSize )
-      return SPoint(xp*2,yp*2);
+   if (doubleSize)
+      return SPoint(xp * 2, yp * 2);
    else
-      return SPoint(xp,yp);
-
+      return SPoint(xp, yp);
 }
 
-void getpic( Surface& src, int num, int offset, bool smallSize = false )
-{
-
-   highestImage = max ( num, highestImage );
+void getpic(Surface& src, int num, int offset, bool smallSize = false) {
+   highestImage = max(num, highestImage);
 
    int relativePos = num - offset;
 
-
    SPoint pos = num2pos(relativePos);
 
+   SDLmm::SRect rect(pos, fieldsizex, fieldsizey);
 
+   Surface dest = Surface::createSurface(fieldsizex, fieldsizey, 32, 0);
 
-   SDLmm::SRect rect( pos, fieldsizex, fieldsizey ); 
-
-
-   Surface dest = Surface::createSurface( fieldsizex, fieldsizey, 32, 0 );
-
-   if ( src.w() == 400 ) {
-      Surface dest2 = Surface::createSurface( fieldsizex/2, fieldsizey/2, 32, 0 );
-      megaBlitter<ColorTransform_None, 
-                  ColorMerger_AlphaOverwrite, 
-                  SourcePixelSelector_Rectangle,
-                  TargetPixelSelector_All>
-               (src,dest2,SPoint(0,0),nullParam,nullParam,SDLmm::SRect( pos.x, pos.y, fieldsizex/2, fieldsizey/2 ), nullParam);
+   if (src.w() == 400) {
+      Surface dest2 = Surface::createSurface(fieldsizex / 2, fieldsizey / 2, 32, 0);
+      megaBlitter<ColorTransform_None, ColorMerger_AlphaOverwrite, SourcePixelSelector_Rectangle,
+                  TargetPixelSelector_All>(
+         src, dest2, SPoint(0, 0), nullParam, nullParam,
+         SDLmm::SRect(pos.x, pos.y, fieldsizex / 2, fieldsizey / 2), nullParam);
       // dest2.detectColorKey();
 
-      MegaBlitter<4,4,ColorTransform_None, 
-                  ColorMerger_AlphaOverwrite, 
-                  SourcePixelSelector_DirectZoom,
-                  TargetPixelSelector_All> blit;
-      blit.setSize(dest2.w(), dest2.h(), dest.w(), dest.h() );
-      blit.blit( dest2,dest,SPoint(0,0));
-
+      MegaBlitter<4, 4, ColorTransform_None, ColorMerger_AlphaOverwrite,
+                  SourcePixelSelector_DirectZoom, TargetPixelSelector_All>
+         blit;
+      blit.setSize(dest2.w(), dest2.h(), dest.w(), dest.h());
+      blit.blit(dest2, dest, SPoint(0, 0));
 
    } else {
-      megaBlitter<ColorTransform_None, 
-                  ColorMerger_AlphaMerge, 
-                  SourcePixelSelector_Rectangle,
-                  TargetPixelSelector_All>
-               (src,dest,SPoint(0,0),nullParam,nullParam,rect, nullParam);
+      megaBlitter<ColorTransform_None, ColorMerger_AlphaMerge, SourcePixelSelector_Rectangle,
+                  TargetPixelSelector_All>(src, dest, SPoint(0, 0), nullParam, nullParam, rect,
+                                           nullParam);
    }
 
-   applyFieldMask(dest,0,0,false);
+   applyFieldMask(dest, 0, 0, false);
    images[num] = dest;
 }
 
-void parseList( const ASCString& filename )
-{
+void parseList(const ASCString& filename) {
    try {
-      tnfilestream in ( filename, tnstream::reading );
+      tnfilestream in(filename, tnstream::reading);
       bool finished = false;
-      while ( !finished ) {
-
+      while (!finished) {
          ASCString line;
-         finished = !in.readTextString( line );
+         finished = !in.readTextString(line);
 
-         static boost::regex comment( "^\\s*;");
-         if( boost::regex_search( line, comment)) 
+         static boost::regex comment("^\\s*;");
+         if (boost::regex_search(line, comment))
             continue;
 
-
-         vector<ASCString> tokens = splitString( line, ";");
-         if  ( tokens.size() < 6 ) {
-            static boost::regex nonempty( "\\S");
-            if( boost::regex_search( line, nonempty)) 
-               fatalError("invalid number of tokens in line " + line );
+         vector<ASCString> tokens = splitString(line, ";");
+         if (tokens.size() < 6) {
+            static boost::regex nonempty("\\S");
+            if (boost::regex_search(line, nonempty))
+               fatalError("invalid number of tokens in line " + line);
          }
 
-         int picoffset = atoi( tokens[2] );
+         int picoffset = atoi(tokens[2]);
 
-         tnfilestream fs ( tokens[0], tnstream::reading );
-         
-         Surface s ( IMG_Load_RW ( SDL_RWFromStream( &fs ), 1));
-         assert( s.valid());
+         tnfilestream fs(tokens[0], tnstream::reading);
+
+         Surface s(IMG_Load_RW(SDL_RWFromStream(&fs), 1));
+         assert(s.valid());
 
          s.detectColorKey();
 
          char piclist[10000];
-         strcpy( piclist, tokens[5].c_str() );
+         strcpy(piclist, tokens[5].c_str());
 
-
-         char* pic = strtok ( piclist, "," );
-         while ( pic ) {
+         char* pic = strtok(piclist, ",");
+         while (pic) {
             int from, to;
-            if ( strchr ( pic, '-' )) {
-               char* a = strchr ( pic, '-' );
+            if (strchr(pic, '-')) {
+               char* a = strchr(pic, '-');
                *a = 0;
-               from = atoi ( pic );
-               to = atoi ( ++a );
+               from = atoi(pic);
+               to = atoi(++a);
             } else
-               from = to = atoi ( pic );
+               from = to = atoi(pic);
 
-            for ( int i = from; i <= to; i++ )
-               getpic ( s, i, picoffset );
+            for (int i = from; i <= to; i++)
+               getpic(s, i, picoffset);
 
-            pic = strtok ( NULL, "," );
+            pic = strtok(NULL, ",");
          }
       }
-   }
-   catch ( ... )
-   {
-
-   }
+   } catch (...) {}
 }
-
 
 // including the command line parser, which is generated by genparse
 #include "../clparser/makegfx.cpp"
 
-int main(int argc, char *argv[] )
-{
+int main(int argc, char* argv[]) {
    StdIoErrorHandler err;
-   Cmdline cl ( argc, argv );
+   Cmdline cl(argc, argv);
 
-   if ( cl.v() ) {
+   if (cl.v()) {
       cout << argv[0] << " " << getVersionString() << endl;
       exit(0);
    }
 
-   if ( argc - cl.next_param() < 2 ) {
+   if (argc - cl.next_param() < 2) {
       cl.usage();
       exit(1);
    }
 
-   SDL_Init( SDL_INIT_VIDEO );
+   SDL_Init(SDL_INIT_VIDEO);
 
    try {
-
-      ConfigurationFileLocator::Instance().setExecutableLocation( argv[0] );
-      initFileIO( cl.c().c_str() );
-      addSearchPath ( "." );
-      opencontainer ( "*.con");
+      ConfigurationFileLocator::Instance().setExecutableLocation(argv[0]);
+      initFileIO(cl.c().c_str());
+      addSearchPath(".");
+      opencontainer("*.con");
       loadpalette();
 
       char tempbuf[10000];
-      for ( int i = cl.next_param()+1; i < argc; i++ ) {
-         if ( argv[i][0] == '@' ) 
-            parseList( &(argv[i][1]) );
+      for (int i = cl.next_param() + 1; i < argc; i++) {
+         if (argv[i][0] == '@')
+            parseList(&(argv[i][1]));
          else {
-            tfindfile ff ( argv[i] );
+            tfindfile ff(argv[i]);
             ASCString filename = ff.getnextname();
-            while ( !filename.empty() ) {
+            while (!filename.empty()) {
                int num;
-               if ( decodeFileName ( filename, num ) ) {
-                  extractPath ( tempbuf, argv[i] );
+               if (decodeFileName(filename, num)) {
+                  extractPath(tempbuf, argv[i]);
                   ASCString file = tempbuf + filename;
 
-                  Surface s = loadASCFieldImage( file );
+                  Surface s = loadASCFieldImage(file);
                   images[num] = s;
-                  highestImage = max ( num, highestImage );
-
+                  highestImage = max(num, highestImage);
                }
                filename = ff.getnextname();
             }
          }
       }
 
-      tnfilestream s ( argv[cl.next_param()], tnstream::writing );
+      tnfilestream s(argv[cl.next_param()], tnstream::writing);
       int magic = -1;
-      s.writedata2 ( magic );
+      s.writedata2(magic);
 
       int id = 1;
-      printf ("\n    ID :  \n ( 0 = original ASC graphics; 1 = BI3 graphics; >=2 : additional graphic sets)\n    ");
-      scanf ( "%d", &id );
+      printf(
+         "\n    ID :  \n ( 0 = original ASC graphics; 1 = BI3 graphics; >=2 : additional graphic "
+         "sets)\n    ");
+      scanf("%d", &id);
 
-      s.writeInt ( id );
+      s.writeInt(id);
 
       highestImage++;
 
       int* picmode = new int[highestImage];
-      for ( int i = 0; i < highestImage; i++ )
+      for (int i = 0; i < highestImage; i++)
          picmode[i] = 0;
 
-      for ( IMGS::iterator ii = images.begin(); ii != images.end(); ii++ ) 
+      for (IMGS::iterator ii = images.begin(); ii != images.end(); ii++)
          picmode[ii->first] = 1;
 
-
-      s.writeInt ( highestImage );
-      s.writeInt ( 1 );
-      s.writedata ( picmode, highestImage * sizeof ( int ) );
-      for ( IMGS::iterator ii = images.begin(); ii != images.end(); ii++ ) {
-         printf(" writing %d \n", ii->first );
-         ii->second.write ( s );
+      s.writeInt(highestImage);
+      s.writeInt(1);
+      s.writedata(picmode, highestImage * sizeof(int));
+      for (IMGS::iterator ii = images.begin(); ii != images.end(); ii++) {
+         printf(" writing %d \n", ii->first);
+         ii->second.write(s);
       }
 
-      SPoint lastimg = num2pos( highestImage, true );
+      SPoint lastimg = num2pos(highestImage, true);
 
-      Surface summary = Surface::createSurface( 800, lastimg.y + 100, 32, 0 );
-      for ( IMGS::iterator ii = images.begin(); ii != images.end(); ii++ ) 
-         megaBlitter<ColorTransform_None, 
-                     ColorMerger_AlphaOverwrite,
-                     SourcePixelSelector_Plain,
-                     TargetPixelSelector_All>
-                  (ii->second,summary,num2pos(ii->first, true), nullParam,nullParam,nullParam,nullParam);
+      Surface summary = Surface::createSurface(800, lastimg.y + 100, 32, 0);
+      for (IMGS::iterator ii = images.begin(); ii != images.end(); ii++)
+         megaBlitter<ColorTransform_None, ColorMerger_AlphaOverwrite, SourcePixelSelector_Plain,
+                     TargetPixelSelector_All>(ii->second, summary, num2pos(ii->first, true),
+                                              nullParam, nullParam, nullParam, nullParam);
 
-      writePNG( "summary.png", summary );
+      writePNG("summary.png", summary);
 
-   }
-   catch ( tfileerror err ) {
-      fatalError( "file error accessing file %s ", err.getFileName().c_str() );
+   } catch (tfileerror err) {
+      fatalError("file error accessing file %s ", err.getFileName().c_str());
    } /* endcatch */
-   catch ( ASCexception) {
-      fatalError( "unspecified error" );
+   catch (ASCexception) {
+      fatalError("unspecified error");
    } /* endcatch */
    return 0;
 }

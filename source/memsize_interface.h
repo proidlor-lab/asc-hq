@@ -9,31 +9,28 @@
  ***************************************************************************/
 
 #ifndef memsizeinterfaceH
- #define memsizeinterfaceH
- 
- class MemorySizeQueryInterface {
-    public:
-       virtual int getMemoryFootprint() const = 0;
-       virtual ~MemorySizeQueryInterface(){};
- };
- 
- template<typename T>
- int getMemoryFootprint( const T& t ) 
- {
-    return t.getMemoryFootprint();
- }; 
- 
- template<class T> 
- struct MemorySum
- {
-    using argument_type = T;
-    using result_type = void;
-    
-    MemorySum() : size(0) {}
-    void operator() (const T& x) { size += getMemoryFootprint(x); }
-    void operator() (const T* x) { size += getMemoryFootprint(*x); }
-    int size;
- };
- 
- 
+#define memsizeinterfaceH
+
+class MemorySizeQueryInterface {
+  public:
+   virtual int getMemoryFootprint() const = 0;
+   virtual ~MemorySizeQueryInterface(){};
+};
+
+template <typename T>
+int getMemoryFootprint(const T& t) {
+   return t.getMemoryFootprint();
+};
+
+template <class T>
+struct MemorySum {
+   using argument_type = T;
+   using result_type = void;
+
+   MemorySum() : size(0) {}
+   void operator()(const T& x) { size += getMemoryFootprint(x); }
+   void operator()(const T* x) { size += getMemoryFootprint(*x); }
+   int size;
+};
+
 #endif

@@ -13,8 +13,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -33,31 +33,25 @@
 
 dacpalette256 pal;
 
+main(void) {
+   int quantity = 0;
 
-main (void)
-{ 
-   int quantity=0;   
+   struct find_t fileinfo;
+   unsigned rc; /* return code */
 
-   struct find_t  fileinfo;
-   unsigned rc;        /* return code */ 
+   rc = _dos_findfirst("s*.tnk", _A_NORMAL, &fileinfo);
 
-   rc = _dos_findfirst( "s*.tnk", _A_NORMAL, &fileinfo );
-          
    while (rc == 0) {
       quantity++;
-      VehicleType*   ft;
+      VehicleType* ft;
       ft = loadvehicletypetype(fileinfo.name);
 
-      if ( ft->terrainreq1 )
-         printf (" converting <%15.15s>   ", fileinfo.name);
+      if (ft->terrainreq1)
+         printf(" converting <%15.15s>   ", fileinfo.name);
 
-
-      rc = _dos_findnext( &fileinfo ); 
+      rc = _dos_findnext(&fileinfo);
    }
 
-   printf ("\n %i files converted ! \n\n", quantity);
+   printf("\n %i files converted ! \n\n", quantity);
    return 0;
 };
-
-
-

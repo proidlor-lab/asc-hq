@@ -44,8 +44,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -61,134 +61,133 @@
 #include "../tpascal.inc"
 #include "realint.h"
 
-     typedef char tdevname[8]; 
-     struct trequestheader { 
-                       pascal_byte         len; 
-                       pascal_byte         subunit; 
-                       pascal_byte         commandcode; 
-                       word         status; 
-                       tdevname  devname; 
-                    } ;
+typedef char tdevname[8];
+struct trequestheader {
+   pascal_byte len;
+   pascal_byte subunit;
+   pascal_byte commandcode;
+   word status;
+   tdevname devname;
+};
 
+struct tgetdevheader {
+   pascal_byte controlblockcode;
+   void* adress;
+};
 
-     struct tgetdevheader {
-                     pascal_byte         controlblockcode; 
-                     void*      adress; 
-                  } ;
+struct tioctlo {
+   trequestheader requestheader;
+   pascal_byte mediadescriptor;
+   int buffer;
+   word buffersize;
+   int startsector;
+   int volumeptr;
+};
 
-     struct tioctlo { 
-                trequestheader requestheader; 
-                pascal_byte         mediadescriptor; 
-                int            buffer;
-                word         buffersize; 
-                int      startsector; 
-                int      volumeptr; 
-             };
+struct tlocatehead {
+   pascal_byte controlblockcode; /* 1 */
+   pascal_byte adressingmode;
+   int headlocation;
+};
 
-     struct tlocatehead {
-                pascal_byte         controlblockcode;   /* 1 */ 
-                pascal_byte         adressingmode; 
-                int      headlocation; 
-             } ; 
+struct taudiochannel { /* 4 */
+   pascal_byte controlblockcode;
+   pascal_byte inputchannel0;
+   pascal_byte volumechannel0;
+   pascal_byte inputchannel1;
+   pascal_byte volumechannel1;
+   pascal_byte inputchannel2;
+   pascal_byte volumechannel2;
+   pascal_byte inputchannel3;
+   pascal_byte volumechannel3;
+};
 
-     struct taudiochannel {   /* 4 */
-                      pascal_byte         controlblockcode; 
-                      pascal_byte         inputchannel0; 
-                      pascal_byte         volumechannel0; 
-                      pascal_byte         inputchannel1; 
-                      pascal_byte         volumechannel1; 
-                      pascal_byte         inputchannel2; 
-                      pascal_byte         volumechannel2; 
-                      pascal_byte         inputchannel3; 
-                      pascal_byte         volumechannel3; 
-                   } ;
+struct tdevicestatus {
+   pascal_byte controlblockcode; /* 6 */
+   int status;
+};
 
-      struct tdevicestatus {
-                      pascal_byte         controlblockcode;   /* 6 */ 
-                      int      status; 
-                   };
+struct tcdsize {
+   pascal_byte controlblockcode; /* 8 */
+   int size;
+};
 
-      struct tcdsize {
-                pascal_byte         controlblockcode;   /* 8 */ 
-                int      size; 
-             } ;
+struct tcdinfo {
+   pascal_byte controlblockcode; /* 10 */
+   pascal_byte lowesttrack;
+   pascal_byte highesttrack;
+   int leadout;
+};
 
-      struct tcdinfo {
-                pascal_byte         controlblockcode;   /* 10 */ 
-                pascal_byte         lowesttrack; 
-                pascal_byte         highesttrack; 
-                int      leadout; 
-             };
+struct ttrackinfo {
+   pascal_byte controlblockcode; /* 11 */
+   pascal_byte tracknumber;
+   int startpoint;
+   pascal_byte controlinfo;
+};
 
-      struct ttrackinfo {
-                   pascal_byte         controlblockcode;   /* 11 */ 
-                   pascal_byte         tracknumber; 
-                   int      startpoint; 
-                   pascal_byte         controlinfo;
-                } ;
+struct tqinfo {
+   pascal_byte controlblockcode; /* 12 */
+   pascal_byte caab;
+   pascal_byte poi;
+   pascal_byte tracknumber;
+   pascal_byte min;
+   pascal_byte sec;
+   pascal_byte frame;
+   pascal_byte zero;
+   pascal_byte amin;
+   pascal_byte asec;
+   pascal_byte aframe;
+};
 
-      struct tqinfo {
-               pascal_byte         controlblockcode;   /* 12 */ 
-               pascal_byte         caab; 
-               pascal_byte         poi; 
-               pascal_byte         tracknumber; 
-               pascal_byte         min; 
-               pascal_byte         sec; 
-               pascal_byte         frame; 
-               pascal_byte         zero; 
-               pascal_byte         amin; 
-               pascal_byte         asec; 
-               pascal_byte         aframe; 
-            };
+struct tlockdoor {
+   pascal_byte controlblockcode; /* 1 */
+   pascal_byte lockfunction;
+};
 
-      struct tlockdoor {
-                  pascal_byte         controlblockcode;   /* 1 */ 
-                  pascal_byte         lockfunction; 
-               } ; 
+struct tseek { /* 131 */
+   trequestheader requestheader;
+   pascal_byte adressingmode;
+   int transferadress;
+   word numberofsectors;
+   int startsector;
+};
 
-      struct tseek {   /* 131 */
-              trequestheader requestheader; 
-              pascal_byte         adressingmode; 
-              int      transferadress; 
-              word         numberofsectors; 
-              int      startsector; 
-           } ; 
+struct tplayaudio { /* 132 */
+   trequestheader requestheader;
+   pascal_byte adressingmode;
+   int startsector;
+   int numberofsectors;
+};
 
-      struct tplayaudio {   /* 132 */
-                   trequestheader requestheader; 
-                   pascal_byte         adressingmode; 
-                   int      startsector; 
-                   int      numberofsectors; 
-                } ; 
+struct tstopresume { /* 133,134 */
+   trequestheader requestheader;
+};
 
-     struct tstopresume {   /* 133,134 */
-                   trequestheader requestheader; 
-                } ; 
+struct ttrackinf {
+   char name[30];
+   pascal_byte min, sec, frame;
+   int start;
+   pascal_byte smin, ssec, sframe;
+   int size;
+   pascal_byte type;
+};
 
-     struct ttrackinf {
-            char name[30];
-            pascal_byte min,sec,frame;
-            int start;
-            pascal_byte smin,ssec,sframe;
-            int size;
-            pascal_byte type;
-        };
+typedef ttrackinf* ptrackinfo;
+struct tcdinf {
+   pascal_byte min, sec, frame;
+   int size;
+   pascal_byte smin, ssec, sframe;
+   int start;
+   pascal_byte firsttrack, lasttrack;
+   char name[50];
+   ptrackinfo track[99];
+};
 
-     typedef ttrackinf *ptrackinfo;
-     struct tcdinf {
-            pascal_byte min,sec,frame;
-            int size;
-            pascal_byte smin,ssec,sframe;
-            int start;
-            pascal_byte firsttrack,lasttrack;
-            char name[50];
-            ptrackinfo track[99];
-        } ;
-
-     struct taudioinfo {
-        pascal_byte volume[3];
-        pascal_byte channel[3];
-     };
+struct taudioinfo {
+   pascal_byte volume[3];
+   pascal_byte channel[3];
+};
 
 #define tt2c 0
 #define tt2cp 1
@@ -196,53 +195,56 @@
 #define tt4cp 3
 #define ttd 4
 
-const short int cdromintmemsize=60;
+const short int cdromintmemsize = 60;
 
 class tcdrom {
-      tioctlo *ioctl;
-      taudiochannel *ac;
-      tdevicestatus *ds;
-   public :
-      char activecdrom;
-      pascal_byte error;
-      char numberofdrives;
-      char driveletter[16];
-      taudioinfo ta;
-      tcdinf cdinfo;
+   tioctlo* ioctl;
+   taudiochannel* ac;
+   tdevicestatus* ds;
 
-      tcdrom(void);
-      ~tcdrom(void);
+  public:
+   char activecdrom;
+   pascal_byte error;
+   char numberofdrives;
+   char driveletter[16];
+   taudioinfo ta;
+   tcdinf cdinfo;
 
-      void* getdevheaderadress(void);
-      char testcdromavailable(void);
-      pascal_byte geterror( void );
-      pascal_byte checkerror( void );
-      char testcdromopen(void);
-      void getcdrominfo(void);
-      void getcdromdrives(void);
-      void changecdromdrive(char nr);
-      float get_mscdex_version(void);
-      char openclosecdrom(void);
-      char lockunlockcdrom(void);
-      void getsectortime(int sector,pascal_byte *m,pascal_byte *s,pascal_byte *f);
-      int getnormalsector(pascal_byte m,pascal_byte s,pascal_byte f);
-      char checkbusy(void);
-      int getheadlocation(void);
-      void seeksector(int ss);
-      void getactivetimes(pascal_byte *min,pascal_byte *sec,pascal_byte *frame,pascal_byte *amin,pascal_byte *asec,pascal_byte *aframe);
-      int getcdsize(void);
-      void getcdlength(pascal_byte *min,pascal_byte *sec,pascal_byte *frame);
-      void getcdinfo(pascal_byte *l,pascal_byte *h,pascal_byte *min,pascal_byte *sec,pascal_byte *frame);
-      void gettracklength(pascal_byte tracknr,pascal_byte *min,pascal_byte *sec,pascal_byte *frame);
-      void gettrackinfo(pascal_byte tracknr,pascal_byte * min,pascal_byte * sec,pascal_byte * frame,pascal_byte * type);
-      void getaudioinfo( void );
-      void setaudiochannel( void );
-      void playaudio(int ss,   int numbersectors);
-      void stopaudio(void);
-      void resumeaudio(void);
+   tcdrom(void);
+   ~tcdrom(void);
 
-      void readcdinfo( void );
-      void playtrack(pascal_byte nr);
-      void playtrackuntilend(pascal_byte nr);
+   void* getdevheaderadress(void);
+   char testcdromavailable(void);
+   pascal_byte geterror(void);
+   pascal_byte checkerror(void);
+   char testcdromopen(void);
+   void getcdrominfo(void);
+   void getcdromdrives(void);
+   void changecdromdrive(char nr);
+   float get_mscdex_version(void);
+   char openclosecdrom(void);
+   char lockunlockcdrom(void);
+   void getsectortime(int sector, pascal_byte* m, pascal_byte* s, pascal_byte* f);
+   int getnormalsector(pascal_byte m, pascal_byte s, pascal_byte f);
+   char checkbusy(void);
+   int getheadlocation(void);
+   void seeksector(int ss);
+   void getactivetimes(pascal_byte* min, pascal_byte* sec, pascal_byte* frame, pascal_byte* amin,
+                       pascal_byte* asec, pascal_byte* aframe);
+   int getcdsize(void);
+   void getcdlength(pascal_byte* min, pascal_byte* sec, pascal_byte* frame);
+   void getcdinfo(pascal_byte* l, pascal_byte* h, pascal_byte* min, pascal_byte* sec,
+                  pascal_byte* frame);
+   void gettracklength(pascal_byte tracknr, pascal_byte* min, pascal_byte* sec, pascal_byte* frame);
+   void gettrackinfo(pascal_byte tracknr, pascal_byte* min, pascal_byte* sec, pascal_byte* frame,
+                     pascal_byte* type);
+   void getaudioinfo(void);
+   void setaudiochannel(void);
+   void playaudio(int ss, int numbersectors);
+   void stopaudio(void);
+   void resumeaudio(void);
+
+   void readcdinfo(void);
+   void playtrack(pascal_byte nr);
+   void playtrackuntilend(pascal_byte nr);
 };
-

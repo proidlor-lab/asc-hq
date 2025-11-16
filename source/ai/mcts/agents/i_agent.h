@@ -16,48 +16,44 @@ namespace mcts {
  * Base interface for all agents participating in action scoring.
  */
 class IAgent {
-public:
-    virtual ~IAgent() = default;
+  public:
+   virtual ~IAgent() = default;
 
-    /**
-     * Evaluate a candidate action.
-     */
-    [[nodiscard]] virtual AgentScore evaluate(
-        const Action& action,
-        const AgentContext& context
-    ) const = 0;
+   /**
+    * Evaluate a candidate action.
+    */
+   [[nodiscard]] virtual AgentScore evaluate(const Action& action,
+                                             const AgentContext& context) const = 0;
 
-    /**
-     * Textual identifier for configuration/logging.
-     */
-    [[nodiscard]] virtual std::string_view getName() const noexcept = 0;
+   /**
+    * Textual identifier for configuration/logging.
+    */
+   [[nodiscard]] virtual std::string_view getName() const noexcept = 0;
 
-    /**
-     * Weight applied during aggregation.
-     */
-    [[nodiscard]] virtual float getWeight() const noexcept = 0;
-    virtual void setWeight(float weight) = 0;
+   /**
+    * Weight applied during aggregation.
+    */
+   [[nodiscard]] virtual float getWeight() const noexcept = 0;
+   virtual void setWeight(float weight) = 0;
 
-    /**
-     * Category used for diagnostic prioritization.
-     */
-    [[nodiscard]] virtual AgentCategory getCategory() const noexcept = 0;
+   /**
+    * Category used for diagnostic prioritization.
+    */
+   [[nodiscard]] virtual AgentCategory getCategory() const noexcept = 0;
 };
 
 /**
  * Interface for agents that evaluate resulting states instead of actions.
  */
 class IStateEvaluationAgent {
-public:
-    virtual ~IStateEvaluationAgent() = default;
+  public:
+   virtual ~IStateEvaluationAgent() = default;
 
-    [[nodiscard]] virtual AgentScore evaluateState(
-        const GameStateSnapshot& state,
-        const AgentContext& context
-    ) const = 0;
+   [[nodiscard]] virtual AgentScore evaluateState(const GameStateSnapshot& state,
+                                                  const AgentContext& context) const = 0;
 };
 
-} // namespace mcts
-} // namespace asc
+}  // namespace mcts
+}  // namespace asc
 
-#endif // MCTS_I_AGENT_H
+#endif  // MCTS_I_AGENT_H

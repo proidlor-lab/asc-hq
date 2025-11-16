@@ -18,9 +18,8 @@
     Boston, MA  02111-1307  USA
 
 */
-#ifndef  gamedlgH
-#define  gamedlgH
-
+#ifndef gamedlgH
+#define gamedlgH
 
 /*! \file gamedlg.h
    A lot of dialog boxes that are only used by both ASC.
@@ -28,25 +27,21 @@
 
 class GameMap;
 
-extern void  settributepayments ( void );
+extern void settributepayments(void);
 
-
-extern void researchinfo ( void );
-extern void choosetechlevel ( void );
-
+extern void researchinfo(void);
+extern void choosetechlevel(void);
 
 class MapField;
 class Context;
 
-extern void giveunitaway ( MapField* fld, const Context& context );
+extern void giveunitaway(MapField* fld, const Context& context);
 
-extern void showGameParameters ( void );
+extern void showGameParameters(void);
 
 extern void showPlayerTime();
 extern void displaywindspeed();
 
-
-extern void sendGameParameterAsMail ( GameMap* actmap );
+extern void sendGameParameterAsMail(GameMap* actmap);
 
 #endif  // ifndef gamedlg_h
-

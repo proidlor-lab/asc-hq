@@ -17,12 +17,12 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
-#include <stdio.h>                           
+#include <stdio.h>
 #include <cstring>
 #include <stdlib.h>
 #include <SDL_image.h>
@@ -32,61 +32,53 @@
 #include "basestrm.h"
 #include "util/messaginghub.h"
 
-
 IconRepository::Repository IconRepository::repository;
 
 set<ASCString> errorsShown;
 
-Surface& IconRepository::getIcon( const ASCString& name )
-{
-  Repository::iterator i = repository.find( name );
-  if ( i != repository.end() ) 
-     return *i->second;
-  else {
-     try {
-        tnfilestream fs ( name, tnstream::reading );
-        if ( name.endswith(".raw") ) {
-           repository[name] = new Surface();
-           repository[name]->read( fs );
-        } else {
-           repository[name] = new Surface ( IMG_Load_RW ( SDL_RWFromStream( &fs ), 1));
-        }
-        return *repository[name];
-     }
-     catch ( tfileerror err ) {
-        if ( errorsShown.find( name ) == errorsShown.end() ) {
-            errorMessage("could not load " + err.getFileName() );
-            errorsShown.insert( name );
-        }
-        if ( name != "dummy.png" )
-           return getIcon( "dummy.png" );
-        else
-           throw;
-     }
-  }
+Surface& IconRepository::getIcon(const ASCString& name) {
+   Repository::iterator i = repository.find(name);
+   if (i != repository.end())
+      return *i->second;
+   else {
+      try {
+         tnfilestream fs(name, tnstream::reading);
+         if (name.endswith(".raw")) {
+            repository[name] = new Surface();
+            repository[name]->read(fs);
+         } else {
+            repository[name] = new Surface(IMG_Load_RW(SDL_RWFromStream(&fs), 1));
+         }
+         return *repository[name];
+      } catch (tfileerror err) {
+         if (errorsShown.find(name) == errorsShown.end()) {
+            errorMessage("could not load " + err.getFileName());
+            errorsShown.insert(name);
+         }
+         if (name != "dummy.png")
+            return getIcon("dummy.png");
+         else
+            throw;
+      }
+   }
 }
 
-IconRepository::Repository::~Repository()
-{
-   for (   Repository::iterator i = repository.begin(); i != repository.end(); ++i )
+IconRepository::Repository::~Repository() {
+   for (Repository::iterator i = repository.begin(); i != repository.end(); ++i)
       delete i->second;
 }
 
-bool IconRepository::exists( const ASCString& name )
-{
+bool IconRepository::exists(const ASCString& name) {
    return repository.find(name) != repository.end();
 }
 
-void IconRepository::insert( const ASCString& name, Surface* s )
-{
+void IconRepository::insert(const ASCString& name, Surface* s) {
    repository[name] = s;
 }
 
-int IconRepository::getMemoryFootprint()
-{
+int IconRepository::getMemoryFootprint() {
    int size = 0;
-   for ( Repository::iterator i = repository.begin(); i != repository.end(); ++i  )
+   for (Repository::iterator i = repository.begin(); i != repository.end(); ++i)
       size += i->second->getMemoryFootprint();
    return size;
 }
-

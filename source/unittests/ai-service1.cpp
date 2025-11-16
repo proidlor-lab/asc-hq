@@ -15,49 +15,42 @@
 #include "../turncontrol.h"
 #include "../gamemap.h"
 
-void testAiService1() 
-{
-   std::unique_ptr<GameMap> game ( startMap("unittest-ai-refuel1.map"));
-   
-   Vehicle* veh = game->getField(2,10)->vehicle;
-   
-   assertOrThrow( veh != NULL );
-   assertOrThrow( veh->damage == 0 );
-   
-   next_turn( game.get(), NextTurnStrategy_Abort(), NULL, -1 );
-   
-   assertOrThrow( veh->damage > 0 );
+void testAiService1() {
+   std::unique_ptr<GameMap> game(startMap("unittest-ai-refuel1.map"));
+
+   Vehicle* veh = game->getField(2, 10)->vehicle;
+
+   assertOrThrow(veh != NULL);
+   assertOrThrow(veh->damage == 0);
+
+   next_turn(game.get(), NextTurnStrategy_Abort(), NULL, -1);
+
+   assertOrThrow(veh->damage > 0);
    int damage = veh->damage;
-   
-   /* the ammo of the attacking unit is exhausted. 
+
+   /* the ammo of the attacking unit is exhausted.
       The AI should service it with the service unit nearby */
-   next_turn( game.get(), NextTurnStrategy_Abort(), NULL, -1 );
-   next_turn( game.get(), NextTurnStrategy_Abort(), NULL, -1 );
-   
-   assertOrThrow( veh->damage > damage );
-   
+   next_turn(game.get(), NextTurnStrategy_Abort(), NULL, -1);
+   next_turn(game.get(), NextTurnStrategy_Abort(), NULL, -1);
+
+   assertOrThrow(veh->damage > damage);
 }
 
+void testAiService2() {
+   std::unique_ptr<GameMap> game(startMap("unittest-ai-refuel2.map"));
 
-void testAiService2() 
-{
-   std::unique_ptr<GameMap> game ( startMap("unittest-ai-refuel2.map"));
-   
-   Vehicle* veh = game->getField(4,6)->vehicle;
-   
-   assertOrThrow( veh != NULL );
-   assertOrThrow( veh->getResource( Resources(0,0,100)).fuel <= 1 );
-   
-   next_turn( game.get(), NextTurnStrategy_Abort(), NULL, -1 );
-   next_turn( game.get(), NextTurnStrategy_Abort(), NULL, -1 );
-   
-   assertOrThrow( veh->getResource( Resources(0,0,100)).fuel >= 100 );
-   
+   Vehicle* veh = game->getField(4, 6)->vehicle;
+
+   assertOrThrow(veh != NULL);
+   assertOrThrow(veh->getResource(Resources(0, 0, 100)).fuel <= 1);
+
+   next_turn(game.get(), NextTurnStrategy_Abort(), NULL, -1);
+   next_turn(game.get(), NextTurnStrategy_Abort(), NULL, -1);
+
+   assertOrThrow(veh->getResource(Resources(0, 0, 100)).fuel >= 100);
 }
 
-
-void testAiService() 
-{
+void testAiService() {
    testAiService1();
    testAiService2();
 }

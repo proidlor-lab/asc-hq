@@ -17,9 +17,4 @@
 
 #include "playercolor.h"
 
-
-PlayerColor::PlayerColor(int number, const DI_Color& col ) : playernumber(number), color(col)
-{
-     
-}
-
+PlayerColor::PlayerColor(int number, const DI_Color& col) : playernumber(number), color(col) {}

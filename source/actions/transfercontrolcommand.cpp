@@ -18,7 +18,6 @@
      Boston, MA  02111-1307  USA
 */
 
-
 #include "transfercontrolcommand.h"
 
 #include "../vehicle.h"
@@ -34,148 +33,124 @@
 #include "servicecommand.h"
 #include "convertcontainer.h"
 
-bool TransferControlCommand :: avail ( const ContainerBase* item )
-{
-   if ( !item  )
+bool TransferControlCommand ::avail(const ContainerBase* item) {
+   if (!item)
       return false;
-   
-   if ( item->getMap()->getgameparameter( cgp_disableUnitTransfer ))
+
+   if (item->getMap()->getgameparameter(cgp_disableUnitTransfer))
       return false;
-   
-   Receivers rec = getReceivers( item->getMap(), item->getOwner(), item->getCarrier() );
-   
-   return rec.size() > 0 ;
+
+   Receivers rec = getReceivers(item->getMap(), item->getOwner(), item->getCarrier());
+
+   return rec.size() > 0;
 }
 
-
-TransferControlCommand::Receivers TransferControlCommand::getReceivers( GameMap* map, int currentPlayer, bool isInCarrier )
-{
+TransferControlCommand::Receivers
+TransferControlCommand::getReceivers(GameMap* map, int currentPlayer, bool isInCarrier) {
    Receivers rec;
-   if ( !map )
+   if (!map)
       return rec;
-   
-   for ( int p = 0; p < map->getPlayerCount(); ++p )
-      if ( p != currentPlayer )
-         if ( map->player[p].exist() ) {
-            if ( isInCarrier ) {
-               if ( map->player[p].diplomacy.getState( currentPlayer ) >= ALLIANCE )
-                  rec.push_back( &map->player[p] );   
+
+   for (int p = 0; p < map->getPlayerCount(); ++p)
+      if (p != currentPlayer)
+         if (map->player[p].exist()) {
+            if (isInCarrier) {
+               if (map->player[p].diplomacy.getState(currentPlayer) >= ALLIANCE)
+                  rec.push_back(&map->player[p]);
             } else {
-               if ( map->player[p].diplomacy.getState( currentPlayer ) >= PEACE )
-                  rec.push_back( &map->player[p] );   
+               if (map->player[p].diplomacy.getState(currentPlayer) >= PEACE)
+                  rec.push_back(&map->player[p]);
             }
          }
-   
+
    return rec;
 }
 
-
-TransferControlCommand::Receivers TransferControlCommand::getReceivers()
-{
-   return getReceivers( getContainer()->getMap(), getContainer()->getOwner(), getContainer()->getCarrier() );  
+TransferControlCommand::Receivers TransferControlCommand::getReceivers() {
+   return getReceivers(getContainer()->getMap(), getContainer()->getOwner(),
+                       getContainer()->getCarrier());
 }
 
+TransferControlCommand ::TransferControlCommand(ContainerBase* container)
+   : ContainerCommand(container), receivingPlayer(-1) {}
 
-TransferControlCommand :: TransferControlCommand ( ContainerBase* container )
-   : ContainerCommand ( container ), receivingPlayer(-1)
-{
-
-}
-
-
-
-
-
-ActionResult TransferControlCommand::go ( const Context& context )
-{
-   if ( getState() != SetUp )
+ActionResult TransferControlCommand::go(const Context& context) {
+   if (getState() != SetUp)
       return ActionResult(22000);
 
-   if ( !avail( getContainer() ))
+   if (!avail(getContainer()))
       return ActionResult(22800);
-   
+
    bool found = false;
    Receivers rec = getReceivers();
-   for ( Receivers::const_iterator i = rec.begin(); i != rec.end(); ++i )
-      if ( (*i)->getPosition() == receivingPlayer )
+   for (Receivers::const_iterator i = rec.begin(); i != rec.end(); ++i)
+      if ((*i)->getPosition() == receivingPlayer)
          found = true;
-   
-   if ( !found )
+
+   if (!found)
       return ActionResult(22801);
-   
-   std::unique_ptr<ConvertContainer> cc ( new ConvertContainer( getContainer(), receivingPlayer ));
+
+   std::unique_ptr<ConvertContainer> cc(new ConvertContainer(getContainer(), receivingPlayer));
    ActionResult res = cc->execute(context);
-   
-   if ( res.successful() ) {
+
+   if (res.successful()) {
       cc.release();
-      setState( Finished );
-      
-      computeview( getMap(), 0, false, &context );
-      
-      if ( context.display )
+      setState(Finished);
+
+      computeview(getMap(), 0, false, &context);
+
+      if (context.display)
          context.display->repaintDisplay();
    } else
-      setState( Failed );
-   
+      setState(Failed);
+
    return res;
 }
 
-
-
 static const int TransferControlCommandVersion = 1;
 
-void TransferControlCommand :: readData ( tnstream& stream )
-{
-   ContainerCommand::readData( stream );
+void TransferControlCommand ::readData(tnstream& stream) {
+   ContainerCommand::readData(stream);
    int version = stream.readInt();
-   if ( version > TransferControlCommandVersion )
-      throw tinvalidversion ( "TransferControlCommand", TransferControlCommandVersion, version );
+   if (version > TransferControlCommandVersion)
+      throw tinvalidversion("TransferControlCommand", TransferControlCommandVersion, version);
    receivingPlayer = stream.readInt();
 }
 
-void TransferControlCommand :: writeData ( tnstream& stream ) const
-{
-   ContainerCommand::writeData( stream );
-   stream.writeInt( TransferControlCommandVersion );
-   stream.writeInt( receivingPlayer );
+void TransferControlCommand ::writeData(tnstream& stream) const {
+   ContainerCommand::writeData(stream);
+   stream.writeInt(TransferControlCommandVersion);
+   stream.writeInt(receivingPlayer);
 }
 
-void TransferControlCommand :: setReceiver( const Player* receiver )
-{
-   if ( receiver ) {
-      receivingPlayer = receiver->getPosition();    
-      setState( SetUp );
+void TransferControlCommand ::setReceiver(const Player* receiver) {
+   if (receiver) {
+      receivingPlayer = receiver->getPosition();
+      setState(SetUp);
    }
 }
 
-
-ASCString TransferControlCommand :: getCommandString() const
-{
+ASCString TransferControlCommand ::getCommandString() const {
    ASCString c;
-   c.format("transferControl ( map, %d, %d )", getContainerID(), receivingPlayer );
+   c.format("transferControl ( map, %d, %d )", getContainerID(), receivingPlayer);
    return c;
-
 }
 
-GameActionID TransferControlCommand::getID() const
-{
+GameActionID TransferControlCommand::getID() const {
    return ActionRegistry::TransferControlCommand;
 }
 
-ASCString TransferControlCommand::getDescription() const
-{
+ASCString TransferControlCommand::getDescription() const {
    ASCString s = "Transfer Control";
-   
-   if ( getContainer(true) ) {
+
+   if (getContainer(true)) {
       s += " of " + getContainer()->getName();
    }
-   
-   s += "to " + getMap()->getPlayer( receivingPlayer ).getName();
+
+   s += "to " + getMap()->getPlayer(receivingPlayer).getName();
    return s;
 }
 
-namespace
-{
-   const bool r1 = registerAction<TransferControlCommand> ( ActionRegistry::TransferControlCommand );
+namespace {
+const bool r1 = registerAction<TransferControlCommand>(ActionRegistry::TransferControlCommand);
 }
-

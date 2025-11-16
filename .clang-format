@@ -1,0 +1,110 @@
+# clang-format configuration for ASC (Advanced Strategic Command)
+# Based on MCTS module style (modern C++23)
+#
+# To format a file: clang-format -i <file>
+# To format all: find source/ -name "*.cpp" -o -name "*.h" | xargs clang-format -i
+
+---
+Language: Cpp
+BasedOnStyle: Google
+
+# Indentation (3 spaces - matches MCTS module)
+IndentWidth: 3
+TabWidth: 3
+UseTab: Never
+ContinuationIndentWidth: 3
+ConstructorInitializerIndentWidth: 3
+
+# Line Length
+ColumnLimit: 100
+
+# Braces
+BreakBeforeBraces: Attach
+BraceWrapping:
+  AfterClass: false
+  AfterControlStatement: Never
+  AfterEnum: false
+  AfterFunction: false
+  AfterNamespace: false
+  AfterStruct: false
+  AfterUnion: false
+  BeforeCatch: false
+  BeforeElse: false
+
+# Spaces
+SpaceAfterCStyleCast: true
+SpaceAfterLogicalNot: false
+SpaceAfterTemplateKeyword: true
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeCpp11BracedList: false
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon: true
+SpaceBeforeParens: ControlStatements
+SpaceBeforeRangeBasedForLoopColon: true
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 2
+SpacesInAngles: false
+SpacesInCStyleCastParentheses: false
+SpacesInContainerLiterals: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+
+# Pointer and Reference Alignment
+PointerAlignment: Left
+DerivePointerAlignment: false
+
+# Namespaces
+NamespaceIndentation: None
+CompactNamespaces: false
+FixNamespaceComments: true
+
+# Include Sorting - DISABLED to preserve existing include order
+# (Legacy codebase has include dependencies that break when reordered)
+SortIncludes: Never
+
+# Modern C++ Features
+Cpp11BracedListStyle: true
+Standard: c++20
+
+# Functions
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakAfterReturnType: None
+AlwaysBreakTemplateDeclarations: Yes
+BinPackArguments: true
+BinPackParameters: true
+
+# Comments
+AlignTrailingComments: true
+ReflowComments: true
+
+# Other
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+AlignOperands: true
+AllowAllArgumentsOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: false
+BreakBeforeBinaryOperators: None
+BreakBeforeTernaryOperators: true
+BreakConstructorInitializers: BeforeColon
+BreakInheritanceList: BeforeColon
+BreakStringLiterals: true
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+DeriveLineEnding: false
+IndentCaseLabels: true
+IndentPPDirectives: None
+IndentWrappedFunctionNames: false
+KeepEmptyLinesAtTheStartOfBlocks: false
+MaxEmptyLinesToKeep: 1
+PenaltyBreakAssignment: 2
+PenaltyBreakBeforeFirstCallParameter: 19
+PenaltyBreakComment: 300
+PenaltyBreakFirstLessLess: 120
+PenaltyBreakString: 1000
+PenaltyBreakTemplateDeclaration: 10
+PenaltyExcessCharacter: 1000000
+PenaltyReturnTypeOnItsOwnLine: 60
+UseCRLF: false

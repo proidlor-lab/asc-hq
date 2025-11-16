@@ -10,7 +10,6 @@
 #ifndef movementtestH
 #define movementtestH
 
- extern void testMovement();
-
+extern void testMovement();
 
 #endif

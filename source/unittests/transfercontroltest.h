@@ -10,7 +10,6 @@
 #ifndef testTransferControlH
 #define testTransferControlH
 
- extern void testTransferControl();
-
+extern void testTransferControl();
 
 #endif

@@ -18,7 +18,6 @@
      Boston, MA  02111-1307  USA
 */
 
-
 #include "buildproductionlinecommand.h"
 
 #include "../vehicle.h"
@@ -34,166 +33,145 @@
 #include "servicecommand.h"
 #include "convertcontainer.h"
 
-bool BuildProductionLineCommand :: avail ( const ContainerBase* factory )
-{
-   if ( !factory  )
+bool BuildProductionLineCommand ::avail(const ContainerBase* factory) {
+   if (!factory)
       return false;
-   
-   return factory->baseType->hasFunction( ContainerBaseType::InternalVehicleProduction ) 
-      && !factory->baseType->hasFunction( ContainerBaseType::NoProductionCustomization ) ;
+
+   return factory->baseType->hasFunction(ContainerBaseType::InternalVehicleProduction) &&
+          !factory->baseType->hasFunction(ContainerBaseType::NoProductionCustomization);
 }
 
+vector<const VehicleType*> BuildProductionLineCommand ::productionLinesBuyable() {
+   vector<const VehicleType*> list;
 
-vector<const VehicleType*> BuildProductionLineCommand :: productionLinesBuyable()
-{
-
-   vector<const VehicleType*>  list;
-   
    ContainerBase* container = getContainer();
-   
-   if ( !avail( container ))
+
+   if (!avail(container))
       return list;
-   
-   for ( int i = 0; i < vehicleTypeRepository.getNum(); ++i ) {
-      VehicleType* veh = getMap()->getvehicletype_bypos ( i );
-      if ( veh ) {
-         bool found = find( container->getProduction().begin(), container->getProduction().end(), veh ) != container->getProduction().end();
-         if ( container->baseType->vehicleFit ( veh ) && !found )
-            if ( container->vehicleUnloadable(veh) || container->baseType->hasFunction( ContainerBaseType::ProduceNonLeavableUnits ))
-               if ( veh->techDependency.available ( container->getMap()->getCurrentPlayer().research ))
-                  if ( container->baseType->vehicleCategoriesProduceable & (1 << veh->movemalustyp))
-                     list.push_back( veh );
+
+   for (int i = 0; i < vehicleTypeRepository.getNum(); ++i) {
+      VehicleType* veh = getMap()->getvehicletype_bypos(i);
+      if (veh) {
+         bool found = find(container->getProduction().begin(), container->getProduction().end(),
+                           veh) != container->getProduction().end();
+         if (container->baseType->vehicleFit(veh) && !found)
+            if (container->vehicleUnloadable(veh) ||
+                container->baseType->hasFunction(ContainerBaseType::ProduceNonLeavableUnits))
+               if (veh->techDependency.available(container->getMap()->getCurrentPlayer().research))
+                  if (container->baseType->vehicleCategoriesProduceable & (1 << veh->movemalustyp))
+                     list.push_back(veh);
       }
    }
    return list;
 }
 
-Resources BuildProductionLineCommand :: resourcesNeeded( const ContainerBaseType* factory, const VehicleType* veh )
-{
-   return factory->productionEfficiency * veh->productionCost * productionLineConstructionCostFactor ;
+Resources BuildProductionLineCommand ::resourcesNeeded(const ContainerBaseType* factory,
+                                                       const VehicleType* veh) {
+   return factory->productionEfficiency * veh->productionCost *
+          productionLineConstructionCostFactor;
 }
 
+BuildProductionLineCommand ::BuildProductionLineCommand(ContainerBase* container)
+   : ContainerCommand(container), vehicleTypeId(-1) {}
 
-
-BuildProductionLineCommand :: BuildProductionLineCommand ( ContainerBase* container )
-   : ContainerCommand ( container ), vehicleTypeId(-1)
-{
-
-}
-
-
-
-void BuildProductionLineCommand::setProduction( const VehicleType* vehicleType )
-{
-   if ( vehicleType ) {
+void BuildProductionLineCommand::setProduction(const VehicleType* vehicleType) {
+   if (vehicleType) {
       vehicleTypeId = vehicleType->id;
-      setState( SetUp );
+      setState(SetUp);
    }
 }
 
-
-ActionResult BuildProductionLineCommand::go ( const Context& context )
-{
-   if ( getState() != SetUp )
+ActionResult BuildProductionLineCommand::go(const Context& context) {
+   if (getState() != SetUp)
       return ActionResult(22000);
 
-   if ( !avail( getContainer() ))
+   if (!avail(getContainer()))
       return ActionResult(22800);
-   
+
    const VehicleType* vt = NULL;
    vector<const VehicleType*> types = productionLinesBuyable();
-   for ( vector<const VehicleType*>::iterator i = types.begin(); i != types.end(); ++i )
-      if ( (*i)->id == vehicleTypeId )
+   for (vector<const VehicleType*>::iterator i = types.begin(); i != types.end(); ++i)
+      if ((*i)->id == vehicleTypeId)
          vt = *i;
-   
-   if ( !vt )
+
+   if (!vt)
       return ActionResult(22900);
-   
-   
-   Resources needed = resourcesNeeded( getContainer()->baseType, vt );
-   Resources avail = getContainer()->getResource( needed, true );
-   if ( avail < needed  )
+
+   Resources needed = resourcesNeeded(getContainer()->baseType, vt);
+   Resources avail = getContainer()->getResource(needed, true);
+   if (avail < needed)
       return ActionResult(22901);
-   
-   std::unique_ptr<ConsumeResource> cr ( new ConsumeResource( getContainer(), needed ));
+
+   std::unique_ptr<ConsumeResource> cr(new ConsumeResource(getContainer(), needed));
    ActionResult res = cr->execute(context);
-   
-   if ( !res.successful() ) {
-      setState( Failed );
+
+   if (!res.successful()) {
+      setState(Failed);
       return res;
    }
-   
-   getContainer()->addProductionLine( vt );
-   
+
+   getContainer()->addProductionLine(vt);
+
    cr.release();
-   setState( Finished );
+   setState(Finished);
 
    return res;
 }
 
-ActionResult BuildProductionLineCommand::undoAction( const Context& context )
-{
-   VehicleType* vt = vehicleTypeRepository.getObject_byID( vehicleTypeId );
-   if ( !vt )
+ActionResult BuildProductionLineCommand::undoAction(const Context& context) {
+   VehicleType* vt = vehicleTypeRepository.getObject_byID(vehicleTypeId);
+   if (!vt)
       return ActionResult(22902);
-         
-   getContainer()->deleteProductionLine( vt );
-   
-   return ContainerCommand::undoAction( context );
-}
 
+   getContainer()->deleteProductionLine(vt);
+
+   return ContainerCommand::undoAction(context);
+}
 
 static const int BuildProductionLineCommandVersion = 1;
 
-void BuildProductionLineCommand :: readData ( tnstream& stream )
-{
-   ContainerCommand::readData( stream );
+void BuildProductionLineCommand ::readData(tnstream& stream) {
+   ContainerCommand::readData(stream);
    int version = stream.readInt();
-   if ( version > BuildProductionLineCommandVersion )
-      throw tinvalidversion ( "BuildProductionLineCommand", BuildProductionLineCommandVersion, version );
+   if (version > BuildProductionLineCommandVersion)
+      throw tinvalidversion("BuildProductionLineCommand", BuildProductionLineCommandVersion,
+                            version);
    vehicleTypeId = stream.readInt();
 }
 
-void BuildProductionLineCommand :: writeData ( tnstream& stream ) const
-{
-   ContainerCommand::writeData( stream );
-   stream.writeInt( BuildProductionLineCommandVersion );
-   stream.writeInt( vehicleTypeId );
+void BuildProductionLineCommand ::writeData(tnstream& stream) const {
+   ContainerCommand::writeData(stream);
+   stream.writeInt(BuildProductionLineCommandVersion);
+   stream.writeInt(vehicleTypeId);
 }
 
-
-ASCString BuildProductionLineCommand :: getCommandString() const
-{
+ASCString BuildProductionLineCommand ::getCommandString() const {
    ASCString c;
-   c.format("buildProductionLine ( map, %d, %d )", getContainerID(), vehicleTypeId );
+   c.format("buildProductionLine ( map, %d, %d )", getContainerID(), vehicleTypeId);
    return c;
-
 }
 
-GameActionID BuildProductionLineCommand::getID() const
-{
+GameActionID BuildProductionLineCommand::getID() const {
    return ActionRegistry::BuildProductionLineCommand;
 }
 
-ASCString BuildProductionLineCommand::getDescription() const
-{
+ASCString BuildProductionLineCommand::getDescription() const {
    ASCString s = "Add production line for type ";
-   
-   VehicleType* vt = vehicleTypeRepository.getObject_byID( vehicleTypeId );
-   if ( !vt )
+
+   VehicleType* vt = vehicleTypeRepository.getObject_byID(vehicleTypeId);
+   if (!vt)
       s += ASCString::toString(vehicleTypeId);
    else
       s += vt->getName();
-   
-   if ( getContainer(true) ) {
+
+   if (getContainer(true)) {
       s += " to " + getContainer()->getName();
    }
-   
+
    return s;
 }
 
-namespace
-{
-   const bool r1 = registerAction<BuildProductionLineCommand> ( ActionRegistry::BuildProductionLineCommand );
+namespace {
+const bool r1 =
+   registerAction<BuildProductionLineCommand>(ActionRegistry::BuildProductionLineCommand);
 }
-

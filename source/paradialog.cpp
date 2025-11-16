@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "global.h"
 
 #include <boost/algorithm/string.hpp>
@@ -63,185 +62,158 @@
 
 #include "util/messaginghub.h"
 
-
 #include "sdl/graphicsqueue.h"
 
-class EventSupplier: public PG_SDLEventSupplier {
-   public:
+class EventSupplier : public PG_SDLEventSupplier {
+  public:
+   /**
+   Polls for currently pending events, and returns true if there are any pending events, or false if
+   there are none available. If event is not NULL, the next event is removed from the queue and
+   stored in that area.
 
-	/**
-	Polls for currently pending events, and returns true if there are any pending events, or false if there are none available. 
-	If event is not NULL, the next event is removed from the queue and stored in that area.
+   @param	event	pointer to an event structure
+   @return		true - events are available
+   */
+   bool PollEvent(SDL_Event* event) {
+      bool result = getQueuedEvent(*event);
+      if (result)
+         CombineMouseMotionEvents(event);
+      return result;
+   };
 
-	@param	event	pointer to an event structure
-	@return		true - events are available
-	*/
-	bool PollEvent(SDL_Event* event) {
-            bool result = getQueuedEvent( *event );
-            if ( result ) 
-               CombineMouseMotionEvents( event );
-            return result;
-        };
+   /**
+   Checks if an event is in the queue. If there is, it will be copied into the event structure,
+   WITHOUT being removed from the event queue.
 
-	/**
-	Checks if an event is in the queue. If there is, it will be copied into the event structure, 
-	WITHOUT being removed from the event queue. 
+   @param event pointer to an event structure
+   @return  true - events are available
+   */
+   bool PeepEvent(SDL_Event* event) { return peekEvent(*event); }
 
-	@param event pointer to an event structure
-	@return  true - events are available
-	*/
-	bool PeepEvent(SDL_Event* event) {
-            return peekEvent( *event );
-        }
-        
-	/**
-	Waits indefinitely for the next available event.
+   /**
+   Waits indefinitely for the next available event.
 
-	@param event 	pointer to an event structure
-	@return		return 0 if there was an error while waiting for events        
-	*/
-	int WaitEvent(SDL_Event* event)
-        {
-            while ( !getQueuedEvent( *event ))
-               releasetimeslice();
-            CombineMouseMotionEvents( event );
-            return 1;  
-        };
+   @param event 	pointer to an event structure
+   @return		return 0 if there was an error while waiting for events
+   */
+   int WaitEvent(SDL_Event* event) {
+      while (!getQueuedEvent(*event))
+         releasetimeslice();
+      CombineMouseMotionEvents(event);
+      return 1;
+   };
 
 } eventSupplier;
 
-
-
-
-
-
 ASC_PG_App* pgApp = NULL;
 
-
-void signalQuit( int i )
-{
+void signalQuit(int i) {
    getPGApplication().Quit();
 }
 
-
 class ASC_PG_ScreenUpdater : public PG_ScreenUpdater {
-   public:
-      void UpdateRect(SDL_Surface *screen, Sint32 x, Sint32 y, Sint32 w, Sint32 h)
-      {
-      #ifdef WIN32
-         queueOperation( new UpdateRectOp( screen, x, y, w, h ));
-      #else
-         SDL_UpdateRect( screen,x,y,w,h);
-         postScreenUpdate(screen);
-      #endif
-      };
+  public:
+   void UpdateRect(SDL_Surface* screen, Sint32 x, Sint32 y, Sint32 w, Sint32 h) {
+#ifdef WIN32
+      queueOperation(new UpdateRectOp(screen, x, y, w, h));
+#else
+      SDL_UpdateRect(screen, x, y, w, h);
+      postScreenUpdate(screen);
+#endif
+   };
 
-      void UpdateRects(SDL_Surface *screen, int numrects, SDL_Rect *rects)
-      {
-      #ifdef WIN32
-         queueOperation( new UpdateRectsOp( screen, numrects, rects ));
-      #else
-         SDL_UpdateRects( screen, numrects, rects );
-         postScreenUpdate(screen);
-      #endif
-      }
+   void UpdateRects(SDL_Surface* screen, int numrects, SDL_Rect* rects) {
+#ifdef WIN32
+      queueOperation(new UpdateRectsOp(screen, numrects, rects));
+#else
+      SDL_UpdateRects(screen, numrects, rects);
+      postScreenUpdate(screen);
+#endif
+   }
 } ascScreenUpdater;
 
-
-ASC_PG_App :: ASC_PG_App ( const ASCString& themeName )  : fullScreen(false), bitsperpixel(0)
-{
+ASC_PG_App ::ASC_PG_App(const ASCString& themeName) : fullScreen(false), bitsperpixel(0) {
    this->themeName = themeName;
    EnableSymlinks(true);
    EnableAppIdleCalls();
-   sigAppIdle.connect( sigc::hide( idleEvent.make_slot() ));
+   sigAppIdle.connect(sigc::hide(idleEvent.make_slot()));
    int i = 0;
    bool themeFound = false;
    ASCString path;
    do {
-      path = getSearchPath ( i++ );
-      if ( !path.empty() ) {
-         AddArchive ( path );
-         if ( !themeFound ){
+      path = getSearchPath(i++);
+      if (!path.empty()) {
+         AddArchive(path);
+         if (!themeFound) {
             ASCString arch = path + themeName + ".zip";
-            themeFound = AddArchive ( arch.c_str() );
-            if ( themeFound ) 
-               displayLogMessage( 4, "found dialog theme at " + arch );
-            
+            themeFound = AddArchive(arch.c_str());
+            if (themeFound)
+               displayLogMessage(4, "found dialog theme at " + arch);
          }
       }
-   } while ( !path.empty() );
-   PG_LogConsole::SetLogLevel ( PG_LOG_ERR );
+   } while (!path.empty());
+   PG_LogConsole::SetLogLevel(PG_LOG_ERR);
 
-   if ( !themeFound ) 
-      displayLogMessage( 2, "did not found dialog theme!!" );
+   if (!themeFound)
+      displayLogMessage(2, "did not found dialog theme!!");
 
    reloadTheme();
 
    pgApp = this;
-   SetEventSupplier ( &eventSupplier );
-   SetScreenUpdater ( &ascScreenUpdater );
-   
-   signal ( SIGINT, &signalQuit );
-   
-   PG_LineEdit::SetBlinkingTime( 500 );
+   SetEventSupplier(&eventSupplier);
+   SetScreenUpdater(&ascScreenUpdater);
 
-   SetHighlightingTag( '~' );
+   signal(SIGINT, &signalQuit);
 
-   setMouseUpdateFlag( &CGameOptions::Instance()->hideMouseOnScreenUpdates );
+   PG_LineEdit::SetBlinkingTime(500);
 
+   SetHighlightingTag('~');
+
+   setMouseUpdateFlag(&CGameOptions::Instance()->hideMouseOnScreenUpdates);
 }
 
-bool ASC_PG_App :: queueWidgetForDeletion( PG_Widget* widget )
-{
-   deletionQueue.push_back( widget );
-   widget->sigDelete.connect( sigc::mem_fun( *this, &ASC_PG_App::removeFromDeletionQueue ));
+bool ASC_PG_App ::queueWidgetForDeletion(PG_Widget* widget) {
+   deletionQueue.push_back(widget);
+   widget->sigDelete.connect(sigc::mem_fun(*this, &ASC_PG_App::removeFromDeletionQueue));
    return true;
 }
 
-
-bool ASC_PG_App :: removeFromDeletionQueue( const PG_MessageObject* obj )
-{
-   DeletionQueue::iterator i = find ( deletionQueue.begin(), deletionQueue.end(), obj );
-   if ( i != deletionQueue.end() )
-      deletionQueue.erase( i );
+bool ASC_PG_App ::removeFromDeletionQueue(const PG_MessageObject* obj) {
+   DeletionQueue::iterator i = find(deletionQueue.begin(), deletionQueue.end(), obj);
+   if (i != deletionQueue.end())
+      deletionQueue.erase(i);
    return true;
 }
 
-
-void ASC_PG_App :: setIcon( const ASCString& filename )
-{
-   SDL_Surface *icn = NULL;
+void ASC_PG_App ::setIcon(const ASCString& filename) {
+   SDL_Surface* icn = NULL;
    try {
-      tnfilestream iconl ( filename, tnstream::reading );
-      icn = IMG_Load_RW ( SDL_RWFromStream( &iconl ), 1);
+      tnfilestream iconl(filename, tnstream::reading);
+      icn = IMG_Load_RW(SDL_RWFromStream(&iconl), 1);
       // SDL_SetColorKey(icn, SDL_SRCCOLORKEY, *((Uint8 *)icn->pixels));
-      if ( icn )
-         SDL_WM_SetIcon( icn, NULL );
-   } catch ( ... ) {}
+      if (icn)
+         SDL_WM_SetIcon(icn, NULL);
+   } catch (...) {}
 }
 
-void ASC_PG_App :: Quit()
-{
+void ASC_PG_App ::Quit() {
    sigQuit(this);
    PG_Application::Quit();
 }
 
-
-bool ASC_PG_App::eventQuit(int id, PG_MessageObject* widget, unsigned long data)
-{
+bool ASC_PG_App::eventQuit(int id, PG_MessageObject* widget, unsigned long data) {
    sigQuit(this);
-   return PG_Application::eventQuit( id, widget, data );
+   return PG_Application::eventQuit(id, widget, data);
 }
 
-void ASC_PG_App::eventIdle()
-{
-   if ( redrawScreen  ) {
+void ASC_PG_App::eventIdle() {
+   if (redrawScreen) {
       PG_Widget::UpdateScreen();
-	   PG_Application::UpdateRect(PG_Application::GetScreen(), 0,0,0,0);
+      PG_Application::UpdateRect(PG_Application::GetScreen(), 0, 0, 0, 0);
       redrawScreen = false;
    }
 
-   if ( !deletionQueue.empty() )
+   if (!deletionQueue.empty())
       delete deletionQueue.front();
 
    PG_Application::eventIdle();
@@ -249,15 +221,12 @@ void ASC_PG_App::eventIdle()
 
 #include "sdl/graphicsqueue.h"
 
-void ASC_PG_App::SetNewScreenSurface( SDL_Surface* surface )
-{
+void ASC_PG_App::SetNewScreenSurface(SDL_Surface* surface) {
    SetScreen(surface, false);
 }
 
-
-bool ASC_PG_App::toggleFullscreen()
-{
-   if ( !GetScreen() )
+bool ASC_PG_App::toggleFullscreen() {
+   if (!GetScreen())
       return false;
 
    int w = GetScreen()->w;
@@ -266,22 +235,24 @@ bool ASC_PG_App::toggleFullscreen()
    // queueOperation( new MouseVisibility( false ), true );
 
    int flags = SDL_SWSURFACE;
-   if ( !fullScreen )
+   if (!fullScreen)
       flags |= SDL_FULLSCREEN;
 
-   queueOperation( new InitScreenOp( w,h,bitsperpixel,flags, InitScreenOp::ScreenRegistrationFunctor( this, &ASC_PG_App::SetNewScreenSurface )), true );
+   queueOperation(new InitScreenOp(w, h, bitsperpixel, flags,
+                                   InitScreenOp::ScreenRegistrationFunctor(
+                                      this, &ASC_PG_App::SetNewScreenSurface)),
+                  true);
    fullScreen = GetScreen()->flags & SDL_FULLSCREEN;
 
-
-/*
-   SDL_Surface* screen = SDL_SetVideoMode(w, h, bitsperpixel, flags);
-   if (screen == NULL) {
-      screen = SDL_SetVideoMode(w, h, bitsperpixel, 0);
-      fullScreen = false;
-   } else
-      fullScreen = !fullScreen;
-   SetScreen(screen);
-*/
+   /*
+      SDL_Surface* screen = SDL_SetVideoMode(w, h, bitsperpixel, flags);
+      if (screen == NULL) {
+         screen = SDL_SetVideoMode(w, h, bitsperpixel, 0);
+         fullScreen = false;
+      } else
+         fullScreen = !fullScreen;
+      SetScreen(screen);
+   */
 
    PG_Widget::UpdateScreen();
 
@@ -290,32 +261,28 @@ bool ASC_PG_App::toggleFullscreen()
    return true;
 }
 
-
-ASC_PG_App& getPGApplication()
-{
+ASC_PG_App& getPGApplication() {
    return *pgApp;
 }
 
-
 static const int progressHeight = 15;
-     
-StartupScreen::StartupScreen( const ASCString& filename, sigc::signal<void>& ticker ) : versionLabel(NULL), background(NULL), progressBar(NULL), fullscreenImage(NULL)
-{
-   MessagingHub::Instance().statusInformation.connect( sigc::mem_fun( *this, &StartupScreen::disp ));
-   
-   tnfilestream s ( filename, tnstream::reading );
 
+StartupScreen::StartupScreen(const ASCString& filename, sigc::signal<void>& ticker)
+   : versionLabel(NULL), background(NULL), progressBar(NULL), fullscreenImage(NULL) {
+   MessagingHub::Instance().statusInformation.connect(sigc::mem_fun(*this, &StartupScreen::disp));
+
+   tnfilestream s(filename, tnstream::reading);
 
    int rt = 0;
    int gt = 0;
    int bt = 0;
 
-   fullscreenImage = Surface( IMG_Load_RW( SDL_RWFromStream( &s ), true ));
-   if ( fullscreenImage.valid() ) {
-      for ( int y = 0; y < fullscreenImage.h(); ++y ) {
-         for ( int x = 0; x < fullscreenImage.w(); ++x ) {
-            Uint8 r,g,b;
-            fullscreenImage.GetPixelFormat().GetRGB( fullscreenImage.GetPixel(x,y), r,g,b ); 
+   fullscreenImage = Surface(IMG_Load_RW(SDL_RWFromStream(&s), true));
+   if (fullscreenImage.valid()) {
+      for (int y = 0; y < fullscreenImage.h(); ++y) {
+         for (int x = 0; x < fullscreenImage.w(); ++x) {
+            Uint8 r, g, b;
+            fullscreenImage.GetPixelFormat().GetRGB(fullscreenImage.GetPixel(x, y), r, g, b);
             rt += r;
             gt += g;
             bt += b;
@@ -326,37 +293,38 @@ StartupScreen::StartupScreen( const ASCString& filename, sigc::signal<void>& tic
       bt /= fullscreenImage.h() * fullscreenImage.w();
    }
 
-
-
-
-   background = new PG_ThemeWidget(NULL, PG_Rect(0,0,PG_Application::GetScreenWidth(), PG_Application::GetScreenHeight()));
+   background = new PG_ThemeWidget(
+      NULL, PG_Rect(0, 0, PG_Application::GetScreenWidth(), PG_Application::GetScreenHeight()));
    background->SetSimpleBackground(true);
-   background->SetBackgroundColor( PG_Color( rt, gt, bt ));
+   background->SetBackgroundColor(PG_Color(rt, gt, bt));
 
-   if ( fullscreenImage.valid() ) {
-      float enw = float(PG_Application::GetScreenWidth() )/float(fullscreenImage.w());
-      float enh = float(PG_Application::GetScreenHeight())/float(fullscreenImage.h());
+   if (fullscreenImage.valid()) {
+      float enw = float(PG_Application::GetScreenWidth()) / float(fullscreenImage.w());
+      float enh = float(PG_Application::GetScreenHeight()) / float(fullscreenImage.h());
 
-	  displayLogMessage(6, "Startupscreen : %f / %f", enw, enh ); 
+      displayLogMessage(6, "Startupscreen : %f / %f", enw, enh);
 
-      // we allow a asymetric stretch of 5% 
-      if ( enw / enh < 0.95 || enw / enh > 1.05 ) 
-         enh = enw = min( enw, enh );
+      // we allow a asymetric stretch of 5%
+      if (enw / enh < 0.95 || enw / enh > 1.05)
+         enh = enw = min(enw, enh);
 
-      int w = int( ceil( enw * fullscreenImage.w()));
-      int h = int( ceil( enh * fullscreenImage.h()));
-      PG_Rect rect ( (PG_Application::GetScreenWidth()-w)/2, (PG_Application::GetScreenHeight()-h)/2, w,h);
-      PG_ThemeWidget* image = new PG_ThemeWidget( background, rect );
-      image->SetBackground ( fullscreenImage.getBaseSurface(), PG_Draw::STRETCH );
+      int w = int(ceil(enw * fullscreenImage.w()));
+      int h = int(ceil(enh * fullscreenImage.h()));
+      PG_Rect rect((PG_Application::GetScreenWidth() - w) / 2,
+                   (PG_Application::GetScreenHeight() - h) / 2, w, h);
+      PG_ThemeWidget* image = new PG_ThemeWidget(background, rect);
+      image->SetBackground(fullscreenImage.getBaseSurface(), PG_Draw::STRETCH);
    }
 
    SDL_Surface* screen = PG_Application::GetApp()->GetScreen();
-   progressBar = new AutoProgressBar( ticker, background, PG_Rect( 0, screen->h - progressHeight, screen->w, progressHeight ) );
+   progressBar = new AutoProgressBar(
+      ticker, background, PG_Rect(0, screen->h - progressHeight, screen->w, progressHeight));
 
-   if ( MessagingHub::Instance().getVerbosity() > 0 ) {
-      versionLabel = new PG_Label( background, PG_Rect( 10, screen->h - progressHeight - 25, screen->w/2, 20 ));
-      versionLabel->SetAlignment( PG_Label::LEFT );
-      versionLabel->SetText( getVersionString() );
+   if (MessagingHub::Instance().getVerbosity() > 0) {
+      versionLabel =
+         new PG_Label(background, PG_Rect(10, screen->h - progressHeight - 25, screen->w / 2, 20));
+      versionLabel->SetAlignment(PG_Label::LEFT);
+      versionLabel->SetText(getVersionString());
    }
 
    background->Show();
@@ -365,190 +333,167 @@ StartupScreen::StartupScreen( const ASCString& filename, sigc::signal<void>& tic
 /*!
  * line is counting bottom up! 0 is the lower most line!
  */
-void StartupScreen::dispLine( const ASCString& s, int line ) {
+void StartupScreen::dispLine(const ASCString& s, int line) {
    SDL_Surface* screen = PG_Application::GetApp()->GetScreen();
-   while ( infoLabels.size() <= line ) {
-       int y = screen->h - progressHeight - 25 * ( 1 + infoLabels.size());
-       if ( y < 0 )
-           return;
+   while (infoLabels.size() <= line) {
+      int y = screen->h - progressHeight - 25 * (1 + infoLabels.size());
+      if (y < 0)
+         return;
 
-       PG_Label* l = new PG_Label( background, PG_Rect( screen->w/2, y, screen->w/2 - 10, 20 ));
-       l->SetAlignment( PG_Label::RIGHT );
-       l->SetVisible(true);
-       infoLabels.push_back( l );
+      PG_Label* l = new PG_Label(background, PG_Rect(screen->w / 2, y, screen->w / 2 - 10, 20));
+      l->SetAlignment(PG_Label::RIGHT);
+      l->SetVisible(true);
+      infoLabels.push_back(l);
    }
    infoLabels[line]->SetText(s);
 }
 
-void StartupScreen::disp( const ASCString& s )
-{
+void StartupScreen::disp(const ASCString& s) {
    vector<ASCString> strs;
    boost::split(strs, s, boost::is_any_of("\n"));
 
-   for ( int i = 0; i < strs.size(); ++i)
-       dispLine(strs[i], strs.size() -1 - i);
-   for ( int i = strs.size(); i < infoLabels.size(); ++i )
-       dispLine("", i );
+   for (int i = 0; i < strs.size(); ++i)
+      dispLine(strs[i], strs.size() - 1 - i);
+   for (int i = strs.size(); i < infoLabels.size(); ++i)
+      dispLine("", i);
 }
 
-         
-StartupScreen::~StartupScreen()
-{
+StartupScreen::~StartupScreen() {
    progressBar->close();
    delete background;
 }
 
-
-
-bool ASC_PG_App:: InitScreen ( int w, int h, int depth, Uint32 flags )
-{
+bool ASC_PG_App::InitScreen(int w, int h, int depth, Uint32 flags) {
    bitsperpixel = depth;
-   bool result = PG_Application::InitScreen ( w, h, depth, flags  );
-   if ( result ) {
-      initASCGraphicSubsystem ( GetScreen() );
-      Surface::SetScreen( GetScreen() );
+   bool result = PG_Application::InitScreen(w, h, depth, flags);
+   if (result) {
+      initASCGraphicSubsystem(GetScreen());
+      Surface::SetScreen(GetScreen());
 
       fullScreen = flags & SDL_FULLSCREEN;
-      
-      MessagingHub::Instance().error.connect( sigc::bind( sigc::mem_fun( *this, &ASC_PG_App:: messageDialog ), MessagingHubBase::Error ));
-      MessagingHub::Instance().fatalError.connect( sigc::bind( sigc::mem_fun( *this, &ASC_PG_App:: messageDialog ), MessagingHubBase::FatalError ));
-      MessagingHub::Instance().warning.connect(sigc::bind( sigc::mem_fun( *this, &ASC_PG_App:: messageDialog ), MessagingHubBase::Warning ));
-      MessagingHub::Instance().infoMessage.connect( sigc::bind( sigc::mem_fun( *this, &ASC_PG_App:: messageDialog ), MessagingHubBase::InfoMessage ));
+
+      MessagingHub::Instance().error.connect(
+         sigc::bind(sigc::mem_fun(*this, &ASC_PG_App::messageDialog), MessagingHubBase::Error));
+      MessagingHub::Instance().fatalError.connect(sigc::bind(
+         sigc::mem_fun(*this, &ASC_PG_App::messageDialog), MessagingHubBase::FatalError));
+      MessagingHub::Instance().warning.connect(
+         sigc::bind(sigc::mem_fun(*this, &ASC_PG_App::messageDialog), MessagingHubBase::Warning));
+      MessagingHub::Instance().infoMessage.connect(sigc::bind(
+         sigc::mem_fun(*this, &ASC_PG_App::messageDialog), MessagingHubBase::InfoMessage));
    }
 
    return result;
 }
 
-
-void ASC_PG_App :: reloadTheme()
-{
-   if ( !LoadTheme(themeName ))
-      fatalError ( "Could not load Paragui theme for ASC: " + themeName );
+void ASC_PG_App ::reloadTheme() {
+   if (!LoadTheme(themeName))
+      fatalError("Could not load Paragui theme for ASC: " + themeName);
 }
 
-
-bool ASC_PG_App :: enableLegacyEventHandling( bool use )
-{
-   return !setEventRouting ( !use, use );
+bool ASC_PG_App ::enableLegacyEventHandling(bool use) {
+   return !setEventRouting(!use, use);
 }
 
-
-void ASC_PG_App::processEvent( )
-{
+void ASC_PG_App::processEvent() {
    SDL_Event event;
-	if ( GetEventSupplier()->PollEvent(&event)) 
-		PumpIntoEventQueue(&event);
+   if (GetEventSupplier()->PollEvent(&event))
+      PumpIntoEventQueue(&event);
 }
 
-
-int ASC_PG_App::Run ( )
-{
-   enableLegacyEventHandling ( false );
+int ASC_PG_App::Run() {
+   enableLegacyEventHandling(false);
    PG_Application::Run();
-  
+
    return 0;
 }
 
-ASC_PG_App :: ~ASC_PG_App()
-{
-   while ( !deletionQueue.empty() )
+ASC_PG_App ::~ASC_PG_App() {
+   while (!deletionQueue.empty())
       delete deletionQueue.front();
-   
+
    shutdownASCGraphicSubsystem();
 }
 
-
-
-ASC_PG_Dialog :: ASC_PG_Dialog ( PG_Widget *parent, const PG_Rect &r, const ASCString& windowtext, WindowFlags flags, const ASCString& style, int heightTitlebar )
-   :PG_Window ( parent, centerRectangle(r), windowtext, flags, style, heightTitlebar ),stdButtonNum(0), caller(0), standardButtonDir( Vertical )
-{
-
-   // it looks nice if you can see the map behind the dialog, but seeing other dialogs stacked above each other is just confusing, so we reduce transparency
+ASC_PG_Dialog ::ASC_PG_Dialog(PG_Widget* parent, const PG_Rect& r, const ASCString& windowtext,
+                              WindowFlags flags, const ASCString& style, int heightTitlebar)
+   : PG_Window(parent, centerRectangle(r), windowtext, flags, style, heightTitlebar),
+     stdButtonNum(0),
+     caller(0),
+     standardButtonDir(Vertical) {
+   // it looks nice if you can see the map behind the dialog, but seeing other dialogs stacked above
+   // each other is just confusing, so we reduce transparency
    int t = GetTransparency();
-   if ( WindowCounter::num() >= 1 ) {
-      SetTransparency ( t/2 );
+   if (WindowCounter::num() >= 1) {
+      SetTransparency(t / 2);
    }
 }
 
 int WindowCounter::windowNum = 0;
 
-
-int ASC_PG_Dialog::RunModal()
-{
+int ASC_PG_Dialog::RunModal() {
    WindowCounter wc;
-   
+
    return PG_Window::RunModal();
 }
 
-
-PG_Rect ASC_PG_Dialog::centerRectangle( const PG_Rect& rect )
-{
+PG_Rect ASC_PG_Dialog::centerRectangle(const PG_Rect& rect) {
    PG_Rect r = rect;
 
-   if ( r.w >  PG_Application::GetScreenWidth() )
+   if (r.w > PG_Application::GetScreenWidth())
       r.w = PG_Application::GetScreenWidth();
-         
-   if ( r.h >  PG_Application::GetScreenHeight() )
+
+   if (r.h > PG_Application::GetScreenHeight())
       r.h = PG_Application::GetScreenHeight();
 
-   
-   if ( r.x < 0 )
+   if (r.x < 0)
       r.x = (PG_Application::GetScreenWidth() - r.w) / 2;
 
-   if ( r.y < 0 )
+   if (r.y < 0)
       r.y = (PG_Application::GetScreenHeight() - r.h) / 2;
 
-
-   if ( r.x + r.w >  PG_Application::GetScreenWidth() )
+   if (r.x + r.w > PG_Application::GetScreenWidth())
       r.x = PG_Application::GetScreenWidth() - r.w;
-         
-   if ( r.y + r.h >  PG_Application::GetScreenHeight() )
+
+   if (r.y + r.h > PG_Application::GetScreenHeight())
       r.y = PG_Application::GetScreenHeight() - r.h;
 
    return r;
 }
 
-void ASC_PG_Dialog::StandardButtonDirection ( StandardButtonDirectonType dir )
-{
+void ASC_PG_Dialog::StandardButtonDirection(StandardButtonDirectonType dir) {
    standardButtonDir = dir;
 }
 
-PG_Button* ASC_PG_Dialog::AddStandardButton( const ASCString& name )
-{
+PG_Button* ASC_PG_Dialog::AddStandardButton(const ASCString& name) {
    ++stdButtonNum;
-   
-   if ( name.length() == 0 )
+
+   if (name.length() == 0)
       return NULL;
-   
-   if ( standardButtonDir == Vertical )
-      return new PG_Button( this, PG_Rect( Width() - 110, Height() - stdButtonNum * 40, 100, 30 ), name );
+
+   if (standardButtonDir == Vertical)
+      return new PG_Button(this, PG_Rect(Width() - 110, Height() - stdButtonNum * 40, 100, 30),
+                           name);
    else
-      return new PG_Button( this, PG_Rect( Width() - 110 * stdButtonNum, Height() -40 , 100, 30 ), name );
+      return new PG_Button(this, PG_Rect(Width() - 110 * stdButtonNum, Height() - 40, 100, 30),
+                           name);
 }
 
-
-
-bool ASC_PG_Dialog::eventKeyDown(const SDL_KeyboardEvent *key){
-  if(key->keysym.sym == SDLK_ESCAPE) {
-        closeWindow();
-    }
-  return true;
-}
-
-
-
-bool ASC_PG_Dialog::quitModalLoopW(PG_Button* button, int value )
-{
-   return quitModalLoop( value );
-}
-
-bool ASC_PG_Dialog::quitModalLoop(int value )
-{
-   SetModalStatus( value );
-   PG_Window::QuitModal();
+bool ASC_PG_Dialog::eventKeyDown(const SDL_KeyboardEvent* key) {
+   if (key->keysym.sym == SDLK_ESCAPE) {
+      closeWindow();
+   }
    return true;
 }
 
+bool ASC_PG_Dialog::quitModalLoopW(PG_Button* button, int value) {
+   return quitModalLoop(value);
+}
+
+bool ASC_PG_Dialog::quitModalLoop(int value) {
+   SetModalStatus(value);
+   PG_Window::QuitModal();
+   return true;
+}
 
 /*
 bool ASC_PG_Dialog::eventKeyUp (const SDL_KeyboardEvent *key){
@@ -564,263 +509,235 @@ bool ASC_PG_Dialog::eventKeyUp (const SDL_KeyboardEvent *key){
 if(key->keysym.sym == SDLK_ESCAPE){
    closeWindow();
  }else if(key->keysym.sym == SDLK_DOWN){
-     
+
  }else if(key->keysym.sym == SDLK_UP){
-     
+
  }else if(key->keysym.sym == SDLK_RIGHT){
-     
+
  }else if(key->keysym.sym == SDLK_LEFT){
-     
+
  }
  return true;
 
 }*/
 
-
-bool ASC_PG_Dialog::closeWindow(){
-  PG_Window::QuitModal();
-  if( caller != 0){     
-    caller->SetInputFocus();
-  }
-  return true;
+bool ASC_PG_Dialog::closeWindow() {
+   PG_Window::QuitModal();
+   if (caller != 0) {
+      caller->SetInputFocus();
+   }
+   return true;
 }
 
-
-
-
 class AntiBulkHandler {
-      bool bulk;   
-public:
+   bool bulk;
+
+  public:
    AntiBulkHandler() {
       bulk = PG_Application::GetBulkMode();
-      if ( bulk )
+      if (bulk)
          PG_Application::SetBulkMode(false);
    }
    ~AntiBulkHandler() {
-      if ( bulk )
+      if (bulk)
          PG_Application::SetBulkMode(true);
    }
 };
 
-
-void ASC_PG_App:: messageDialog( const ASCString& message, MessagingHubBase::MessageType mt )
-{
+void ASC_PG_App::messageDialog(const ASCString& message, MessagingHubBase::MessageType mt) {
    AntiBulkHandler abh;
    ASCString title;
    ASCString style;
-   switch ( mt ) {
-      case MessagingHubBase::Error: 
-         title = "Error"; 
+   switch (mt) {
+      case MessagingHubBase::Error:
+         title = "Error";
          style = "ErrorMessage";
          break;
-      case MessagingHubBase::Warning: 
-         title = "Warning"; 
+      case MessagingHubBase::Warning:
+         title = "Warning";
          style = "WarningMessage";
          break;
-      case MessagingHubBase::InfoMessage: 
-         title = "Information"; 
+      case MessagingHubBase::InfoMessage:
+         title = "Information";
          style = "Window";
          break;
-      case MessagingHubBase::FatalError: 
-         title = "Fatal Error"; 
+      case MessagingHubBase::FatalError:
+         title = "Fatal Error";
          style = "FatalErrorMessage";
          break;
-      default: break;
+      default:
+         break;
    };
-      
+
    PG_Rect size = calcMessageBoxSize(message);
-   MessageDialog msg( NULL, size, title, message,"OK", PG_Label::CENTER, style );
+   MessageDialog msg(NULL, size, title, message, "OK", PG_Label::CENTER, style);
    msg.Show();
    msg.RunModal();
 }
 
-
-PG_StatusWindowData::PG_StatusWindowData( const ASCString& msg ) 
-{
-   md = new MessageDialog( NULL, calcMessageBoxSize( msg ), "status", msg, PG_Label::CENTER, "Window" );
+PG_StatusWindowData::PG_StatusWindowData(const ASCString& msg) {
+   md = new MessageDialog(NULL, calcMessageBoxSize(msg), "status", msg, PG_Label::CENTER, "Window");
    md->Show();
 };
 
-void PG_StatusWindowData::SetText( const ASCString& text )
-{
-   md->SetText( text );
+void PG_StatusWindowData::SetText(const ASCString& text) {
+   md->SetText(text);
 }
 
-
-PG_StatusWindowData::~PG_StatusWindowData() 
-{
+PG_StatusWindowData::~PG_StatusWindowData() {
    delete md;
-};   
+};
 
-
-class   NewStringChooser : public ASC_PG_Dialog {
+class NewStringChooser : public ASC_PG_Dialog {
    PG_ListBox* listbox;
    int button;
    int item;
-   
-   bool buttonpressed( PG_Widget* w, int i )
-   {
+
+   bool buttonpressed(PG_Widget* w, int i) {
       button = i;
       QuitModal();
       return true;
    }
 
-   bool itemSelected( PG_ListBoxBaseItem* l )
-   {
-      PG_ListBoxDataItem<int>* listitem = dynamic_cast<PG_ListBoxDataItem<int>*>( l );
-      if ( listitem ) {
+   bool itemSelected(PG_ListBoxBaseItem* l) {
+      PG_ListBoxDataItem<int>* listitem = dynamic_cast<PG_ListBoxDataItem<int>*>(l);
+      if (listitem) {
          item = listitem->getData();
          return true;
       } else
          return false;
    }
-   
-   public :
-      NewStringChooser ( const ASCString& _title, const vector<ASCString>& _strings , const vector<ASCString>& _buttons, int defaultEntry ) : ASC_PG_Dialog( NULL, PG_Rect( -1, -1, 500, 300 ), _title ), button(-1), item(-1)
-      {
-         listbox = new PG_ListBox( this, PG_Rect( 10, 30, Width()-140, Height() - 40) );
-         listbox->SetMultiSelect( false );
-         listbox->sigSelectItem.connect( sigc::mem_fun( *this, &NewStringChooser::itemSelected ));
 
-         int counter = 0;
-         for ( vector<ASCString>::const_iterator i = _strings.begin(); i != _strings.end(); ++i ) {
-           PG_ListBoxDataItem<int>* listitem = new PG_ListBoxDataItem<int>(listbox, 20, *i, counter );
-           if ( counter == defaultEntry )
-              listitem->Select();
-            ++counter;
-         }
+  public:
+   NewStringChooser(const ASCString& _title, const vector<ASCString>& _strings,
+                    const vector<ASCString>& _buttons, int defaultEntry)
+      : ASC_PG_Dialog(NULL, PG_Rect(-1, -1, 500, 300), _title), button(-1), item(-1) {
+      listbox = new PG_ListBox(this, PG_Rect(10, 30, Width() - 140, Height() - 40));
+      listbox->SetMultiSelect(false);
+      listbox->sigSelectItem.connect(sigc::mem_fun(*this, &NewStringChooser::itemSelected));
 
-         counter = 0;
-         for ( vector<ASCString>::const_iterator i = _buttons.begin(); i != _buttons.end(); ++i ) {
-            AddStandardButton(*i)->sigClick.connect( sigc::bind( sigc::mem_fun( *this, & NewStringChooser::buttonpressed ),counter ));
-            ++counter;
-         }
+      int counter = 0;
+      for (vector<ASCString>::const_iterator i = _strings.begin(); i != _strings.end(); ++i) {
+         PG_ListBoxDataItem<int>* listitem = new PG_ListBoxDataItem<int>(listbox, 20, *i, counter);
+         if (counter == defaultEntry)
+            listitem->Select();
+         ++counter;
       }
 
-      int getButton()
-      {
-         return button;
+      counter = 0;
+      for (vector<ASCString>::const_iterator i = _buttons.begin(); i != _buttons.end(); ++i) {
+         AddStandardButton(*i)->sigClick.connect(
+            sigc::bind(sigc::mem_fun(*this, &NewStringChooser::buttonpressed), counter));
+         ++counter;
       }
-      int getItem()
-      {
-         return item;
-      }
-         
+   }
+
+   int getButton() { return button; }
+   int getItem() { return item; }
 };
 
-
-pair<int,int> new_chooseString ( const ASCString& title, const vector<ASCString>& entries, const vector<ASCString>& buttons, int defaultEntry  )
-{
-   NewStringChooser nsc ( title, entries, buttons, defaultEntry );
+pair<int, int> new_chooseString(const ASCString& title, const vector<ASCString>& entries,
+                                const vector<ASCString>& buttons, int defaultEntry) {
+   NewStringChooser nsc(title, entries, buttons, defaultEntry);
    nsc.Show();
    nsc.RunModal();
-   return make_pair(nsc.getButton(), nsc.getItem() );
+   return make_pair(nsc.getButton(), nsc.getItem());
 }
 
+class MultiLineEditorDialog : public ASC_PG_Dialog {
+   PG_MultiLineEdit* editor;
 
+  public:
+   MultiLineEditorDialog(const ASCString& title, const ASCString& textToEdit)
+      : ASC_PG_Dialog(NULL, PG_Rect(-1, -1, 400, 400), title), editor(NULL) {
+      editor = new PG_MultiLineEdit(this, PG_Rect(10, 40, Width() - 20, Height() - 80));
+      editor->SetText(textToEdit);
+      AddStandardButton("OK")->sigClick.connect(
+         sigc::bind(sigc::mem_fun(*this, &MultiLineEditorDialog::quitModalLoopW), 1));
+   }
 
-class MultiLineEditorDialog  : public ASC_PG_Dialog {
-      PG_MultiLineEdit* editor;
-
-   public:
-      MultiLineEditorDialog( const ASCString& title, const ASCString& textToEdit ) : ASC_PG_Dialog( NULL, PG_Rect( -1, -1, 400, 400 ), title), editor(NULL) 
-      {
-         editor = new PG_MultiLineEdit( this, PG_Rect( 10, 40, Width() - 20, Height() - 80 ) );
-         editor->SetText( textToEdit );
-         AddStandardButton( "OK" )->sigClick.connect( sigc::bind( sigc::mem_fun( *this, &MultiLineEditorDialog::quitModalLoopW ), 1 ));
-      }
-
-      ASCString GetEditedText() { return editor->GetText(); };
+   ASCString GetEditedText() { return editor->GetText(); };
 };
 
-bool MultiLineEditor( const ASCString& title, ASCString& textToEdit )
-{
-   MultiLineEditorDialog mle ( title, textToEdit );
+bool MultiLineEditor(const ASCString& title, ASCString& textToEdit) {
+   MultiLineEditorDialog mle(title, textToEdit);
    mle.Show();
-   if ( mle.RunModal() ) {
+   if (mle.RunModal()) {
       textToEdit = mle.GetEditedText();
       return true;
    } else
       return false;
-
 }
 
-BulkGraphicUpdates :: BulkGraphicUpdates( PG_Widget* parent )
-{
+BulkGraphicUpdates ::BulkGraphicUpdates(PG_Widget* parent) {
    bulk = PG_Application::GetBulkMode();
    this->parent = parent;
-   PG_Application::SetBulkMode( true );
+   PG_Application::SetBulkMode(true);
    active = true;
 };
 
-
-void BulkGraphicUpdates::release()
-{
-   if ( !bulk && active ) {
-      PG_Application::SetBulkMode( false );
-      if ( parent )
+void BulkGraphicUpdates::release() {
+   if (!bulk && active) {
+      PG_Application::SetBulkMode(false);
+      if (parent)
          parent->Update();
    }
    active = false;
 }
 
-BulkGraphicUpdates::~BulkGraphicUpdates()
-{
+BulkGraphicUpdates::~BulkGraphicUpdates() {
    release();
 }
 
-void Emboss::eventBlit (SDL_Surface *surface, const PG_Rect &src, const PG_Rect &dst) 
-{
-   Surface s = Surface::Wrap( PG_Application::GetScreen() );
+void Emboss::eventBlit(SDL_Surface* surface, const PG_Rect& src, const PG_Rect& dst) {
+   Surface s = Surface::Wrap(PG_Application::GetScreen());
 
-   PG_Rect clip= dst.IntersectRect( PG_Application::GetScreen()->clip_rect );
-   if ( inv )
-      rectangle<4> ( s, SPoint(dst.x, dst.y), dst.w, dst.h, ColorMerger_Brightness<4>( 0.7 ), ColorMerger_Brightness<4>( 1.4 ), clip);
+   PG_Rect clip = dst.IntersectRect(PG_Application::GetScreen()->clip_rect);
+   if (inv)
+      rectangle<4>(s, SPoint(dst.x, dst.y), dst.w, dst.h, ColorMerger_Brightness<4>(0.7),
+                   ColorMerger_Brightness<4>(1.4), clip);
    else
-      rectangle<4> ( s, SPoint(dst.x, dst.y), dst.w, dst.h, ColorMerger_Brightness<4>( 1.4 ), ColorMerger_Brightness<4>( 0.7 ), clip);
+      rectangle<4>(s, SPoint(dst.x, dst.y), dst.w, dst.h, ColorMerger_Brightness<4>(1.4),
+                   ColorMerger_Brightness<4>(0.7), clip);
 };
 
+class StringEditor : public ASC_PG_Dialog {
+   PG_LineEdit* editor;
 
-class StringEditor  : public ASC_PG_Dialog {
-      PG_LineEdit* editor;
+  public:
+   StringEditor(const ASCString& title, const ASCString& textToEdit)
+      : ASC_PG_Dialog(NULL, PG_Rect(-1, -1, 400, 200), title), editor(NULL) {
+      editor = new PG_LineEdit(this, PG_Rect(10, 40, Width() - 20, 25));
+      editor->SetText(textToEdit);
+      AddStandardButton("OK")->sigClick.connect(
+         sigc::bind(sigc::mem_fun(*this, &StringEditor::quitModalLoopW), 1));
+   }
 
-   public:
-      StringEditor( const ASCString& title, const ASCString& textToEdit ) : ASC_PG_Dialog( NULL, PG_Rect( -1, -1, 400, 200 ), title), editor(NULL) 
-      {
-         editor = new PG_LineEdit( this, PG_Rect( 10, 40, Width() - 20, 25 ) );
-         editor->SetText( textToEdit );
-         AddStandardButton( "OK" )->sigClick.connect( sigc::bind( sigc::mem_fun( *this, &StringEditor::quitModalLoopW ), 1 ));
-      }
-
-      ASCString GetEditedText() { return editor->GetText(); };
+   ASCString GetEditedText() { return editor->GetText(); };
 };
 
-ASCString editString2( const ASCString& title, const ASCString& defaultValue )
-{
-   StringEditor se ( title, defaultValue );
+ASCString editString2(const ASCString& title, const ASCString& defaultValue) {
+   StringEditor se(title, defaultValue);
    se.Show();
    se.RunModal();
    return se.GetEditedText();
 }
 
-int choiceDialog(const ASCString& text, const ASCString& button1, const ASCString& button2, const ASCString& shortLabel )
-{
+int choiceDialog(const ASCString& text, const ASCString& button1, const ASCString& button2,
+                 const ASCString& shortLabel) {
+   map<ASCString, int>& answers = CGameOptions::Instance()->dialogAnswers;
 
-   map<ASCString,int>& answers = CGameOptions::Instance()->dialogAnswers;
-
-   map<ASCString,int>::iterator i = answers.find( shortLabel );
-   if ( i != answers.end() )
+   map<ASCString, int>::iterator i = answers.find(shortLabel);
+   if (i != answers.end())
       return i->second;
 
    bool saveResult = false;
    int result = new_choice_dlg(text, shortLabel, button1, button2, saveResult);
 
-   if ( saveResult ) {
+   if (saveResult) {
       answers[shortLabel] = result;
       CGameOptions::Instance()->setChanged();
    }
 
-   return  result;
-
+   return result;
 }
-

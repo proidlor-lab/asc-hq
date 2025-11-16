@@ -18,7 +18,6 @@
      Boston, MA  02111-1307  USA
 */
 
-
 #include "repairbuildingcommand.h"
 
 #include "../vehicle.h"
@@ -32,122 +31,99 @@
 #include "changecontainerproperty.h"
 #include "consumeresource.h"
 
-
-      
-bool RepairBuildingCommand :: avail ( const Building* building )
-{
-   if ( !building )
+bool RepairBuildingCommand ::avail(const Building* building) {
+   if (!building)
       return false;
-   
-   if ( !building->damage )
+
+   if (!building->damage)
       return false;
    else
       return building->repairableDamage() > 0;
-   
 }
 
-
-RepairBuildingCommand :: RepairBuildingCommand ( Building* building )
-   : ContainerCommand ( building )
-{
-   if ( avail( building ))
-      setState( SetUp );
+RepairBuildingCommand ::RepairBuildingCommand(Building* building) : ContainerCommand(building) {
+   if (avail(building))
+      setState(SetUp);
 }
 
-RepairBuildingCommand::RepairData RepairBuildingCommand::getCost()
-{
+RepairBuildingCommand::RepairData RepairBuildingCommand::getCost() {
    RepairData data;
-   data.newDamage = getContainer()->getMaxRepair ( getContainer(), 0, data.cost  );
+   data.newDamage = getContainer()->getMaxRepair(getContainer(), 0, data.cost);
    data.damageDelta = getContainer()->damage - data.newDamage;
-   return data;   
+   return data;
 }
 
-
-
-
-ActionResult RepairBuildingCommand::go ( const Context& context )
-{
-   if ( getState() != SetUp )
+ActionResult RepairBuildingCommand::go(const Context& context) {
+   if (getState() != SetUp)
       return ActionResult(22000);
 
    ContainerBase* servicer = getContainer();
    Building* building = dynamic_cast<Building*>(servicer);
-   if ( !building )
-      return ActionResult( 22700 );
-   
-   if ( !avail( building ))
-      return ActionResult( 22700 );
-   
-   
+   if (!building)
+      return ActionResult(22700);
+
+   if (!avail(building))
+      return ActionResult(22700);
+
    RepairData data = getCost();
-   
-   std::unique_ptr<ChangeContainerProperty> propChange ( new ChangeContainerProperty( building, ChangeContainerProperty::Damage, data.newDamage ));
-   ActionResult res = propChange->execute( context );
-   if ( res.successful() )
+
+   std::unique_ptr<ChangeContainerProperty> propChange(
+      new ChangeContainerProperty(building, ChangeContainerProperty::Damage, data.newDamage));
+   ActionResult res = propChange->execute(context);
+   if (res.successful())
       propChange.release();
    else
       return res;
-   
-   std::unique_ptr<ChangeContainerProperty> propChange2 ( new ChangeContainerProperty( building, ChangeContainerProperty::RepairedThisTurn, data.damageDelta, false ));
-   res = propChange2->execute( context );
-   if ( res.successful() )
+
+   std::unique_ptr<ChangeContainerProperty> propChange2(new ChangeContainerProperty(
+      building, ChangeContainerProperty::RepairedThisTurn, data.damageDelta, false));
+   res = propChange2->execute(context);
+   if (res.successful())
       propChange2.release();
    else
       return res;
-   
-   
-   std::unique_ptr<ConsumeResource> resource ( new ConsumeResource( getContainer(), data.cost ));
-   res = resource->execute( context );
-   if ( res.successful() )
+
+   std::unique_ptr<ConsumeResource> resource(new ConsumeResource(getContainer(), data.cost));
+   res = resource->execute(context);
+   if (res.successful())
       resource.release();
-   
+
    return res;
 }
 
-
-
 static const int RepairBuildingCommandVersion = 1;
 
-void RepairBuildingCommand :: readData ( tnstream& stream )
-{
-   ContainerCommand::readData( stream );
+void RepairBuildingCommand ::readData(tnstream& stream) {
+   ContainerCommand::readData(stream);
    int version = stream.readInt();
-   if ( version > RepairBuildingCommandVersion )
-      throw tinvalidversion ( "RepairBuildingCommand", RepairBuildingCommandVersion, version );
+   if (version > RepairBuildingCommandVersion)
+      throw tinvalidversion("RepairBuildingCommand", RepairBuildingCommandVersion, version);
 }
 
-void RepairBuildingCommand :: writeData ( tnstream& stream ) const
-{
-   ContainerCommand::writeData( stream );
-   stream.writeInt( RepairBuildingCommandVersion );
+void RepairBuildingCommand ::writeData(tnstream& stream) const {
+   ContainerCommand::writeData(stream);
+   stream.writeInt(RepairBuildingCommandVersion);
 }
 
-
-ASCString RepairBuildingCommand :: getCommandString() const
-{
+ASCString RepairBuildingCommand ::getCommandString() const {
    ASCString c;
-   c.format("repairBuilding ( map, %d )", getContainerID() );
+   c.format("repairBuilding ( map, %d )", getContainerID());
    return c;
-
 }
 
-GameActionID RepairBuildingCommand::getID() const
-{
+GameActionID RepairBuildingCommand::getID() const {
    return ActionRegistry::RepairBuildingCommand;
 }
 
-ASCString RepairBuildingCommand::getDescription() const
-{
+ASCString RepairBuildingCommand::getDescription() const {
    ASCString s = "Repair building ";
-   if ( getContainer(true))
-      s += getContainer( true )->getName() + " at ";
-   s += ASCString::toString( getContainerID() );
-   
+   if (getContainer(true))
+      s += getContainer(true)->getName() + " at ";
+   s += ASCString::toString(getContainerID());
+
    return s;
 }
 
-namespace
-{
-   const bool r1 = registerAction<RepairBuildingCommand> ( ActionRegistry::RepairBuildingCommand );
+namespace {
+const bool r1 = registerAction<RepairBuildingCommand>(ActionRegistry::RepairBuildingCommand);
 }
-

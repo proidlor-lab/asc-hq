@@ -16,241 +16,245 @@
  ***************************************************************************/
 
 #ifndef containerbasetypeH
- #define containerbasetypeH
+#define containerbasetypeH
 
- #include "objects.h"
- #include "typen.h"
- #include "research.h"
- #include "mapitemtype.h"
- #include "memsize_interface.h"
+#include "objects.h"
+#include "typen.h"
+#include "research.h"
+#include "mapitemtype.h"
+#include "memsize_interface.h"
 
-class ContainerBaseType: public MapItemType, public LoadableItemType, public MemorySizeQueryInterface {
-   protected:
-      std::bitset<64> features;
-   public:
-     ContainerBaseType ();
+class ContainerBaseType : public MapItemType,
+                          public LoadableItemType,
+                          public MemorySizeQueryInterface {
+  protected:
+   std::bitset<64> features;
 
-     enum ContainerFunctions { TrainingCenter,
-        InternalVehicleProduction,
-        AmmoProduction,
-        InternalUnitRepair,
-        RecycleUnits,
-        Research,
-        Sonar,
-        SatelliteView,
-        MineView,
-        WindPowerPlant,
-        SolarPowerPlant,
-        MatterConverter,
-        MiningStation,
-        ProduceNonLeavableUnits,
-        ResourceSink,
-        ExternalEnergyTransfer,
-        ExternalMaterialTransfer,
-        ExternalFuelTransfer,
-        ExternalAmmoTransfer,
-        ExternalRepair,
-        NoObjectChaining,
-        SelfDestructOnConquer,
-        Paratrooper,
-        PlaceMines,
-        CruiserLanding,
-        ConquerBuildings,
-        MoveAfterAttack,
-        ExternalVehicleProduction,
-        ConstructBuildings,
-        IceBreaker,
-        NoInairRefuelling,
-        MakesTracks,
-        DetectsMineralResources,
-        NoReactionfire,
-        AutoRepair,
-        KamikazeOnly,
-        ImmuneToMines,
-        JamsOnlyOwnField,
-        MoveWithReactionFire,
-        OnlyMoveToAndFromTransports,
-        AutoHarvestObjects,
-        NoProductionCustomization,
-        ManualSelfDestruct,
-        NoMineRemoval,
-        NoImageRotation };
+  public:
+   ContainerBaseType();
 
-     
-     static const int functionNum = 45;
+   enum ContainerFunctions {
+      TrainingCenter,
+      InternalVehicleProduction,
+      AmmoProduction,
+      InternalUnitRepair,
+      RecycleUnits,
+      Research,
+      Sonar,
+      SatelliteView,
+      MineView,
+      WindPowerPlant,
+      SolarPowerPlant,
+      MatterConverter,
+      MiningStation,
+      ProduceNonLeavableUnits,
+      ResourceSink,
+      ExternalEnergyTransfer,
+      ExternalMaterialTransfer,
+      ExternalFuelTransfer,
+      ExternalAmmoTransfer,
+      ExternalRepair,
+      NoObjectChaining,
+      SelfDestructOnConquer,
+      Paratrooper,
+      PlaceMines,
+      CruiserLanding,
+      ConquerBuildings,
+      MoveAfterAttack,
+      ExternalVehicleProduction,
+      ConstructBuildings,
+      IceBreaker,
+      NoInairRefuelling,
+      MakesTracks,
+      DetectsMineralResources,
+      NoReactionfire,
+      AutoRepair,
+      KamikazeOnly,
+      ImmuneToMines,
+      JamsOnlyOwnField,
+      MoveWithReactionFire,
+      OnlyMoveToAndFromTransports,
+      AutoHarvestObjects,
+      NoProductionCustomization,
+      ManualSelfDestruct,
+      NoMineRemoval,
+      NoImageRotation
+   };
 
-     bool hasFunction( ContainerFunctions function ) const;
-     bool hasAnyFunction( std::bitset<64> functions ) const;
-     static const char* getFunctionName( ContainerFunctions function );
+   static const int functionNum = 45;
 
-   protected:
-      void setFunction( ContainerFunctions function );
-   public:
-     
-     int id;
+   bool hasFunction(ContainerFunctions function) const;
+   bool hasAnyFunction(std::bitset<64> functions) const;
+   static const char* getFunctionName(ContainerFunctions function);
 
-     //! when loading a file and these IDs are encountered, this object will be used.
-     vector<int> secondaryIDs;
+  protected:
+   void setFunction(ContainerFunctions function);
 
+  public:
+   int id;
 
-     //! a short name, for example B-52
-     ASCString    name;
+   //! when loading a file and these IDs are encountered, this object will be used.
+   vector<int> secondaryIDs;
 
-     //! short description of the units role, for example "strategic bomber"
-     ASCString    description;
-     
-     ASCString getName() const { return name; };
-     int getID() const { return id; };
-     
-     
-     //! an extensive information about the unit/building which may be several paragraphs long
-     ASCString    infotext;
+   //! a short name, for example B-52
+   ASCString name;
 
-     //! the radar jamming power
-     int          jamming;
+   //! short description of the units role, for example "strategic bomber"
+   ASCString description;
 
-     //! the visibility range
-     int          view;
+   ASCString getName() const { return name; };
+   int getID() const { return id; };
 
-     //! the levels of height which this unit can enter
-     int          height;
-     int getHeight() const { return height; };
+   //! an extensive information about the unit/building which may be several paragraphs long
+   ASCString infotext;
 
-     Resources productionCost;
-     virtual ~ContainerBaseType() {};
+   //! the radar jamming power
+   int jamming;
 
-     //! the maximum number of units that can be loaded
-     int maxLoadableUnits;
+   //! the visibility range
+   int view;
 
-     //! the maximum size of a unit that may enter the building
-     int maxLoadableUnitSize;
+   //! the levels of height which this unit can enter
+   int height;
+   int getHeight() const { return height; };
 
-     //! the maximum total weight of all loaded units
-     int maxLoadableWeight;
+   Resources productionCost;
+   virtual ~ContainerBaseType(){};
 
-     //! bitmapped: vehicle categories that can be stored the container
-     int vehicleCategoriesStorable;
+   //! the maximum number of units that can be loaded
+   int maxLoadableUnits;
 
-     //! bitmapped: vehicle categories that can be produced in the container
-     int vehicleCategoriesProduceable;
+   //! the maximum size of a unit that may enter the building
+   int maxLoadableUnitSize;
 
-     /** the default production capabilities of this container.
-         Please be aware that a VehicleType has additional production for building units externally */
-     vector<IntRange> vehiclesInternallyProduceable;
+   //! the maximum total weight of all loaded units
+   int maxLoadableWeight;
 
-     class TransportationIO {
-         public:
-            TransportationIO ();
-            static const int entranceModeNum = 3;
-            enum { In = 1, Out = 2, Docking = 4 };
-            int mode;
+   //! bitmapped: vehicle categories that can be stored the container
+   int vehicleCategoriesStorable;
 
-            // int functionbits
+   //! bitmapped: vehicle categories that can be produced in the container
+   int vehicleCategoriesProduceable;
 
-            //! a loadable unit must be on this level of height; 0 if not used
-            int height_abs;
+   /** the default production capabilities of this container.
+       Please be aware that a VehicleType has additional production for building units externally */
+   vector<IntRange> vehiclesInternallyProduceable;
 
-            //! a height of a loadable unit have this height relative to the container; -100 if not used
-            int height_rel;
+   class TransportationIO {
+     public:
+      TransportationIO();
+      static const int entranceModeNum = 3;
+      enum { In = 1, Out = 2, Docking = 4 };
+      int mode;
 
-            //! the container must be on this height
-            int container_height;
+      // int functionbits
 
-            //! bitmapped: vehicle categories that may enter the container
-            int vehicleCategoriesLoadable;
+      //! a loadable unit must be on this level of height; 0 if not used
+      int height_abs;
 
-            int dockingHeight_abs;
+      //! a height of a loadable unit have this height relative to the container; -100 if not used
+      int height_rel;
 
-            int dockingHeight_rel;
+      //! the container must be on this height
+      int container_height;
 
-            std::bitset<64> requiresUnitFeature;
+      //! bitmapped: vehicle categories that may enter the container
+      int vehicleCategoriesLoadable;
 
-            int movecost;
+      int dockingHeight_abs;
 
-            bool disableAttack;
+      int dockingHeight_rel;
 
-            void runTextIO ( PropertyContainer& pc );
-            void read ( tnstream& stream ) ;
-            void write ( tnstream& stream ) const ;
-     };
+      std::bitset<64> requiresUnitFeature;
 
-     typedef vector<TransportationIO> EntranceSystems;
-     EntranceSystems   entranceSystems;
+      int movecost;
 
-     TechAdapterDependency techDependency;
+      bool disableAttack;
 
-     //! the filename of an image that is shown in info dialogs
-     ASCString infoImageFilename;
-     ASCString infoImageSmallFilename;
+      void runTextIO(PropertyContainer& pc);
+      void read(tnstream& stream);
+      void write(tnstream& stream) const;
+   };
 
-     void runTextIO ( PropertyContainer& pc );
+   typedef vector<TransportationIO> EntranceSystems;
+   EntranceSystems entranceSystems;
 
-     //! can units of the given type be moved into this buildtype? This is a prerequisite - but not the only requirement - for a real unit to move into a real building
-     bool vehicleFit ( const VehicleType* type ) const ;
+   TechAdapterDependency techDependency;
 
-     /** checks the unloading of a unit type
-         \param vehicleType the vehicletype for which the unloading is checked
-         \param carrierHeight assume the carrier was on this height (numerical: 0 - 7).
-         \return the levels of height on which this unit can be unloaded; or 0 if no unloading is possible
-     */
-     int  vehicleUnloadable ( const VehicleType* vehicleType, int carrierHeight ) const;
+   //! the filename of an image that is shown in info dialogs
+   ASCString infoImageFilename;
+   ASCString infoImageSmallFilename;
 
+   void runTextIO(PropertyContainer& pc);
 
-     void read ( tnstream& stream ) ;
-     void write ( tnstream& stream ) const ;
+   //! can units of the given type be moved into this buildtype? This is a prerequisite - but not
+   //! the only requirement - for a real unit to move into a real building
+   bool vehicleFit(const VehicleType* type) const;
 
-     
+   /** checks the unloading of a unit type
+       \param vehicleType the vehicletype for which the unloading is checked
+       \param carrierHeight assume the carrier was on this height (numerical: 0 - 7).
+       \return the levels of height on which this unit can be unloaded; or 0 if no unloading is
+      possible
+   */
+   int vehicleUnloadable(const VehicleType* vehicleType, int carrierHeight) const;
 
-        //! currently only used by mining stations: the efficiency of the resource extraction from the ground. Base is 1024
-     int          efficiencyfuel;
+   void read(tnstream& stream);
+   void write(tnstream& stream) const;
 
-        //! currently only used by mining stations: the efficiency of the resource extraction from the ground. Base is 1024
-     int          efficiencymaterial;
+   //! currently only used by mining stations: the efficiency of the resource extraction from the
+   //! ground. Base is 1024
+   int efficiencyfuel;
 
-        //! the maximum number of research points a research center may produce
-     int          maxresearchpoints;
+   //! currently only used by mining stations: the efficiency of the resource extraction from the
+   //! ground. Base is 1024
+   int efficiencymaterial;
 
-        //! when a building of this type is placed on a map, its maxResearch property will be set to this value
-     int          defaultMaxResearchpoints;
+   //! the maximum number of research points a research center may produce
+   int maxresearchpoints;
 
-        //! the number of reseach points for which the plus settings apllies
-     int          nominalresearchpoints;
+   //! when a building of this type is placed on a map, its maxResearch property will be set to this
+   //! value
+   int defaultMaxResearchpoints;
 
-     //! if the unit is repaired in the field (that is, not inside a transport or building), it can only be repaired up to this level
-     //! 0 would result in a complete repair being possible, 20 that it can only be restored to 20% damage (80% health).
-     int  minFieldRepairDamage;
-     
-     Resources    maxplus;
+   //! the number of reseach points for which the plus settings apllies
+   int nominalresearchpoints;
 
-        //! if a new building is constructed, this will be the resource production of the building
-     Resources    defaultProduction;
+   //! if the unit is repaired in the field (that is, not inside a transport or building), it can
+   //! only be repaired up to this level 0 would result in a complete repair being possible, 20 that
+   //! it can only be restored to 20% damage (80% health).
+   int minFieldRepairDamage;
 
-     virtual int getMoveMalusType() const = 0;
-     
-     /**  returns the Storage capacity of the unit
-          \param mode: 0 = ASC Resource mode ; 1 = BI Resource mode
-     */
-     Resources   getStorageCapacity( int mode ) const;
-   protected:
-     Resources    asc_mode_tank;
-     Resources    bi_mode_tank;
-     
-   public:
+   Resources maxplus;
 
-      ResourceMatrix productionEfficiency;
-      
-      struct {
-         int range;
-         
-         int maxFieldsPerTurn;
-         
-        //! the ids of objects this unit can construct
-        vector<IntRange> objectsHarvestable;
+   //! if a new building is constructed, this will be the resource production of the building
+   Resources defaultProduction;
 
-        //! the group-ids of objects this unit can construct
-        vector<IntRange> objectGroupsHarvestable;
-      } autoHarvest;
-     
- };
+   virtual int getMoveMalusType() const = 0;
+
+   /**  returns the Storage capacity of the unit
+        \param mode: 0 = ASC Resource mode ; 1 = BI Resource mode
+   */
+   Resources getStorageCapacity(int mode) const;
+
+  protected:
+   Resources asc_mode_tank;
+   Resources bi_mode_tank;
+
+  public:
+   ResourceMatrix productionEfficiency;
+
+   struct {
+      int range;
+
+      int maxFieldsPerTurn;
+
+      //! the ids of objects this unit can construct
+      vector<IntRange> objectsHarvestable;
+
+      //! the group-ids of objects this unit can construct
+      vector<IntRange> objectGroupsHarvestable;
+   } autoHarvest;
+};
 
 #endif

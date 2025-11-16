@@ -15,21 +15,19 @@
 class PG_LineEdit;
 class ContainerBase;
 
-class UnitNaming: public ASC_PG_Dialog {
-      PG_LineEdit* publicName;
-      PG_LineEdit* privateName;
-      ContainerBase* unit;
-         
-      bool ok();
-      bool cancel();
-      static const int border  = 20;
-      bool line1completed();
-   public:
-      UnitNaming ( ContainerBase* unit );
-      int RunModal();
+class UnitNaming : public ASC_PG_Dialog {
+   PG_LineEdit* publicName;
+   PG_LineEdit* privateName;
+   ContainerBase* unit;
+
+   bool ok();
+   bool cancel();
+   static const int border = 20;
+   bool line1completed();
+
+  public:
+   UnitNaming(ContainerBase* unit);
+   int RunModal();
 };
-
-
-
 
 #endif

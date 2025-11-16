@@ -8,22 +8,18 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include <windows.h>
 #include <winuser.h>
 
 #include "win32-errormsg.h"
 #include "../util/messaginghub.h"
 
-
-void Win32IoErrorHandler::printError( const ASCString& msg )
-{
-   MessageBox(NULL, msg.c_str(), "Error", MB_ICONERROR | MB_OK | MB_TASKMODAL );
+void Win32IoErrorHandler::printError(const ASCString& msg) {
+   MessageBox(NULL, msg.c_str(), "Error", MB_ICONERROR | MB_OK | MB_TASKMODAL);
 }
 
-Win32IoErrorHandler::Win32IoErrorHandler()
-{
-   MessagingHub::Instance().error.connect( sigc::mem_fun( *this, &Win32IoErrorHandler::printError ));
-   MessagingHub::Instance().fatalError.connect( sigc::mem_fun( *this, &Win32IoErrorHandler::printError ));
+Win32IoErrorHandler::Win32IoErrorHandler() {
+   MessagingHub::Instance().error.connect(sigc::mem_fun(*this, &Win32IoErrorHandler::printError));
+   MessagingHub::Instance().fatalError.connect(
+      sigc::mem_fun(*this, &Win32IoErrorHandler::printError));
 }
-

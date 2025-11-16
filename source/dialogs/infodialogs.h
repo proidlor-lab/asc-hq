@@ -16,7 +16,7 @@ extern void showSearchPath();
 
 extern void showSDLInfo();
 
-extern void showCargoSummary( MapField* fld );
+extern void showCargoSummary(MapField* fld);
 
 extern void viewFont();
 
@@ -29,8 +29,5 @@ extern void showUnitEndurance();
 extern void resourceAnalysis();
 
 extern void createUnitCostList();
-
-
-
 
 #endif

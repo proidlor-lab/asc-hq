@@ -10,7 +10,6 @@
 #ifndef attacktestH
 #define attacktestH
 
- extern void testAttack();
-
+extern void testAttack();
 
 #endif

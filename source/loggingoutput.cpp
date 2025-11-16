@@ -8,34 +8,25 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include <iostream>
 
 #include "loggingoutput.h"
 #include "util/messaginghub.h"
 #include "basestrm.h"
 
-
-void LoggingOutputHandler::messageLogger( const ASCString& msg, int level )
-{
+void LoggingOutputHandler::messageLogger(const ASCString& msg, int level) {
    logfile << msg << std::flush;
 }
 
-ASCString LoggingOutputHandler::getFilename( const ASCString& path )
-{
+ASCString LoggingOutputHandler::getFilename(const ASCString& path) {
    ASCString p = path;
-   appendbackslash ( p );
+   appendbackslash(p);
    p += "log.txt";
    return p;
 }
 
-
-LoggingOutputHandler::LoggingOutputHandler( const ASCString& path )
-   : filename( getFilename( path )), logfile( filename.c_str() )
-{
-   MessagingHub::Instance().logMessage.connect( sigc::mem_fun( *this, &LoggingOutputHandler::messageLogger ));
+LoggingOutputHandler::LoggingOutputHandler(const ASCString& path)
+   : filename(getFilename(path)), logfile(filename.c_str()) {
+   MessagingHub::Instance().logMessage.connect(
+      sigc::mem_fun(*this, &LoggingOutputHandler::messageLogger));
 }
-
-
-
-

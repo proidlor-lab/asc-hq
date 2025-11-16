@@ -16,22 +16,18 @@
 #include "../mapdisplay.h"
 #include "../iconrepository.h"
 
-
-
-SDL_Surface* TargetCoordinateLocator :: getImage()
-{
+SDL_Surface* TargetCoordinateLocator ::getImage() {
    return IconRepository::getIcon("target.png").getBaseSurface();
 };
-bool 	TargetCoordinateLocator :: eventMouseButtonDown (const SDL_MouseButtonEvent *button)
-{
-   if ( button->button == 3 ) {
-      SelectFromMap sfm( positions, actmap, false, true);
+bool TargetCoordinateLocator ::eventMouseButtonDown(const SDL_MouseButtonEvent* button) {
+   if (button->button == 3) {
+      SelectFromMap sfm(positions, actmap, false, true);
       sfm.Show();
       sfm.RunModal();
    }
-   if ( button->button == 1 ) {
+   if (button->button == 1) {
       MapDisplayPG* md = getMainScreenWidget()->getMapDisplay();
-      md->cursor.goTo( *positions.begin() );
+      md->cursor.goTo(*positions.begin());
       actmap->getCursor() = *positions.begin();
       cursorMoved();
    }
@@ -39,8 +35,8 @@ bool 	TargetCoordinateLocator :: eventMouseButtonDown (const SDL_MouseButtonEven
    return true;
 }
 
-TargetCoordinateLocator::TargetCoordinateLocator(PG_Widget* parent, const PG_Point& pos, const SelectFromMap::CoordinateList& coordinates ) : PG_Image( parent, pos, getImage(), false )
-{
+TargetCoordinateLocator::TargetCoordinateLocator(PG_Widget* parent, const PG_Point& pos,
+                                                 const SelectFromMap::CoordinateList& coordinates)
+   : PG_Image(parent, pos, getImage(), false) {
    positions = coordinates;
 }
-

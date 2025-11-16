@@ -25,25 +25,23 @@ class Player;
 class GameMap;
 
 class ContainerConstControls {
-      const ContainerBase* container;
+   const ContainerBase* container;
 
-      const Player& getPlayer() const;
-      const GameMap* getMap() const;
-   public:
-      ContainerConstControls( const ContainerBase* cb ) : container( cb ) {};
+   const Player& getPlayer() const;
+   const GameMap* getMap() const;
 
-   protected:
-      bool unitProductionAvailable() const;
+  public:
+   ContainerConstControls(const ContainerBase* cb) : container(cb){};
 
-   public:
-      /** returns 0 if the unit is producable and != 0 otherwise. THe bits in the result say why the unit is not producable
-          Bit 1,2+3: energy, material and fuel
-          Bit 10: not researched yet
-          Bit 11: can not be unloaded
-      */
-      int unitProductionPrerequisites( const VehicleType* type, bool internally ) const;
+  protected:
+   bool unitProductionAvailable() const;
 
+  public:
+   /** returns 0 if the unit is producable and != 0 otherwise. THe bits in the result say why the
+      unit is not producable Bit 1,2+3: energy, material and fuel Bit 10: not researched yet Bit 11:
+      can not be unloaded
+   */
+   int unitProductionPrerequisites(const VehicleType* type, bool internally) const;
 };
-
 
 #endif

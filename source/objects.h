@@ -19,78 +19,75 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef objectsH
- #define objectsH
+#define objectsH
 
- #include <vector>
+#include <vector>
 
- #include "typen.h"
- #include "mapitemtype.h"
- #include "overviewmapimage.h"
- #include "graphics/surface.h"
- 
- class ObjectType;
+#include "typen.h"
+#include "mapitemtype.h"
+#include "overviewmapimage.h"
+#include "graphics/surface.h"
+
+class ObjectType;
 
 class AgeableItem {
-    protected:
-       AgeableItem() : lifetimer(-1) {};
-    public:
-       int lifetimer;
+  protected:
+   AgeableItem() : lifetimer(-1){};
 
-       //! ages the object by one turn. Returns true if the object shall be removed
-       static bool age( AgeableItem& obj );
+  public:
+   int lifetimer;
+
+   //! ages the object by one turn. Returns true if the object shall be removed
+   static bool age(AgeableItem& obj);
 };
 
 //! an instance of an object type (#ObjectType) on the map
 class Object : public AgeableItem {
-    public:
-       const ObjectType* typ;
-       const ObjectType* getType() const { return typ; };
-       int damage;
-       int dir;
-       int remainingGrowthTime;
-       
-       Object ();
-       Object ( const ObjectType* o );
-       void display ( Surface& surface, const SPoint& pos, int weather = 0 ) const;
-       const OverviewMapImage* getOverviewMapImage( int weather );
-       void setDir ( int dir );
-       int  getDir() const;
+  public:
+   const ObjectType* typ;
+   const ObjectType* getType() const { return typ; };
+   int damage;
+   int dir;
+   int remainingGrowthTime;
 
-       void write ( tnstream& stream );
-       void read ( tnstream& stream );
-       
+   Object();
+   Object(const ObjectType* o);
+   void display(Surface& surface, const SPoint& pos, int weather = 0) const;
+   const OverviewMapImage* getOverviewMapImage(int weather);
+   void setDir(int dir);
+   int getDir() const;
+
+   void write(tnstream& stream);
+   void read(tnstream& stream);
 };
 
 const int cminenum = 4;
-extern const char* MineNames[cminenum] ;
-extern const int MineBasePunch[cminenum]  ;
+extern const char* MineNames[cminenum];
+extern const int MineBasePunch[cminenum];
 
-enum MineTypes { cmantipersonnelmine = 1 , cmantitankmine, cmmooredmine, cmfloatmine  };
+enum MineTypes { cmantipersonnelmine = 1, cmantitankmine, cmmooredmine, cmfloatmine };
 
 class MineType : public MapItemType {
-      MineTypes type;
-   public:
-      int id;
+   MineTypes type;
 
-      //! not really used for minetypes.
-      vector<int> secondaryIDs;
+  public:
+   int id;
 
-      ASCString name;
-      ASCString location;
-      
-      int getID() const { return id; }; 
-      
-      MineType( MineTypes t ) : type ( t ), id( int(t)) {};
-      MineType( const MineType& w ) : type ( w.type ) {};
-      ASCString getName() const {
-         return MineNames[int(type)-1];
-      };
-      
-      void paint ( Surface& surface, const SPoint& pos ) const ;
-      static void paint( MineTypes type, int player, Surface& surf, const SPoint& pos );
+   //! not really used for minetypes.
+   vector<int> secondaryIDs;
+
+   ASCString name;
+   ASCString location;
+
+   int getID() const { return id; };
+
+   MineType(MineTypes t) : type(t), id(int(t)){};
+   MineType(const MineType& w) : type(w.type){};
+   ASCString getName() const { return MineNames[int(type) - 1]; };
+
+   void paint(Surface& surface, const SPoint& pos) const;
+   static void paint(MineTypes type, int player, Surface& surf, const SPoint& pos);
 };
 
 #endif
-

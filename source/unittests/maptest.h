@@ -10,7 +10,6 @@
 #ifndef maptestH
 #define maptestH
 
- extern void testMaps();
-
+extern void testMaps();
 
 #endif

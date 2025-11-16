@@ -17,26 +17,23 @@ namespace mcts {
  * Aggregates results provided by multiple agents using a weighted sum.
  */
 class UtilityAggregator {
-public:
-    UtilityAggregator() = default;
+  public:
+   UtilityAggregator() = default;
 
-    explicit UtilityAggregator(AgentAggregationConfig config)
-        : config_(config) {}
+   explicit UtilityAggregator(AgentAggregationConfig config) : config_(config) {}
 
-    /**
-     * Evaluate all agents and return a combined score.
-     */
-    [[nodiscard]] AggregatedAgentScore aggregate(
-        const std::vector<const IAgent*>& agents,
-        const Action& action,
-        const AgentContext& context
-    ) const;
+   /**
+    * Evaluate all agents and return a combined score.
+    */
+   [[nodiscard]] AggregatedAgentScore aggregate(const std::vector<const IAgent*>& agents,
+                                                const Action& action,
+                                                const AgentContext& context) const;
 
-private:
-    AgentAggregationConfig config_{};
+  private:
+   AgentAggregationConfig config_{};
 };
 
-} // namespace mcts
-} // namespace asc
+}  // namespace mcts
+}  // namespace asc
 
-#endif // MCTS_UTILITY_AGGREGATOR_H
+#endif  // MCTS_UTILITY_AGGREGATOR_H

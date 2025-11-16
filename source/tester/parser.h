@@ -8,42 +8,37 @@
 // $insert scanner.h
 #include "scannerwrapper.h"
 
-
 #undef Parser
-class Parser: public ParserBase
-{
-    // $insert scannerobject
-    Scanner d_scanner;
-        
-    public:
-        int parse();
+class Parser : public ParserBase {
+   // $insert scannerobject
+   Scanner d_scanner;
 
-    private:
-        void error(char const *msg);    // called on (syntax) errors
-        int lex();                      // returns the next token from the
-                                        // lexical scanner. 
-        void print();                   // use, e.g., d_token, d_loc
+  public:
+   int parse();
 
-    // support functions for parse():
-        void executeAction(int ruleNr);
-        void errorRecovery();
-        int lookup(bool recovery);
-        void nextToken();
+  private:
+   void error(char const* msg);  // called on (syntax) errors
+   int lex();                    // returns the next token from the
+                                 // lexical scanner.
+   void print();                 // use, e.g., d_token, d_loc
+
+   // support functions for parse():
+   void executeAction(int ruleNr);
+   void errorRecovery();
+   int lookup(bool recovery);
+   void nextToken();
 };
 
-inline void Parser::error(char const *msg)
-{
-    std::cerr << msg << std::endl;
+inline void Parser::error(char const* msg) {
+   std::cerr << msg << std::endl;
 }
 
 // $insert lex
-inline int Parser::lex()
-{
-    return d_scanner.yylex();
+inline int Parser::lex() {
+   return d_scanner.yylex();
 }
 
-inline void Parser::print()      // use d_token, d_loc
+inline void Parser::print()  // use d_token, d_loc
 {}
-
 
 #endif

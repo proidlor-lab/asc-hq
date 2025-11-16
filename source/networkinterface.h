@@ -13,12 +13,10 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
-
-
 
 #ifndef networkinterfaceH
 #define networkinterfaceH
@@ -31,20 +29,21 @@
 class GameMap;
 
 class GameTransferMechanism {
-   protected:   
-      virtual void readChildData ( tnstream& stream ) = 0;
-      virtual void writeChildData ( tnstream& stream ) const = 0;
-   public:
-      virtual void setup() = 0;
-      virtual void send( const GameMap* map, int lastPlayer, int lastturn ) = 0;
-      virtual GameMap* receive() = 0;
-      static GameTransferMechanism* read ( tnstream& stream );
-      void write ( tnstream& stream ) const;
-      virtual ASCString getMechanismID() const = 0;
-      virtual ~GameTransferMechanism() {};
+  protected:
+   virtual void readChildData(tnstream& stream) = 0;
+   virtual void writeChildData(tnstream& stream) const = 0;
+
+  public:
+   virtual void setup() = 0;
+   virtual void send(const GameMap* map, int lastPlayer, int lastturn) = 0;
+   virtual GameMap* receive() = 0;
+   static GameTransferMechanism* read(tnstream& stream);
+   void write(tnstream& stream) const;
+   virtual ASCString getMechanismID() const = 0;
+   virtual ~GameTransferMechanism(){};
 };
 
-typedef Loki::SingletonHolder< Factory< GameTransferMechanism, ASCString > > networkTransferMechanismFactory;
-
+typedef Loki::SingletonHolder<Factory<GameTransferMechanism, ASCString>>
+   networkTransferMechanismFactory;
 
 #endif

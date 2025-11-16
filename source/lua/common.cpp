@@ -1,6 +1,6 @@
 /*
      This file is part of Advanced Strategic Command; http://www.asc-hq.de
-     Copyright (C) 1994-2010  Martin Bickel  
+     Copyright (C) 1994-2010  Martin Bickel
 
      This program is free software; you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by
@@ -18,14 +18,13 @@
      Boston, MA  02111-1307  USA
 */
 
-
 #include "../sg.h"
 #include "../ascstring.h"
 #include "../vehicle.h"
 #include "../gamemap.h"
 #include "../spfst.h"
 #include "../spfst-legacy.h"
-               
+
 #include "../itemrepository.h"
 #include "../dlg_box.h"
 #include "../paradialog.h"
@@ -39,184 +38,164 @@
 #include <pgpropertyfield_string.h>
 #include <pgpropertyfield_button.h>
 #include <pgpropertyeditor.h>
-         
+
 #include "common.h"
-         
-GameMap* getActiveMap()
-{
+
+GameMap* getActiveMap() {
    return actmap;
 }
-         
-const ObjectType* getObjectType( int id )
-{
-   return objectTypeRepository.getObject_byID( id );   
+
+const ObjectType* getObjectType(int id) {
+   return objectTypeRepository.getObject_byID(id);
 }
 
-const BuildingType* getBuildingType( int id )
-{
-   return buildingTypeRepository.getObject_byID( id );   
+const BuildingType* getBuildingType(int id) {
+   return buildingTypeRepository.getObject_byID(id);
 }
 
-const VehicleType* getUnitType( int id )
-{
-   return vehicleTypeRepository.getObject_byID( id );   
+const VehicleType* getUnitType(int id) {
+   return vehicleTypeRepository.getObject_byID(id);
 }
 
-const TerrainType* getTerrainType( int id )
-{
-   return terrainTypeRepository.getObject_byID( id );   
+const TerrainType* getTerrainType(int id) {
+   return terrainTypeRepository.getObject_byID(id);
 }
 
+bool PropertyDialog ::ok() {
+   result = true;
+   propertyEditor->Apply();
+   QuitModal();
+   return true;
+}
 
-      bool PropertyDialog :: ok() {
-         result = true;
-         propertyEditor->Apply();
-         QuitModal();
-         return true;  
-      }
-      
-      bool PropertyDialog :: cancel() {
-         result = false;
-         QuitModal();
-         return true;  
-      }
-      
-      
-      void PropertyDialog :: setup() 
-      {
-         propertyEditor = new ASC_PropertyEditor( this, PG_Rect( 10, GetTitlebarHeight()+10, Width() - 20, Height() - GetTitlebarHeight() - 60 ), "PropertyEditor", 70 );
-         
-         StandardButtonDirection( Horizontal );
-         AddStandardButton("OK")->sigClick.connect( sigc::hide( sigc::mem_fun( *this, &PropertyDialog::ok )));
-         AddStandardButton("Cancel")->sigClick.connect( sigc::hide( sigc::mem_fun( *this, &PropertyDialog::cancel )));
-      }
-         
-      
-      PropertyDialog :: PropertyDialog( const ASCString& title ) : ASC_PG_Dialog( NULL, PG_Rect( -1, -1, 400, 500 ), title ), propertyEditor(NULL), result(false)
-      {
-         setup();
-      }
-   
-      PropertyDialog :: PropertyDialog( const ASCString& title, const PG_Rect& pos ) : ASC_PG_Dialog( NULL, pos, title ), propertyEditor(NULL), result(false)
-      {
-         setup();
-      }
-      
-      
-      void PropertyDialog :: addBool( const ASCString& name, bool defaultValue )
-      {
-         boolValues[name] = defaultValue ; 
-         new PG_PropertyField_Checkbox<bool>( propertyEditor, name, &boolValues[name] );
-      }
-      
-      void PropertyDialog :: addInteger( const ASCString& name, int defaultValue )
-      {
-         intValues[name] = defaultValue; 
-         new PG_PropertyField_Integer<int>( propertyEditor, name, &intValues[name] );
-      }
-      
-      void PropertyDialog :: addIntDropdown( const ASCString& name, const StringArray& names, int defaultValue )
-      {
-         intValues[name] = defaultValue; 
-         new PG_PropertyField_IntDropDown<int,vector<ASCString>::const_iterator>( propertyEditor, name, &intValues[name], names.values.begin(), names.values.end() );
-      }
-      
-      void PropertyDialog :: addString( const ASCString& name, const ASCString& defaultValue )
-      {
-         stringValues[name] = defaultValue ; 
-         new PG_PropertyField_String<ASCString>( propertyEditor, name, &stringValues[name] );
-      }
-      
-      std::string PropertyDialog :: getString( const ASCString& name )
-      {
-         return stringValues[name];  
-      }
-      
-      int PropertyDialog :: getInteger( const ASCString& name )
-      {
-         return intValues[name];  
-      }
-      
-      bool PropertyDialog :: getBool( const ASCString& name )
-      {
-         return boolValues[name];  
-      }
+bool PropertyDialog ::cancel() {
+   result = false;
+   QuitModal();
+   return true;
+}
 
-      bool PropertyDialog :: run() {
-         Show();
-         RunModal();  
-         Hide();
-         return result;
-      }
-   
-      
-int selectString ( const ASCString& title, const StringArray& entries, int defaultEntry  )
-{
+void PropertyDialog ::setup() {
+   propertyEditor = new ASC_PropertyEditor(
+      this,
+      PG_Rect(10, GetTitlebarHeight() + 10, Width() - 20, Height() - GetTitlebarHeight() - 60),
+      "PropertyEditor", 70);
+
+   StandardButtonDirection(Horizontal);
+   AddStandardButton("OK")->sigClick.connect(sigc::hide(sigc::mem_fun(*this, &PropertyDialog::ok)));
+   AddStandardButton("Cancel")->sigClick.connect(
+      sigc::hide(sigc::mem_fun(*this, &PropertyDialog::cancel)));
+}
+
+PropertyDialog ::PropertyDialog(const ASCString& title)
+   : ASC_PG_Dialog(NULL, PG_Rect(-1, -1, 400, 500), title), propertyEditor(NULL), result(false) {
+   setup();
+}
+
+PropertyDialog ::PropertyDialog(const ASCString& title, const PG_Rect& pos)
+   : ASC_PG_Dialog(NULL, pos, title), propertyEditor(NULL), result(false) {
+   setup();
+}
+
+void PropertyDialog ::addBool(const ASCString& name, bool defaultValue) {
+   boolValues[name] = defaultValue;
+   new PG_PropertyField_Checkbox<bool>(propertyEditor, name, &boolValues[name]);
+}
+
+void PropertyDialog ::addInteger(const ASCString& name, int defaultValue) {
+   intValues[name] = defaultValue;
+   new PG_PropertyField_Integer<int>(propertyEditor, name, &intValues[name]);
+}
+
+void PropertyDialog ::addIntDropdown(const ASCString& name, const StringArray& names,
+                                     int defaultValue) {
+   intValues[name] = defaultValue;
+   new PG_PropertyField_IntDropDown<int, vector<ASCString>::const_iterator>(
+      propertyEditor, name, &intValues[name], names.values.begin(), names.values.end());
+}
+
+void PropertyDialog ::addString(const ASCString& name, const ASCString& defaultValue) {
+   stringValues[name] = defaultValue;
+   new PG_PropertyField_String<ASCString>(propertyEditor, name, &stringValues[name]);
+}
+
+std::string PropertyDialog ::getString(const ASCString& name) {
+   return stringValues[name];
+}
+
+int PropertyDialog ::getInteger(const ASCString& name) {
+   return intValues[name];
+}
+
+bool PropertyDialog ::getBool(const ASCString& name) {
+   return boolValues[name];
+}
+
+bool PropertyDialog ::run() {
+   Show();
+   RunModal();
+   Hide();
+   return result;
+}
+
+int selectString(const ASCString& title, const StringArray& entries, int defaultEntry) {
    vector<ASCString> buttons;
-   buttons.push_back("OK" );
-   buttons.push_back("Cancel" );
-   
-   pair<int,int> r = new_chooseString ( title, entries.values, buttons, defaultEntry );
-   if ( r.first == 1 )
+   buttons.push_back("OK");
+   buttons.push_back("Cancel");
+
+   pair<int, int> r = new_chooseString(title, entries.values, buttons, defaultEntry);
+   if (r.first == 1)
       return -1;
    else
       return r.second;
 }
 
-GameMap* getLoadingMap()
-{
-   return eventLocalizationMap;  
+GameMap* getLoadingMap() {
+   return eventLocalizationMap;
 }
 
+void setLocalizedEventMessage(GameMap* eventLocalizationMap, int eventID,
+                              const ASCString& message) {
+   if (!eventLocalizationMap)
+      return;
 
-void setLocalizedEventMessage( GameMap* eventLocalizationMap, int eventID, const ASCString& message )
-{
-   if ( !eventLocalizationMap )
-      return;
-   
-   for ( GameMap::Events::const_iterator i = eventLocalizationMap->events.begin(); i != eventLocalizationMap->events.end(); ++i ) 
-      if ( (*i)->id == eventID )
-         (*i)->action->setLocalizationString( message );
+   for (GameMap::Events::const_iterator i = eventLocalizationMap->events.begin();
+        i != eventLocalizationMap->events.end(); ++i)
+      if ((*i)->id == eventID)
+         (*i)->action->setLocalizationString(message);
 }
-      
-void setLocalizedContainerName( GameMap* map, const MapCoordinate& pos, const std::string& name )
-{
-   if ( !map )
+
+void setLocalizedContainerName(GameMap* map, const MapCoordinate& pos, const std::string& name) {
+   if (!map)
       return;
-   
-   MapField* fld = map->getField( pos );
-   if ( !fld )
+
+   MapField* fld = map->getField(pos);
+   if (!fld)
       return;
-   
+
    ContainerBase* c = fld->getContainer();
-   if ( !c )
+   if (!c)
       return;
-   
-   if ( !checkModificationConstraints( c ))
+
+   if (!checkModificationConstraints(c))
       return;
-   
-   c->setName( name );
+
+   c->setName(name);
 }
-      
-      
-      
-MapCoordinate getCursorPosition( const GameMap* gamemap )
-{
-   if ( gamemap )
-      return gamemap->getCursor(); 
+
+MapCoordinate getCursorPosition(const GameMap* gamemap) {
+   if (gamemap)
+      return gamemap->getCursor();
    else
-      return MapCoordinate(-1,-1);
+      return MapCoordinate(-1, -1);
 }
-      
-void setCursorPosition( const GameMap* gamemap, const MapCoordinate& pos )
-{
-   if ( gamemap && pos.valid() )  
-      if ( pos.x < gamemap->xsize && pos.y < gamemap->ysize )
+
+void setCursorPosition(const GameMap* gamemap, const MapCoordinate& pos) {
+   if (gamemap && pos.valid())
+      if (pos.x < gamemap->xsize && pos.y < gamemap->ysize)
          gamemap->getCursor() = pos;
 }
 
-void assertSuccess( const ActionResult& result )
-{
-   if ( result.successful() ) 
-      throw ASCmsgException(result.getMessage() );
+void assertSuccess(const ActionResult& result) {
+   if (result.successful())
+      throw ASCmsgException(result.getMessage());
 }

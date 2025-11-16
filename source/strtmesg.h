@@ -53,8 +53,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -63,22 +63,19 @@
 
 #include "ascstring.h"
 
-
 //! Version: 1.2.3 ; compiled : ...
 extern ASCString getVersionAndCompilation();
 
+extern ASCString getstartupmessage();
+extern ASCString getaboutmessage();
 
-extern ASCString getstartupmessage (  );
-extern ASCString getaboutmessage (  );
+extern ASCString kgetstartupmessage();
+extern ASCString kgetaboutmessage();
 
-extern ASCString kgetstartupmessage (  );
-extern ASCString kgetaboutmessage (  );
+extern const char* getVersionString();
+extern const char* getFullVersionString();
+extern ASCString getVersionString(int version);
 
-extern const char* getVersionString (  );
-extern const char* getFullVersionString (  );
-extern ASCString getVersionString ( int version );
-
-extern int getNumericVersion ( );
-
+extern int getNumericVersion();
 
 #endif

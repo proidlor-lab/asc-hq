@@ -16,21 +16,19 @@
 #include "../vehicle.h"
 #include "../turncontrol.h"
 
-extern GameMap* startMap( const ASCString& filename );
+extern GameMap* startMap(const ASCString& filename);
 
 class TestFailure : public ASCmsgException {
-   public:
-      TestFailure( const ASCString& message ) : ASCmsgException (message ){
-      }
+  public:
+   TestFailure(const ASCString& message) : ASCmsgException(message) {}
 };
 
-extern Context createTestingContext( GameMap* gamemap );
-extern void testCargoMovement( Vehicle* veh, int movement );
-extern void testCargoMovementMax( Vehicle* veh, int movement );
-extern Vehicle* getFirstCargo( ContainerBase* carrier );
-extern void move( Vehicle* veh, const MapCoordinate& dest );
-extern void move( Vehicle* veh, const MapCoordinate3D& dest );
-extern void attack( Vehicle* veh, const MapCoordinate& target );
-
+extern Context createTestingContext(GameMap* gamemap);
+extern void testCargoMovement(Vehicle* veh, int movement);
+extern void testCargoMovementMax(Vehicle* veh, int movement);
+extern Vehicle* getFirstCargo(ContainerBase* carrier);
+extern void move(Vehicle* veh, const MapCoordinate& dest);
+extern void move(Vehicle* veh, const MapCoordinate3D& dest);
+extern void attack(Vehicle* veh, const MapCoordinate& target);
 
 #endif

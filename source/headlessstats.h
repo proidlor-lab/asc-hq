@@ -17,42 +17,47 @@ struct HeadlessPlayerStats {
    int reactionFireKills;
    int reactionFireLosses;
    HeadlessPlayerStats()
-      : damageDone(0), damageTaken(0), unitsLost(0), unitsDestroyed(0),
-        reactionFireDamageDone(0), reactionFireDamageTaken(0),
-        reactionFireKills(0), reactionFireLosses(0) {}
+      : damageDone(0),
+        damageTaken(0),
+        unitsLost(0),
+        unitsDestroyed(0),
+        reactionFireDamageDone(0),
+        reactionFireDamageTaken(0),
+        reactionFireKills(0),
+        reactionFireLosses(0) {}
 };
 
-void headlessStatsBegin( GameMap* map, int playerCount, const std::vector<int>& participants, const std::string& logFilePath );
+void headlessStatsBegin(GameMap* map, int playerCount, const std::vector<int>& participants,
+                        const std::string& logFilePath);
 void headlessStatsEnd();
 
-void headlessStatsRecordDamage( int attackerPlayerIndex, int defenderPlayerIndex, int amount );
-void headlessStatsRecordKill( int attackerPlayerIndex, int defenderPlayerIndex, ContainerBase* destroyedContainer );
+void headlessStatsRecordDamage(int attackerPlayerIndex, int defenderPlayerIndex, int amount);
+void headlessStatsRecordKill(int attackerPlayerIndex, int defenderPlayerIndex,
+                             ContainerBase* destroyedContainer);
 
-void headlessStatsPushContext( int attackerPlayerIndex, int defenderPlayerIndex, bool reactionFire );
+void headlessStatsPushContext(int attackerPlayerIndex, int defenderPlayerIndex, bool reactionFire);
 void headlessStatsPopContext();
 
 class HeadlessStatsContextGuard {
-      bool active;
-   public:
-      HeadlessStatsContextGuard( int attackerPlayerIndex, int defenderPlayerIndex, bool reactionFire )
-         : active(true)
-      {
-         headlessStatsPushContext( attackerPlayerIndex, defenderPlayerIndex, reactionFire );
-      }
+   bool active;
 
-      ~HeadlessStatsContextGuard()
-      {
-         if ( active )
-            headlessStatsPopContext();
-      }
+  public:
+   HeadlessStatsContextGuard(int attackerPlayerIndex, int defenderPlayerIndex, bool reactionFire)
+      : active(true) {
+      headlessStatsPushContext(attackerPlayerIndex, defenderPlayerIndex, reactionFire);
+   }
 
-      void release()
-      {
-         if ( active ) {
-            headlessStatsPopContext();
-            active = false;
-         }
+   ~HeadlessStatsContextGuard() {
+      if (active)
+         headlessStatsPopContext();
+   }
+
+   void release() {
+      if (active) {
+         headlessStatsPopContext();
+         active = false;
       }
+   }
 };
 
 const std::vector<HeadlessPlayerStats>& headlessStatsData();

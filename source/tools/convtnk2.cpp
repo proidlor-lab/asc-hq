@@ -13,8 +13,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -23,42 +23,37 @@
 #include "..\sgstream.h"
 #include "krkr.h"
 
+main(int argc, char* argv[]) {
+   opencontainer("*.con");
 
-main(int argc, char *argv[] )
-{ 
-   opencontainer( "*.con");
-
-   if ( argc < 2 ) {
+   if (argc < 2) {
       printf("syntax: convtank filename\n");
       return 1;
    }
 
-   int quantity=0;   
+   int quantity = 0;
 
    int armorfaktor = 10;
-   printf ("\n    Armor faktor ( in zehntel )");
+   printf("\n    Armor faktor ( in zehntel )");
 
-   num_ed (armorfaktor, 0, maxint);
+   num_ed(armorfaktor, 0, maxint);
 
-   tfindfile ff ( argv[1] );
+   tfindfile ff(argv[1]);
    char* n = ff.getnextname();
-          
-   while ( n ) {
+
+   while (n) {
       quantity++;
-      VehicleType* ft = loadvehicletype( n );
-      printf (" converting <%15.15s>  \n ", n);
+      VehicleType* ft = loadvehicletype(n);
+      printf(" converting <%15.15s>  \n ", n);
 
       ft->armor = ft->armor * armorfaktor / 10;
 
-      tn_file_buf_stream stream ( n, 2 );
-      writevehicle ( ft, &stream );
-      
+      tn_file_buf_stream stream(n, 2);
+      writevehicle(ft, &stream);
+
       n = ff.getnextname();
    }
 
-   printf ("\n %i files converted ! \n\n", quantity);
+   printf("\n %i files converted ! \n\n", quantity);
    return 0;
 };
-
-
-

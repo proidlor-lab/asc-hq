@@ -8,7 +8,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "global.h"
 
 #include <stdio.h>
@@ -35,105 +34,96 @@
 #include "mapdisplay.h"
 #include "events.h"
 
-
-
-MainScreenWidget::StandardActionLocker::StandardActionLocker( MainScreenWidget* mainScreenWidget, int options ) : widget( mainScreenWidget ), locked(false)
-{
+MainScreenWidget::StandardActionLocker::StandardActionLocker(MainScreenWidget* mainScreenWidget,
+                                                             int options)
+   : widget(mainScreenWidget), locked(false) {
    this->options = options;
    lock();
 };
 
-MainScreenWidget::StandardActionLocker::StandardActionLocker( const StandardActionLocker& locker ) : widget(NULL), locked(false)
-{
-   widget  = locker.widget;
+MainScreenWidget::StandardActionLocker::StandardActionLocker(const StandardActionLocker& locker)
+   : widget(NULL), locked(false) {
+   widget = locker.widget;
    options = locker.options;
    lock();
 }
 
-
-
-void MainScreenWidget::StandardActionLocker::lock()
-{
-   if ( !widget )
+void MainScreenWidget::StandardActionLocker::lock() {
+   if (!widget)
       return;
 
-   widget->lockStandardActions(1, options );
+   widget->lockStandardActions(1, options);
    locked = true;
 };
 
-void MainScreenWidget::StandardActionLocker::unlock()
-{
-   if ( !widget )
+void MainScreenWidget::StandardActionLocker::unlock() {
+   if (!widget)
       return;
 
-   if ( locked ) {
+   if (locked) {
       widget->lockStandardActions(-1);
       locked = false;
    }
 };
 
-MainScreenWidget::StandardActionLocker::~StandardActionLocker()
-{
+MainScreenWidget::StandardActionLocker::~StandardActionLocker() {
    unlock();
 };
 
+MainScreenWidget::MainScreenWidget(PG_Application& application)
+   : PG_Widget(NULL, PG_Rect(0, 0, app.GetScreen()->w, app.GetScreen()->h), false),
+     app(application),
+     lastMessageTime(0),
+     lastMouseScrollTime(0),
+     overviewMapPanel(NULL),
+     lockOptions(0),
+     messageLine(NULL) {}
 
-MainScreenWidget::MainScreenWidget( PG_Application& application )
-              : PG_Widget(NULL, PG_Rect ( 0, 0, app.GetScreen()->w, app.GetScreen()->h ), false),
-              app ( application ) , lastMessageTime(0), lastMouseScrollTime(0), overviewMapPanel(NULL), lockOptions(0), messageLine(NULL)
-{
+void MainScreenWidget::setup(bool messageLine, const PG_Rect& mapView) {
+   displayLogMessage(5, "MainScreenWidget: initializing panels:\n");
+
+   dataLoaderTicker();
+
+   displayLogMessage(7, "  Mapdisplay ");
+   mapDisplay = new MapDisplayPG(this, mapView);
+   mapDisplay->SetID(ASC_PG_App::mapDisplayID);
+   dataLoaderTicker();
+
+   SetID(ASC_PG_App::mainScreenID);
+
+   displayLogMessage(5, "done\nMainScreenWidget completed\n");
+   dataLoaderTicker();
+
+   repaintDisplay.connect(sigc::bind(sigc::mem_fun(*this, &MainScreenWidget::Update), true));
+
+   buildBackgroundImage(messageLine);
+   dataLoaderTicker();
+
+   PG_Application::GetApp()->sigAppIdle.connect(
+      sigc::hide(sigc::mem_fun(*this, &MainScreenWidget::idleHandler)));
+
+   mapChanged.connect(sigc::ptr_fun(&OverviewMapHolder::clearmap));
+   dataLoaderTicker();
+
+   MessagingHub::Instance().statusInformation.connect(
+      sigc::mem_fun(*this, &MainScreenWidget::displayMessage));
+   MessagingHub::Instance().messageWindowFactory.connect(
+      sigc::mem_fun(*this, &MainScreenWidget::createStatusWindow));
 }
 
-
-void MainScreenWidget::setup( bool messageLine, const PG_Rect& mapView )
-{
-   displayLogMessage ( 5, "MainScreenWidget: initializing panels:\n");
-
-   dataLoaderTicker();
-
-   displayLogMessage ( 7, "  Mapdisplay ");
-   mapDisplay = new MapDisplayPG( this, mapView );
-   mapDisplay->SetID( ASC_PG_App::mapDisplayID );
-   dataLoaderTicker();
-
-   SetID( ASC_PG_App::mainScreenID );
-
-   displayLogMessage ( 5, "done\nMainScreenWidget completed\n");
-   dataLoaderTicker();
-
-   repaintDisplay.connect ( sigc::bind( sigc::mem_fun( *this, &MainScreenWidget::Update ), true ));
-   
-   buildBackgroundImage( messageLine );
-   dataLoaderTicker();
-
-   PG_Application::GetApp()->sigAppIdle.connect( sigc::hide( sigc::mem_fun( *this, &MainScreenWidget::idleHandler )));
-
-   mapChanged.connect( sigc::ptr_fun( &OverviewMapHolder::clearmap ));
-   dataLoaderTicker();
-   
-   MessagingHub::Instance().statusInformation.connect( sigc::mem_fun( *this, &MainScreenWidget::displayMessage ));
-   MessagingHub::Instance().messageWindowFactory.connect( sigc::mem_fun( *this, &MainScreenWidget::createStatusWindow ));
+void MainScreenWidget ::activateMapLayer(const ASCString& name, bool active) {
+   if (mapDisplay)
+      mapDisplay->activateMapLayer(name, active);
 }
 
-
-
-void MainScreenWidget :: activateMapLayer( const ASCString& name, bool active )
-{
-   if ( mapDisplay )
-      mapDisplay->activateMapLayer( name , active );
+void MainScreenWidget ::toggleMapLayer(const ASCString& name) {
+   if (mapDisplay)
+      mapDisplay->toggleMapLayer(name);
 }
 
-void MainScreenWidget :: toggleMapLayer( const ASCString& name )
-{
-   if ( mapDisplay )
-      mapDisplay->toggleMapLayer( name );
-}
-
-
-bool MainScreenWidget :: idleHandler( )
-{
-   if ( ticker > lastMessageTime + 500 ) {
-      displayMessage( "" );
+bool MainScreenWidget ::idleHandler() {
+   if (ticker > lastMessageTime + 500) {
+      displayMessage("");
       lastMessageTime = 0xfffffff;
    }
 
@@ -141,37 +131,35 @@ bool MainScreenWidget :: idleHandler( )
    return true;
 }
 
-void MainScreenWidget :: mouseScrollChecker()
-{
-   if ( getPGApplication().isFullscreen() && IsMouseInside() ) {
+void MainScreenWidget ::mouseScrollChecker() {
+   if (getPGApplication().isFullscreen() && IsMouseInside()) {
+      if (ticker > lastMouseScrollTime + 30) {
+         int x, y;
+         SDL_GetMouseState(&x, &y);
 
-      if ( ticker > lastMouseScrollTime + 30 ) {
-         int x,y;
-         SDL_GetMouseState( &x, &y);
-   
-         if ( y <= 0 ) {
-            if ( x <= 0 ) {
-               mapDisplay->scrollMap( 7 );
+         if (y <= 0) {
+            if (x <= 0) {
+               mapDisplay->scrollMap(7);
                return;
             }
 
-            if ( x >= PG_Application::GetScreenWidth() - 1 ) {
-               mapDisplay->scrollMap( 1 );
+            if (x >= PG_Application::GetScreenWidth() - 1) {
+               mapDisplay->scrollMap(1);
                return;
-            } 
+            }
 
             mapDisplay->scrollMap(0);
             return;
          }
 
-         if ( y >= PG_Application::GetScreenHeight() - 1 ) {
-            if ( x <= 0 ) {
-               mapDisplay->scrollMap( 5 );
+         if (y >= PG_Application::GetScreenHeight() - 1) {
+            if (x <= 0) {
+               mapDisplay->scrollMap(5);
                return;
             }
 
-            if ( x >= PG_Application::GetScreenWidth() - 1 ) {
-               mapDisplay->scrollMap( 3 );
+            if (x >= PG_Application::GetScreenWidth() - 1) {
+               mapDisplay->scrollMap(3);
                return;
             }
 
@@ -179,130 +167,122 @@ void MainScreenWidget :: mouseScrollChecker()
             return;
          }
 
-         if ( x >= PG_Application::GetScreenWidth() - 1 ) {
-            mapDisplay->scrollMap( 2 );
+         if (x >= PG_Application::GetScreenWidth() - 1) {
+            mapDisplay->scrollMap(2);
             return;
          }
 
-         if ( x <= 0 ) {
-            mapDisplay->scrollMap( 6 );
+         if (x <= 0) {
+            mapDisplay->scrollMap(6);
             return;
          }
       }
    }
 }
 
+void MainScreenWidget::buildBackgroundImage(bool messageLine) {
+   if (!backgroundImage.valid()) {
+      backgroundImage = Surface::createSurface(Width(), Height(), 32);
 
+      Surface& source = IconRepository::getIcon(getBackgroundImageFilename());
 
-void MainScreenWidget::buildBackgroundImage( bool messageLine )
-{
-   if ( !backgroundImage.valid() ) {
-      backgroundImage = Surface::createSurface( Width(), Height(), 32 );
-      
-      Surface& source = IconRepository::getIcon( getBackgroundImageFilename() );
-      
-      MegaBlitter< gamemapPixelSize, gamemapPixelSize, ColorTransform_None,ColorMerger_PlainOverwrite,SourcePixelSelector_DirectZoom> blitter;
-      blitter.setSize( source.w(), source.h(), Width(), Height(), false );
-      
-      dataLoaderTicker();
-      blitter.blit( source, backgroundImage, SPoint(0,0) );
+      MegaBlitter<gamemapPixelSize, gamemapPixelSize, ColorTransform_None,
+                  ColorMerger_PlainOverwrite, SourcePixelSelector_DirectZoom>
+         blitter;
+      blitter.setSize(source.w(), source.h(), Width(), Height(), false);
 
       dataLoaderTicker();
-            
-      assert( mapDisplay );
+      blitter.blit(source, backgroundImage, SPoint(0, 0));
+
+      dataLoaderTicker();
+
+      assert(mapDisplay);
       PG_Rect r = *mapDisplay;
-      
+
       const int borderWidth = 5;
-      for ( int i = 0; i <= borderWidth; ++i ) 
-         rectangle<4> ( backgroundImage, SPoint(r.x-i, r.y-i), r.w+2*i, r.h+2*i, ColorMerger_Brightness<4>( 0.6 ), ColorMerger_Brightness<4>( 1.5 ));
+      for (int i = 0; i <= borderWidth; ++i)
+         rectangle<4>(backgroundImage, SPoint(r.x - i, r.y - i), r.w + 2 * i, r.h + 2 * i,
+                      ColorMerger_Brightness<4>(0.6), ColorMerger_Brightness<4>(1.5));
 
       int x1 = r.x + 1;
       int y1 = r.y + 1;
       int x2 = r.x + r.Width() - 1;
-      int y2 = r.y + r.Height() -1;
+      int y2 = r.y + r.Height() - 1;
 
-      blitRects[0] = PG_Rect(  0, 0, Width(), y1 ); 
-      blitRects[1] = PG_Rect(  0, y1, x1,     y2 ); 
-      blitRects[2] = PG_Rect( x2, y1, Width() - x2, y2 ); 
-      blitRects[3] = PG_Rect( 0, y2, Width(), Height() - y2 );
-      
-      if ( messageLine ) {
-      
+      blitRects[0] = PG_Rect(0, 0, Width(), y1);
+      blitRects[1] = PG_Rect(0, y1, x1, y2);
+      blitRects[2] = PG_Rect(x2, y1, Width() - x2, y2);
+      blitRects[3] = PG_Rect(0, y2, Width(), Height() - y2);
+
+      if (messageLine) {
          Surface& msgstart = IconRepository::getIcon("msgline1.png");
-         Surface& msgmid   = IconRepository::getIcon("msgline2.png");
-         Surface& msgend   = IconRepository::getIcon("msgline3.png");
-   
+         Surface& msgmid = IconRepository::getIcon("msgline2.png");
+         Surface& msgend = IconRepository::getIcon("msgline3.png");
+
          dataLoaderTicker();
-         
+
          int mx1 = x1 - borderWidth;
          int mx2 = x2 + borderWidth;
          int my1 = y2 + 10;
-         
+
          int msglength = mx2 - mx1;
          int midlength = msglength - msgend.w();
-   
-         backgroundImage.Blit( msgstart, SPoint( mx1, my1 ));
-   
+
+         backgroundImage.Blit(msgstart, SPoint(mx1, my1));
+
          int x = msgstart.w();
-         while ( x + msgmid.w() < midlength ) {
-            backgroundImage.Blit( msgmid, SPoint( mx1 + x, my1 ));
+         while (x + msgmid.w() < midlength) {
+            backgroundImage.Blit(msgmid, SPoint(mx1 + x, my1));
             x += msgmid.w();
          }
          dataLoaderTicker();
-         backgroundImage.Blit( msgmid, SPoint( mx1 + msglength - msgend.w() - msgmid.w(), my1 ));
-         
+         backgroundImage.Blit(msgmid, SPoint(mx1 + msglength - msgend.w() - msgmid.w(), my1));
+
          dataLoaderTicker();
-         backgroundImage.Blit( msgend, SPoint( mx1 + msglength - msgend.w(), my1) );
-   
-         this->messageLine = new PG_Label ( this, PG_Rect( mx1 + 20, my1 + 9, msglength - 30, msgend.h() - 18), "", "ThemeWidget" );
+         backgroundImage.Blit(msgend, SPoint(mx1 + msglength - msgend.w(), my1));
+
+         this->messageLine = new PG_Label(
+            this, PG_Rect(mx1 + 20, my1 + 9, msglength - 30, msgend.h() - 18), "", "ThemeWidget");
          this->messageLine->SetFontSize(11);
          dataLoaderTicker();
       }
-         
    }
 }
 
-void MainScreenWidget::displayMessage( const ASCString& message )
-{
-   if ( messageLine ) {
-      messageLine->SetText( message );
+void MainScreenWidget::displayMessage(const ASCString& message) {
+   if (messageLine) {
+      messageLine->SetText(message);
       lastMessageTime = ticker;
-   }   
+   }
 }
 
-
-
-void MainScreenWidget::eventBlit (SDL_Surface *surface, const PG_Rect &src, const PG_Rect &dst) 
-{
+void MainScreenWidget::eventBlit(SDL_Surface* surface, const PG_Rect& src, const PG_Rect& dst) {
    SDL_Rect dstrect;
-   Surface s = Surface::Wrap( PG_Application::GetScreen() );
+   Surface s = Surface::Wrap(PG_Application::GetScreen());
    dstrect.x = blitRects[0].x;
    dstrect.y = blitRects[0].y;
-   s.Blit( backgroundImage, blitRects[0], dstrect );
-   
+   s.Blit(backgroundImage, blitRects[0], dstrect);
+
    dstrect.x = blitRects[1].x;
    dstrect.y = blitRects[1].y;
-   s.Blit( backgroundImage, blitRects[1], dstrect );
-   
+   s.Blit(backgroundImage, blitRects[1], dstrect);
+
    dstrect.x = blitRects[2].x;
    dstrect.y = blitRects[2].y;
-   s.Blit( backgroundImage, blitRects[2], dstrect );
-   
+   s.Blit(backgroundImage, blitRects[2], dstrect);
+
    dstrect.x = blitRects[3].x;
    dstrect.y = blitRects[3].y;
-   s.Blit( backgroundImage, blitRects[3], dstrect );
+   s.Blit(backgroundImage, blitRects[3], dstrect);
 }
 
-StatusMessageWindowHolder MainScreenWidget::createStatusWindow( const ASCString& msg )
-{
-   return StatusMessageWindowHolder( new PG_StatusWindowData( msg ));
+StatusMessageWindowHolder MainScreenWidget::createStatusWindow(const ASCString& msg) {
+   return StatusMessageWindowHolder(new PG_StatusWindowData(msg));
 }
 
-void MainScreenWidget::spawnOverviewMapPanel ( const ASCString& panelName )
-{
-   assert( mapDisplay);
-   overviewMapPanel = new OverviewMapPanel( this, PG_Rect(Width()-170, 0, 170, 160), mapDisplay, panelName );
+void MainScreenWidget::spawnOverviewMapPanel(const ASCString& panelName) {
+   assert(mapDisplay);
+   overviewMapPanel =
+      new OverviewMapPanel(this, PG_Rect(Width() - 170, 0, 170, 160), mapDisplay, panelName);
    overviewMapPanel->Show();
 }
-
-

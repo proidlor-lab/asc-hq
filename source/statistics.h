@@ -13,8 +13,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -27,15 +27,13 @@
 #include "typen.h"
 
 class StatisticsCalculator {
-   public:
-      static int unitCount( const ContainerBase* c, bool recurse  );
-      static int unitCost( const ContainerBase* c, bool recurse );
-      static Resources resource( const ContainerBase* c, bool recurse );
-      static double strength( const ContainerBase* c, bool recurse );
+  public:
+   static int unitCount(const ContainerBase* c, bool recurse);
+   static int unitCost(const ContainerBase* c, bool recurse);
+   static Resources resource(const ContainerBase* c, bool recurse);
+   static double strength(const ContainerBase* c, bool recurse);
 };
 
-extern void pbpplayerstatistics( GameMap* gamemap );
-
-
+extern void pbpplayerstatistics(GameMap* gamemap);
 
 #endif

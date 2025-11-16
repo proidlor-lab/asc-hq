@@ -10,7 +10,6 @@
 #ifndef recyclingTestH
 #define recyclingTestH
 
- extern void testRecycling();
-
+extern void testRecycling();
 
 #endif

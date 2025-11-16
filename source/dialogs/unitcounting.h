@@ -15,15 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef unitcountingH
 #define unitcountingH
 
- class ContainerBase;
- class GameMap;
- 
- extern void showUnitCargoSummary( ContainerBase* cb );
- extern void showUnitSummary( GameMap* actmap );
+class ContainerBase;
+class GameMap;
+
+extern void showUnitCargoSummary(ContainerBase* cb);
+extern void showUnitSummary(GameMap* actmap);
 
 #endif
-

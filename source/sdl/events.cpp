@@ -15,8 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
-
 #include <queue>
 #include <SDL.h>
 #include <SDL_thread.h>
@@ -39,7 +37,7 @@ SDL_mutex* eventHandlingMutex = NULL;
 SDL_mutex* eventQueueMutex = NULL;
 SDL_mutex* graphicsQueueMutex = NULL;
 
-queue<tkey>   keybuffer_sym;
+queue<tkey> keybuffer_sym;
 queue<Uint32> keybuffer_prnt;
 queue<SDL_Event> eventQueue;
 bool _queueEvents = true;
@@ -47,11 +45,9 @@ bool _fillLegacyEventStructures = false;
 
 volatile bool eventThreadRunning = false;
 
-
 std::list<GraphicsQueueOperation*> graphicsQueue;
 
 int exitprogram = 0;
-
 
 /***************************************************************************
  *                                                                         *
@@ -59,72 +55,51 @@ int exitprogram = 0;
  *                                                                         *
  ***************************************************************************/
 
-
 bool redrawScreen = false;
 
 const bool trueflag = true;
 
 const bool* mouseUpdateFlag = &trueflag;
 
-void setMouseUpdateFlag( const bool* flag )
-{
+void setMouseUpdateFlag(const bool* flag) {
    mouseUpdateFlag = flag;
 }
 
+void mousevisible(int an) {}
 
-void mousevisible( int an)
-{}
-
-
-int getmousestatus ()
-{
+int getmousestatus() {
    return 2;
 }
 
-int mouseTranslate ( int m)
-{
+int mouseTranslate(int m) {
+   const int mousetranslate[3] = {0, 2, 1};  // in DOS  right button is 1 and center is 2
 
-   const int mousetranslate[3] = {
-      0, 2,1
-   } ;  // in DOS  right button is 1 and center is 2
-
-   if ( m >= 3 )
+   if (m >= 3)
       return m;
    else
       return mousetranslate[m];
 }
 
+void setmouseposition(int x, int y) {}
 
+void setnewmousepointer(void* picture, int hotspotx, int hotspoty) {}
 
-void setmouseposition ( int x, int y )
-{}
-
-
-
-void setnewmousepointer ( void* picture, int hotspotx, int hotspoty )
-{}
-
-
-int mouseinrect ( int x1, int y1, int x2, int y2 )
-{
-   if ( mouseparams.x >= x1  && mouseparams.y >= y1  && mouseparams.x <= x2 && mouseparams.y <= y2 )
+int mouseinrect(int x1, int y1, int x2, int y2) {
+   if (mouseparams.x >= x1 && mouseparams.y >= y1 && mouseparams.x <= x2 && mouseparams.y <= y2)
       return 1;
    else
       return 0;
 }
 
-int mouseinrect ( const tmouserect* rect )
-{
-   if ( mouseparams.x >= rect->x1  && mouseparams.y >= rect->y1  && mouseparams.x <= rect->x2 && mouseparams.y <= rect->y2 )
+int mouseinrect(const tmouserect* rect) {
+   if (mouseparams.x >= rect->x1 && mouseparams.y >= rect->y1 && mouseparams.x <= rect->x2 &&
+       mouseparams.y <= rect->y2)
       return 1;
    else
       return 0;
 }
 
-
-
-tmouserect tmouserect :: operator+ ( const tmouserect& b ) const
-{
+tmouserect tmouserect ::operator+(const tmouserect& b) const {
    tmouserect c;
    c.x1 = x1 + b.x1;
    c.y1 = y1 + b.y1;
@@ -133,95 +108,71 @@ tmouserect tmouserect :: operator+ ( const tmouserect& b ) const
    return c;
 }
 
-
-
 /***************************************************************************
  *                                                                         *
  *   Keyboard handling routines                                            *
  *                                                                         *
  ***************************************************************************/
 
-
-
-int keypress( void )
-{
+int keypress(void) {
    int result = 0;
-   int r = SDL_mutexP ( keyboardmutex );
-   if ( !r ) {
-      result = !keybuffer_sym.empty ( );
-      r = SDL_mutexV ( keyboardmutex );
+   int r = SDL_mutexP(keyboardmutex);
+   if (!r) {
+      result = !keybuffer_sym.empty();
+      r = SDL_mutexV(keyboardmutex);
    }
    return result;
 }
 
-void getkeysyms ( tkey* keysym, int* keyprnt )
-{
+void getkeysyms(tkey* keysym, int* keyprnt) {
    int found = 0;
    do {
-      int r = SDL_mutexP ( keyboardmutex );
-      if ( !r ) {
-         if ( !keybuffer_prnt.empty() ) {
+      int r = SDL_mutexP(keyboardmutex);
+      if (!r) {
+         if (!keybuffer_prnt.empty()) {
             *keysym = keybuffer_sym.front();
             *keyprnt = keybuffer_prnt.front();
             keybuffer_sym.pop();
             keybuffer_prnt.pop();
             found++;
          }
-         r = SDL_mutexV ( keyboardmutex );
+         r = SDL_mutexV(keyboardmutex);
       }
-      if (!found ) {
+      if (!found) {
          int t = ticker;
-         while ( t + 5 > ticker )
+         while (t + 5 > ticker)
             releasetimeslice();
       }
-   } while ( !found );
+   } while (!found);
 }
 
-
-char  skeypress(tkey keynr)
-{
-   Uint8 *keystate = SDL_GetKeyState ( NULL );
-   return keystate[ keynr ];
+char skeypress(tkey keynr) {
+   Uint8* keystate = SDL_GetKeyState(NULL);
+   return keystate[keynr];
 }
 
-bool isKeyPressed(SDLKey key)
-{
-   Uint8 *keystate = SDL_GetKeyState ( NULL );
-   return keystate[ key ];
+bool isKeyPressed(SDLKey key) {
+   Uint8* keystate = SDL_GetKeyState(NULL);
+   return keystate[key];
 }
 
+void wait(void) {}
 
-
-void wait(void)
-{}
-
-
-
-tkey char2key(int c )
-{
-   if ( c < 128 )
+tkey char2key(int c) {
+   if (c < 128)
       return tolower(c);
    else
       return ct_invvalue;
 }
 
-
-int  releasetimeslice( void )
-{
+int releasetimeslice(void) {
    SDL_Delay(10);
-   if ( redrawScreen ) {
+   if (redrawScreen) {
       redrawScreen = false;
       copy2screen();
    }
    return 0;
 }
-
-
-
-
-
-
-
 
 /***************************************************************************
  *                                                                         *
@@ -229,35 +180,29 @@ int  releasetimeslice( void )
  *                                                                         *
  ***************************************************************************/
 
+volatile int ticker = 0;  // was static, but I think this needs to be global somewhere
 
-
-volatile int  ticker = 0; // was static, but I think this needs to be global somewhere
-
-void ndelay(int time)
-{
+void ndelay(int time) {
    long l;
 
    l = ticker;
    do {
       releasetimeslice();
-   }  while (ticker - l > time);
+   } while (ticker - l > time);
 }
-
 
 int tticker = 0;
 
-void starttimer(void)
-{
+void starttimer(void) {
    tticker = ticker;
 }
 
-bool time_elapsed(int time)
-{
-   if (tticker + time <= ticker) return 1;
-   else return 0;
+bool time_elapsed(int time) {
+   if (tticker + time <= ticker)
+      return 1;
+   else
+      return 0;
 }
-
-
 
 /***************************************************************************
  *                                                                         *
@@ -270,111 +215,97 @@ bool time_elapsed(int time)
 volatile int closeEventThread = 0;
 
 const int keyTranslationNum = 7;
-int keyTranslation[keyTranslationNum][2] = { { 228, 132 }, //   "a
-                                             { 246, 148 }, //   "o
-                                             { 252, 129 }, //   "u
-                                             { 196, 142 }, //   "A
-                                             { 214, 153 }, //   "O
-                                             { 220, 154 }, //   "U
-                                             { 223, 225 } }; // sz
+int keyTranslation[keyTranslationNum][2] = {{228, 132},   //   "a
+                                            {246, 148},   //   "o
+                                            {252, 129},   //   "u
+                                            {196, 142},   //   "A
+                                            {214, 153},   //   "O
+                                            {220, 154},   //   "U
+                                            {223, 225}};  // sz
 
-                                             
-EventHandlingMutex::EventHandlingMutex()
-{
-   SDL_mutexP ( eventHandlingMutex );
+EventHandlingMutex::EventHandlingMutex() {
+   SDL_mutexP(eventHandlingMutex);
 }
 
-EventHandlingMutex::~EventHandlingMutex()
-{
-   SDL_mutexV ( eventHandlingMutex );
+EventHandlingMutex::~EventHandlingMutex() {
+   SDL_mutexV(eventHandlingMutex);
 }
-                                             
-                                             
-int processEvents ( )
-{
+
+int processEvents() {
    EventHandlingMutex ehm;
-         
+
    SDL_Event event;
    int result;
-   if ( SDL_PollEvent ( &event ) == 1) {
-      if ( _fillLegacyEventStructures ) {
-        switch ( event.type ) {
-         case SDL_MOUSEBUTTONUP:
-         case SDL_MOUSEBUTTONDOWN:
-            {
+   if (SDL_PollEvent(&event) == 1) {
+      if (_fillLegacyEventStructures) {
+         switch (event.type) {
+            case SDL_MOUSEBUTTONUP:
+            case SDL_MOUSEBUTTONDOWN: {
                int taste = mouseTranslate(event.button.button - 1);
                int state = event.button.type == SDL_MOUSEBUTTONDOWN;
-               if ( state )
+               if (state)
                   mouseparams.taste |= (1 << taste);
                else
                   mouseparams.taste &= ~(1 << taste);
                mouseparams.x = event.button.x;
                mouseparams.y = event.button.y;
-            }
-            break;
+            } break;
 
-         case SDL_MOUSEMOTION:
-            {
+            case SDL_MOUSEMOTION: {
                mouseparams.x = event.motion.x;
                mouseparams.y = event.motion.y;
                mouseparams.x1 = event.motion.x;
                mouseparams.y1 = event.motion.y;
                mouseparams.taste = 0;
-               for ( int i = 0; i < 3; i++ )
-                  if ( event.motion.state & (1 << i) )
+               for (int i = 0; i < 3; i++)
+                  if (event.motion.state & (1 << i))
                      mouseparams.taste |= 1 << mouseTranslate(i);
-            }
-            break;
-         case SDL_KEYDOWN:
-            {
-               int r = SDL_mutexP ( keyboardmutex );
-               if ( !r ) {
+            } break;
+            case SDL_KEYDOWN: {
+               int r = SDL_mutexP(keyboardmutex);
+               if (!r) {
                   tkey key = event.key.keysym.sym;
-                  if ( event.key.keysym.mod & KMOD_ALT )
+                  if (event.key.keysym.mod & KMOD_ALT)
                      key |= ct_altp;
-                  if ( event.key.keysym.mod & KMOD_CTRL )
+                  if (event.key.keysym.mod & KMOD_CTRL)
                      key |= ct_stp;
-                  if ( event.key.keysym.mod & KMOD_SHIFT )
+                  if (event.key.keysym.mod & KMOD_SHIFT)
                      key |= ct_shp;
-                  keybuffer_sym.push ( key );
+                  keybuffer_sym.push(key);
 
                   int newsym = event.key.keysym.unicode;
-                  for ( int i = 0; i < keyTranslationNum; i++ )
-                     if ( event.key.keysym.unicode == keyTranslation[i][0] )
+                  for (int i = 0; i < keyTranslationNum; i++)
+                     if (event.key.keysym.unicode == keyTranslation[i][0])
                         newsym = keyTranslation[i][1];
-                  keybuffer_prnt.push ( newsym );
-                  r = SDL_mutexV ( keyboardmutex );
+                  keybuffer_prnt.push(newsym);
+                  r = SDL_mutexV(keyboardmutex);
                }
-            }
-            break;
-         case SDL_KEYUP:
-         {}
-            break;
+            } break;
+            case SDL_KEYUP: {
+            } break;
 
-         case SDL_QUIT:
-            exitprogram = 1;
-            break;
+            case SDL_QUIT:
+               exitprogram = 1;
+               break;
 #ifdef _WIN32_
-         case SDL_ACTIVEEVENT: 
-            redrawScreen = true;
-            break;
+            case SDL_ACTIVEEVENT:
+               redrawScreen = true;
+               break;
 #endif
-        } 
+         }
       } else {
 #ifdef _WIN32_
-         if ( event.type  == SDL_ACTIVEEVENT ) {
-            queueOperation( new UpdateRectOp( SDL_GetVideoSurface(), 0,0,0,0), false, true );
+         if (event.type == SDL_ACTIVEEVENT) {
+            queueOperation(new UpdateRectOp(SDL_GetVideoSurface(), 0, 0, 0, 0), false, true);
          }
 #endif
-
       }
       result = 1;
-      if ( _queueEvents ) {
-         SDL_mutexP( eventQueueMutex );
-         eventQueue.push ( event );
-         SDL_mutexV( eventQueueMutex );
+      if (_queueEvents) {
+         SDL_mutexP(eventQueueMutex);
+         eventQueue.push(event);
+         SDL_mutexV(eventQueueMutex);
       }
-
 
    } else
       result = 0;
@@ -388,162 +319,146 @@ int processEvents ( )
 
 bool syncGraphics = true;
 
+sigc::signal<void, const SDL_Surface*> postScreenUpdate;
 
-sigc::signal<void,const SDL_Surface*> postScreenUpdate;
-
-void queueOperation( GraphicsQueueOperation* gqo, bool wait, bool forceAsync )
-{
-   if ( !eventThreadRunning ) {
+void queueOperation(GraphicsQueueOperation* gqo, bool wait, bool forceAsync) {
+   if (!eventThreadRunning) {
       gqo->execute();
       delete gqo;
       return;
    }
 
-   SDL_mutexP( graphicsQueueMutex );
-   graphicsQueue.push_back( gqo );
-   SDL_mutexV( graphicsQueueMutex );
+   SDL_mutexP(graphicsQueueMutex);
+   graphicsQueue.push_back(gqo);
+   SDL_mutexV(graphicsQueueMutex);
 
-   if ( forceAsync )
+   if (forceAsync)
       return;
 
-   if ( syncGraphics || wait ) {
+   if (syncGraphics || wait) {
       bool finished = false;
       do {
          SDL_Delay(10);
-         SDL_mutexP( graphicsQueueMutex );
+         SDL_mutexP(graphicsQueueMutex);
          finished = graphicsQueue.empty();
-         SDL_mutexV( graphicsQueueMutex );
+         SDL_mutexV(graphicsQueueMutex);
       } while (!finished);
    }
 }
 
+void UpdateRectOp::execute() {
+   if (*mouseUpdateFlag)
+      SDL_ShowCursor(0);
 
-void UpdateRectOp::execute()
-{ 
-   if ( *mouseUpdateFlag )
-      SDL_ShowCursor( 0 );
+   SDL_UpdateRect(screen, x, y, w, h);
+   postScreenUpdate(screen);
 
-   SDL_UpdateRect( screen, x,y,w,h); 
-   postScreenUpdate( screen );
-
-   if ( *mouseUpdateFlag )
-      SDL_ShowCursor( 1 );
+   if (*mouseUpdateFlag)
+      SDL_ShowCursor(1);
 };
 
-
-UpdateRectsOp::UpdateRectsOp( SDL_Surface *screen, int numrects, SDL_Rect *rects) 
-{
+UpdateRectsOp::UpdateRectsOp(SDL_Surface* screen, int numrects, SDL_Rect* rects) {
    this->numrects = numrects;
    this->rects = new SDL_Rect[numrects];
-   for ( int i = 0; i< numrects; ++i )
+   for (int i = 0; i < numrects; ++i)
       this->rects[i] = rects[i];
    this->screen = screen;
 };
 
-UpdateRectsOp::~UpdateRectsOp()
-{
+UpdateRectsOp::~UpdateRectsOp() {
    delete[] rects;
 }
 
-void UpdateRectsOp::execute() 
-{ 
-   if ( *mouseUpdateFlag )
-      SDL_ShowCursor( 0 );
+void UpdateRectsOp::execute() {
+   if (*mouseUpdateFlag)
+      SDL_ShowCursor(0);
 
-   SDL_UpdateRects( screen, numrects, rects); 
-   postScreenUpdate( screen );
+   SDL_UpdateRects(screen, numrects, rects);
+   postScreenUpdate(screen);
 
-   if ( *mouseUpdateFlag )
-      SDL_ShowCursor( 1 );
+   if (*mouseUpdateFlag)
+      SDL_ShowCursor(1);
 }
 
-
-void InitScreenOp::execute() 
-{ 
-   if ( *mouseUpdateFlag )
-      SDL_ShowCursor( 0 );
+void InitScreenOp::execute() {
+   if (*mouseUpdateFlag)
+      SDL_ShowCursor(0);
 
    SDL_Surface* screen = SDL_SetVideoMode(x, y, depth, flags);
-   if (screen == NULL) 
-      screen = SDL_SetVideoMode(x, y, depth, flags & ~SDL_FULLSCREEN );
+   if (screen == NULL)
+      screen = SDL_SetVideoMode(x, y, depth, flags & ~SDL_FULLSCREEN);
 
-   srf( screen );
-   initASCGraphicSubsystem( screen );
+   srf(screen);
+   initASCGraphicSubsystem(screen);
 
-   if ( *mouseUpdateFlag )
-      SDL_ShowCursor( 1 );
+   if (*mouseUpdateFlag)
+      SDL_ShowCursor(1);
 };
 
-
-bool processGraphicsQueue()
-{
+bool processGraphicsQueue() {
 #ifdef FirstThreadEvents
    GraphicsQueueOperation* gqo = NULL;
-   SDL_mutexP( graphicsQueueMutex );
-   if ( !graphicsQueue.empty() ) {
+   SDL_mutexP(graphicsQueueMutex);
+   if (!graphicsQueue.empty()) {
       gqo = graphicsQueue.front();
-      SDL_mutexV( graphicsQueueMutex );
-      if ( gqo ) {
+      SDL_mutexV(graphicsQueueMutex);
+      if (gqo) {
          gqo->execute();
 
-         SDL_mutexP( graphicsQueueMutex );
+         SDL_mutexP(graphicsQueueMutex);
          graphicsQueue.pop_front();
-         SDL_mutexV( graphicsQueueMutex );
+         SDL_mutexV(graphicsQueueMutex);
          delete gqo;
          return true;
       } else
          return false;
    } else {
-      SDL_mutexV( graphicsQueueMutex );
-      return false;   
+      SDL_mutexV(graphicsQueueMutex);
+      return false;
    }
 #else
    return false;
 #endif
 }
 
-int eventthread ( void* nothing )
-{
+int eventthread(void* nothing) {
 #ifdef FirstThreadEvents
    eventThreadRunning = true;
 #endif
-   while ( !closeEventThread ) {
-      if ( !processEvents() )
+   while (!closeEventThread) {
+      if (!processEvents())
          SDL_Delay(10);
       processGraphicsQueue();
       ticker = getTicker();
    }
 #ifdef FirstThreadEvents
    eventThreadRunning = false;
-   while ( processGraphicsQueue() ) 
+   while (processGraphicsQueue())
       SDL_Delay(10);
 #endif
    return closeEventThread;
 }
 
-
-int getTicker()
-{
+int getTicker() {
    return SDL_GetTicks() / 10;
 }
 
-#ifdef FirstThreadEvents 
-int (*_gamethread)(void *);
+#ifdef FirstThreadEvents
+int (*_gamethread)(void*);
 
-int gameThreadWrapper ( void* data )
-{
+int gameThreadWrapper(void* data) {
    try {
-      int res = _gamethread ( data );
+      int res = _gamethread(data);
       closeEventThread = 1;
       return res;
    }
 #ifndef WIN32
-   catch ( ... ) {
-      fatalError ("An unhandled exception occured. Quitting application");
+   catch (...) {
+      fatalError("An unhandled exception occured. Quitting application");
    }
 #else
-   catch ( ASCexception ) {
-      fatalError ("An unhandled exception occured. Quitting application");
+   catch (ASCexception) {
+      fatalError("An unhandled exception occured. Quitting application");
    }
 #endif
    closeEventThread = -1;
@@ -551,132 +466,111 @@ int gameThreadWrapper ( void* data )
 }
 #endif
 
-
-//! The handle for the second thread; depending on platform this could be the event handling thread or the game thread
+//! The handle for the second thread; depending on platform this could be the event handling thread
+//! or the game thread
 SDL_Thread* secondThreadHandle = NULL;
 
-
-
-int initializeEventHandling ( int (*gamethread)(void *) , void *data )
-{
-
+int initializeEventHandling(int (*gamethread)(void*), void* data) {
    mouseparams.xsize = 10;
    mouseparams.ysize = 10;
 
-   keyboardmutex = SDL_CreateMutex ();
-   if ( !keyboardmutex ) {
-      printf("creating keyboard mutex failed\n" );
+   keyboardmutex = SDL_CreateMutex();
+   if (!keyboardmutex) {
+      printf("creating keyboard mutex failed\n");
       exit(1);
    }
 
-   eventHandlingMutex = SDL_CreateMutex ();
-   if ( !eventHandlingMutex ) {
-      printf("creating eventHandling mutex failed\n" );
+   eventHandlingMutex = SDL_CreateMutex();
+   if (!eventHandlingMutex) {
+      printf("creating eventHandling mutex failed\n");
       exit(1);
    }
 
-
-   eventQueueMutex = SDL_CreateMutex ();
-   if ( !eventQueueMutex ) {
-      printf("creating eventQueueMutex failed\n" );
+   eventQueueMutex = SDL_CreateMutex();
+   if (!eventQueueMutex) {
+      printf("creating eventQueueMutex failed\n");
       exit(1);
    }
 
    graphicsQueueMutex = SDL_CreateMutex();
-   if ( !graphicsQueueMutex ) {
-      printf("creating graphicsQueueMutex failed\n" );
+   if (!graphicsQueueMutex) {
+      printf("creating graphicsQueueMutex failed\n");
       exit(1);
    }
 
-   SDL_EnableUNICODE ( 1 );
-   SDL_EnableKeyRepeat ( 250, 30 );
+   SDL_EnableUNICODE(1);
+   SDL_EnableKeyRepeat(250, 30);
 
-   
-#ifdef FirstThreadEvents 
+#ifdef FirstThreadEvents
    _gamethread = gamethread;
-   secondThreadHandle = SDL_CreateThread ( gameThreadWrapper, data );
-   int res = eventthread( NULL );
+   secondThreadHandle = SDL_CreateThread(gameThreadWrapper, data);
+   int res = eventthread(NULL);
 #else
-   secondThreadHandle = SDL_CreateThread ( eventthread, NULL );
-   int res = gamethread( data );
+   secondThreadHandle = SDL_CreateThread(eventthread, NULL);
+   int res = gamethread(data);
    closeEventThread = 1;
 #endif
 
-
-   SDL_WaitThread ( secondThreadHandle, NULL );
+   SDL_WaitThread(secondThreadHandle, NULL);
    return res;
 }
 
-
-
-void exit_asc( int returnresult )
-{
-#ifndef FirstThreadEvents 
-   if ( secondThreadHandle ) {
+void exit_asc(int returnresult) {
+#ifndef FirstThreadEvents
+   if (secondThreadHandle) {
       closeEventThread = 1;
-      SDL_WaitThread ( secondThreadHandle, NULL );
-   }   
-   exit( returnresult );   
+      SDL_WaitThread(secondThreadHandle, NULL);
+   }
+   exit(returnresult);
 #else
-   if ( secondThreadHandle ) {
+   if (secondThreadHandle) {
       throw ThreadExitException();
    }
-   exit( returnresult );   
-
+   exit(returnresult);
 
 #endif
-
-   
 }
 
+bool setEventRouting(bool queue, bool legacy) {
+   bool prev = _queueEvents;
 
-bool setEventRouting( bool queue, bool legacy )
-{
-  bool prev = _queueEvents;
-  
-  _fillLegacyEventStructures = legacy;
-  
-  _queueEvents = queue;
-  if ( !queue ) {
+   _fillLegacyEventStructures = legacy;
+
+   _queueEvents = queue;
+   if (!queue) {
       // clear all waiting events in the queue
-      SDL_mutexP( eventQueueMutex );
-      while ( !eventQueue.empty())
+      SDL_mutexP(eventQueueMutex);
+      while (!eventQueue.empty())
          eventQueue.pop();
-      SDL_mutexV( eventQueueMutex );
+      SDL_mutexV(eventQueueMutex);
    }
-   
+
    return prev;
 }
 
-bool legacyEventSystemActive()
-{
-   return _fillLegacyEventStructures;   
+bool legacyEventSystemActive() {
+   return _fillLegacyEventStructures;
 }
 
-
-bool getQueuedEvent ( SDL_Event& event )
-{
-   SDL_mutexP( eventQueueMutex );
-   if ( !eventQueue.empty() ) {
+bool getQueuedEvent(SDL_Event& event) {
+   SDL_mutexP(eventQueueMutex);
+   if (!eventQueue.empty()) {
       event = eventQueue.front();
       eventQueue.pop();
-      SDL_mutexV( eventQueueMutex );
+      SDL_mutexV(eventQueueMutex);
       return true;
    }
-   SDL_mutexV( eventQueueMutex );
+   SDL_mutexV(eventQueueMutex);
    return false;
 }
-    
-bool peekEvent ( SDL_Event& event )
-{
-   SDL_mutexP( eventQueueMutex );
-   if ( !eventQueue.empty() ) {
+
+bool peekEvent(SDL_Event& event) {
+   SDL_mutexP(eventQueueMutex);
+   if (!eventQueue.empty()) {
       event = eventQueue.front();
-      SDL_mutexV( eventQueueMutex );
+      SDL_mutexV(eventQueueMutex);
       return true;
    }
-   SDL_mutexV( eventQueueMutex );
+   SDL_mutexV(eventQueueMutex);
    return false;
 }
-
-

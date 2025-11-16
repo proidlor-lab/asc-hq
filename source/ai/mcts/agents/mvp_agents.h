@@ -13,95 +13,104 @@ namespace asc {
 namespace mcts {
 
 class LegalMoveAgent final : public IAgent {
-public:
-    LegalMoveAgent();
-    ~LegalMoveAgent() override = default;
+  public:
+   LegalMoveAgent();
+   ~LegalMoveAgent() override = default;
 
-    [[nodiscard]] AgentScore evaluate(const Action& action,
-                                      const AgentContext& context) const override;
-    [[nodiscard]] std::string_view getName() const noexcept override { return name_; }
-    [[nodiscard]] float getWeight() const noexcept override { return weight_; }
-    void setWeight(float weight) override { weight_ = weight; }
-    [[nodiscard]] AgentCategory getCategory() const noexcept override { return AgentCategory::SURVIVAL; }
+   [[nodiscard]] AgentScore evaluate(const Action& action,
+                                     const AgentContext& context) const override;
+   [[nodiscard]] std::string_view getName() const noexcept override { return name_; }
+   [[nodiscard]] float getWeight() const noexcept override { return weight_; }
+   void setWeight(float weight) override { weight_ = weight; }
+   [[nodiscard]] AgentCategory getCategory() const noexcept override {
+      return AgentCategory::SURVIVAL;
+   }
 
-private:
-    std::string name_;
-    float weight_;
+  private:
+   std::string name_;
+   float weight_;
 };
 
 class ReactionFireAgent final : public IAgent {
-public:
-    ReactionFireAgent();
-    ~ReactionFireAgent() override = default;
+  public:
+   ReactionFireAgent();
+   ~ReactionFireAgent() override = default;
 
-    [[nodiscard]] AgentScore evaluate(const Action& action,
-                                      const AgentContext& context) const override;
-    [[nodiscard]] std::string_view getName() const noexcept override { return name_; }
-    [[nodiscard]] float getWeight() const noexcept override { return weight_; }
-    void setWeight(float weight) override { weight_ = weight; }
-    [[nodiscard]] AgentCategory getCategory() const noexcept override { return AgentCategory::SURVIVAL; }
+   [[nodiscard]] AgentScore evaluate(const Action& action,
+                                     const AgentContext& context) const override;
+   [[nodiscard]] std::string_view getName() const noexcept override { return name_; }
+   [[nodiscard]] float getWeight() const noexcept override { return weight_; }
+   void setWeight(float weight) override { weight_ = weight; }
+   [[nodiscard]] AgentCategory getCategory() const noexcept override {
+      return AgentCategory::SURVIVAL;
+   }
 
-private:
-    float computeExpectedDamage(const ReactionFireThreat& threat,
-                                const AgentContext& context,
-                                const MapCoordinate& destination) const;
+  private:
+   float computeExpectedDamage(const ReactionFireThreat& threat, const AgentContext& context,
+                               const MapCoordinate& destination) const;
 
-    std::string name_;
-    float weight_;
+   std::string name_;
+   float weight_;
 };
 
 class AggressivenessAgent final : public IAgent {
-public:
-    AggressivenessAgent();
-    ~AggressivenessAgent() override = default;
+  public:
+   AggressivenessAgent();
+   ~AggressivenessAgent() override = default;
 
-    [[nodiscard]] AgentScore evaluate(const Action& action,
-                                      const AgentContext& context) const override;
-    [[nodiscard]] std::string_view getName() const noexcept override { return name_; }
-    [[nodiscard]] float getWeight() const noexcept override { return weight_; }
-    void setWeight(float weight) override { weight_ = weight; }
-    [[nodiscard]] AgentCategory getCategory() const noexcept override { return AgentCategory::TACTICAL; }
+   [[nodiscard]] AgentScore evaluate(const Action& action,
+                                     const AgentContext& context) const override;
+   [[nodiscard]] std::string_view getName() const noexcept override { return name_; }
+   [[nodiscard]] float getWeight() const noexcept override { return weight_; }
+   void setWeight(float weight) override { weight_ = weight; }
+   [[nodiscard]] AgentCategory getCategory() const noexcept override {
+      return AgentCategory::TACTICAL;
+   }
 
-private:
-    std::string name_;
-    float weight_;
+  private:
+   std::string name_;
+   float weight_;
 };
 
 class TargetPriorityAgent final : public IAgent {
-public:
-    TargetPriorityAgent();
-    ~TargetPriorityAgent() override = default;
+  public:
+   TargetPriorityAgent();
+   ~TargetPriorityAgent() override = default;
 
-    [[nodiscard]] AgentScore evaluate(const Action& action,
-                                      const AgentContext& context) const override;
-    [[nodiscard]] std::string_view getName() const noexcept override { return name_; }
-    [[nodiscard]] float getWeight() const noexcept override { return weight_; }
-    void setWeight(float weight) override { weight_ = weight; }
-    [[nodiscard]] AgentCategory getCategory() const noexcept override { return AgentCategory::TACTICAL; }
+   [[nodiscard]] AgentScore evaluate(const Action& action,
+                                     const AgentContext& context) const override;
+   [[nodiscard]] std::string_view getName() const noexcept override { return name_; }
+   [[nodiscard]] float getWeight() const noexcept override { return weight_; }
+   void setWeight(float weight) override { weight_ = weight; }
+   [[nodiscard]] AgentCategory getCategory() const noexcept override {
+      return AgentCategory::TACTICAL;
+   }
 
-private:
-    std::string name_;
-    float weight_;
+  private:
+   std::string name_;
+   float weight_;
 };
 
 class ServiceUtilityAgent final : public IAgent {
-public:
-    ServiceUtilityAgent();
-    ~ServiceUtilityAgent() override = default;
+  public:
+   ServiceUtilityAgent();
+   ~ServiceUtilityAgent() override = default;
 
-    [[nodiscard]] AgentScore evaluate(const Action& action,
-                                      const AgentContext& context) const override;
-    [[nodiscard]] std::string_view getName() const noexcept override { return name_; }
-    [[nodiscard]] float getWeight() const noexcept override { return weight_; }
-    void setWeight(float weight) override { weight_ = weight; }
-    [[nodiscard]] AgentCategory getCategory() const noexcept override { return AgentCategory::RESOURCE; }
+   [[nodiscard]] AgentScore evaluate(const Action& action,
+                                     const AgentContext& context) const override;
+   [[nodiscard]] std::string_view getName() const noexcept override { return name_; }
+   [[nodiscard]] float getWeight() const noexcept override { return weight_; }
+   void setWeight(float weight) override { weight_ = weight; }
+   [[nodiscard]] AgentCategory getCategory() const noexcept override {
+      return AgentCategory::RESOURCE;
+   }
 
-private:
-    std::string name_;
-    float weight_;
+  private:
+   std::string name_;
+   float weight_;
 };
 
-} // namespace mcts
-} // namespace asc
+}  // namespace mcts
+}  // namespace asc
 
-#endif // MCTS_MVP_AGENTS_H
+#endif  // MCTS_MVP_AGENTS_H

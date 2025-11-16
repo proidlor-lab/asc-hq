@@ -18,7 +18,6 @@
      Boston, MA  02111-1307  USA
 */
 
-
 #include "setresourceprocessingratecommand.h"
 
 #include "../vehicle.h"
@@ -34,113 +33,96 @@
 #include "servicecommand.h"
 #include "convertcontainer.h"
 
-bool SetResourceProcessingRateCommand :: avail ( const ContainerBase* container )
-{
-   if ( !container  )
+bool SetResourceProcessingRateCommand ::avail(const ContainerBase* container) {
+   if (!container)
       return false;
-   
-   return container->baseType->hasFunction( ContainerBaseType::MatterConverter ) 
-         || container->baseType->hasFunction( ContainerBaseType::MiningStation ) ;
+
+   return container->baseType->hasFunction(ContainerBaseType::MatterConverter) ||
+          container->baseType->hasFunction(ContainerBaseType::MiningStation);
 }
 
-
-
-
-SetResourceProcessingRateCommand :: SetResourceProcessingRateCommand ( ContainerBase* container, int rate )
-   : ContainerCommand ( container ), newRate(rate)
-{
-   setState( SetUp );
+SetResourceProcessingRateCommand ::SetResourceProcessingRateCommand(ContainerBase* container,
+                                                                    int rate)
+   : ContainerCommand(container), newRate(rate) {
+   setState(SetUp);
 }
 
-
-Resources SetResourceProcessingRateCommand::getNewPlus()
-{
-   Resources res;  
+Resources SetResourceProcessingRateCommand::getNewPlus() {
+   Resources res;
    ContainerBase* c = getContainer();
-   for ( int r = 0; r < Resources::count; r++ )
-      res.resource(r) = c->maxplus.resource(r) * newRate/100;
-   
+   for (int r = 0; r < Resources::count; r++)
+      res.resource(r) = c->maxplus.resource(r) * newRate / 100;
+
    return res;
 }
 
-      
-ActionResult SetResourceProcessingRateCommand::go ( const Context& context )
-{
-   if ( getState() != SetUp )
+ActionResult SetResourceProcessingRateCommand::go(const Context& context) {
+   if (getState() != SetUp)
       return ActionResult(22000);
 
    ContainerBase* c = getContainer();
-   if ( !avail( c ))
+   if (!avail(c))
       return ActionResult(22850);
-   
-   if ( newRate < 0 || newRate > 100 )
+
+   if (newRate < 0 || newRate > 100)
       return ActionResult(22851);
-   
+
    oldRate = c->plus;
    c->plus = getNewPlus();
-   
-   setState( Finished );
+
+   setState(Finished);
 
    return ActionResult(0);
 }
 
-ActionResult SetResourceProcessingRateCommand::undoAction( const Context& context )
-{
+ActionResult SetResourceProcessingRateCommand::undoAction(const Context& context) {
    getContainer()->plus = oldRate;
-   return ContainerCommand::undoAction( context );
+   return ContainerCommand::undoAction(context);
 }
-
 
 static const int SetResourceProcessingRateCommandVersion = 1;
 
-void SetResourceProcessingRateCommand :: readData ( tnstream& stream )
-{
-   ContainerCommand::readData( stream );
+void SetResourceProcessingRateCommand ::readData(tnstream& stream) {
+   ContainerCommand::readData(stream);
    int version = stream.readInt();
-   if ( version > SetResourceProcessingRateCommandVersion )
-      throw tinvalidversion ( "SetResourceProcessingRateCommand", SetResourceProcessingRateCommandVersion, version );
+   if (version > SetResourceProcessingRateCommandVersion)
+      throw tinvalidversion("SetResourceProcessingRateCommand",
+                            SetResourceProcessingRateCommandVersion, version);
    newRate = stream.readInt();
-   oldRate.read( stream );
+   oldRate.read(stream);
 }
 
-void SetResourceProcessingRateCommand :: writeData ( tnstream& stream ) const
-{
-   ContainerCommand::writeData( stream );
-   stream.writeInt( SetResourceProcessingRateCommandVersion );
-   stream.writeInt( newRate );
-   oldRate.write( stream );
+void SetResourceProcessingRateCommand ::writeData(tnstream& stream) const {
+   ContainerCommand::writeData(stream);
+   stream.writeInt(SetResourceProcessingRateCommandVersion);
+   stream.writeInt(newRate);
+   oldRate.write(stream);
 }
 
-
-ASCString SetResourceProcessingRateCommand :: getCommandString() const
-{
+ASCString SetResourceProcessingRateCommand ::getCommandString() const {
    ASCString c;
-   c.format("setResourceProcessingRate ( map, %d, %d )", getContainerID(), newRate );
+   c.format("setResourceProcessingRate ( map, %d, %d )", getContainerID(), newRate);
    return c;
-
 }
 
-GameActionID SetResourceProcessingRateCommand::getID() const
-{
+GameActionID SetResourceProcessingRateCommand::getID() const {
    return ActionRegistry::SetResourceProcessingRateCommand;
 }
 
-ASCString SetResourceProcessingRateCommand::getDescription() const
-{
+ASCString SetResourceProcessingRateCommand::getDescription() const {
    ASCString s = "Set Resource processing rate of ";
-   
-   if ( getContainer(true) ) {
+
+   if (getContainer(true)) {
       s += getContainer()->getName();
    } else {
-      s += " container with ID " + ASCString::toString( getContainerID() );
+      s += " container with ID " + ASCString::toString(getContainerID());
    }
-   
-   s += " to " + ASCString::toString( newRate ) + "%";
+
+   s += " to " + ASCString::toString(newRate) + "%";
    return s;
 }
 
-namespace
-{
-   const bool r1 = registerAction<SetResourceProcessingRateCommand> ( ActionRegistry::SetResourceProcessingRateCommand );
+namespace {
+const bool r1 = registerAction<SetResourceProcessingRateCommand>(
+   ActionRegistry::SetResourceProcessingRateCommand);
 }
-

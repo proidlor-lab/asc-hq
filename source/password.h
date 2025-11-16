@@ -20,30 +20,29 @@
  ***************************************************************************/
 
 #ifndef password_h_included
- #define password_h_included
+#define password_h_included
 
- #include <string>
- #include "basestreaminterface.h"
- class Password {
-          ASCString password;
-       protected:
-         int encodepassword ( const char* pw ) const ;
-         string encodedpassword2string ( int pwd ) const;
+#include <string>
+#include "basestreaminterface.h"
+class Password {
+   ASCString password;
 
-       public:
-         void setUnencoded ( const string& s );
-         void setEncoded   ( const string& s );
-         void setInt  ( int pwd );
-         bool empty() const;
-         void reset();
-         string toString ( ) const ;
+  protected:
+   int encodepassword(const char* pw) const;
+   string encodedpassword2string(int pwd) const;
 
-         bool operator== ( const Password& p ) const;
-         bool operator!= ( const Password& p ) const;
-         void read ( tnstream& stream );
-         void write ( tnstream& stream ) const;
+  public:
+   void setUnencoded(const string& s);
+   void setEncoded(const string& s);
+   void setInt(int pwd);
+   bool empty() const;
+   void reset();
+   string toString() const;
 
- };
-
+   bool operator==(const Password& p) const;
+   bool operator!=(const Password& p) const;
+   void read(tnstream& stream);
+   void write(tnstream& stream) const;
+};
 
 #endif

@@ -19,7 +19,7 @@
 */
 
 #ifndef videorecorderH
- #define videorecorderH
+#define videorecorderH
 
 #include <SDL.h>
 #include "../ascstring.h"
@@ -27,13 +27,15 @@
 class VideoRecorderInternals;
 
 class VideoRecorder {
-      VideoRecorderInternals* data;
-   public:   
-      VideoRecorder( const ASCString& filename, const SDL_Surface* surf, int framerate = 15, int ascFramerateLimit = 30, int quality = 100 );
-      const ASCString getFilename();
-      void storeFrame( const SDL_Surface* surf );
-      void close();
-      ~VideoRecorder();
+   VideoRecorderInternals* data;
+
+  public:
+   VideoRecorder(const ASCString& filename, const SDL_Surface* surf, int framerate = 15,
+                 int ascFramerateLimit = 30, int quality = 100);
+   const ASCString getFilename();
+   void storeFrame(const SDL_Surface* surf);
+   void close();
+   ~VideoRecorder();
 };
 
 #endif

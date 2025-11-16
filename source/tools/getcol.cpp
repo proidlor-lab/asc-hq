@@ -13,20 +13,18 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
-
 #include <malloc.h>
-#include <dos.h> 
+#include <dos.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <fstream.h>
 #include <math.h>
-
 
 #include "tpascal.inc"
 #include "typen.h"
@@ -38,38 +36,33 @@
 #include "mousehnd.h"
 #include <conio.h>
 
-
 dacpalette256 pal;
 
-main(int argc, char *argv[], char *envp[])
-{
-   if ( argc <= 1 ) {
+main(int argc, char* argv[], char* envp[]) {
+   if (argc <= 1) {
       printf("zuwenig parameter. Datei erwartet.");
       return 1;
    }
-      
-   
-   initsvga ( 0x103 );
-   bar( 0, 0, 799, 599, 255 );
-   loadpcxxy( argv[1], 1, 20, 20 );
 
-   void* p = malloc ( 100000 );
+   initsvga(0x103);
+   bar(0, 0, 799, 599, 255);
+   loadpcxxy(argv[1], 1, 20, 20);
+
+   void* p = malloc(100000);
    initmousehandler();
-   mousevisible( true );
+   mousevisible(true);
 
    int col = -1;
    do {
-
-      if ( mouseparams.taste == 1 ) {
-        mousevisible(false);
-        col = getpixel ( mouseparams.x, mouseparams.y );
-        mousevisible(true);
+      if (mouseparams.taste == 1) {
+         mousevisible(false);
+         col = getpixel(mouseparams.x, mouseparams.y);
+         mousevisible(true);
       }
 
-   } while ( col < 0  ); /* enddo */
+   } while (col < 0); /* enddo */
 
    settextmode(3);
-   printf ( "color: %d \n", col );
+   printf("color: %d \n", col);
    return 0;
 }
-

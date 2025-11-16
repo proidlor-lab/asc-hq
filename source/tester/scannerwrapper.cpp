@@ -4,25 +4,21 @@
 #include "scanner.h"
 #include "parser.h"
 
-
 class ScannerPrivateData {
-   public:
-      yyscan_t scanner;
+  public:
+   yyscan_t scanner;
 };
 
-Scanner::Scanner()
-{
+Scanner::Scanner() {
    data = new ScannerPrivateData();
-   yylex_init( &data->scanner );
-   yyset_out( NULL, data->scanner );
+   yylex_init(&data->scanner);
+   yyset_out(NULL, data->scanner);
 }
 
-int Scanner::yylex()
-{
-   return ::yylex( data->scanner);
+int Scanner::yylex() {
+   return ::yylex(data->scanner);
 }
-Scanner::~Scanner()
-{
-   yylex_destroy( data->scanner );
+Scanner::~Scanner() {
+   yylex_destroy(data->scanner);
    delete data;
 }

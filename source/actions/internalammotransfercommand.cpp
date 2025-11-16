@@ -18,7 +18,6 @@
      Boston, MA  02111-1307  USA
 */
 
-
 #include "internalammotransfercommand.h"
 
 #include "../vehicle.h"
@@ -34,19 +33,16 @@
 #include "consumeammo.h"
 #include "servicecommand.h"
 
-bool InternalAmmoTransferCommand :: avail ( const Vehicle* unit )
-{
-   if ( unit ) {
-      for( int i=0; i<unit->typ->weapons.count; i++ )
-      {
-         const SingleWeapon* weapon = unit->getWeapon( i );
-         if( weapon->canRefuel() ) 
+bool InternalAmmoTransferCommand ::avail(const Vehicle* unit) {
+   if (unit) {
+      for (int i = 0; i < unit->typ->weapons.count; i++) {
+         const SingleWeapon* weapon = unit->getWeapon(i);
+         if (weapon->canRefuel())
             return true;
-         
-         for( int j=0; j<i; j++ )
-         {
-            const SingleWeapon* otherWeapon = unit->getWeapon( j );
-            if( weapon->equals( otherWeapon ) ) 
+
+         for (int j = 0; j < i; j++) {
+            const SingleWeapon* otherWeapon = unit->getWeapon(j);
+            if (weapon->equals(otherWeapon))
                return true;
          }
       }
@@ -56,121 +52,101 @@ bool InternalAmmoTransferCommand :: avail ( const Vehicle* unit )
    return false;
 }
 
+InternalAmmoTransferCommand ::InternalAmmoTransferCommand(Vehicle* unit) : UnitCommand(unit) {}
 
-InternalAmmoTransferCommand :: InternalAmmoTransferCommand ( Vehicle* unit)
-   : UnitCommand ( unit )
-{
+bool InternalAmmoTransferCommand::checkConsistency() {
+   map<int, int> amount;
 
-}
-
-
-
-bool InternalAmmoTransferCommand::checkConsistency()
-{
-   map<int,int> amount;
-   
    Vehicle* v = getUnit();
-   for ( int w = 0; w < v->typ->weapons.count; ++w ) {
-      if ( ammoAmount.size() < w )
+   for (int w = 0; w < v->typ->weapons.count; ++w) {
+      if (ammoAmount.size() < w)
          return false;
-            
-      int  type = v->typ->weapons.weapon[w].getScalarWeaponType();
-      amount[type] += v->ammo[w] - ammoAmount[w];  
+
+      int type = v->typ->weapons.weapon[w].getScalarWeaponType();
+      amount[type] += v->ammo[w] - ammoAmount[w];
    }
-   
-   for ( map<int,int>::iterator i = amount.begin(); i != amount.end(); ++i )
-      if ( i->second != 0 )
+
+   for (map<int, int>::iterator i = amount.begin(); i != amount.end(); ++i)
+      if (i->second != 0)
          return false;
-   
+
    return true;
-      
 }
 
-
-bool InternalAmmoTransferCommand::setAmmounts( const vector<int>& ammo )
-{
+bool InternalAmmoTransferCommand::setAmmounts(const vector<int>& ammo) {
    ammoAmount = ammo;
-   
+
    return checkConsistency();
 }
 
-
-ActionResult InternalAmmoTransferCommand::go ( const Context& context )
-{
-   if ( getState() != SetUp )
+ActionResult InternalAmmoTransferCommand::go(const Context& context) {
+   if (getState() != SetUp)
       return ActionResult(22000);
 
    Vehicle* unit = getUnit();
-   
-   if ( !avail( unit ))
-      return ActionResult( 22600 );
-   
-   if ( !checkConsistency())
-      return ActionResult( 23300 );
-   
-   for ( int w = 0; w < unit->typ->weapons.count; ++w ) {
-      if ( unit->ammo[w] != ammoAmount[w] ) {
-         std::unique_ptr<ConsumeAmmo> cr ( new ConsumeAmmo( unit, unit->typ->weapons.weapon[w].getScalarWeaponType(), w, unit->ammo[w] - ammoAmount[w] ));
-         ActionResult res = cr->execute( context );
-         if ( !res.successful() )
+
+   if (!avail(unit))
+      return ActionResult(22600);
+
+   if (!checkConsistency())
+      return ActionResult(23300);
+
+   for (int w = 0; w < unit->typ->weapons.count; ++w) {
+      if (unit->ammo[w] != ammoAmount[w]) {
+         std::unique_ptr<ConsumeAmmo> cr(
+            new ConsumeAmmo(unit, unit->typ->weapons.weapon[w].getScalarWeaponType(), w,
+                            unit->ammo[w] - ammoAmount[w]));
+         ActionResult res = cr->execute(context);
+         if (!res.successful())
             return res;
          else
             cr.release();
       }
    }
-         
-   setState( Finished );
-   
+
+   setState(Finished);
+
    return ActionResult(0);
 }
 
-
-
 static const int InternalAmmoTransferCommandVersion = 1;
 
-void InternalAmmoTransferCommand :: readData ( tnstream& stream )
-{
-   UnitCommand::readData( stream );
+void InternalAmmoTransferCommand ::readData(tnstream& stream) {
+   UnitCommand::readData(stream);
    int version = stream.readInt();
-   if ( version > InternalAmmoTransferCommandVersion )
-      throw tinvalidversion ( "InternalAmmoTransferCommand", InternalAmmoTransferCommandVersion, version );
-   
-   readClassContainer( ammoAmount, stream );
+   if (version > InternalAmmoTransferCommandVersion)
+      throw tinvalidversion("InternalAmmoTransferCommand", InternalAmmoTransferCommandVersion,
+                            version);
+
+   readClassContainer(ammoAmount, stream);
 }
 
-void InternalAmmoTransferCommand :: writeData ( tnstream& stream ) const
-{
-   UnitCommand::writeData( stream );
-   stream.writeInt( InternalAmmoTransferCommandVersion );
-   writeClassContainer( ammoAmount, stream );
+void InternalAmmoTransferCommand ::writeData(tnstream& stream) const {
+   UnitCommand::writeData(stream);
+   stream.writeInt(InternalAmmoTransferCommandVersion);
+   writeClassContainer(ammoAmount, stream);
 }
 
-
-ASCString InternalAmmoTransferCommand :: getCommandString() const
-{
+ASCString InternalAmmoTransferCommand ::getCommandString() const {
    ASCString c;
-   c.format("InternalAmmoTransfer ( %d )", getUnitID() );
+   c.format("InternalAmmoTransfer ( %d )", getUnitID());
    return c;
-
 }
 
-GameActionID InternalAmmoTransferCommand::getID() const
-{
+GameActionID InternalAmmoTransferCommand::getID() const {
    return ActionRegistry::InternalAmmoTransferCommand;
 }
 
-ASCString InternalAmmoTransferCommand::getDescription() const
-{
+ASCString InternalAmmoTransferCommand::getDescription() const {
    ASCString s = "InternalAmmoTransfer ";
-   
-   if ( getUnit())
+
+   if (getUnit())
       s += " for unit " + getUnit()->getName();
-   
+
    return s;
 }
 
-namespace
-{
-   const bool r1 = registerAction<InternalAmmoTransferCommand> ( ActionRegistry::InternalAmmoTransferCommand );
+namespace {
+const bool r1 =
+   registerAction<InternalAmmoTransferCommand>(ActionRegistry::InternalAmmoTransferCommand);
 }
-

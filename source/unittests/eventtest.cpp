@@ -7,29 +7,24 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "../actions/moveunitcommand.h"
 #include "../loaders.h"
 #include "../itemrepository.h"
 #include "unittestutil.h"
 
+void testLoseMap() {
+   std::unique_ptr<GameMap> game(startMap("unittest-eventlose.map"));
 
-void testLoseMap() 
-{
-   std::unique_ptr<GameMap> game ( startMap("unittest-eventlose.map"));
-   
-   Vehicle* veh = game->getField(5,4)->vehicle;
-   assertOrThrow( veh != NULL );
-   
-   attack( veh, MapCoordinate( 6,6 ));
-   
-   next_turn( game.get(), NextTurnStrategy_Abort(), NULL, -1 );
-   
-   assertOrThrow ( game->actplayer == 2 );
-   
+   Vehicle* veh = game->getField(5, 4)->vehicle;
+   assertOrThrow(veh != NULL);
+
+   attack(veh, MapCoordinate(6, 6));
+
+   next_turn(game.get(), NextTurnStrategy_Abort(), NULL, -1);
+
+   assertOrThrow(game->actplayer == 2);
 }
 
-void testEvents() 
-{
-  //  testLoseMap();
+void testEvents() {
+   //  testLoseMap();
 }

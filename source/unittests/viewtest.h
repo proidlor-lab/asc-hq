@@ -10,7 +10,6 @@
 #ifndef viewtestH
 #define viewtestH
 
- extern void testView();
-
+extern void testView();
 
 #endif

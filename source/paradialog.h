@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 #ifndef paradialogH
- #define paradialogH
+#define paradialogH
 
 #include <vector>
 #include "global.h"
@@ -54,204 +54,199 @@
 
 class AutoProgressBar;
 
-class StartupScreen: public sigc::trackable {
-       vector<PG_Label*> infoLabels;
-       PG_Label* versionLabel;
-       PG_ThemeWidget* background;
-       AutoProgressBar* progressBar; 
-       Surface fullscreenImage;
-       void disp( const ASCString& s );
-       void dispLine( const ASCString& s, int line );
-     public:
-         StartupScreen( const ASCString& filename, sigc::signal<void>& ticker );        
-         ~StartupScreen();
+class StartupScreen : public sigc::trackable {
+   vector<PG_Label*> infoLabels;
+   PG_Label* versionLabel;
+   PG_ThemeWidget* background;
+   AutoProgressBar* progressBar;
+   Surface fullscreenImage;
+   void disp(const ASCString& s);
+   void dispLine(const ASCString& s, int line);
+
+  public:
+   StartupScreen(const ASCString& filename, sigc::signal<void>& ticker);
+   ~StartupScreen();
 };
 
- class ASC_PG_App : public PG_Application {
-       ASCString themeName;
-       bool fullScreen;
-       int bitsperpixel;
-       
-       void messageDialog( const ASCString& message, MessagingHubBase::MessageType mt );
+class ASC_PG_App : public PG_Application {
+   ASCString themeName;
+   bool fullScreen;
+   int bitsperpixel;
 
-       typedef list<PG_MessageObject*> DeletionQueue;
-       DeletionQueue deletionQueue;
+   void messageDialog(const ASCString& message, MessagingHubBase::MessageType mt);
 
-       bool removeFromDeletionQueue( const PG_MessageObject* obj );
+   typedef list<PG_MessageObject*> DeletionQueue;
+   DeletionQueue deletionQueue;
 
-    protected:
-       bool eventQuit(int id, PG_MessageObject* widget, unsigned long data);
-	    void eventIdle();
-       
-    public:
-       static const int mapDisplayID = 2;
-       static const int mainScreenID = 1;
-    
-       ASC_PG_App ( const ASCString& themeName );
-       bool InitScreen ( int w, int h, int depth = 0, Uint32 flags = SDL_SWSURFACE|SDL_HWPALETTE );
-       
-       void reloadTheme();
-       int Run ();
-       void Quit ();
+   bool removeFromDeletionQueue(const PG_MessageObject* obj);
 
-       bool isFullscreen() { return fullScreen; };
-       bool toggleFullscreen();
+  protected:
+   bool eventQuit(int id, PG_MessageObject* widget, unsigned long data);
+   void eventIdle();
 
-       void setIcon( const ASCString& filename );
-       
-       void processEvent();
-       bool enableLegacyEventHandling( bool use );
+  public:
+   static const int mapDisplayID = 2;
+   static const int mainScreenID = 1;
 
-       bool queueWidgetForDeletion( PG_Widget* widget );
+   ASC_PG_App(const ASCString& themeName);
+   bool InitScreen(int w, int h, int depth = 0, Uint32 flags = SDL_SWSURFACE | SDL_HWPALETTE);
 
-       ~ASC_PG_App();
+   void reloadTheme();
+   int Run();
+   void Quit();
 
-       void SetNewScreenSurface( SDL_Surface* surface );
-       
-       // sigc::signal<void> sigQuit;
-      // PG_Theme* LoadTheme(const char* xmltheme, bool asDefault = true, const char* searchpath = NULL );
- };
+   bool isFullscreen() { return fullScreen; };
+   bool toggleFullscreen();
 
- extern ASC_PG_App& getPGApplication();
+   void setIcon(const ASCString& filename);
 
- class WindowCounter {
-       static int windowNum;
-    public:
-       WindowCounter() { ++windowNum; };
-       static int num() { return windowNum; };
-       ~WindowCounter() { --windowNum; };
- };
+   void processEvent();
+   bool enableLegacyEventHandling(bool use);
 
- 
- //! Adapter class for using Paragui Dialogs in ASC. This class transfers the event control from ASC to Paragui and back. All new dialog classes should be derived from this class
+   bool queueWidgetForDeletion(PG_Widget* widget);
+
+   ~ASC_PG_App();
+
+   void SetNewScreenSurface(SDL_Surface* surface);
+
+   // sigc::signal<void> sigQuit;
+   // PG_Theme* LoadTheme(const char* xmltheme, bool asDefault = true, const char* searchpath = NULL
+   // );
+};
+
+extern ASC_PG_App& getPGApplication();
+
+class WindowCounter {
+   static int windowNum;
+
+  public:
+   WindowCounter() { ++windowNum; };
+   static int num() { return windowNum; };
+   ~WindowCounter() { --windowNum; };
+};
+
+//! Adapter class for using Paragui Dialogs in ASC. This class transfers the event control from ASC
+//! to Paragui and back. All new dialog classes should be derived from this class
 class ASC_PG_Dialog : public PG_Window {
-    private:
-       int stdButtonNum;
-   protected:
-      PG_MessageObject* caller;
-      virtual bool closeWindow();
-      bool quitModalLoopW(PG_Button* button, int value );
-      bool quitModalLoop(int value );
-      virtual bool eventKeyDown(const SDL_KeyboardEvent *key);
-    public:
-       ASC_PG_Dialog ( PG_Widget *parent, const PG_Rect &r, const ASCString& windowtext, WindowFlags flags=DEFAULT, const ASCString& style="Window", int heightTitlebar=25);
-       PG_Button* AddStandardButton( const ASCString& name );
-       enum StandardButtonDirectonType { Vertical, Horizontal };
-       void StandardButtonDirection ( StandardButtonDirectonType dir );
-       int RunModal();
+  private:
+   int stdButtonNum;
 
-       static PG_Rect centerRectangle( const PG_Rect& rect );
+  protected:
+   PG_MessageObject* caller;
+   virtual bool closeWindow();
+   bool quitModalLoopW(PG_Button* button, int value);
+   bool quitModalLoop(int value);
+   virtual bool eventKeyDown(const SDL_KeyboardEvent* key);
 
-   private:
-      StandardButtonDirectonType standardButtonDir;
+  public:
+   ASC_PG_Dialog(PG_Widget* parent, const PG_Rect& r, const ASCString& windowtext,
+                 WindowFlags flags = DEFAULT, const ASCString& style = "Window",
+                 int heightTitlebar = 25);
+   PG_Button* AddStandardButton(const ASCString& name);
+   enum StandardButtonDirectonType { Vertical, Horizontal };
+   void StandardButtonDirection(StandardButtonDirectonType dir);
+   int RunModal();
+
+   static PG_Rect centerRectangle(const PG_Rect& rect);
+
+  private:
+   StandardButtonDirectonType standardButtonDir;
 };
 
 class ASC_PropertyEditor : public PG_PropertyEditor {
-   public:
-      ASC_PropertyEditor(  PG_Widget *parent, const PG_Rect &r, const std::string &style="PropertyEditor", int labelWidthPercentage = 50 ) : PG_PropertyEditor( parent, r, style, labelWidthPercentage ) {};
-      std::string GetStyleName( const std::string& widgetName ) {
-         if ( widgetName == "DropDownSelectorProperty" )
-            return "DropDown";
-         else
-            if ( widgetName == "BoolProperty" )
-               return "CheckButton";
-         else
-            return PG_PropertyEditor::GetStyleName( widgetName );
-      };
+  public:
+   ASC_PropertyEditor(PG_Widget* parent, const PG_Rect& r,
+                      const std::string& style = "PropertyEditor", int labelWidthPercentage = 50)
+      : PG_PropertyEditor(parent, r, style, labelWidthPercentage){};
+   std::string GetStyleName(const std::string& widgetName) {
+      if (widgetName == "DropDownSelectorProperty")
+         return "DropDown";
+      else if (widgetName == "BoolProperty")
+         return "CheckButton";
+      else
+         return PG_PropertyEditor::GetStyleName(widgetName);
+   };
 };
-
-
 
 class ColoredBar : public PG_ThemeWidget {
-   public:
-      ColoredBar( PG_Color col,  PG_Widget *parent, const PG_Rect &r ) : PG_ThemeWidget( parent, r )
-      {
-         SetGradient ( PG_Gradient( col,col,col,col ));
-         SetBorderSize(0);
-         SetBackgroundBlend ( 255 );
-      };
+  public:
+   ColoredBar(PG_Color col, PG_Widget* parent, const PG_Rect& r) : PG_ThemeWidget(parent, r) {
+      SetGradient(PG_Gradient(col, col, col, col));
+      SetBorderSize(0);
+      SetBackgroundBlend(255);
+   };
 };
-
-
 
 class SpecialDisplayWidget : public PG_Widget {
-   public:
+  public:
+   typedef sigc::signal<void, const PG_Rect&, const ASCString&, const PG_Rect&> DisplayHook;
 
-      typedef sigc::signal<void,const PG_Rect&, const ASCString&, const PG_Rect&> DisplayHook;
-      
-      DisplayHook display;
-      
-      SpecialDisplayWidget (PG_Widget *parent, const PG_Rect &rect ) : PG_Widget( parent, rect, false )
-      {
-      }
-      
-      
-      void eventBlit (SDL_Surface *surface, const PG_Rect &src, const PG_Rect &dst) {
-         display( src, GetName(), dst );
-      };
-      /*
-      void eventDraw (SDL_Surface *surface, const PG_Rect &rect) {
-         Surface s = Surface::Wrap( surface );
-         display( s, rect, GetID(), *this );
-      };
-      */
+   DisplayHook display;
 
+   SpecialDisplayWidget(PG_Widget* parent, const PG_Rect& rect) : PG_Widget(parent, rect, false) {}
+
+   void eventBlit(SDL_Surface* surface, const PG_Rect& src, const PG_Rect& dst) {
+      display(src, GetName(), dst);
+   };
+   /*
+   void eventDraw (SDL_Surface *surface, const PG_Rect &rect) {
+      Surface s = Surface::Wrap( surface );
+      display( s, rect, GetID(), *this );
+   };
+   */
 };
 
-
 class SpecialInputWidget : public PG_Widget {
-   public:
-     
-      SpecialInputWidget (PG_Widget *parent, const PG_Rect &rect ) : PG_Widget( parent, rect, false ) { SetTransparency(255); };
-      void eventBlit (SDL_Surface *surface, const PG_Rect &src, const PG_Rect &dst) { };
+  public:
+   SpecialInputWidget(PG_Widget* parent, const PG_Rect& rect) : PG_Widget(parent, rect, false) {
+      SetTransparency(255);
+   };
+   void eventBlit(SDL_Surface* surface, const PG_Rect& src, const PG_Rect& dst) {};
 };
 
 class Emboss : public PG_Widget {
-      bool inv;
-   public:
+   bool inv;
 
-      Emboss (PG_Widget *parent, const PG_Rect &rect, bool inverted = false ) : PG_Widget( parent, rect, false ), inv(inverted)
-      {
-      }
+  public:
+   Emboss(PG_Widget* parent, const PG_Rect& rect, bool inverted = false)
+      : PG_Widget(parent, rect, false), inv(inverted) {}
 
-      void eventBlit (SDL_Surface *surface, const PG_Rect &src, const PG_Rect &dst);
+   void eventBlit(SDL_Surface* surface, const PG_Rect& src, const PG_Rect& dst);
 };
-
-
-
-
 
 class MessageDialog;
 
 class PG_StatusWindowData : public StatusMessageWindowHolder::UserData {
-      MessageDialog* md;
-   public:
-      PG_StatusWindowData( const ASCString& msg );
-      void SetText( const ASCString& text );
-      ~PG_StatusWindowData() ;
+   MessageDialog* md;
+
+  public:
+   PG_StatusWindowData(const ASCString& msg);
+   void SetText(const ASCString& text);
+   ~PG_StatusWindowData();
 };
 
 /** \return ButtonPressed,SelectedItem
-*/
-extern pair<int,int> new_chooseString ( const ASCString& title, const vector<ASCString>& entries, const vector<ASCString>& buttons, int defaultEntry = -1 );
+ */
+extern pair<int, int> new_chooseString(const ASCString& title, const vector<ASCString>& entries,
+                                       const vector<ASCString>& buttons, int defaultEntry = -1);
 
-extern bool MultiLineEditor( const ASCString& title, ASCString& textToEdit );
+extern bool MultiLineEditor(const ASCString& title, ASCString& textToEdit);
 
 //! uses the new dialog engine
-extern ASCString editString2( const ASCString& title, const ASCString& defaultValue = "" );
+extern ASCString editString2(const ASCString& title, const ASCString& defaultValue = "");
 
-extern int choiceDialog(const ASCString& text, const ASCString& button1, const ASCString& button2, const ASCString& shortLabel );
-
+extern int choiceDialog(const ASCString& text, const ASCString& button1, const ASCString& button2,
+                        const ASCString& shortLabel);
 
 class BulkGraphicUpdates {
-      PG_Widget* parent;
-      bool bulk;
-      bool active;
-   public:
-      BulkGraphicUpdates( PG_Widget* parent = NULL );
-      void release();
-      ~BulkGraphicUpdates();
-};
+   PG_Widget* parent;
+   bool bulk;
+   bool active;
 
+  public:
+   BulkGraphicUpdates(PG_Widget* parent = NULL);
+   void release();
+   ~BulkGraphicUpdates();
+};
 
 #endif

@@ -25,133 +25,132 @@
 #include "viewcalculation.h"
 #include "graphics/blitter.h"
 
-WholeMapRenderer :: WholeMapRenderer ( GameMap* actmap ) : gamemap ( actmap )
-{
-   if ( actmap->xsize > (16300 - 200) / fielddistx )
+WholeMapRenderer ::WholeMapRenderer(GameMap* actmap) : gamemap(actmap) {
+   if (actmap->xsize > (16300 - 200) / fielddistx)
       xsize = (16300 - 200) / fielddistx;
    else
       xsize = actmap->xsize;
 
-   if ( actmap->ysize > (16300 - 200) / fielddisty )
+   if (actmap->ysize > (16300 - 200) / fielddisty)
       ysize = (16300 - 200) / fielddisty;
    else
       ysize = actmap->ysize;
 
-
-   int bufsizex = xsize * fielddistx + 200 ;
-   int bufsizey = ysize * fielddisty + 200 ;
-   surface = Surface::createSurface( bufsizex, bufsizey, 32, Surface::transparent << 24 );
+   int bufsizex = xsize * fielddistx + 200;
+   int bufsizey = ysize * fielddisty + 200;
+   surface = Surface::createSurface(bufsizex, bufsizey, 32, Surface::transparent << 24);
 }
 
-
-void WholeMapRenderer::render()
-{
-   paintTerrain( surface, gamemap, gamemap->getPlayerView(), ViewPort( 0, 0, xsize, ysize ), MapCoordinate( 0, 0 ) );
+void WholeMapRenderer::render() {
+   paintTerrain(surface, gamemap, gamemap->getPlayerView(), ViewPort(0, 0, xsize, ysize),
+                MapCoordinate(0, 0));
    // renderVisibility();
 }
 
-void WholeMapRenderer::renderVisibility()
-{
-   computeview( gamemap );
+void WholeMapRenderer::renderVisibility() {
+   computeview(gamemap);
    ColorMerger_AlphaMerge<4> cmam;
 
-   PutPixel<4, ColorMerger_AlphaMerge > pp(surface);
+   PutPixel<4, ColorMerger_AlphaMerge> pp(surface);
 
    Surface& mask = IconRepository::getIcon("largehex.pcx");
-   for ( int y = 0; y < ysize; ++y )
-      for ( int x = 0; x < xsize; ++x )
-         if ( fieldvisiblenow( gamemap->getField(x,y), gamemap->getPlayerView() )) {
+   for (int y = 0; y < ysize; ++y)
+      for (int x = 0; x < xsize; ++x)
+         if (fieldvisiblenow(gamemap->getField(x, y), gamemap->getPlayerView())) {
             int view = -1;
             int maxview = 0;
-            for ( int i = 1; i < gamemap->getPlayerCount(); ++i )
-               if ( gamemap->getField(x,y)->view[i].view > maxview ) {
-                  maxview = gamemap->getField(x,y)->view[i].view;
+            for (int i = 1; i < gamemap->getPlayerCount(); ++i)
+               if (gamemap->getField(x, y)->view[i].view > maxview) {
+                  maxview = gamemap->getField(x, y)->view[i].view;
                   view = i;
                }
 
-            if ( view >= 0 )
-               for ( int yp = 0; yp < fieldsizey; ++yp)
-                  for ( int xp = 0; xp < fieldsizex; ++xp)
-                     if ( mask.GetPixel(xp,yp) != 0xff )
-                        pp.set( getFieldPos(x,y) + SPoint(xp,yp), gamemap->getPlayer( view ).getColor().MapRGBA( surface.getBaseSurface()->format, min(maxview,150)*2/3));
+            if (view >= 0)
+               for (int yp = 0; yp < fieldsizey; ++yp)
+                  for (int xp = 0; xp < fieldsizex; ++xp)
+                     if (mask.GetPixel(xp, yp) != 0xff)
+                        pp.set(getFieldPos(x, y) + SPoint(xp, yp),
+                               gamemap->getPlayer(view).getColor().MapRGBA(
+                                  surface.getBaseSurface()->format, min(maxview, 150) * 2 / 3));
          }
 }
 
-
-void WholeMapRenderer::writePCX( const ASCString& filename )
-{
-   writepcx( filename, surface, SDLmm::SRect( SPoint( surfaceBorder, surfaceBorder), (xsize-1) * fielddistx + fielddisthalfx + fieldsizex, (ysize - 1) * fielddisty + fieldysize ) );
+void WholeMapRenderer::writePCX(const ASCString& filename) {
+   writepcx(filename, surface,
+            SDLmm::SRect(SPoint(surfaceBorder, surfaceBorder),
+                         (xsize - 1) * fielddistx + fielddisthalfx + fieldsizex,
+                         (ysize - 1) * fielddisty + fieldysize));
 }
 
-void WholeMapRenderer::writePNG( const ASCString& filename )
-{
-   ::writePNG( constructFileName(0,"",filename), surface, SDLmm::SRect( SPoint( surfaceBorder, surfaceBorder), (xsize-1) * fielddistx + fielddisthalfx + fieldsizex, (ysize - 1) * fielddisty + fieldysize ) );
+void WholeMapRenderer::writePNG(const ASCString& filename) {
+   ::writePNG(constructFileName(0, "", filename), surface,
+              SDLmm::SRect(SPoint(surfaceBorder, surfaceBorder),
+                           (xsize - 1) * fielddistx + fielddisthalfx + fieldsizex,
+                           (ysize - 1) * fielddisty + fieldysize));
 }
 
-void writemaptopcx ( GameMap* gamemap, bool addview )
-{
-   ASCString name = selectFile( "*.png", false );
+void writemaptopcx(GameMap* gamemap, bool addview) {
+   ASCString name = selectFile("*.png", false);
 
-   StatusMessageWindowHolder smw = MessagingHub::Instance().infoMessageWindow( "writing map to " + name );
+   StatusMessageWindowHolder smw =
+      MessagingHub::Instance().infoMessageWindow("writing map to " + name);
 
-   if ( !name.empty() ) {
-      WholeMapRenderer wmr( gamemap );
+   if (!name.empty()) {
+      WholeMapRenderer wmr(gamemap);
       wmr.render();
-      if ( addview )
+      if (addview)
          wmr.renderVisibility();
 
-      wmr.writePNG( name );
+      wmr.writePNG(name);
    }
 }
 
-void writemaptostream ( GameMap* gamemap, int width, int height, tnstream& stream  )
-{
-   WholeMapRenderer wmr( gamemap );
+void writemaptostream(GameMap* gamemap, int width, int height, tnstream& stream) {
+   WholeMapRenderer wmr(gamemap);
    wmr.render();
 
    Surface dst = Surface::createSurface(width, height, 32, 0);
-   MegaBlitter< gamemapPixelSize, gamemapPixelSize,ColorTransform_None,ColorMerger_AlphaOverwrite,SourcePixelSelector_DirectZoom,TargetPixelSelector_Rect> blitter;
-   blitter.setSize( wmr.surface.w(), wmr.surface.h(), dst.w(), dst.h() );
+   MegaBlitter<gamemapPixelSize, gamemapPixelSize, ColorTransform_None, ColorMerger_AlphaOverwrite,
+               SourcePixelSelector_DirectZoom, TargetPixelSelector_Rect>
+      blitter;
+   blitter.setSize(wmr.surface.w(), wmr.surface.h(), dst.w(), dst.h());
 
    SDL_Rect clip;
    clip.x = 0;
    clip.y = 0;
    clip.h = height;
    clip.w = width;
-   blitter.setTargetRect( clip );
+   blitter.setTargetRect(clip);
 
-   blitter.blit( wmr.surface, dst, SPoint(0, 0) );
+   blitter.blit(wmr.surface, dst, SPoint(0, 0));
 
-   stream.writeInt( 1 ); // version counter 
-   stream.writeInt( width );
-   stream.writeInt( height );
-   
-   for ( int y = 0; y < dst.h(); ++y ) {
-      for ( int x = 0; x < dst.w(); ++x ) {
-         stream.writeInt( dst.GetPixel(x, y) );
+   stream.writeInt(1);  // version counter
+   stream.writeInt(width);
+   stream.writeInt(height);
+
+   for (int y = 0; y < dst.h(); ++y) {
+      for (int x = 0; x < dst.w(); ++x) {
+         stream.writeInt(dst.GetPixel(x, y));
       }
    }
 }
 
-Surface loadmapfromstream ( tnstream& stream  )
-{
+Surface loadmapfromstream(tnstream& stream) {
    int version = stream.readInt();
-   if ( version != 1 )
-      throw tinvalidversion ( "Embedded map image", 1, version );
-   
+   if (version != 1)
+      throw tinvalidversion("Embedded map image", 1, version);
+
    int width = stream.readInt();
    int height = stream.readInt();
-   assertOrThrow( width >= 0 && width <= 1000 );
-   assertOrThrow( height >= 0 && height <= 1000 );
-   
-   Surface image = Surface::createSurface( width, height , 32, 0);
-   
-   for ( int y = 0; y < height; ++y )
-      for ( int x = 0; x < width; ++x ) {
-         image.SetPixel(x,y, stream.readInt());
+   assertOrThrow(width >= 0 && width <= 1000);
+   assertOrThrow(height >= 0 && height <= 1000);
+
+   Surface image = Surface::createSurface(width, height, 32, 0);
+
+   for (int y = 0; y < height; ++y)
+      for (int x = 0; x < width; ++x) {
+         image.SetPixel(x, y, stream.readInt());
       }
-      
-   return image; 
+
+   return image;
 }
-
-

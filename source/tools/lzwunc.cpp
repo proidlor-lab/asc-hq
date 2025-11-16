@@ -13,8 +13,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -44,137 +44,112 @@
 #include <string.h>
 #include "lzw.h"
 
-
-static int LZWIn ( FILE *infile )
-{
-    if ( fread ( &incode, sizeof( CodeType ), 1, infile ) != 1 )
-        return ( 4 );
-    return ( 0 );
+static int LZWIn(FILE* infile) {
+   if (fread(&incode, sizeof(CodeType), 1, infile) != 1)
+      return (4);
+   return (0);
 }
-
-
-
 
 /* the active decompression routine */
 static IndexType freecode;
-static unsigned LZWLoadBuffer ( unsigned count, CodeType code )
-{
-    if ( code >= freecode )
-    {
-        printf( "LZWLoad: code %u out of range!", code );
-        return ( 0 );
-    }
-    while ( code >= PRESET_CODE_MAX )
-    {
-        DecodeBuffer[ count++ ] = rdictionary[ code ].c;
-        if ( count == DecodeBufferSize )
-        {
-            DecodeBuffer =
-               realloc ( DecodeBuffer, DecodeBufferSize + 1000 );
-            if ( ! DecodeBuffer )
-            {
-                /* out of memory */
-                DecodeBufferSize = 0;
-                return ( 0 );
-            }
-            else
-                DecodeBufferSize += 1000;
-        }
-        code = rdictionary[ code ].parent;
-    }
-    DecodeBuffer[ count++ ] = code;
-    return ( count );
+static unsigned LZWLoadBuffer(unsigned count, CodeType code) {
+   if (code >= freecode) {
+      printf("LZWLoad: code %u out of range!", code);
+      return (0);
+   }
+   while (code >= PRESET_CODE_MAX) {
+      DecodeBuffer[count++] = rdictionary[code].c;
+      if (count == DecodeBufferSize) {
+         DecodeBuffer = realloc(DecodeBuffer, DecodeBufferSize + 1000);
+         if (!DecodeBuffer) {
+            /* out of memory */
+            DecodeBufferSize = 0;
+            return (0);
+         } else
+            DecodeBufferSize += 1000;
+      }
+      code = rdictionary[code].parent;
+   }
+   DecodeBuffer[count++] = code;
+   return (count);
 }
 
+int LZWDecode(FILE* infile, FILE* outfile) {
+   char buffer[10];
+   int retval = 0;
+   unsigned int inchar;
+   unsigned count;
+   CodeType oldcode;
 
-int LZWDecode ( FILE *infile, FILE *outfile )
-{
-    char buffer[ 10 ];
-    int retval = 0;
-    unsigned int inchar;
-    unsigned count;
-    CodeType oldcode;
+   /* check the signature */
+   fgets(buffer, strlen(SIGNATURE) + 2, infile);
+   if (strcmp(buffer, SIGNATURE)) {
+      retval = 1;
+      goto done;
+   }
 
-    /* check the signature */
-    fgets ( buffer, strlen ( SIGNATURE ) + 2, infile );
-    if ( strcmp ( buffer, SIGNATURE ))
-    {
-        retval = 1;
-        goto done;
-    }
+   /* prime the pump */
 
-    /* prime the pump */
+   if (!DecodeBufferSize) {
+      DecodeBufferSize = 1000;
+      DecodeBuffer = malloc(DecodeBufferSize);
+      if (DecodeBuffer == NULL)
+         throw OutOfMemoryError(DecodeBufferSize);
+   }
+   rdictionary = malloc(DICTIONARY_SIZE * sizeof(struct Rdictionary));
 
-    if (!DecodeBufferSize)
-    {
-        DecodeBufferSize = 1000;
-        DecodeBuffer = malloc ( DecodeBufferSize );
-        if ( DecodeBuffer == NULL )
-            throw OutOfMemoryError ( DecodeBufferSize );
-    }
-    rdictionary = malloc( DICTIONARY_SIZE * sizeof( struct Rdictionary ) );
+   if (rdictionary == NULL)
+      throw OutOfMemoryError(DICTIONARY_SIZE * sizeof(struct Rdictionary));
 
-    if ( rdictionary == NULL )
-        throw OutOfMemoryError ( DICTIONARY_SIZE * sizeof( struct Rdictionary ) );
+priming:
+   freecode = STARTING_CODE;
+   if (retval = LZWIn(infile))
+      goto done;
+   if (incode == END_OF_INPUT)
+      goto done;
 
+   /* the first character always is itself */
+   oldcode = incode;
+   inchar = incode;
+   fputc(incode, outfile);
 
+   while (!(retval = LZWIn(infile))) {
+      if (incode == END_OF_INPUT)
+         break;
+      if (incode == NEW_DICTIONARY)
+         goto priming;
+      if (incode >= freecode) {
+         /* We have a code that's not in our rdictionary! */
+         /* This can happen only one way--see text */
 
- priming:
-    freecode = STARTING_CODE;
-    if ( retval = LZWIn ( infile ))
-        goto done;
-    if ( incode == END_OF_INPUT )
-        goto done;
+         count = LZWLoadBuffer(1, oldcode);
 
-    /* the first character always is itself */
-    oldcode = incode;
-    inchar = incode;
-    fputc( incode, outfile );
+         /* Make last char same as first. Can use either */
+         /* inchar or the DecodeBuffer[count-1] */
 
-    while ( ! ( retval = LZWIn ( infile )))
-    {
-        if ( incode == END_OF_INPUT )
-            break;
-        if ( incode == NEW_DICTIONARY )
-            goto priming;
-        if ( incode >= freecode )
-        {
-            /* We have a code that's not in our rdictionary! */
-            /* This can happen only one way--see text */
+         DecodeBuffer[0] = inchar;
+      } else
+         count = LZWLoadBuffer(0, incode);
 
-            count = LZWLoadBuffer ( 1, oldcode );
+      if (count == 0)
+         return (2); /* had a memory problem */
 
-            /* Make last char same as first. Can use either */
-            /* inchar or the DecodeBuffer[count-1] */
+      inchar = DecodeBuffer[count - 1];
+      while (count) {
+         fputc(DecodeBuffer[--count], outfile);
+      }
 
-            DecodeBuffer[ 0 ] = inchar;
-        }
-        else
-            count = LZWLoadBuffer ( 0, incode );
+      /* now, update the rdictionary */
+      if (freecode < MAX_CODE) {
+         rdictionary[freecode].parent = oldcode;
+         rdictionary[freecode].c = inchar;
+         freecode += 1;
+      }
+      oldcode = incode;
+   }
 
-        if ( count == 0 )
-            return ( 2 ); /* had a memory problem */
-
-        inchar = DecodeBuffer[ count - 1 ];
-        while ( count )
-        {
-             fputc ( DecodeBuffer[--count], outfile);
-        }
-
-        /* now, update the rdictionary */
-        if ( freecode < MAX_CODE )
-        {
-            rdictionary[ freecode ].parent = oldcode;
-            rdictionary[ freecode ].c = inchar;
-            freecode += 1;
-
-        }
-        oldcode = incode;
-    }
-
- done:
-    fclose ( infile );
-    fclose ( outfile );
-    return ( retval );
+done:
+   fclose(infile);
+   fclose(outfile);
+   return (retval);
 }
-

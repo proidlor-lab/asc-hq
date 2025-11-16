@@ -18,8 +18,6 @@
 #ifndef exchangegraphicsH
 #define exchangegraphicsH
 
-
 extern void exchangeGraphics();
-
 
 #endif

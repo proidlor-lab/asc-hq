@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #ifndef replayH
- #define replayH
+#define replayH
 
 #include "events.h"
 #include "ascstring.h"
@@ -27,49 +27,50 @@
     \brief Interface for recording and playing replays
 */
 
-
 class ReplayMapDisplay;
 
 class trunreplay {
-            ASCString lastErrorMessage;
-            ReplayMapDisplay* replayMapDisplay;
-         protected:
-            int movenum;
-            void execnextreplaymove ( void );
-            GameMap* orgmap;
-            MemoryStream* stream;
-            void wait ( int t = ticker );
-            void wait ( MapCoordinate pos, int t = ticker );
-            void wait ( MapCoordinate pos1, MapCoordinate pos2, int t = ticker );
-            int actplayer;
+   ASCString lastErrorMessage;
+   ReplayMapDisplay* replayMapDisplay;
 
-            void error( const char* message, ... );
-            void error( const MapCoordinate& pos, const char* message, ... );
-            void error( const ASCString& message );
-            void error( const MapCoordinate& pos, const ASCString& message );
-            void error( const ActionResult& res );
+  protected:
+   int movenum;
+   void execnextreplaymove(void);
+   GameMap* orgmap;
+   MemoryStream* stream;
+   void wait(int t = ticker);
+   void wait(MapCoordinate pos, int t = ticker);
+   void wait(MapCoordinate pos1, MapCoordinate pos2, int t = ticker);
+   int actplayer;
 
-            int nextaction;
+   void error(const char* message, ...);
+   void error(const MapCoordinate& pos, const char* message, ...);
+   void error(const ASCString& message);
+   void error(const MapCoordinate& pos, const ASCString& message);
+   void error(const ActionResult& res);
 
-            Context createReplayContext();
-            
-            void readnextaction ( void );
-            void displayActionCursor ( int x1, int y1, int x2 = -1, int y2 = -1, int secondWait = 0 );
-            void removeActionCursor( void );
+   int nextaction;
 
-         public:
-            trunreplay();
-            int status;
-            void firstinit();
-            int  run ( int player, int viewingplayer, bool performEndTurnOperations );
-            ~trunreplay();
-   };
+   Context createReplayContext();
+
+   void readnextaction(void);
+   void displayActionCursor(int x1, int y1, int x2 = -1, int y2 = -1, int secondWait = 0);
+   void removeActionCursor(void);
+
+  public:
+   trunreplay();
+   int status;
+   void firstinit();
+   int run(int player, int viewingplayer, bool performEndTurnOperations);
+   ~trunreplay();
+};
 
 class LockReplayRecording {
-        GameMap::ReplayInfo& ri;
-     public:
-        LockReplayRecording ( GameMap::ReplayInfo& _ri );
-        ~LockReplayRecording();
+   GameMap::ReplayInfo& ri;
+
+  public:
+   LockReplayRecording(GameMap::ReplayInfo& _ri);
+   ~LockReplayRecording();
 };
 
 extern trunreplay runreplay;
@@ -78,16 +79,16 @@ extern trunreplay runreplay;
 extern int startreplaylate;
 
 //! checks if there is replay information and -if there is any- runs the replay
-extern void checkforreplay ( void );
+extern void checkforreplay(void);
 
 //! Initialized the replay logging at the beginning of a players or the ai's turn.
-extern void initReplayLogging( Player& player );
+extern void initReplayLogging(Player& player);
 
 //! runs the replay for the given player
-extern void runSpecificReplay( int player, int viewingplayer, bool performEndTurnOperations = true );
+extern void runSpecificReplay(int player, int viewingplayer, bool performEndTurnOperations = true);
 
 //! runs the replay of the current player. This is used primarily for debugging the replay system
-extern void viewOwnReplay( Player& player );
+extern void viewOwnReplay(Player& player);
 
 //! initialized the replay system at program startup
 extern void hookReplayToSystem();

@@ -17,8 +17,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -31,40 +31,28 @@
 #include "dlg_box.h"
 #include "itemrepository.h"
 
-
-
-void  PolygonPainterSquareCoordinate::setpoint    ( int x,  int y  )
-{
-    if ( (x & 1) == (y & 1) )
-       setpointabs ( x / 2, y);
+void PolygonPainterSquareCoordinate::setpoint(int x, int y) {
+   if ((x & 1) == (y & 1))
+      setpointabs(x / 2, y);
 }
-          
-bool    PolygonPainterSquareCoordinate::paintPolygon   ( const Poly_gon& poly )
-{
+
+bool PolygonPainterSquareCoordinate::paintPolygon(const Poly_gon& poly) {
    Poly_gon poly1;
-   for ( int i=0; i< poly.vertex.size() ; i++ )
-      poly1.vertex.push_back ( MapCoordinate( poly.vertex[i].x * 2 + (poly.vertex[i].y & 1), poly.vertex[i].y ));
+   for (int i = 0; i < poly.vertex.size(); i++)
+      poly1.vertex.push_back(
+         MapCoordinate(poly.vertex[i].x * 2 + (poly.vertex[i].y & 1), poly.vertex[i].y));
 
-   return PolygonPainter<Poly_gon>::paintPolygon ( poly1 );
+   return PolygonPainter<Poly_gon>::paintPolygon(poly1);
 }
 
-
-
-void Poly_gon::read ( tnstream& stream )
-{
+void Poly_gon::read(tnstream& stream) {
    int version = stream.readInt();
-   if ( version != 100 )
-      throw tinvalidversion( stream.getLocation(), 100, version );
-   readClassContainer ( vertex, stream );
+   if (version != 100)
+      throw tinvalidversion(stream.getLocation(), 100, version);
+   readClassContainer(vertex, stream);
 }
 
-
-void Poly_gon::write ( tnstream& stream ) const
-{
-   stream.writeInt( 100 );
-   writeClassContainer ( vertex, stream );
+void Poly_gon::write(tnstream& stream) const {
+   stream.writeInt(100);
+   writeClassContainer(vertex, stream);
 }
-
-
-
-

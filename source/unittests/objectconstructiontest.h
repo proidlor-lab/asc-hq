@@ -10,7 +10,6 @@
 #ifndef objectConstructionTestH
 #define objectConstructionTestH
 
-extern void testObjectConstruction() ;
-
+extern void testObjectConstruction();
 
 #endif

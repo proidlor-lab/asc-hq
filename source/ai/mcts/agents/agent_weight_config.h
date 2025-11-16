@@ -12,21 +12,21 @@ namespace asc {
 namespace mcts {
 
 class AgentWeightConfig {
-public:
-    bool loadFromFile(const std::string& path);
-    void selectProfile(const std::string& profile);
+  public:
+   bool loadFromFile(const std::string& path);
+   void selectProfile(const std::string& profile);
 
-    [[nodiscard]] float getWeight(const std::string& agentName) const;
-    [[nodiscard]] bool hasProfile(const std::string& profile) const;
-    [[nodiscard]] const std::string& activeProfile() const noexcept { return activeProfile_; }
+   [[nodiscard]] float getWeight(const std::string& agentName) const;
+   [[nodiscard]] bool hasProfile(const std::string& profile) const;
+   [[nodiscard]] const std::string& activeProfile() const noexcept { return activeProfile_; }
 
-private:
-    using WeightTable = std::map<std::string, float>;
-    std::map<std::string, WeightTable> profiles_;
-    std::string activeProfile_{"AgentWeights.Balanced"};
+  private:
+   using WeightTable = std::map<std::string, float>;
+   std::map<std::string, WeightTable> profiles_;
+   std::string activeProfile_{"AgentWeights.Balanced"};
 };
 
-} // namespace mcts
-} // namespace asc
+}  // namespace mcts
+}  // namespace asc
 
-#endif // MCTS_AGENT_WEIGHT_CONFIG_H
+#endif  // MCTS_AGENT_WEIGHT_CONFIG_H

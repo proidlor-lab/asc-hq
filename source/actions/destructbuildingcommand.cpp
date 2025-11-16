@@ -18,7 +18,6 @@
      Boston, MA  02111-1307  USA
 */
 
-
 #include "destructbuildingcommand.h"
 
 #include "../vehicle.h"
@@ -36,172 +35,147 @@
 #include "consumeresource.h"
 #include "destructcontainer.h"
 
-
-
-bool DestructBuildingCommand :: avail ( const Vehicle* eht )
-{
-   if ( !eht )
+bool DestructBuildingCommand ::avail(const Vehicle* eht) {
+   if (!eht)
       return false;
 
-   if ( eht->attacked == false && !eht->hasMoved() )
-      if ( eht->getOwner() == eht->getMap()->actplayer )
-            if ( eht->typ->hasFunction( ContainerBaseType::ConstructBuildings  ) || !eht->typ->buildingsBuildable.empty() )
-               if ( eht->getTank().fuel >= destruct_building_fuel_usage * eht->typ->fuelConsumption )
-                  return true;
+   if (eht->attacked == false && !eht->hasMoved())
+      if (eht->getOwner() == eht->getMap()->actplayer)
+         if (eht->typ->hasFunction(ContainerBaseType::ConstructBuildings) ||
+             !eht->typ->buildingsBuildable.empty())
+            if (eht->getTank().fuel >= destruct_building_fuel_usage * eht->typ->fuelConsumption)
+               return true;
 
    return false;
 }
 
+DestructBuildingCommand ::DestructBuildingCommand(Vehicle* container) : UnitCommand(container) {}
 
-DestructBuildingCommand :: DestructBuildingCommand ( Vehicle* container )
-      : UnitCommand ( container )
-{
-
-}
-
-Resources DestructBuildingCommand::getDestructionCost( const Building* bld) const 
-{
+Resources DestructBuildingCommand::getDestructionCost(const Building* bld) const {
    Resources r;
-   r.material = - bld->typ->productionCost.material * (100 - bld->damage) / destruct_building_material_get / 100;
+   r.material = -bld->typ->productionCost.material * (100 - bld->damage) /
+                destruct_building_material_get / 100;
    r.fuel = destruct_building_fuel_usage * getUnit()->typ->fuelConsumption;
    return r;
 }
 
-
-vector<MapCoordinate> DestructBuildingCommand::getFields()
-{
+vector<MapCoordinate> DestructBuildingCommand::getFields() {
    vector<MapCoordinate> fields;
    Vehicle* veh = getUnit();
-   for ( int d = 0; d < 6; ++d ) {
-      MapCoordinate pos = getNeighbouringFieldCoordinate( veh->getPosition(), d );
+   for (int d = 0; d < 6; ++d) {
+      MapCoordinate pos = getNeighbouringFieldCoordinate(veh->getPosition(), d);
       MapField* fld = getMap()->getField(pos);
-      if ( fld )
-         if ( fld->building && getheightdelta( getFirstBit(veh->height), getFirstBit(fld->building->typ->height)) == 0 && !fld->building->typ->buildingNotRemovable ) 
-            fields.push_back( pos );
+      if (fld)
+         if (fld->building &&
+             getheightdelta(getFirstBit(veh->height), getFirstBit(fld->building->typ->height)) ==
+                0 &&
+             !fld->building->typ->buildingNotRemovable)
+            fields.push_back(pos);
    }
 
    return fields;
 }
 
-bool DestructBuildingCommand :: isFieldUsable( const MapCoordinate& pos )
-{
+bool DestructBuildingCommand ::isFieldUsable(const MapCoordinate& pos) {
    vector<MapCoordinate> fields = getFields();
-   return find( fields.begin(), fields.end(), pos ) != fields.end() ;
+   return find(fields.begin(), fields.end(), pos) != fields.end();
 }
 
-
-void DestructBuildingCommand :: setTargetPosition( const MapCoordinate& pos )
-{
+void DestructBuildingCommand ::setTargetPosition(const MapCoordinate& pos) {
    this->target = pos;
    MapField* fld = getMap()->getField(target);
 
-   if ( !fld )
+   if (!fld)
       throw ActionResult(21002);
 
-   setState( SetUp );
-
+   setState(SetUp);
 }
 
-
-
-ActionResult DestructBuildingCommand::go ( const Context& context )
-{
-   if ( getState() != SetUp )
+ActionResult DestructBuildingCommand::go(const Context& context) {
+   if (getState() != SetUp)
       return ActionResult(22000);
-   
-   
-   Building* building = getMap()->getField( target )->building;
-   if ( !building )
+
+   Building* building = getMap()->getField(target)->building;
+   if (!building)
       return ActionResult(22502);
-   
+
    const BuildingType* buildingType = building->typ;
-   
-   Resources cost = getDestructionCost( building );
-   
-   std::unique_ptr<DestructContainer> dc ( new DestructContainer( building, true ));
-   ActionResult res = dc->execute( context );
-   if ( res.successful() )
+
+   Resources cost = getDestructionCost(building);
+
+   std::unique_ptr<DestructContainer> dc(new DestructContainer(building, true));
+   ActionResult res = dc->execute(context);
+   if (res.successful())
       dc.release();
    else
       return res;
-   
-   std::unique_ptr<ConsumeResource> cr ( new ConsumeResource( getUnit(), cost ));
-   res = cr->execute( context );
-   if ( res.successful() )
+
+   std::unique_ptr<ConsumeResource> cr(new ConsumeResource(getUnit(), cost));
+   res = cr->execute(context);
+   if (res.successful())
       cr.release();
    else
       return res;
-   
-   std::unique_ptr<ChangeUnitMovement> cum ( new ChangeUnitMovement( getUnit(), 0 ));
-   res = cum->execute( context );
-   if ( res.successful() )
+
+   std::unique_ptr<ChangeUnitMovement> cum(new ChangeUnitMovement(getUnit(), 0));
+   res = cum->execute(context);
+   if (res.successful())
       cum.release();
    else
       return res;
 
-   std::unique_ptr<ChangeUnitProperty> cup ( new ChangeUnitProperty( getUnit(), ChangeUnitProperty::AttackedFlag, 1 ));
-   res = cup->execute( context );
-   if ( res.successful() )
+   std::unique_ptr<ChangeUnitProperty> cup(
+      new ChangeUnitProperty(getUnit(), ChangeUnitProperty::AttackedFlag, 1));
+   res = cup->execute(context);
+   if (res.successful())
       cup.release();
    else
       return res;
-   
-   evaluateviewcalculation( getMap(), target, buildingType->view, 0, false, &context );
 
-   
-   if ( context.display )
+   evaluateviewcalculation(getMap(), target, buildingType->view, 0, false, &context);
+
+   if (context.display)
       context.display->repaintDisplay();
 
    return ActionResult(0);
 }
 
-
-
 static const int DestructBuildingCommandVersion = 1;
 
-void DestructBuildingCommand :: readData ( tnstream& stream )
-{
-   UnitCommand::readData( stream );
+void DestructBuildingCommand ::readData(tnstream& stream) {
+   UnitCommand::readData(stream);
    int version = stream.readInt();
-   if ( version > DestructBuildingCommandVersion )
-      throw tinvalidversion ( "DestructBuildingCommand", DestructBuildingCommandVersion, version );
-   target.read( stream );
+   if (version > DestructBuildingCommandVersion)
+      throw tinvalidversion("DestructBuildingCommand", DestructBuildingCommandVersion, version);
+   target.read(stream);
 }
 
-void DestructBuildingCommand :: writeData ( tnstream& stream ) const
-{
-   UnitCommand::writeData( stream );
-   stream.writeInt( DestructBuildingCommandVersion );
-   target.write( stream );
+void DestructBuildingCommand ::writeData(tnstream& stream) const {
+   UnitCommand::writeData(stream);
+   stream.writeInt(DestructBuildingCommandVersion);
+   target.write(stream);
 }
 
-
-
-ASCString DestructBuildingCommand :: getCommandString() const
-{
+ASCString DestructBuildingCommand ::getCommandString() const {
    ASCString c;
-   c.format("unitDestructBuilding ( map, %d, asc.MapCoordinate(%d, %d) )", getUnitID(), target.x, target.y );
+   c.format("unitDestructBuilding ( map, %d, asc.MapCoordinate(%d, %d) )", getUnitID(), target.x,
+            target.y);
    return c;
 }
 
-GameActionID DestructBuildingCommand::getID() const
-{
+GameActionID DestructBuildingCommand::getID() const {
    return ActionRegistry::DestructBuildingCommand;
 }
 
-ASCString DestructBuildingCommand::getDescription() const
-{
-   ASCString s = "Destruct building at "+ target.toString() ;
+ASCString DestructBuildingCommand::getDescription() const {
+   ASCString s = "Destruct building at " + target.toString();
 
-
-   if ( getUnit() ) {
+   if (getUnit()) {
       s += " with " + getUnit()->getName();
    }
    return s;
 }
 
-namespace
-{
-const bool r1 = registerAction<DestructBuildingCommand> ( ActionRegistry::DestructBuildingCommand );
+namespace {
+const bool r1 = registerAction<DestructBuildingCommand>(ActionRegistry::DestructBuildingCommand);
 }
-

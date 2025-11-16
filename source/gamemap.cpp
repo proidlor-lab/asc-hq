@@ -41,108 +41,99 @@
 #include "packagemanager.h"
 #include "tasks/abstracttaskcontainer.h"
 
-RandomGenerator::RandomGenerator(int seedValue){
+RandomGenerator::RandomGenerator(int seedValue) {}
 
-}
+RandomGenerator::~RandomGenerator() {}
 
-RandomGenerator::~RandomGenerator(){
-
-
-}
-
-unsigned int RandomGenerator::getPercentage(){
-  return getRandomValue(100);
+unsigned int RandomGenerator::getPercentage() {
+   return getRandomValue(100);
 }
 
 unsigned int RandomGenerator::getRandomValue(int limit) {
-  return getRandomValue(0, limit); 
+   return getRandomValue(0, limit);
 }
 
-unsigned int RandomGenerator::getRandomValue (int lowerLimit, int upperLimit){
-   if(upperLimit == 0) {
-        return 1;
+unsigned int RandomGenerator::getRandomValue(int lowerLimit, int upperLimit) {
+   if (upperLimit == 0) {
+      return 1;
    }
    int random_integer = rand();
    random_integer = random_integer % upperLimit;
    return (lowerLimit + random_integer);
 }
 
+OverviewMapHolder ::OverviewMapHolder(GameMap& gamemap)
+   : map(gamemap),
+     initialized(false),
+     secondMapReady(false),
+     completed(false),
+     connected(false),
+     x(0),
+     y(0) {}
 
-
-
-OverviewMapHolder :: OverviewMapHolder( GameMap& gamemap ) : map(gamemap), initialized(false), secondMapReady(false), completed(false), connected(false), x(0),y(0)
-{
-}
-
-void OverviewMapHolder :: connect()
-{
-   if ( !connected ) {
-      idleEvent.connect ( sigc::mem_fun( *this, &OverviewMapHolder::idleHandler ));
+void OverviewMapHolder ::connect() {
+   if (!connected) {
+      idleEvent.connect(sigc::mem_fun(*this, &OverviewMapHolder::idleHandler));
       connected = true;
    }
 }
 
-
 sigc::signal<void> OverviewMapHolder::generationComplete;
 
-bool OverviewMapHolder :: idleHandler( )
-{
+bool OverviewMapHolder ::idleHandler() {
    int t = ticker;
-   while ( !completed && (t + 5 > ticker ))
-      drawNextField( true );
+   while (!completed && (t + 5 > ticker))
+      drawNextField(true);
    return true;
 }
 
+bool OverviewMapHolder::updateField(const MapCoordinate& pos) {
+   SPoint imgpos = OverviewMapImage::map2surface(pos);
 
-bool OverviewMapHolder::updateField( const MapCoordinate& pos )
-{
-   SPoint imgpos = OverviewMapImage::map2surface( pos );
-
-   MapField* fld = map.getField( pos );
-   VisibilityStates visi = fieldVisibility( fld, map.getPlayerView() );
-   if ( visi == visible_not ) {
-      OverviewMapImage::fill ( overviewMapImage, imgpos, 0xff545454 );
+   MapField* fld = map.getField(pos);
+   VisibilityStates visi = fieldVisibility(fld, map.getPlayerView());
+   if (visi == visible_not) {
+      OverviewMapImage::fill(overviewMapImage, imgpos, 0xff545454);
    } else {
-      if ( fld->building && fieldvisiblenow( fld, map.getPlayerView()) )
-         OverviewMapImage::fill ( overviewMapImage, imgpos, map.player[fld->building->getOwner()].getColor() );
+      if (fld->building && fieldvisiblenow(fld, map.getPlayerView()))
+         OverviewMapImage::fill(overviewMapImage, imgpos,
+                                map.player[fld->building->getOwner()].getColor());
       else {
-
          int w = fld->getWeather();
-         fld->typ->getQuickView()->blit( overviewMapImage, imgpos );
-         for ( MapField::ObjectContainer::iterator i = fld->objects.begin(); i != fld->objects.end(); ++i )
-            if ( visi > visible_ago || i->typ->visibleago )
-               i->getOverviewMapImage( w )->blit( overviewMapImage, imgpos );
+         fld->typ->getQuickView()->blit(overviewMapImage, imgpos);
+         for (MapField::ObjectContainer::iterator i = fld->objects.begin(); i != fld->objects.end();
+              ++i)
+            if (visi > visible_ago || i->typ->visibleago)
+               i->getOverviewMapImage(w)->blit(overviewMapImage, imgpos);
 
-         if ( fld->vehicle && fieldvisiblenow( fld, map.getPlayerView()) )
-            OverviewMapImage::fillCenter ( overviewMapImage, imgpos, map.player[fld->vehicle->getOwner()].getColor() );
+         if (fld->vehicle && fieldvisiblenow(fld, map.getPlayerView()))
+            OverviewMapImage::fillCenter(overviewMapImage, imgpos,
+                                         map.player[fld->vehicle->getOwner()].getColor());
 
-         if ( visi == visible_ago )
-            OverviewMapImage::lighten( overviewMapImage, imgpos, 0.7 ); 
-
+         if (visi == visible_ago)
+            OverviewMapImage::lighten(overviewMapImage, imgpos, 0.7);
       }
-
    }
    return true;
 }
 
-void OverviewMapHolder::drawNextField( bool signalOnCompletion )
-{
-   if ( !init() )
+void OverviewMapHolder::drawNextField(bool signalOnCompletion) {
+   if (!init())
       return;
-      
-   if ( x == map.xsize ) {
+
+   if (x == map.xsize) {
       x = 0;
       ++y;
-   }   
-   if ( y < map.ysize ) {
-      if ( !updateField( MapCoordinate(x,y)))
+   }
+   if (y < map.ysize) {
+      if (!updateField(MapCoordinate(x, y)))
          return;
-      
+
       ++x;
    }
-   if ( y == map.ysize ) {
+   if (y == map.ysize) {
       completed = true;
-      if ( signalOnCompletion )
+      if (signalOnCompletion)
          generationComplete();
 
       completedMapImage = overviewMapImage.Duplicate();
@@ -150,79 +141,73 @@ void OverviewMapHolder::drawNextField( bool signalOnCompletion )
    }
 }
 
-Surface OverviewMapHolder::createNewSurface()
-{
+Surface OverviewMapHolder::createNewSurface() {
    Surface s;
-   if ( map.xsize > 0 && map.ysize > 0 ) {
-      s =  Surface::createSurface( (map.xsize+1) * 6, 4 + map.ysize * 2 , 32, 0 );
+   if (map.xsize > 0 && map.ysize > 0) {
+      s = Surface::createSurface((map.xsize + 1) * 6, 4 + map.ysize * 2, 32, 0);
    }
    return s;
 }
 
-bool OverviewMapHolder::init()
-{
-   if ( map.ysize <= 0 || map.xsize <= 0 )
+bool OverviewMapHolder::init() {
+   if (map.ysize <= 0 || map.xsize <= 0)
       return false;
 
-   if ( !initialized ) {
+   if (!initialized) {
       overviewMapImage = createNewSurface();
       initialized = true;
    }
    return initialized;
-}   
+}
 
-void OverviewMapHolder::resetSize()
-{
+void OverviewMapHolder::resetSize() {
    initialized = false;
 }
 
-
-const Surface& OverviewMapHolder::getOverviewMap( bool complete )
-{
+const Surface& OverviewMapHolder::getOverviewMap(bool complete) {
    bool initialized = init();
-   assert( initialized );
-   if ( complete )
-      while ( !completed )
-         drawNextField( false );
+   assert(initialized);
+   if (complete)
+      while (!completed)
+         drawNextField(false);
 
-   if(  secondMapReady )
+   if (secondMapReady)
       return completedMapImage;
    else
       return overviewMapImage;
 }
 
-void OverviewMapHolder::startUpdate()
-{
+void OverviewMapHolder::startUpdate() {
    completed = false;
    x = 0;
    y = 0;
 }
 
-void OverviewMapHolder::clear(bool allImages )
-{
-   if ( !initialized )
+void OverviewMapHolder::clear(bool allImages) {
+   if (!initialized)
       return;
-   
-   overviewMapImage.Fill( Surface::transparent );
-   if ( allImages ) {
-      if ( completedMapImage.valid() )
-         completedMapImage.Fill( Surface::transparent );
+
+   overviewMapImage.Fill(Surface::transparent);
+   if (allImages) {
+      if (completedMapImage.valid())
+         completedMapImage.Fill(Surface::transparent);
       secondMapReady = false;
    }
 
    startUpdate();
 }
 
-void OverviewMapHolder::clearmap( GameMap* actmap )
-{
-   if ( actmap )
+void OverviewMapHolder::clearmap(GameMap* actmap) {
+   if (actmap)
       actmap->overviewMapHolder.clear();
 }
 
-
-GameMap :: GameMap ( void )
-   : actions(this), actionRecorder(NULL), overviewMapHolder( *this ), network(NULL), packageData(NULL)
-{
+GameMap ::GameMap(void)
+   : actions(this),
+     actionRecorder(NULL),
+     overviewMapHolder(*this),
+     network(NULL),
+     packageData(NULL) {
    serverMapID = 0;
    randomSeed = rand();
    dialogsHooked = false;
@@ -244,16 +229,16 @@ GameMap :: GameMap ( void )
 
    _resourcemode = 0;
 
-   for ( int i = 0; i < 9; ++i ) {
-      player[i].setParentMap ( this, i );
-      if ( i == 0 )
+   for (int i = 0; i < 9; ++i) {
+      player[i].setParentMap(this, i);
+      if (i == 0)
          player[i].stat = Player::human;
       else
          player[i].stat = Player::computer;
-      
-      player[i].research.chainToMap ( this, i );
+
+      player[i].research.chainToMap(this, i);
    }
-          
+
    levelfinished = 0;
 
    messageid = 0;
@@ -267,206 +252,195 @@ GameMap :: GameMap ( void )
    game_parameter = NULL;
    mineralResourcesDisplayed = 0;
 
-
 #ifdef WEATHERGENERATOR
-   weatherSystem  = new WeatherSystem(this, 1, 0.03);
+   weatherSystem = new WeatherSystem(this, 1, 0.03);
 #endif
-   setgameparameter( cgp_objectsDestroyedByTerrain, 1 );
-   
-   
+   setgameparameter(cgp_objectsDestroyedByTerrain, 1);
+
    nativeMessageLanguage = "en_US";
-   
-   sigMapCreation( *this );
+
+   sigMapCreation(*this);
 }
 
-GameMap::Campaign::Campaign()
-{
+GameMap::Campaign::Campaign() {
    avail = false;
    id = 0;
    directaccess = true;
 }
 
-void GameMap :: guiHooked()
-{
+void GameMap ::guiHooked() {
    overviewMapHolder.connect();
    dialogsHooked = true;
 }
 
 const int tmapversion = 34;
 
-void GameMap :: read ( tnstream& stream )
-{
+void GameMap ::read(tnstream& stream) {
    int version;
 
    xsize = stream.readWord();
    ysize = stream.readWord();
 
-   if ( xsize == 0xfffe  && ysize == 0xfffc ) {
-     version = stream.readInt();
-     if ( version > tmapversion )
-        throw tinvalidversion ( "GameMap", tmapversion, version );
+   if (xsize == 0xfffe && ysize == 0xfffc) {
+      version = stream.readInt();
+      if (version > tmapversion)
+         throw tinvalidversion("GameMap", tmapversion, version);
 
-     xsize = stream.readInt();
-     ysize = stream.readInt();
+      xsize = stream.readInt();
+      ysize = stream.readInt();
    } else
       version = 1;
 
-   stream.readWord(); // xpos
-   stream.readWord(); // ypos
-   stream.readInt(); // dummy
+   stream.readWord();  // xpos
+   stream.readWord();  // ypos
+   stream.readInt();   // dummy
    field = NULL;
 
-   if ( version <= 13 ) {
-      char buf[11]; 
-      stream.readdata ( buf, 11 );
+   if (version <= 13) {
+      char buf[11];
+      stream.readdata(buf, 11);
       buf[10] = 0;
       codeWord = buf;
    } else {
       codeWord = stream.readString();
    }
 
-   if ( version < 2 )
+   if (version < 2)
       ___loadtitle = stream.readInt();
    else
       ___loadtitle = true;
 
-   
    bool loadCampaign = stream.readInt();
    actplayer = stream.readUint8();
-   time.abstime = stream.readInt();   
-   if(version < 9 || version >= 17){
-     stream.readUint8();
-     weather.windSpeed = stream.readUint8();
-     weather.windDirection = stream.readUint8();
+   time.abstime = stream.readInt();
+   if (version < 9 || version >= 17) {
+      stream.readUint8();
+      weather.windSpeed = stream.readUint8();
+      weather.windDirection = stream.readUint8();
    }
 
-   if ( version >= 11 ) 
-      if ( stream.readInt() != 0x12345678 )
+   if (version >= 11)
+      if (stream.readInt() != 0x12345678)
          throw ASCmsgException("marker not matched when loading GameMap");
-   
-   if ( version >= 32 ) {
+
+   if (version >= 32) {
       int p = stream.readInt();
-      if ( p ) {
+      if (p) {
          packageData = new PackageData();
-         packageData->read( stream );
-         
-         PackageManager::checkGame( this );
-         
+         packageData->read(stream);
+
+         PackageManager::checkGame(this);
+
       } else
          packageData = NULL;
-   } else 
+   } else
       packageData = NULL;
-   
-      
-   for ( int j = 0; j < 4; j++ )
-      stream.readUint8(); // was: different wind in different altitudes
-   for ( int i = 0; i< 12; i++ )
-      stream.readUint8(); // dummy
+
+   for (int j = 0; j < 4; j++)
+      stream.readUint8();  // was: different wind in different altitudes
+   for (int i = 0; i < 12; i++)
+      stream.readUint8();  // dummy
 
    _resourcemode = stream.readInt();
 
    int alliances[8][8];
-   if ( version <= 10 )
-      for ( int i = 0; i < 8; i++ )
-         for ( int j = 0; j < 8; j++ )
+   if (version <= 10)
+      for (int i = 0; i < 8; i++)
+         for (int j = 0; j < 8; j++)
             alliances[j][i] = stream.readUint8();
 
    int dummy_playername[9];
-   for ( int i = 0; i< 9; i++ ) {
+   for (int i = 0; i < 9; i++) {
       player[i].existanceAtBeginOfTurn = stream.readUint8();
-      stream.readInt(); // dummy
-      stream.readInt(); // dummy
-      if ( version <= 5 )
-         player[i].research.read_struct ( stream );
+      stream.readInt();  // dummy
+      stream.readInt();  // dummy
+      if (version <= 5)
+         player[i].research.read_struct(stream);
       else
-         player[i].research.read ( stream );
+         player[i].research.read(stream);
 
       // player[i].ai = (BaseAI*)
-      stream.readInt() ;
+      stream.readInt();
       player[i].ai = NULL;
-      player[i].stat = Player::PlayerStatus ( stream.readUint8() );
-      stream.readUint8(); // dummy
+      player[i].stat = Player::PlayerStatus(stream.readUint8());
+      stream.readUint8();  // dummy
       dummy_playername[i] = stream.readInt();
-      player[i].passwordcrc.read ( stream );
+      player[i].passwordcrc.read(stream);
       player[i].__dissectionsToLoad = stream.readInt();
       player[i].__loadunreadmessage = stream.readInt();
       player[i].__loadoldmessage = stream.readInt();
       player[i].__loadsentmessage = stream.readInt();
-      if ( version >= 3 )
+      if (version >= 3)
          player[i].ASCversion = stream.readInt();
       else
          player[i].ASCversion = 0;
-         
-      if ( version >= 9 )
-         player[i].cursorPos.read( stream );
-         
-      if ( version >= 11 ) 
-         player[i].diplomacy.read( stream );
+
+      if (version >= 9)
+         player[i].cursorPos.read(stream);
+
+      if (version >= 11)
+         player[i].diplomacy.read(stream);
       else {
-         if ( i < 8 ) // no alliances for neutral 'player'
-            for ( int j = 0; j< 8; ++j ) {
-               if ( alliances[i][j] == 0 ) 
-                  player[i].diplomacy.setState( j, PEACE ); 
+         if (i < 8)  // no alliances for neutral 'player'
+            for (int j = 0; j < 8; ++j) {
+               if (alliances[i][j] == 0)
+                  player[i].diplomacy.setState(j, PEACE);
                else
-                  player[i].diplomacy.setState( j, WAR ); 
+                  player[i].diplomacy.setState(j, WAR);
             }
       }
-      
-      if ( version >= 12 )
+
+      if (version >= 12)
          player[i].email = stream.readString();
-      
-      if ( version >= 22 )
-         player[i].read( stream );
+
+      if (version >= 22)
+         player[i].read(stream);
    }
-   
-   if ( version >= 11 ) 
-      if ( stream.readInt() != 0x12345678 )
+
+   if (version >= 11)
+      if (stream.readInt() != 0x12345678)
          throw ASCmsgException("marker not matched when loading GameMap");
-         
 
-
-
-   if ( version <= 4 ) {
-   //! practically dummy
+   if (version <= 4) {
+      //! practically dummy
       loadOldEvents = stream.readInt();
-      stream.readInt(); // int loadeventstocome
-      stream.readInt(); // int loadeventpassed
+      stream.readInt();  // int loadeventstocome
+      stream.readInt();  // int loadeventpassed
    }
 
+   idManager.readData(stream);
 
-   idManager.readData(stream );
-   
    levelfinished = stream.readUint8();
-   
+
    bool alliance_names_not_used_any_more[8];
-   if ( version <= 9 ) {
-      ___loadLegacyNetwork  = stream.readInt();
-      for ( int i = 0; i < 8; i++ )
-         alliance_names_not_used_any_more[i] = stream.readInt(); // dummy
+   if (version <= 9) {
+      ___loadLegacyNetwork = stream.readInt();
+      for (int i = 0; i < 8; i++)
+         alliance_names_not_used_any_more[i] = stream.readInt();  // dummy
    } else {
       ___loadLegacyNetwork = false;
-      for ( int i = 0; i < 8; i++ )
+      for (int i = 0; i < 8; i++)
          alliance_names_not_used_any_more[i] = 0;
    }
 
-   if ( version <= 12 ) {
-      for ( int i = 0; i< 8; i++ ) {
-         stream.readWord(); // cursorpos.position[i].cx = 
-         stream.readWord(); // cursorpos.position[i].sx = 
-         stream.readWord(); // cursorpos.position[i].cy = 
-         stream.readWord(); // cursorpos.position[i].sy = 
+   if (version <= 12) {
+      for (int i = 0; i < 8; i++) {
+         stream.readWord();  // cursorpos.position[i].cx =
+         stream.readWord();  // cursorpos.position[i].sx =
+         stream.readWord();  // cursorpos.position[i].cy =
+         stream.readWord();  // cursorpos.position[i].sy =
       }
    }
 
-   if ( version <= 9 )
-      stream.readInt(); // loadtribute
-      
+   if (version <= 9)
+      stream.readInt();  // loadtribute
+
    __loadunsentmessage = stream.readInt();
    __loadmessages = stream.readInt();
 
    messageid = stream.readInt();
 
-   if(  version < 2 ) {
+   if (version < 2) {
       ___loadJournal = stream.readInt();
       ___loadNewJournal = stream.readInt();
    } else {
@@ -475,34 +449,33 @@ void GameMap :: read ( tnstream& stream )
    }
 
    int exist_humanplayername[9];
-   for ( int i = 0; i < 8; i++ )
+   for (int i = 0; i < 8; i++)
       exist_humanplayername[i] = stream.readInt();
    exist_humanplayername[8] = 0;
 
-
    int exist_computerplayername[9];
-   for ( int i = 0; i < 8; i++ )
+   for (int i = 0; i < 8; i++)
       exist_computerplayername[i] = stream.readInt();
    exist_computerplayername[8] = 0;
 
-   supervisorpasswordcrc.read ( stream );
+   supervisorpasswordcrc.read(stream);
 
-   if ( version <= 10 )
-      for ( int i = 0; i < 8; i++ )
-         stream.readUint8(); // alliances_at_beginofturn[i] =
+   if (version <= 10)
+      for (int i = 0; i < 8; i++)
+         stream.readUint8();  // alliances_at_beginofturn[i] =
 
-   stream.readInt(); // was objectcrc = (Object*containercrcs)
+   stream.readInt();  // was objectcrc = (Object*containercrcs)
    bool load_shareview = false;
-   if ( version <= 10 )
+   if (version <= 10)
       load_shareview = stream.readInt();
 
    continueplaying = stream.readInt();
-   __loadreplayinfo =  stream.readInt();
+   __loadreplayinfo = stream.readInt();
    playerView = stream.readInt();
    lastjournalchange.abstime = stream.readInt();
 
-   for ( int i = 0; i< 8; i++ )
-      bi_resource[i].read ( stream );
+   for (int i = 0; i < 8; i++)
+      bi_resource[i].read(stream);
 
    int preferredfilenames = stream.readInt();
 
@@ -510,460 +483,438 @@ void GameMap :: read ( tnstream& stream )
    graphicset = stream.readInt();
    gameparameter_num = stream.readInt();
 
-   stream.readInt(); // dummy
+   stream.readInt();  // dummy
    mineralResourcesDisplayed = stream.readInt();
-   for ( int i = 0; i< 9; i++ )
-       player[i].queuedEvents = stream.readInt();
+   for (int i = 0; i < 9; i++)
+      player[i].queuedEvents = stream.readInt();
 
-   for ( int i = 0; i < 19; i++ )
-       stream.readInt();
+   for (int i = 0; i < 19; i++)
+      stream.readInt();
 
    int _oldgameparameter[8];
-   for ( int i = 0; i < 8; i++ )
-       _oldgameparameter[i] = stream.readInt();
+   for (int i = 0; i < 8; i++)
+      _oldgameparameter[i] = stream.readInt();
 
-   if ( version >= 11 ) 
-      if ( stream.readInt() != 0x12345678 )
+   if (version >= 11)
+      if (stream.readInt() != 0x12345678)
          throw ASCmsgException("marker not matched when loading GameMap");
 
-/////////////////////
-// Here initmap was called
-/////////////////////
+   /////////////////////
+   // Here initmap was called
+   /////////////////////
 
+   if (___loadtitle)
+      maptitle = stream.readString();
 
-
-    if ( ___loadtitle )
-       maptitle = stream.readString();
-
-    if ( loadCampaign ) {
-       if ( version <= 14 ) {
+   if (loadCampaign) {
+      if (version <= 14) {
          campaign.id = stream.readWord();
-         stream.readWord(); // campaign->prevmap 
-         stream.readUint8(); // campaign->player
+         stream.readWord();   // campaign->prevmap
+         stream.readUint8();  // campaign->player
          campaign.directaccess = stream.readUint8();
          campaign.avail = true;
-         for ( int d = 0; d < 21; d++ )
-            stream.readUint8(); // dummy
-       } else {
-          campaign.id = stream.readInt();
-          campaign.directaccess = stream.readUint8();
-          if ( version > 15 )
-             campaign.avail = stream.readInt();
-       }
-    }
+         for (int d = 0; d < 21; d++)
+            stream.readUint8();  // dummy
+      } else {
+         campaign.id = stream.readInt();
+         campaign.directaccess = stream.readUint8();
+         if (version > 15)
+            campaign.avail = stream.readInt();
+      }
+   }
 
-    for ( int w=0; w<9 ; w++ ) {
-       if (dummy_playername[w] )
-          stream.readString();
+   for (int w = 0; w < 9; w++) {
+      if (dummy_playername[w])
+         stream.readString();
 
-       player[w].ai = NULL;
+      player[w].ai = NULL;
 
+      if (exist_humanplayername[w])
+         player[w].setName(stream.readString());
 
-       if ( exist_humanplayername[w] )
-          player[w].setName( stream.readString() );
+      if (exist_computerplayername[w])
+         stream.readString();
 
-       if ( exist_computerplayername[w] )
-          stream.readString();
+   } /* endfor */
 
-    } /* endfor */
+   if (stream.readInt())
+      tribute.read(stream);
 
-    if ( stream.readInt() )
-       tribute.read ( stream );
+   for (int aa = 0; aa < 8; aa++)
+      if (alliance_names_not_used_any_more[aa]) {
+         char* tempname = NULL;
+         stream.readpchar(&tempname);
+         delete[] tempname;
+      }
 
-    for ( int aa = 0; aa < 8; aa++ )
-       if ( alliance_names_not_used_any_more[aa] ) {
-          char* tempname = NULL;
-          stream.readpchar ( &tempname );
-          delete[] tempname;
-       }
+   stream.readInt();
 
-    stream.readInt();
-
-    if ( load_shareview && version <= 10 ) {
-    
-      for ( int i = 0; i < 8; i++ )
-         for ( int j =0; j < 8; j++ ) {
+   if (load_shareview && version <= 10) {
+      for (int i = 0; i < 8; i++)
+         for (int j = 0; j < 8; j++) {
             int sv = stream.readUint8();
-            if ( sv )
-               player[i].diplomacy.setState( j, PEACE_SV );
-         }      
-               
+            if (sv)
+               player[i].diplomacy.setState(j, PEACE_SV);
+         }
+
       stream.readInt();
-    } 
+   }
 
-    if ( preferredfilenames ) {
-       int p;
-       int mapname[8];
-       int mapdescription_not_used_any_more[8];
-       int savegame[8];
-       int savegamedescription_not_used_any_more[8];
-       for ( p = 0; p < 8; p++ )
-          mapname[p] = stream.readInt();
-       for ( p = 0; p < 8; p++ )
-          mapdescription_not_used_any_more[p] = stream.readInt();
-       for ( p = 0; p < 8; p++ )
-          savegame[p] = stream.readInt();
-       for ( p = 0; p < 8; p++ )
-          savegamedescription_not_used_any_more[p] = stream.readInt();
+   if (preferredfilenames) {
+      int p;
+      int mapname[8];
+      int mapdescription_not_used_any_more[8];
+      int savegame[8];
+      int savegamedescription_not_used_any_more[8];
+      for (p = 0; p < 8; p++)
+         mapname[p] = stream.readInt();
+      for (p = 0; p < 8; p++)
+         mapdescription_not_used_any_more[p] = stream.readInt();
+      for (p = 0; p < 8; p++)
+         savegame[p] = stream.readInt();
+      for (p = 0; p < 8; p++)
+         savegamedescription_not_used_any_more[p] = stream.readInt();
 
-       for ( int i = 0; i < 8; i++ ) {
-          if ( mapname[i] )
-             preferredFileNames.mapname[i] = stream.readString ();
+      for (int i = 0; i < 8; i++) {
+         if (mapname[i])
+            preferredFileNames.mapname[i] = stream.readString();
 
-          if ( mapdescription_not_used_any_more[i] )
-             stream.readString(); // dummy
+         if (mapdescription_not_used_any_more[i])
+            stream.readString();  // dummy
 
-          if ( savegame[i] )
-             preferredFileNames.savegame[i] = stream.readString ();
+         if (savegame[i])
+            preferredFileNames.savegame[i] = stream.readString();
 
-          if ( savegamedescription_not_used_any_more[i] )
-             stream.readString();
-       }
-    }
+         if (savegamedescription_not_used_any_more[i])
+            stream.readString();
+      }
+   }
 
-    if ( __loadEllipse ) {
-       for ( int i = 0; i < 5; ++i )
-          stream.readInt();
-       stream.readFloat();
-       stream.readInt();
-    }
+   if (__loadEllipse) {
+      for (int i = 0; i < 5; ++i)
+         stream.readInt();
+      stream.readFloat();
+      stream.readInt();
+   }
 
-    int orggpnum = gameparameter_num;
-    gameparameter_num = 0;
-    for ( int gp = 0; gp < 8; gp ++ )
-       setgameparameter ( GameParameter(gp), _oldgameparameter[gp] );
+   int orggpnum = gameparameter_num;
+   gameparameter_num = 0;
+   for (int gp = 0; gp < 8; gp++)
+      setgameparameter(GameParameter(gp), _oldgameparameter[gp]);
 
-    for ( int ii = 0 ; ii < orggpnum; ii++ ) {
-       int gpar = stream.readInt();
-       setgameparameter ( GameParameter(ii), gpar );
-    }
+   for (int ii = 0; ii < orggpnum; ii++) {
+      int gpar = stream.readInt();
+      setgameparameter(GameParameter(ii), gpar);
+   }
 
-    if ( version >= 2 ) {
-       archivalInformation.author = stream.readString();
-       archivalInformation.description = stream.readString();
-       archivalInformation.tags = stream.readString();
-       archivalInformation.requirements = stream.readString();
-       archivalInformation.modifytime = stream.readInt();
-    }
+   if (version >= 2) {
+      archivalInformation.author = stream.readString();
+      archivalInformation.description = stream.readString();
+      archivalInformation.tags = stream.readString();
+      archivalInformation.requirements = stream.readString();
+      archivalInformation.modifytime = stream.readInt();
+   }
 
-    if ( version >= 4 ) {
-       int num = stream.readInt();
-       for ( int ii = 0; ii < num; ++ii )
-          unitProduction.idsAllowed.push_back ( stream.readInt() );
+   if (version >= 4) {
+      int num = stream.readInt();
+      for (int ii = 0; ii < num; ++ii)
+         unitProduction.idsAllowed.push_back(stream.readInt());
 
-       for ( int ii = 0; ii < 9; ii++ ) {
-          int num = stream.readInt( );
-          for ( int i = 0; i < num; i++ ) {
-             Player::PlayTime pt;
-             pt.turn = stream.readInt();
-             pt.date = stream.readInt();
-             player[ii].playTime.push_back ( pt );
-          }
-       }
+      for (int ii = 0; ii < 9; ii++) {
+         int num = stream.readInt();
+         for (int i = 0; i < num; i++) {
+            Player::PlayTime pt;
+            pt.turn = stream.readInt();
+            pt.date = stream.readInt();
+            player[ii].playTime.push_back(pt);
+         }
+      }
+   }
 
-    }
+   if (version >= 5) {
+      eventID = stream.readInt();
 
-    if ( version >= 5 ) {
-       eventID = stream.readInt();
+      int num = stream.readInt();
+      for (int i = 0; i < num; ++i) {
+         Event* ev = new Event(*this);
+         ev->read(stream);
+         events.push_back(ev);
+      }
+   }
 
-       int num = stream.readInt();
-       for ( int i = 0; i< num; ++i ) {
-          Event* ev = new Event ( *this );
-          ev->read ( stream );
-          events.push_back ( ev );
-       }
-    }
+   if (version >= 8)
+      randomSeed = stream.readInt();
 
-    if ( version >= 8 )
-       randomSeed = stream.readInt();
-       
-    if ( version >= 12 ) {
+   if (version >= 12) {
       bool nw = stream.readInt();
-      if ( nw ) 
-         network = GameTransferMechanism::read( stream );         
-    }
-    
-    if ( version >= 25 )
-       actions.read( stream );
-    
-    if ( version >= 30 ) {
-       nativeMessageLanguage = stream.readString();
-       int recorder  = stream.readInt();
-       if ( recorder == 1 ) {
-          actionRecorder = new CampaignActionLogger( this );
-          actionRecorder->readData( stream );
-       } else
-          actionRecorder = NULL;
-    }
-    
-    if( version >= 31 )
-       properties.read( stream );
-    
-    if ( version >= 33 ) 
-       tasks->read( stream );
-    
-    if ( version >= 34 )
-       serverMapID = stream.readInt();
+      if (nw)
+         network = GameTransferMechanism::read(stream);
+   }
 
+   if (version >= 25)
+      actions.read(stream);
+
+   if (version >= 30) {
+      nativeMessageLanguage = stream.readString();
+      int recorder = stream.readInt();
+      if (recorder == 1) {
+         actionRecorder = new CampaignActionLogger(this);
+         actionRecorder->readData(stream);
+      } else
+         actionRecorder = NULL;
+   }
+
+   if (version >= 31)
+      properties.read(stream);
+
+   if (version >= 33)
+      tasks->read(stream);
+
+   if (version >= 34)
+      serverMapID = stream.readInt();
 }
 
-
-void GameMap :: write ( tnstream& stream )
-{
+void GameMap ::write(tnstream& stream) {
    int i;
 
-   stream.writeWord( 0xfffe );
-   stream.writeWord( 0xfffc );
+   stream.writeWord(0xfffe);
+   stream.writeWord(0xfffc);
 
-   stream.writeInt ( tmapversion );
-   stream.writeInt( xsize );
-   stream.writeInt( ysize );
+   stream.writeInt(tmapversion);
+   stream.writeInt(xsize);
+   stream.writeInt(ysize);
 
-   stream.writeWord( 0 );
-   stream.writeWord( 0 );
-   stream.writeInt (1); // dummy
-   stream.writeString ( codeWord );
+   stream.writeWord(0);
+   stream.writeWord(0);
+   stream.writeInt(1);  // dummy
+   stream.writeString(codeWord);
 
-   
-   stream.writeInt( campaign.avail  );
-   stream.writeUint8( actplayer );
-   stream.writeInt( time.abstime );
-   
+   stream.writeInt(campaign.avail);
+   stream.writeUint8(actplayer);
+   stream.writeInt(time.abstime);
+
    stream.writeUint8(0);
-   stream.writeUint8( weather.windSpeed );
-   stream.writeUint8( weather.windDirection );
-   
-   stream.writeInt( 0x12345678 );
-   
-   stream.writeInt( packageData != NULL );
-   if ( packageData ) 
-      packageData->write( stream );
-   
-   
-   for  ( i= 0; i < 4; i++ )
-      stream.writeUint8( 0 );
+   stream.writeUint8(weather.windSpeed);
+   stream.writeUint8(weather.windDirection);
 
-   for ( i = 0; i< 12; i++ )
-      stream.writeUint8( 0 ); // dummy
+   stream.writeInt(0x12345678);
 
-   stream.writeInt( _resourcemode );
+   stream.writeInt(packageData != NULL);
+   if (packageData)
+      packageData->write(stream);
 
-   for ( i = 0; i< 9; i++ ) {
-      stream.writeUint8( player[i].existanceAtBeginOfTurn );
-      stream.writeInt( 1 ); // dummy
-      stream.writeInt( 1 ); // dummy
-      player[i].research.write ( stream );
-      stream.writeInt( player[i].ai != NULL );
-      stream.writeUint8( player[i].stat );
-      stream.writeUint8( 0 ); // dummy
-      stream.writeInt( 0 );
-      player[i].passwordcrc.write ( stream );
-      stream.writeInt( !player[i].dissections.empty() );
-      stream.writeInt( 1 );
-      stream.writeInt( 1 );
-      stream.writeInt( 1 );
-      stream.writeInt ( player[i].ASCversion );
-      player[i].cursorPos.write( stream );
-      player[i].diplomacy.write( stream );
-      stream.writeString ( player[i].email );
+   for (i = 0; i < 4; i++)
+      stream.writeUint8(0);
+
+   for (i = 0; i < 12; i++)
+      stream.writeUint8(0);  // dummy
+
+   stream.writeInt(_resourcemode);
+
+   for (i = 0; i < 9; i++) {
+      stream.writeUint8(player[i].existanceAtBeginOfTurn);
+      stream.writeInt(1);  // dummy
+      stream.writeInt(1);  // dummy
+      player[i].research.write(stream);
+      stream.writeInt(player[i].ai != NULL);
+      stream.writeUint8(player[i].stat);
+      stream.writeUint8(0);  // dummy
+      stream.writeInt(0);
+      player[i].passwordcrc.write(stream);
+      stream.writeInt(!player[i].dissections.empty());
+      stream.writeInt(1);
+      stream.writeInt(1);
+      stream.writeInt(1);
+      stream.writeInt(player[i].ASCversion);
+      player[i].cursorPos.write(stream);
+      player[i].diplomacy.write(stream);
+      stream.writeString(player[i].email);
       player[i].write(stream);
    }
 
-   stream.writeInt( 0x12345678 );
-   
+   stream.writeInt(0x12345678);
+
    idManager.writeData(stream);
-   
-   stream.writeUint8( levelfinished );
 
-   stream.writeInt( 1 );
-   stream.writeInt( !messages.empty() );
+   stream.writeUint8(levelfinished);
 
-   stream.writeInt( messageid );
+   stream.writeInt(1);
+   stream.writeInt(!messages.empty());
 
-   for ( i = 0; i < 8; i++ )
-      stream.writeInt( 1 );
+   stream.writeInt(messageid);
 
-   for ( i = 0; i < 8; i++ )
-      stream.writeInt( 0 );
+   for (i = 0; i < 8; i++)
+      stream.writeInt(1);
 
-   supervisorpasswordcrc.write ( stream );
+   for (i = 0; i < 8; i++)
+      stream.writeInt(0);
 
-   stream.writeInt( 0 );
+   supervisorpasswordcrc.write(stream);
 
-   stream.writeInt( continueplaying );
-   stream.writeInt( replayinfo != NULL );
-   stream.writeInt( playerView );
-   stream.writeInt( lastjournalchange.abstime );
+   stream.writeInt(0);
 
-   for ( i = 0; i< 8; i++ )
-      bi_resource[i].write ( stream );
+   stream.writeInt(continueplaying);
+   stream.writeInt(replayinfo != NULL);
+   stream.writeInt(playerView);
+   stream.writeInt(lastjournalchange.abstime);
 
-   stream.writeInt( 1 );
-   stream.writeInt( 0 ); // was: ellipse
-   stream.writeInt( graphicset );
-   stream.writeInt( gameparameter_num );
+   for (i = 0; i < 8; i++)
+      bi_resource[i].write(stream);
 
-   stream.writeInt( game_parameter != NULL );
-   stream.writeInt( mineralResourcesDisplayed );
-   for ( i = 0; i< 9; i++ )
-       stream.writeInt( player[i].queuedEvents );
+   stream.writeInt(1);
+   stream.writeInt(0);  // was: ellipse
+   stream.writeInt(graphicset);
+   stream.writeInt(gameparameter_num);
 
-   for ( i = 0; i < 19; i++ )
-       stream.writeInt( 0 );
+   stream.writeInt(game_parameter != NULL);
+   stream.writeInt(mineralResourcesDisplayed);
+   for (i = 0; i < 9; i++)
+      stream.writeInt(player[i].queuedEvents);
 
-   for ( i = 0; i < 8; i++ )
-       stream.writeInt( getgameparameter(GameParameter(i)) );
+   for (i = 0; i < 19; i++)
+      stream.writeInt(0);
 
+   for (i = 0; i < 8; i++)
+      stream.writeInt(getgameparameter(GameParameter(i)));
 
-   stream.writeInt( 0x12345678 );
+   stream.writeInt(0x12345678);
 
-       
-///////////////////
-// second part
-//////////////////
+   ///////////////////
+   // second part
+   //////////////////
 
+   stream.writeString(maptitle);
 
-
-   stream.writeString( maptitle );
-
-   if ( campaign.avail ) {
-      stream.writeInt( campaign.id );
-      stream.writeUint8( campaign.directaccess );
-      stream.writeInt( campaign.avail );
+   if (campaign.avail) {
+      stream.writeInt(campaign.id);
+      stream.writeUint8(campaign.directaccess);
+      stream.writeInt(campaign.avail);
    }
 
-   for (int w=0; w<8 ; w++ ) 
-      stream.writeString ( player[w].getName() );
+   for (int w = 0; w < 8; w++)
+      stream.writeString(player[w].getName());
 
-   if ( !tribute.empty() ) {
-       stream.writeInt ( -1 );
-       tribute.write ( stream );
+   if (!tribute.empty()) {
+      stream.writeInt(-1);
+      tribute.write(stream);
    } else
-       stream.writeInt ( 0 );
+      stream.writeInt(0);
 
-    stream.writeInt ( 0 );
+   stream.writeInt(0);
 
-    int p;
-    for ( p = 0; p < 8; p++ )
-       stream.writeInt( 1 );
+   int p;
+   for (p = 0; p < 8; p++)
+      stream.writeInt(1);
 
-    for ( p = 0; p < 8; p++ )
-       stream.writeInt( 0 );
+   for (p = 0; p < 8; p++)
+      stream.writeInt(0);
 
-    for ( p = 0; p < 8; p++ )
-       stream.writeInt( 1 );
+   for (p = 0; p < 8; p++)
+      stream.writeInt(1);
 
-    for ( p = 0; p < 8; p++ )
-       stream.writeInt( 0 );
+   for (p = 0; p < 8; p++)
+      stream.writeInt(0);
 
-    for ( int k = 0; k < 8; k++ ) {
-       stream.writeString ( preferredFileNames.mapname[k] );
-       stream.writeString ( preferredFileNames.savegame[k] );
-    }
+   for (int k = 0; k < 8; k++) {
+      stream.writeString(preferredFileNames.mapname[k]);
+      stream.writeString(preferredFileNames.savegame[k]);
+   }
 
+   for (int ii = 0; ii < gameparameter_num; ii++)
+      stream.writeInt(game_parameter[ii]);
 
-    for ( int ii = 0 ; ii < gameparameter_num; ii++ )
-       stream.writeInt ( game_parameter[ii] );
+   stream.writeString(archivalInformation.author);
+   stream.writeString(archivalInformation.description);
+   stream.writeString(archivalInformation.tags);
+   stream.writeString(archivalInformation.requirements);
+   stream.writeInt((unsigned int) (::time(&archivalInformation.modifytime)));
 
+   stream.writeInt(unitProduction.idsAllowed.size());
+   for (int ii = 0; ii < unitProduction.idsAllowed.size(); ++ii)
+      stream.writeInt(unitProduction.idsAllowed[ii]);
 
-    stream.writeString ( archivalInformation.author );
-    stream.writeString ( archivalInformation.description );
-    stream.writeString ( archivalInformation.tags );
-    stream.writeString ( archivalInformation.requirements );
-    stream.writeInt ( (unsigned int) (::time ( &archivalInformation.modifytime )));
+   for (int ii = 0; ii < 9; ii++) {
+      stream.writeInt(player[ii].playTime.size());
+      for (Player::PlayTimeContainer::iterator i = player[ii].playTime.begin();
+           i != player[ii].playTime.end(); ++i) {
+         stream.writeInt(i->turn);
+         stream.writeInt((unsigned int) i->date);
+      }
+   }
 
+   stream.writeInt(eventID);
 
-    stream.writeInt( unitProduction.idsAllowed.size() );
-    for ( int ii = 0; ii < unitProduction.idsAllowed.size(); ++ii )
-       stream.writeInt ( unitProduction.idsAllowed[ii] );
+   stream.writeInt(events.size());
+   for (Events::iterator i = events.begin(); i != events.end(); ++i)
+      (*i)->write(stream);
 
+   stream.writeInt(randomSeed);
 
-    for ( int ii = 0; ii < 9; ii++ ) {
-       stream.writeInt( player[ii].playTime.size() );
-       for ( Player::PlayTimeContainer::iterator i = player[ii].playTime.begin(); i != player[ii].playTime.end(); ++i ) {
-          stream.writeInt( i->turn );
-          stream.writeInt( (unsigned int) i->date );
-       }
-    }
+   if (network) {
+      stream.writeInt(1);
+      network->write(stream);
+   } else
+      stream.writeInt(0);
 
-    stream.writeInt( eventID );
+   actions.write(stream);
 
-    stream.writeInt ( events.size());
-    for ( Events::iterator i = events.begin(); i != events.end(); ++i )
-       (*i)->write( stream );
+   stream.writeString(nativeMessageLanguage);
 
-    stream.writeInt( randomSeed );
+   if (actionRecorder != NULL) {
+      stream.writeInt(1);
+      actionRecorder->writeData(stream);
+   } else
+      stream.writeInt(0);
 
-    if ( network ) {
-      stream.writeInt( 1 );
-      network->write( stream );
-    } else
-      stream.writeInt( 0 );
-      
-    actions.write( stream );
-    
-    stream.writeString(nativeMessageLanguage);
-    
-    if ( actionRecorder != NULL ) {
-       stream.writeInt( 1 );
-       actionRecorder->writeData( stream );
-    } else
-       stream.writeInt( 0 );
-    
-    properties.write( stream );
-    
-   tasks->write( stream );
+   properties.write(stream);
 
-   stream.writeInt( serverMapID );
+   tasks->write(stream);
+
+   stream.writeInt(serverMapID);
 }
 
+MapCoordinate GameMap::findFirstContainer() const {
+   for (int y = 0; y < ysize; ++y)
+      for (int x = 0; x < xsize; ++x)
+         if (getField(x, y)->getContainer())
+            if (getField(x, y)->getContainer()->getOwner() == actplayer)
+               return MapCoordinate(x, y);
 
-MapCoordinate GameMap::findFirstContainer() const
-{
-   for ( int y = 0; y < ysize; ++y )
-      for ( int x = 0; x < xsize; ++x )
-         if ( getField(x,y)->getContainer() )
-            if ( getField(x,y)->getContainer()->getOwner() == actplayer ) 
-               return MapCoordinate(x,y);
-   
-   return MapCoordinate(0,0);
+   return MapCoordinate(0, 0);
 }
 
-
-MapCoordinate& GameMap::getCursor()
-{
-   #ifdef sgmain
-   if ( actplayer >= 0 ) {
-      if ( !player[actplayer].cursorPos.valid() || player[actplayer].cursorPos.x >= xsize || player[actplayer].cursorPos.y >= ysize) 
+MapCoordinate& GameMap::getCursor() {
+#ifdef sgmain
+   if (actplayer >= 0) {
+      if (!player[actplayer].cursorPos.valid() || player[actplayer].cursorPos.x >= xsize ||
+          player[actplayer].cursorPos.y >= ysize)
          player[actplayer].cursorPos = findFirstContainer();
-      
+
       return player[actplayer].cursorPos;
    } else
       return player[0].cursorPos;
 #else
    return player[8].cursorPos;
-   #endif
+#endif
 }
 
-MapCoordinate GameMap::getCursor() const
-{
+MapCoordinate GameMap::getCursor() const {
 #ifdef sgmain
-   if ( actplayer >= 0 ) {
-      if ( !player[actplayer].cursorPos.valid() || player[actplayer].cursorPos.x >= xsize || player[actplayer].cursorPos.y >= ysize) 
+   if (actplayer >= 0) {
+      if (!player[actplayer].cursorPos.valid() || player[actplayer].cursorPos.x >= xsize ||
+          player[actplayer].cursorPos.y >= ysize)
          return findFirstContainer();
       else
          return player[actplayer].cursorPos;
    } else
       return player[0].cursorPos;
 #else
-      return player[8].cursorPos;
+   return player[8].cursorPos;
 #endif
 }
 
-
-void GameMap :: cleartemps( int b, int value )
-{
-   if ( xsize <= 0 || ysize <= 0)
+void GameMap ::cleartemps(int b, int value) {
+   if (xsize <= 0 || ysize <= 0)
       return;
 
    size_t lmax = xsize * ysize;
@@ -979,33 +930,29 @@ void GameMap :: cleartemps( int b, int value )
          temp4[l] = value;
 }
 
-void GameMap :: allocateFields ( int x, int y, TerrainType::Weather* terrain )
-{
-   field = new MapField[x*y];
-   for ( int i = 0; i < x*y; i++ ) {
-      if ( terrain ) {
+void GameMap ::allocateFields(int x, int y, TerrainType::Weather* terrain) {
+   field = new MapField[x * y];
+   for (int i = 0; i < x * y; i++) {
+      if (terrain) {
          field[i].typ = terrain;
          field[i].setparams();
       }
-      field[i].setMap ( this, i );
+      field[i].setMap(this, i);
    }
    xsize = x;
    ysize = y;
-   temp = new char[x*y]();
-   temp2 = new char[x*y]();
-   temp3 = new int[x*y]();
-   temp4 = new int[x*y]();
+   temp = new char[x * y]();
+   temp2 = new char[x * y]();
+   temp3 = new int[x * y]();
+   temp4 = new int[x * y]();
    overviewMapHolder.connect();
 }
 
-
-void GameMap :: calculateAllObjects ( void )
-{
-   calculateallobjects( this );
+void GameMap ::calculateAllObjects(void) {
+   calculateallobjects(this);
 }
 
-int   GameMap :: getPlayerView() const
-{
+int GameMap ::getPlayerView() const {
 #ifdef karteneditor
    return -1;
 #else
@@ -1013,24 +960,18 @@ int   GameMap :: getPlayerView() const
 #endif
 }
 
-
-void  GameMap :: setPlayerView( int player )
-{
+void GameMap ::setPlayerView(int player) {
    playerView = player;
 }
 
-
-
-bool GameMap :: isResourceGlobal ( int resource )
-{
-   if ( _resourcemode == 1 ) { // BI-Mode
-      if ( resource == 1 ) // material
+bool GameMap ::isResourceGlobal(int resource) {
+   if (_resourcemode == 1) {  // BI-Mode
+      if (resource == 1)      // material
          return false;
+      else if (resource == 2)
+         return getgameparameter(cgp_globalfuel);
       else
-         if ( resource == 2 )
-            return getgameparameter(cgp_globalfuel);
-         else
-            return true;
+         return true;
    } else {
       /*
       if ( resource == 0 )
@@ -1044,129 +985,112 @@ bool GameMap :: isResourceGlobal ( int resource )
    }
 }
 
-int GameMap :: getgameparameter ( GameParameter num ) const
-{
-  if ( game_parameter && num < gameparameter_num ) {
-     return game_parameter[num];
-  } else
-     if ( num < gameparameternum )
-        return gameParameterSettings[num].defaultValue;
-     else
-        return 0;
+int GameMap ::getgameparameter(GameParameter num) const {
+   if (game_parameter && num < gameparameter_num) {
+      return game_parameter[num];
+   } else if (num < gameparameternum)
+      return gameParameterSettings[num].defaultValue;
+   else
+      return 0;
 }
 
-void GameMap :: setgameparameter ( GameParameter num, int value )
-{
-   if ( game_parameter ) {
-     if ( num < gameparameter_num )
-        game_parameter[num] = value;
-     else {
-        int* oldparam = game_parameter;
-        game_parameter = new int[num+1];
-        for ( int i = 0; i < gameparameter_num; i++ )
-           game_parameter[i] = oldparam[i];
-        for ( int j = gameparameter_num; j < num; j++ )
-           if ( j < gameparameternum )
-              game_parameter[j] = gameParameterSettings[j].defaultValue;
-           else
-              game_parameter[j] = 0;
-        game_parameter[num] = value;
-        gameparameter_num = num + 1;
-        delete[] oldparam;
-     }
+void GameMap ::setgameparameter(GameParameter num, int value) {
+   if (game_parameter) {
+      if (num < gameparameter_num)
+         game_parameter[num] = value;
+      else {
+         int* oldparam = game_parameter;
+         game_parameter = new int[num + 1];
+         for (int i = 0; i < gameparameter_num; i++)
+            game_parameter[i] = oldparam[i];
+         for (int j = gameparameter_num; j < num; j++)
+            if (j < gameparameternum)
+               game_parameter[j] = gameParameterSettings[j].defaultValue;
+            else
+               game_parameter[j] = 0;
+         game_parameter[num] = value;
+         gameparameter_num = num + 1;
+         delete[] oldparam;
+      }
    } else {
-       game_parameter = new int[num+1];
-       for ( int j = 0; j < num; j++ )
-          if ( j < gameparameternum )
-             game_parameter[j] = gameParameterSettings[j].defaultValue;
-          else
-             game_parameter[j] = 0;
-       game_parameter[num] = value;
-       gameparameter_num = num + 1;
+      game_parameter = new int[num + 1];
+      for (int j = 0; j < num; j++)
+         if (j < gameparameternum)
+            game_parameter[j] = gameParameterSettings[j].defaultValue;
+         else
+            game_parameter[j] = 0;
+      game_parameter[num] = value;
+      gameparameter_num = num + 1;
    }
 }
 
-void GameMap :: setupResources ( void )
-{
-   for ( int n = 0; n< 8; n++ ) {
+void GameMap ::setupResources(void) {
+   for (int n = 0; n < 8; n++) {
       bi_resource[n].energy = 0;
       bi_resource[n].material = 0;
       bi_resource[n].fuel = 0;
 
-     #ifdef sgmain
+#ifdef sgmain
 
-      for ( Player::BuildingList::iterator i = player[n].buildingList.begin(); i != player[n].buildingList.end(); i++ )
-         for ( int r = 0; r < 3; r++ )
-            if ( isResourceGlobal( r )) {
+      for (Player::BuildingList::iterator i = player[n].buildingList.begin();
+           i != player[n].buildingList.end(); i++)
+         for (int r = 0; r < 3; r++)
+            if (isResourceGlobal(r)) {
                bi_resource[n].resource(r) += (*i)->actstorage.resource(r);
                (*i)->actstorage.resource(r) = 0;
             }
-     #endif
+#endif
    }
 }
 
-
-
-
-int GameMap :: eventpassed( int saveas, int action, int mapid )
-{
-   return eventpassed ( (action << 16) | saveas, mapid );
+int GameMap ::eventpassed(int saveas, int action, int mapid) {
+   return eventpassed((action << 16) | saveas, mapid);
 }
 
-
-
-int GameMap :: eventpassed( int id, int mapid )
-{
+int GameMap ::eventpassed(int id, int mapid) {
    return 0;
 }
 
-
-void GameMap:: IDManager :: registerUnitNetworkID( Vehicle* veh )
-{
+void GameMap::IDManager ::registerUnitNetworkID(Vehicle* veh) {
    vehicleLookupCache[veh->networkid] = veh;
-   if ( unitnetworkid < veh->networkid )
+   if (unitnetworkid < veh->networkid)
       unitnetworkid = veh->networkid;
 }
 
-void GameMap:: IDManager :: unregisterUnitNetworkID( Vehicle* veh )
-{
+void GameMap::IDManager ::unregisterUnitNetworkID(Vehicle* veh) {
    VehicleLookupCache::iterator j = vehicleLookupCache.find(veh->networkid);
-   if ( j != vehicleLookupCache.end() )
+   if (j != vehicleLookupCache.end())
       vehicleLookupCache.erase(j);
 }
 
-
-int GameMap :: IDManager :: getNewNetworkID()
-{
+int GameMap ::IDManager ::getNewNetworkID() {
    ++unitnetworkid;
    return unitnetworkid;
 }
 
-void GameMap :: IDManager :: readData ( tnstream& stream )
-{
+void GameMap ::IDManager ::readData(tnstream& stream) {
    unitnetworkid = stream.readInt();
 }
 
-void GameMap :: IDManager :: writeData ( tnstream& stream ) const
-{
-   stream.writeInt( unitnetworkid );
+void GameMap ::IDManager ::writeData(tnstream& stream) const {
+   stream.writeInt(unitnetworkid);
 }
 
-Vehicle* GameMap :: getUnit ( Vehicle* eht, int nwid )
-{
-   if ( !eht )
+Vehicle* GameMap ::getUnit(Vehicle* eht, int nwid) {
+   if (!eht)
       return NULL;
    else {
-      if ( eht->networkid == nwid )
+      if (eht->networkid == nwid)
          return eht;
       else
-         for ( ContainerBase::Cargo::const_iterator i = eht->getCargo().begin(); i != eht->getCargo().end(); ++i )
-            if ( *i )  {
-               if ( (*i)->networkid == nwid )
+         for (ContainerBase::Cargo::const_iterator i = eht->getCargo().begin();
+              i != eht->getCargo().end(); ++i)
+            if (*i) {
+               if ((*i)->networkid == nwid)
                   return *i;
                else {
-                  Vehicle* ld = getUnit ( *i, nwid );
-                  if ( ld )
+                  Vehicle* ld = getUnit(*i, nwid);
+                  if (ld)
                      return ld;
                }
             }
@@ -1174,352 +1098,345 @@ Vehicle* GameMap :: getUnit ( Vehicle* eht, int nwid )
    }
 }
 
-
-
-Vehicle* GameMap :: getUnit ( int nwid, bool consistencyCheck )
-{
-   IDManager::VehicleLookupCache::iterator i = idManager.vehicleLookupCache.find( nwid );
-   if ( i != idManager.vehicleLookupCache.end() )
+Vehicle* GameMap ::getUnit(int nwid, bool consistencyCheck) {
+   IDManager::VehicleLookupCache::iterator i = idManager.vehicleLookupCache.find(nwid);
+   if (i != idManager.vehicleLookupCache.end())
       return i->second;
 
-
-   if ( consistencyCheck ) 
-      for ( int p = 0; p < 9; p++ )
-         for ( Player::VehicleList::iterator i = player[p].vehicleList.begin(); i != player[p].vehicleList.end(); i++ )
-            if ( (*i)->networkid == nwid ) {
-               displaymessage("warning: id not registered in VehicleLookupCache!",1);
+   if (consistencyCheck)
+      for (int p = 0; p < 9; p++)
+         for (Player::VehicleList::iterator i = player[p].vehicleList.begin();
+              i != player[p].vehicleList.end(); i++)
+            if ((*i)->networkid == nwid) {
+               displaymessage("warning: id not registered in VehicleLookupCache!", 1);
                return *i;
             }
 
    return NULL;
 }
 
-const Vehicle* GameMap :: getUnit ( int nwid, bool consistencyCheck ) const
-{
-   IDManager::VehicleLookupCache::const_iterator i = idManager.vehicleLookupCache.find( nwid );
-   if ( i != idManager.vehicleLookupCache.end() )
+const Vehicle* GameMap ::getUnit(int nwid, bool consistencyCheck) const {
+   IDManager::VehicleLookupCache::const_iterator i = idManager.vehicleLookupCache.find(nwid);
+   if (i != idManager.vehicleLookupCache.end())
       return i->second;
 
-
-   if ( consistencyCheck ) 
-      for ( int p = 0; p < 9; p++ )
-         for ( Player::VehicleList::const_iterator i = player[p].vehicleList.begin(); i != player[p].vehicleList.end(); i++ )
-            if ( (*i)->networkid == nwid ) {
-               displaymessage("warning: id not registered in VehicleLookupCache!",1);
+   if (consistencyCheck)
+      for (int p = 0; p < 9; p++)
+         for (Player::VehicleList::const_iterator i = player[p].vehicleList.begin();
+              i != player[p].vehicleList.end(); i++)
+            if ((*i)->networkid == nwid) {
+               displaymessage("warning: id not registered in VehicleLookupCache!", 1);
                return *i;
             }
 
    return NULL;
 }
 
-Vehicle* GameMap :: getUnit ( int x, int y, int nwid )
-{
-   MapField* fld  = getField ( x, y );
-   if ( !fld )
+Vehicle* GameMap ::getUnit(int x, int y, int nwid) {
+   MapField* fld = getField(x, y);
+   if (!fld)
       return NULL;
 
-   if ( fld->vehicle && fld->vehicle->networkid == nwid )
-         return fld->vehicle;
-         
-   if ( fld->getContainer() )
-      return fld->getContainer()->findUnit( nwid );
-      
+   if (fld->vehicle && fld->vehicle->networkid == nwid)
+      return fld->vehicle;
+
+   if (fld->getContainer())
+      return fld->getContainer()->findUnit(nwid);
+
    return NULL;
-     
 }
 
-ContainerBase* GameMap::getContainer ( int nwid )
-{
-   if ( nwid > 0 )
+ContainerBase* GameMap::getContainer(int nwid) {
+   if (nwid > 0)
       return getUnit(nwid);
    else {
       int x = (-nwid) & 0xffff;
       int y = (-nwid) >> 16;
-      MapField* fld = getField(x,y);
-      if ( !fld )
+      MapField* fld = getField(x, y);
+      if (!fld)
          return NULL;
 
       return fld->building;
    }
 }
 
-const ContainerBase* GameMap::getContainer ( int nwid ) const 
-{
-   if ( nwid > 0 )
+const ContainerBase* GameMap::getContainer(int nwid) const {
+   if (nwid > 0)
       return getUnit(nwid);
    else {
       int x = (-nwid) & 0xffff;
       int y = (-nwid) >> 16;
-      const MapField* fld = getField(x,y);
-      if ( !fld )
+      const MapField* fld = getField(x, y);
+      if (!fld)
          return NULL;
 
       return fld->building;
    }
 }
 
-
-
-void GameMap::beginTurn()
-{
-   if ( !player[actplayer].exist() )
-      if ( replayinfo )
-         if ( replayinfo->guidata[actplayer] ) {
+void GameMap::beginTurn() {
+   if (!player[actplayer].exist())
+      if (replayinfo)
+         if (replayinfo->guidata[actplayer]) {
             delete replayinfo->guidata[actplayer];
             replayinfo->guidata[actplayer] = NULL;
          }
-            
-   for ( Player::VehicleList::const_iterator i = player[actplayer].vehicleList.begin(); i != player[actplayer].vehicleList.end(); i++ )
+
+   for (Player::VehicleList::const_iterator i = player[actplayer].vehicleList.begin();
+        i != player[actplayer].vehicleList.end(); i++)
       (*i)->beginTurn();
-         
-   if ( player[actplayer].exist() && player[actplayer].stat != Player::off ) 
-      sigPlayerTurnBegins( player[actplayer] );
-      
+
+   if (player[actplayer].exist() && player[actplayer].stat != Player::off)
+      sigPlayerTurnBegins(player[actplayer]);
 }
 
-
-void GameMap::endTurn()
-{
-
+void GameMap::endTurn() {
    player[actplayer].ASCversion = getNumericVersion();
    Player::PlayTime pt;
    pt.turn = time.turn();
-   ::time ( &pt.date );
-   player[actplayer].playTime.push_back ( pt );
-   
-   sigPlayerTurnEnds( player[actplayer] );
-   sigPlayerTurnEndsStatic( this, player[actplayer] );
-         
-   actions.breakUndo(); // commits all actions to the replay log
-   
-   for ( int i = 0; i < 9; ++i )
-     for ( Player::BuildingList::iterator v = player[i].buildingList.begin(); v != player[i].buildingList.end(); ++v ) {
-         if ( i == actplayer )
+   ::time(&pt.date);
+   player[actplayer].playTime.push_back(pt);
+
+   sigPlayerTurnEnds(player[actplayer]);
+   sigPlayerTurnEndsStatic(this, player[actplayer]);
+
+   actions.breakUndo();  // commits all actions to the replay log
+
+   for (int i = 0; i < 9; ++i)
+      for (Player::BuildingList::iterator v = player[i].buildingList.begin();
+           v != player[i].buildingList.end(); ++v) {
+         if (i == actplayer)
             (*v)->endOwnTurn();
          (*v)->endAnyTurn();
-     }
-
+      }
 
    Player::VehicleList toRemove;
-   for ( Player::VehicleList::iterator v = player[actplayer].vehicleList.begin(); v != player[actplayer].vehicleList.end(); ++v ) {
+   for (Player::VehicleList::iterator v = player[actplayer].vehicleList.begin();
+        v != player[actplayer].vehicleList.end(); ++v) {
       Vehicle* actvehicle = *v;
 
       // Bei Aenderungen hier auch die Windanzeige dashboard.PAINTWIND aktualisieren !!!
 
-      if (( actvehicle->height >= chtieffliegend )   &&  ( actvehicle->height <= chhochfliegend ) && ( getField(actvehicle->xpos,actvehicle->ypos)->vehicle == actvehicle)) {
-         if ( getmaxwindspeedforunit ( actvehicle ) < weather.windSpeed*maxwindspeed ){
-            new Message ( getUnitReference( *v ) + " crashed because of the strong wind", this, 1<<(*v)->getOwner());
-            toRemove.push_back ( *v );
+      if ((actvehicle->height >= chtieffliegend) && (actvehicle->height <= chhochfliegend) &&
+          (getField(actvehicle->xpos, actvehicle->ypos)->vehicle == actvehicle)) {
+         if (getmaxwindspeedforunit(actvehicle) < weather.windSpeed * maxwindspeed) {
+            new Message(getUnitReference(*v) + " crashed because of the strong wind", this,
+                        1 << (*v)->getOwner());
+            toRemove.push_back(*v);
          } else {
-
-            int j = actvehicle->getTank().fuel - UnitHooveringLogic::calcFuelUsage( actvehicle );
+            int j = actvehicle->getTank().fuel - UnitHooveringLogic::calcFuelUsage(actvehicle);
             if (j < 0) {
-               new Message ( getUnitReference( *v ) + " crashed due to lack of fuel", this, 1<<(*v)->getOwner());
-               toRemove.push_back ( *v );
+               new Message(getUnitReference(*v) + " crashed due to lack of fuel", this,
+                           1 << (*v)->getOwner());
+               toRemove.push_back(*v);
             } else {
-               actvehicle->getResource( actvehicle->getTank().fuel - j, Resources::Fuel, false);
+               actvehicle->getResource(actvehicle->getTank().fuel - j, Resources::Fuel, false);
             }
          }
       }
 
-      if ( actvehicle->typ->autorepairrate < 0 ) {
-          if ( actvehicle->damage - actvehicle->typ->autorepairrate > 100 )
-              toRemove.push_back( *v );
-          else
-              actvehicle->damage -= actvehicle->typ->autorepairrate;
+      if (actvehicle->typ->autorepairrate < 0) {
+         if (actvehicle->damage - actvehicle->typ->autorepairrate > 100)
+            toRemove.push_back(*v);
+         else
+            actvehicle->damage -= actvehicle->typ->autorepairrate;
       }
 
-      if ( actvehicle )
+      if (actvehicle)
          actvehicle->endOwnTurn();
-
    }
 
-   for ( Player::VehicleList::iterator v = toRemove.begin(); v != toRemove.end(); v++ )
+   for (Player::VehicleList::iterator v = toRemove.begin(); v != toRemove.end(); v++)
       delete *v;
 
-   checkunitsforremoval( this );
+   checkunitsforremoval(this);
 
-  for ( int i = 0; i < 9; ++i ) 
-     for ( Player::VehicleList::iterator v = player[i].vehicleList.begin(); v != player[i].vehicleList.end(); ++v ) 
+   for (int i = 0; i < 9; ++i)
+      for (Player::VehicleList::iterator v = player[i].vehicleList.begin();
+           v != player[i].vehicleList.end(); ++v)
          (*v)->endAnyTurn();
 
- 
-   if ( replayinfo )
+   if (replayinfo)
       replayinfo->closeLogging();
-      
-   processJournal();   
 
-   sigPlayerTurnHasEnded( player[actplayer] );
-   
+   processJournal();
+
+   sigPlayerTurnHasEnded(player[actplayer]);
 }
 
+void GameMap::endRound() {
+   actplayer = 0;
+   time.set(time.turn() + 1, 0);
 
-void GameMap::endRound()
-{
-    actplayer = 0;
-    time.set ( time.turn()+1, 0 );
+   for (int y = 0; y < ysize; ++y)
+      for (int x = 0; x < xsize; ++x)
+         getField(x, y)->endRound(time.turn());
 
-    for ( int y = 0; y < ysize; ++y )
-       for ( int x = 0; x < xsize; ++x )
-           getField(x,y)->endRound( time.turn() );
+   for (int i = 0; i <= 7; i++) {
+      if (player[i].exist() && player[i].stat != Player::off) {
+         for (Player::VehicleList::iterator j = player[i].vehicleList.begin();
+              j != player[i].vehicleList.end(); j++)
+            (*j)->endRound();
 
-    for (int i = 0; i <= 7; i++) {
-       if (player[i].exist() && player[i].stat != Player::off ) {
+         for (Player::BuildingList::iterator j = player[i].buildingList.begin();
+              j != player[i].buildingList.end(); j++)
+            (*j)->endRound();
 
-          for ( Player::VehicleList::iterator j = player[i].vehicleList.begin(); j != player[i].vehicleList.end(); j++ )
-             (*j)->endRound();
+         typedef PointerList<ContainerBase::Work*> BuildingWork;
+         BuildingWork buildingWork;
 
-          for ( Player::BuildingList::iterator j = player[i].buildingList.begin(); j != player[i].buildingList.end(); j++ )
-             (*j)->endRound();
-          
-          typedef PointerList<ContainerBase::Work*> BuildingWork;
-          BuildingWork buildingWork;
+         for (Player::BuildingList::iterator j = player[i].buildingList.begin();
+              j != player[i].buildingList.end(); j++) {
+            if ((*j)->getEntry().x == 19 && (*j)->getEntry().y == 72)
+               logMessage("dummy", "dummy");
+            ContainerBase::Work* w = (*j)->spawnWorkClasses(false);
+            if (w) {
+               buildingWork.push_back(w);
+               logMessage("ResourceWork",
+                          "Building " + (*j)->getEntry().toString() + " has work to do");
+            } else
+               logMessage("ResourceWork",
+                          "Building " + (*j)->getEntry().toString() + " has no work to do");
+         }
 
-          for ( Player::BuildingList::iterator j = player[i].buildingList.begin(); j != player[i].buildingList.end(); j++ ) {
-             if ( (*j)->getEntry().x == 19 && (*j)->getEntry().y == 72 )
-                logMessage("dummy", "dummy");
-             ContainerBase::Work* w = (*j)->spawnWorkClasses( false );
-             if ( w ) {
-                buildingWork.push_back ( w );
-                logMessage("ResourceWork", "Building " + (*j)->getEntry().toString() + " has work to do");
-             } else
-                logMessage("ResourceWork", "Building " + (*j)->getEntry().toString() + " has no work to do");
-          }
+         for (Player::VehicleList::iterator j = player[i].vehicleList.begin();
+              j != player[i].vehicleList.end(); j++) {
+            ContainerBase::Work* w = (*j)->spawnWorkClasses(false);
+            if (w) {
+               buildingWork.push_back(w);
+               // logMessage("ResourceWork", "Vehicle " + ASCString::toString((*j)->networkid ) + "
+               // has work to do");
+            }
+            // logMessage("ResourceWork", "Vehicle " + ASCString::toString((*j)->networkid ) + " has
+            // no work to do");
+         }
 
-          for ( Player::VehicleList::iterator j = player[i].vehicleList.begin(); j != player[i].vehicleList.end(); j++ ) {
-             ContainerBase::Work* w = (*j)->spawnWorkClasses( false );
-             if ( w ) {
-                buildingWork.push_back ( w );
-                // logMessage("ResourceWork", "Vehicle " + ASCString::toString((*j)->networkid ) + " has work to do");
-             } 
-                // logMessage("ResourceWork", "Vehicle " + ASCString::toString((*j)->networkid ) + " has no work to do");
-          }
-          
-          
-          bool didSomething;
-          do {
-             didSomething = false;
-             for ( BuildingWork::iterator j = buildingWork.begin(); j != buildingWork.end(); j++ ) {
-                if ( ! (*j)->finished() ) 
-                   if ( (*j)->run() )
-                      didSomething = true;
-             }
-          } while ( didSomething );
-          doresearch( this, i );
-       }
-    }
+         bool didSomething;
+         do {
+            didSomething = false;
+            for (BuildingWork::iterator j = buildingWork.begin(); j != buildingWork.end(); j++) {
+               if (!(*j)->finished())
+                  if ((*j)->run())
+                     didSomething = true;
+            }
+         } while (didSomething);
+         doresearch(this, i);
+      }
+   }
 
-    int playerMask = 0;
-    for ( int i = 0; i < getPlayerCount(); ++i )
-       if ( !getPlayer(i).exist() )
-          playerMask |= 1 << i;
-    MapField::resetView(this,playerMask);
+   int playerMask = 0;
+   for (int i = 0; i < getPlayerCount(); ++i)
+      if (!getPlayer(i).exist())
+         playerMask |= 1 << i;
+   MapField::resetView(this, playerMask);
 
-    if ( getgameparameter( cgp_objectGrowthMultiplier) > 0 )
-       objectGrowth();
+   if (getgameparameter(cgp_objectGrowthMultiplier) > 0)
+      objectGrowth();
 }
 
 #include "libs/rand/rand_r.h"
 #include "libs/rand/rand_r.c"
 
-int GameMap::random( int max )
-{
-   return asc_rand_r( &randomSeed ) % max;
+int GameMap::random(int max) {
+   return asc_rand_r(&randomSeed) % max;
 }
 
-void GameMap::objectGrowth()
-{
-   typedef vector< pair<MapField*,int> > NewObjects;
-   map<MapField*,int> remainingGrowthTime;
+void GameMap::objectGrowth() {
+   typedef vector<pair<MapField*, int>> NewObjects;
+   map<MapField*, int> remainingGrowthTime;
 
    NewObjects newObjects;
-   for ( int y = 0; y < ysize; ++y )
-      for ( int x = 0; x < xsize; ++x ) {
-          MapField* fld = getField( x, y );
-          for ( MapField::ObjectContainer::iterator i = fld->objects.begin(); i != fld->objects.end(); ++i)
-             if ( i->typ->growthRate > 0 )
-                for ( int d = 0; d < 6; ++d ) {
-                   MapField* fld2 = getField ( getNeighbouringFieldCoordinate( MapCoordinate(x,y), d ));
-                   if ( fld2 ) 
-                      if ( i->typ->growOnUnits || ((!fld2->vehicle || fld2->vehicle->height >= chtieffliegend) && !fld2->building ))
-                        if ( fld2->objects.empty() || getgameparameter( cgp_objectGrowOnOtherObjects ) > 0 ) 
-                           if ( i->remainingGrowthTime > 0 || i->typ->growthDuration <= 0 ) {
-                              double d = i->typ->growthRate * getgameparameter( cgp_objectGrowthMultiplier) / 100;
-                              if ( d > 0 ) {
-                                 if ( d > 0.9 )
+   for (int y = 0; y < ysize; ++y)
+      for (int x = 0; x < xsize; ++x) {
+         MapField* fld = getField(x, y);
+         for (MapField::ObjectContainer::iterator i = fld->objects.begin(); i != fld->objects.end();
+              ++i)
+            if (i->typ->growthRate > 0)
+               for (int d = 0; d < 6; ++d) {
+                  MapField* fld2 = getField(getNeighbouringFieldCoordinate(MapCoordinate(x, y), d));
+                  if (fld2)
+                     if (i->typ->growOnUnits ||
+                         ((!fld2->vehicle || fld2->vehicle->height >= chtieffliegend) &&
+                          !fld2->building))
+                        if (fld2->objects.empty() ||
+                            getgameparameter(cgp_objectGrowOnOtherObjects) > 0)
+                           if (i->remainingGrowthTime > 0 || i->typ->growthDuration <= 0) {
+                              double d = i->typ->growthRate *
+                                         getgameparameter(cgp_objectGrowthMultiplier) / 100;
+                              if (d > 0) {
+                                 if (d > 0.9)
                                     d = 0.9;
 
-                                 int p = static_cast<int>(std::ceil ( double(1) / d));
-                                 if ( p > 1 )
-                                    if ( random ( p ) == 1 )
-                                       if ( i->typ->fieldModification[fld2->getWeather()].terrainaccess.accessible( fld2->bdt) > 0 ) {
-                                          newObjects.push_back( make_pair( fld2, i->typ->id ));
+                                 int p = static_cast<int>(std::ceil(double(1) / d));
+                                 if (p > 1)
+                                    if (random(p) == 1)
+                                       if (i->typ->fieldModification[fld2->getWeather()]
+                                              .terrainaccess.accessible(fld2->bdt) > 0) {
+                                          newObjects.push_back(make_pair(fld2, i->typ->id));
                                           i->remainingGrowthTime -= 1;
                                           remainingGrowthTime[fld2] = i->remainingGrowthTime;
                                        }
                               }
-                        }
-                }
+                           }
+               }
       }
 
-   for ( NewObjects::iterator i = newObjects.begin(); i != newObjects.end(); ++i )
-      if ( !i->first->checkForObject( getobjecttype_byid( i->second ))) {
-         if ( i->first->addobject ( getobjecttype_byid( i->second ))) {
-            Object* o = i->first->checkForObject( getobjecttype_byid( i->second ));
+   for (NewObjects::iterator i = newObjects.begin(); i != newObjects.end(); ++i)
+      if (!i->first->checkForObject(getobjecttype_byid(i->second))) {
+         if (i->first->addobject(getobjecttype_byid(i->second))) {
+            Object* o = i->first->checkForObject(getobjecttype_byid(i->second));
             assert(o);
             o->remainingGrowthTime = remainingGrowthTime[i->first];
          }
       }
 
-   checkunitsforremoval( this );
+   checkunitsforremoval(this);
 }
 
-sigc::signal<void,GameMap&> GameMap::sigMapDeletion;
-sigc::signal<void,GameMap&> GameMap::sigMapCreation;
-sigc::signal<void,GameMap*,Player&> GameMap::sigPlayerTurnEndsStatic;
+sigc::signal<void, GameMap&> GameMap::sigMapDeletion;
+sigc::signal<void, GameMap&> GameMap::sigMapCreation;
+sigc::signal<void, GameMap*, Player&> GameMap::sigPlayerTurnEndsStatic;
 
-GameMap :: ~GameMap ()
-{
-   sigMapDeletion( *this );
+GameMap ::~GameMap() {
+   sigMapDeletion(*this);
    state = Destruction;
 
-   if ( field )
+   if (field)
 
-      for ( int l=0 ;l < xsize * ysize ; l++ ) {
-         if ( (field[l].bdt & getTerrainBitType(cbbuildingentry)).any() )
+      for (int l = 0; l < xsize * ysize; l++) {
+         if ((field[l].bdt & getTerrainBitType(cbbuildingentry)).any())
             delete field[l].building;
 
-
          Vehicle* aktvehicle = field[l].vehicle;
-         if ( aktvehicle )
+         if (aktvehicle)
             delete aktvehicle;
 
       } /* endfor */
 
    int i;
-   for ( i = 0; i <= 8; i++) {
-      if ( player[i].ai ) {
+   for (i = 0; i <= 8; i++) {
+      if (player[i].ai) {
          delete player[i].ai;
          player[i].ai = NULL;
       }
    }
 
-   if ( replayinfo ) {
+   if (replayinfo) {
       delete replayinfo;
       replayinfo = NULL;
    }
 
-   if ( game_parameter ) {
+   if (game_parameter) {
       delete[] game_parameter;
       game_parameter = NULL;
    }
-   
-   if ( network ) {
+
+   if (network) {
       delete network;
       network = NULL;
-   }   
-      
-   if ( actionRecorder ) {
+   }
+
+   if (actionRecorder) {
       delete actionRecorder;
       actionRecorder = NULL;
    }
@@ -1528,14 +1445,14 @@ GameMap :: ~GameMap ()
    delete weatherSystem;
 #endif
 
-   if ( field ) {
+   if (field) {
       delete[] field;
       field = NULL;
    }
 
    delete tasks;
    tasks = NULL;
-   
+
    if (temp) {
       delete[] temp;
       temp = NULL;
@@ -1566,14 +1483,13 @@ gamemap :: ResourceTribute :: tresourcetribute ( )
 }
 */
 
-bool GameMap :: ResourceTribute :: empty ( )
-{
+bool GameMap ::ResourceTribute ::empty() {
    for (int i = 0; i < 8; i++)
       for (int j = 0; j < 8; j++)
          for (int k = 0; k < 3; k++) {
-            if ( avail[i][j].resource(k) )
+            if (avail[i][j].resource(k))
                return false;
-            if ( paid[i][j].resource(k) )
+            if (paid[i][j].resource(k))
                return false;
          }
 
@@ -1582,567 +1498,505 @@ bool GameMap :: ResourceTribute :: empty ( )
 
 const int tributeVersion = 1;  // we are counting backwards, -2 is newer than -1
 
-void GameMap :: ResourceTribute :: read ( tnstream& stream )
-{
+void GameMap ::ResourceTribute ::read(tnstream& stream) {
    int version = stream.readInt();
    bool noVersion;
 
-   if ( -version >= tributeVersion ) {
-      for ( int a = 0; a < 8; ++a )
-         for ( int b = 0; b < 8; ++b )
-            payStatusLastTurn[a][b].read( stream );
+   if (-version >= tributeVersion) {
+      for (int a = 0; a < 8; ++a)
+         for (int b = 0; b < 8; ++b)
+            payStatusLastTurn[a][b].read(stream);
       noVersion = false;
    } else
       noVersion = true;
 
+   for (int a = 0; a < 3; a++)
+      for (int b = 0; b < 8; b++)
+         for (int c = 0; c < 8; c++) {
+            if (noVersion) {
+               avail[b][c].resource(a) = version;
+               noVersion = false;
+            } else
+               avail[b][c].resource(a) = stream.readInt();
+         }
 
-   for ( int a = 0; a < 3; a++ )
-      for ( int b = 0; b < 8; b++ )
-         for ( int c = 0; c < 8; c++ ) {
-             if ( noVersion ) {
-                avail[b][c].resource(a) = version;
-                noVersion = false;
-             } else
-                avail[b][c].resource(a) = stream.readInt();
-          }
-
-   for ( int a = 0; a < 3; a++ )
-      for ( int b = 0; b < 8; b++ )
-         for ( int c = 0; c < 8; c++ )
-             paid[b][c].resource(a) = stream.readInt();
+   for (int a = 0; a < 3; a++)
+      for (int b = 0; b < 8; b++)
+         for (int c = 0; c < 8; c++)
+            paid[b][c].resource(a) = stream.readInt();
 }
 
-void GameMap :: ResourceTribute :: write ( tnstream& stream )
-{
-   stream.writeInt ( -tributeVersion );
-   for ( int a = 0; a < 8; a++ )
-      for ( int b = 0; b < 8; b++ )
-         payStatusLastTurn[a][b].write( stream );
+void GameMap ::ResourceTribute ::write(tnstream& stream) {
+   stream.writeInt(-tributeVersion);
+   for (int a = 0; a < 8; a++)
+      for (int b = 0; b < 8; b++)
+         payStatusLastTurn[a][b].write(stream);
 
-   for ( int a = 0; a < 3; a++ )
-      for ( int b = 0; b < 8; b++ )
-         for ( int c = 0; c < 8; c++ )
-             stream.writeInt ( avail[b][c].resource(a) );
+   for (int a = 0; a < 3; a++)
+      for (int b = 0; b < 8; b++)
+         for (int c = 0; c < 8; c++)
+            stream.writeInt(avail[b][c].resource(a));
 
-
-   for ( int a = 0; a < 3; a++ )
-      for ( int b = 0; b < 8; b++ )
-         for ( int c = 0; c < 8; c++ )
-             stream.writeInt ( paid[b][c].resource(a) );
+   for (int a = 0; a < 3; a++)
+      for (int b = 0; b < 8; b++)
+         for (int c = 0; c < 8; c++)
+            stream.writeInt(paid[b][c].resource(a));
 }
 
-
-
-int  GameMap::resize( int top, int bottom, int left, int right )  // positive: larger
+int GameMap::resize(int top, int bottom, int left, int right)  // positive: larger
 {
-  if ( !top && !bottom && !left && !right )
-     return 0;
+   if (!top && !bottom && !left && !right)
+      return 0;
 
-  if ( -(top + bottom) > ysize )
-     return 1;
+   if (-(top + bottom) > ysize)
+      return 1;
 
-  if ( -(left + right) > xsize )
-     return 2;
+   if (-(left + right) > xsize)
+      return 2;
 
-  if ( (bottom & 1) || (top & 1) )
-     return 3;
+   if ((bottom & 1) || (top & 1))
+      return 3;
 
+   int ox1, oy1, ox2, oy2;
 
-  int ox1, oy1, ox2, oy2;
+   if (top < 0) {
+      for (int x = 0; x < xsize; x++)
+         for (int y = 0; y < -top; y++)
+            getField(x, y)->deleteeverything();
 
-  if ( top < 0 ) {
-     for ( int x = 0; x < xsize; x++ )
-        for ( int y = 0; y < -top; y++ )
-           getField(x,y)->deleteeverything();
+      oy1 = -top;
+   } else
+      oy1 = 0;
 
-     oy1 = -top;
-  } else
-     oy1 = 0;
+   if (bottom < 0) {
+      for (int x = 0; x < xsize; x++)
+         for (int y = ysize + bottom; y < ysize; y++)
+            getField(x, y)->deleteeverything();
 
-  if ( bottom < 0 ) {
-     for ( int x = 0; x < xsize; x++ )
-        for ( int y = ysize+bottom; y < ysize; y++ )
-           getField(x,y)->deleteeverything();
+      oy2 = ysize + bottom;
+   } else
+      oy2 = ysize;
 
-     oy2 = ysize + bottom;
-  } else
-     oy2 = ysize;
-   
-  if ( left < 0 ) {
-     for ( int x = 0; x < -left; x++ )
-        for ( int y = 0; y < ysize; y++ )
-           getField(x,y)->deleteeverything();
-     ox1 = -left;
-  } else
-     ox1 = 0;
+   if (left < 0) {
+      for (int x = 0; x < -left; x++)
+         for (int y = 0; y < ysize; y++)
+            getField(x, y)->deleteeverything();
+      ox1 = -left;
+   } else
+      ox1 = 0;
 
-  if ( right < 0 ) {
-     for ( int x = xsize+right; x < xsize; x++ )
-        for ( int y = 0; y < ysize; y++ )
-           getField(x,y)->deleteeverything();
-     ox2 = xsize + right;
-  } else
-     ox2 = xsize;
+   if (right < 0) {
+      for (int x = xsize + right; x < xsize; x++)
+         for (int y = 0; y < ysize; y++)
+            getField(x, y)->deleteeverything();
+      ox2 = xsize + right;
+   } else
+      ox2 = xsize;
 
-  for (int s = 0; s < 9; s++)
-     for ( Player::BuildingList::iterator i = player[s].buildingList.begin(); i != player[s].buildingList.end(); i++ )
-        (*i)->unchainbuildingfromfield();
+   for (int s = 0; s < 9; s++)
+      for (Player::BuildingList::iterator i = player[s].buildingList.begin();
+           i != player[s].buildingList.end(); i++)
+         (*i)->unchainbuildingfromfield();
 
+   int newx = xsize + left + right;
+   int newy = ysize + top + bottom;
 
-  int newx = xsize + left + right;
-  int newy = ysize + top + bottom;
+   MapField* newfield = new MapField[newx * newy];
+   for (int i = 0; i < newx * newy; i++)
+      newfield[i].setMap(this, i);
 
-  MapField* newfield = new MapField [ newx * newy ];
-  for ( int i = 0; i < newx * newy; i++ )
-     newfield[i].setMap ( this, i );
+   int x;
+   for (x = ox1; x < ox2; x++)
+      for (int y = oy1; y < oy2; y++) {
+         MapField* org = getField(x, y);
+         MapField* dst = &newfield[(x + left) + (y + top) * newx];
+         *dst = *org;
+      }
 
-  int x;
-  for ( x = ox1; x < ox2; x++ )
-     for ( int y = oy1; y < oy2; y++ ) {
-        MapField* org = getField ( x, y );
-        MapField* dst = &newfield[ (x + left) + ( y + top ) * newx];
-        *dst = *org;
-     }
+   // MapField defaultfield;
+   // defaultfield.setMap ( this );
+   // defaultfield.typ = getterraintype_byid ( 30 )->weather[0];
 
-  //MapField defaultfield;
-  //defaultfield.setMap ( this );
-  //defaultfield.typ = getterraintype_byid ( 30 )->weather[0];
+   for (x = 0; x < left; x++)
+      for (int y = 0; y < newy; y++)
+         newfield[x + y * newx].typ = getterraintype_byid(30)->weather[0];
 
-  for ( x = 0; x < left; x++ )
-     for ( int y = 0; y < newy; y++ )
-        newfield[ x + y * newx ].typ = getterraintype_byid ( 30 )->weather[0];
+   for (x = xsize + left; x < xsize + left + right; x++)
+      for (int y = 0; y < newy; y++)
+         newfield[x + y * newx].typ = getterraintype_byid(30)->weather[0];
 
-  for ( x = xsize + left; x < xsize + left + right; x++ )
-     for ( int y = 0; y < newy; y++ )
-        newfield[ x + y * newx ].typ = getterraintype_byid ( 30 )->weather[0];
+   int y;
+   for (y = 0; y < top; y++)
+      for (int x = 0; x < newx; x++)
+         newfield[x + y * newx].typ = getterraintype_byid(30)->weather[0];
 
+   for (y = ysize + top; y < ysize + top + bottom; y++)
+      for (int x = 0; x < newx; x++)
+         newfield[x + y * newx].typ = getterraintype_byid(30)->weather[0];
 
-  int y;
-  for ( y = 0; y < top; y++ )
-     for ( int x = 0; x < newx; x++ )
-        newfield[ x + y * newx ].typ = getterraintype_byid ( 30 )->weather[0];
+   calculateallobjects(this);
 
-  for ( y = ysize + top; y < ysize + top + bottom; y++ )
-     for ( int x = 0; x < newx; x++ )
-        newfield[ x + y * newx ].typ = getterraintype_byid ( 30 )->weather[0];
+   for (int p = 0; p < newx * newy; p++)
+      newfield[p].setparams();
 
-  calculateallobjects( this );
+   delete[] field;
+   field = newfield;
+   xsize = newx;
+   ysize = newy;
 
-  for ( int p = 0; p < newx*newy; p++ )
-     newfield[p].setparams();
+   delete[] temp;
+   delete[] temp2;
+   delete[] temp3;
+   delete[] temp4;
+   temp = new char[newx * newy]();
+   temp2 = new char[newx * newy]();
+   temp3 = new int[newx * newy]();
+   temp4 = new int[newx * newy]();
 
-  delete[] field;
-  field = newfield;
-  xsize = newx;
-  ysize = newy;
+   for (int s = 0; s < 9; s++)
+      for (Player::BuildingList::iterator i = player[s].buildingList.begin();
+           i != player[s].buildingList.end(); i++) {
+         MapCoordinate mc = (*i)->getEntry();
+         mc.x += left;
+         mc.y += top;
+         (*i)->chainbuildingtofield(mc);
+      }
 
-  delete[] temp;
-  delete[] temp2;
-  delete[] temp3;
-  delete[] temp4;
-  temp = new char[newx*newy]();
-  temp2 = new char[newx*newy]();
-  temp3 = new int[newx*newy]();
-  temp4 = new int[newx*newy]();
+   for (int s = 0; s < 9; s++)
+      for (Player::VehicleList::iterator i = player[s].vehicleList.begin();
+           i != player[s].vehicleList.end(); i++) {
+         (*i)->xpos += left;
+         (*i)->ypos += top;
+      }
 
-  for (int s = 0; s < 9; s++)
-     for ( Player::BuildingList::iterator i = player[s].buildingList.begin(); i != player[s].buildingList.end(); i++ ) {
-        MapCoordinate mc = (*i)->getEntry();
-        mc.x += left;
-        mc.y += top;
-        (*i)->chainbuildingtofield ( mc );
-     }
-
-  for (int s = 0; s < 9; s++)
-     for ( Player::VehicleList::iterator i = player[s].vehicleList.begin(); i != player[s].vehicleList.end(); i++ ) {
-        (*i)->xpos += left;
-        (*i)->ypos += top;
-     }
-
-
-  /*
-  if (xpos + idisplaymap.getscreenxsize() > xsize)
-     xpos = xsize - idisplaymap.getscreenxsize() ;
-  if (ypos + idisplaymap.getscreenysize()  > ysize)
-     ypos = ysize - idisplaymap.getscreenysize() ;
-   */
+   /*
+   if (xpos + idisplaymap.getscreenxsize() > xsize)
+      xpos = xsize - idisplaymap.getscreenxsize() ;
+   if (ypos + idisplaymap.getscreenysize()  > ysize)
+      ypos = ysize - idisplaymap.getscreenysize() ;
+    */
 
    overviewMapHolder.resetSize();
 
-   if ( left || top ) 
-      sigCoordinateShift( MapCoodinateVector(left,top));
-   
+   if (left || top)
+      sigCoordinateShift(MapCoodinateVector(left, top));
+
    return 0;
 }
 
-pterraintype GameMap :: getterraintype_byid ( int id )
-{
-   return terrainTypeRepository.getObject_byID ( id );
+pterraintype GameMap ::getterraintype_byid(int id) {
+   return terrainTypeRepository.getObject_byID(id);
 }
 
-ObjectType* GameMap :: getobjecttype_byid ( int id )
-{
-   return objectTypeRepository.getObject_byID ( id );
+ObjectType* GameMap ::getobjecttype_byid(int id) {
+   return objectTypeRepository.getObject_byID(id);
 }
 
-const ObjectType* GameMap :: getobjecttype_byid ( int id ) const
-{
-   return objectTypeRepository.getObject_byID ( id );
+const ObjectType* GameMap ::getobjecttype_byid(int id) const {
+   return objectTypeRepository.getObject_byID(id);
 }
 
-
-VehicleType* GameMap :: getvehicletype_byid ( int id )
-{
-   return vehicleTypeRepository.getObject_byID ( id );
+VehicleType* GameMap ::getvehicletype_byid(int id) {
+   return vehicleTypeRepository.getObject_byID(id);
 }
 
-const VehicleType* GameMap :: getvehicletype_byid ( int id ) const
-{
-   return vehicleTypeRepository.getObject_byID ( id );
+const VehicleType* GameMap ::getvehicletype_byid(int id) const {
+   return vehicleTypeRepository.getObject_byID(id);
 }
 
-
-BuildingType* GameMap :: getbuildingtype_byid ( int id )
-{
-   return buildingTypeRepository.getObject_byID ( id );
+BuildingType* GameMap ::getbuildingtype_byid(int id) {
+   return buildingTypeRepository.getObject_byID(id);
 }
 
-const BuildingType* GameMap :: getbuildingtype_byid ( int id ) const
-{
-   return buildingTypeRepository.getObject_byID ( id );
+const BuildingType* GameMap ::getbuildingtype_byid(int id) const {
+   return buildingTypeRepository.getObject_byID(id);
 }
 
-const Technology* GameMap :: gettechnology_byid ( int id )
-{
-   return technologyRepository.getObject_byID ( id );
+const Technology* GameMap ::gettechnology_byid(int id) {
+   return technologyRepository.getObject_byID(id);
 }
 
-
-pterraintype GameMap :: getterraintype_bypos ( int pos )
-{
-   return terrainTypeRepository.getObject_byPos ( pos );
+pterraintype GameMap ::getterraintype_bypos(int pos) {
+   return terrainTypeRepository.getObject_byPos(pos);
 }
 
-ObjectType* GameMap :: getobjecttype_bypos ( int pos )
-{
-   return objectTypeRepository.getObject_byPos ( pos );
+ObjectType* GameMap ::getobjecttype_bypos(int pos) {
+   return objectTypeRepository.getObject_byPos(pos);
 }
 
-VehicleType* GameMap :: getvehicletype_bypos ( int pos )
-{
-   return vehicleTypeRepository.getObject_byPos ( pos );
+VehicleType* GameMap ::getvehicletype_bypos(int pos) {
+   return vehicleTypeRepository.getObject_byPos(pos);
 }
 
-BuildingType* GameMap :: getbuildingtype_bypos ( int pos )
-{
-   return buildingTypeRepository.getObject_byPos ( pos );
+BuildingType* GameMap ::getbuildingtype_bypos(int pos) {
+   return buildingTypeRepository.getObject_byPos(pos);
 }
 
-const Technology* GameMap :: gettechnology_bypos ( int pos )
-{
-   return technologyRepository.getObject_byPos ( pos );
+const Technology* GameMap ::gettechnology_bypos(int pos) {
+   return technologyRepository.getObject_byPos(pos);
 }
 
-int GameMap :: getTerrainTypeNum ( )
-{
-   return  terrainTypeRepository.getNum();
+int GameMap ::getTerrainTypeNum() {
+   return terrainTypeRepository.getNum();
 }
 
-int GameMap :: getObjectTypeNum ( )
-{
-   return  objectTypeRepository.getNum();
+int GameMap ::getObjectTypeNum() {
+   return objectTypeRepository.getNum();
 }
 
-int GameMap :: getVehicleTypeNum ( )
-{
-   return  vehicleTypeRepository.getNum();
+int GameMap ::getVehicleTypeNum() {
+   return vehicleTypeRepository.getNum();
 }
 
-int GameMap :: getBuildingTypeNum ( )
-{
-   return  buildingTypeRepository.getNum();
+int GameMap ::getBuildingTypeNum() {
+   return buildingTypeRepository.getNum();
 }
 
-int GameMap :: getTechnologyNum ( )
-{
-   return  technologyRepository.getNum();
+int GameMap ::getTechnologyNum() {
+   return technologyRepository.getNum();
 }
 
-void GameMap::processJournal()
-{
-  if ( !newJournal.empty() ) {
-     ASCString add = gameJournal;
+void GameMap::processJournal() {
+   if (!newJournal.empty()) {
+      ASCString add = gameJournal;
 
-     char tempstring[100];
-     char tempstring2[100];
-     sprintf( tempstring, "#color0# %s ; turn %d #color0##crt##crt#", player[actplayer].getName().c_str(), time.turn() );
-     sprintf( tempstring2, "#color%d#", getplayercolor ( actplayer ));
+      char tempstring[100];
+      char tempstring2[100];
+      sprintf(tempstring, "#color0# %s ; turn %d #color0##crt##crt#",
+              player[actplayer].getName().c_str(), time.turn());
+      sprintf(tempstring2, "#color%d#", getplayercolor(actplayer));
 
-     int fnd;
-     do {
-        fnd = 0;
-        if ( !add.empty() ) {
-           if ( add.find ( '\n', add.length()-1 ) != add.npos ) {
-              add.erase ( add.length()-1 );
-              fnd++;
-           } else
-             if ( add.length() > 4 )
-                if ( add.find ( "#crt#", add.length()-5 ) != add.npos ) {
-                  add.erase ( add.length()-5 );
+      int fnd;
+      do {
+         fnd = 0;
+         if (!add.empty()) {
+            if (add.find('\n', add.length() - 1) != add.npos) {
+               add.erase(add.length() - 1);
+               fnd++;
+            } else if (add.length() > 4)
+               if (add.find("#crt#", add.length() - 5) != add.npos) {
+                  add.erase(add.length() - 5);
                   fnd++;
-                }
-        }
+               }
+         }
 
-     } while ( fnd ); /* enddo */
+      } while (fnd); /* enddo */
 
-     add += tempstring2;
-     add += newJournal;
-     add += tempstring;
+      add += tempstring2;
+      add += newJournal;
+      add += tempstring;
 
-     gameJournal = add;
-     newJournal.erase();
+      gameJournal = add;
+      newJournal.erase();
 
-     lastjournalchange.set ( time.turn(), actplayer );
-  }
- 
+      lastjournalchange.set(time.turn(), actplayer);
+   }
 }
 
+void GameMap ::startGame() {
+   time.set(1, 0);
 
-void GameMap :: startGame ( )
-{
-   time.set ( 1, 0 );
-
-   for ( int j = 0; j < 8; j++ )
+   for (int j = 0; j < 8; j++)
       player[j].queuedEvents = 1;
 
    levelfinished = false;
 
-   for ( int n = 0; n< 8; n++ ) {
+   for (int n = 0; n < 8; n++) {
       bi_resource[n].energy = 0;
       bi_resource[n].material = 0;
       bi_resource[n].fuel = 0;
-      player[n].research.setMultiplier( getgameparameter(cgp_researchOutputMultiplier) );
+      player[n].research.setMultiplier(getgameparameter(cgp_researchOutputMultiplier));
    }
 
-   
-   
-   #ifndef karteneditor
+#ifndef karteneditor
    actplayer = -1;
-   #else
+#else
    actplayer = 0;
-   #endif
-   
+#endif
+
    setupResources();
-   
+
    // calling signal
    newRound();
-} 
-
-bool GameMap::UnitProduction::check ( int id )
-{
-   for ( GameMap::UnitProduction::IDsAllowed::iterator i = idsAllowed.begin(); i != idsAllowed.end(); i ++ )
-      if( *i == id )
-         return true;
-
-    return false;
 }
 
-VisibilityStates GameMap::getInitialMapVisibility( int player )
-{
-   VisibilityStates c = VisibilityStates( getgameparameter ( cgp_initialMapVisibility ));
+bool GameMap::UnitProduction::check(int id) {
+   for (GameMap::UnitProduction::IDsAllowed::iterator i = idsAllowed.begin(); i != idsAllowed.end();
+        i++)
+      if (*i == id)
+         return true;
 
-   if ( this->player[player].ai ) {
-      if ( this->playerAiRunning[player] ) {
-         if ( c < this->playerAiVision[player] )
+   return false;
+}
+
+VisibilityStates GameMap::getInitialMapVisibility(int player) {
+   VisibilityStates c = VisibilityStates(getgameparameter(cgp_initialMapVisibility));
+
+   if (this->player[player].ai) {
+      if (this->playerAiRunning[player]) {
+         if (c < this->playerAiVision[player])
             c = this->playerAiVision[player];
-      } else
-         if ( c < visible_ago )
-            c = visible_ago;
+      } else if (c < visible_ago)
+         c = visible_ago;
    }
    return c;
 }
 
-void GameMap::setPlayerMode(  Player& p, State s )
-{
+void GameMap::setPlayerMode(Player& p, State s) {
    p.getParentMap()->state = s;
 }
 
-int GameMap::getMemoryFootprint() const
-{
+int GameMap::getMemoryFootprint() const {
    int size = sizeof(*this);
-   if( replayinfo )
-      for ( int i = 0; i < 8; ++i ) {
-         if ( replayinfo->guidata[i] )
+   if (replayinfo)
+      for (int i = 0; i < 8; ++i) {
+         if (replayinfo->guidata[i])
             size += replayinfo->guidata[i]->getMemoryFootprint();
-         if ( replayinfo->map[i] )
+         if (replayinfo->map[i])
             size += replayinfo->map[i]->getMemoryFootprint();
       }
    return size;
 }
 
-
-
-void GameMap::operator= ( const GameMap& map )
-{
-  throw ASCmsgException ( "GameMap::operator= undefined");
+void GameMap::operator=(const GameMap& map) {
+   throw ASCmsgException("GameMap::operator= undefined");
 }
 
-
-void AiThreat :: write ( tnstream& stream )
-{
+void AiThreat ::write(tnstream& stream) {
    const int version = 1000;
-   stream.writeInt ( version );
-   stream.writeInt ( threatTypes );
-   for ( int i = 0; i < threatTypes; i++ )
-      stream.writeInt ( threat[i] );
+   stream.writeInt(version);
+   stream.writeInt(threatTypes);
+   for (int i = 0; i < threatTypes; i++)
+      stream.writeInt(threat[i]);
 }
 
-void AiThreat:: read ( tnstream& stream )
-{
-
+void AiThreat::read(tnstream& stream) {
    int version = stream.readInt();
-   if ( version == 1000 ) {
+   if (version == 1000) {
       threatTypes = stream.readInt();
-      for ( int i = 0; i < threatTypes; i++ )
+      for (int i = 0; i < threatTypes; i++)
          threat[i] = stream.readInt();
    }
 }
 
-
-void AiValue :: write ( tnstream& stream )
-{
+void AiValue ::write(tnstream& stream) {
    const int version = 2000;
-   stream.writeInt ( version );
-   stream.writeInt ( value );
-   stream.writeInt ( addedValue );
-   threat.write ( stream );
-   stream.writeInt ( valueType );
+   stream.writeInt(version);
+   stream.writeInt(value);
+   stream.writeInt(addedValue);
+   threat.write(stream);
+   stream.writeInt(valueType);
 }
 
-void AiValue:: read ( tnstream& stream )
-{
+void AiValue::read(tnstream& stream) {
    int version = stream.readInt();
-   if ( version == 2000 ) {
-      value = stream.readInt (  );
-      addedValue= stream.readInt (  );
-      threat.read ( stream );
-      valueType = stream.readInt (  );
+   if (version == 2000) {
+      value = stream.readInt();
+      addedValue = stream.readInt();
+      threat.read(stream);
+      valueType = stream.readInt();
    }
 }
 
 const int aiParamVersion = 3002;
 
-void AiParameter::write ( tnstream& stream )
-{
-   stream.writeInt ( aiParamVersion );
-   stream.writeInt ( lastDamage );
-   stream.writeInt ( damageTime.abstime );
-   stream.writeInt ( dest.x );
-   stream.writeInt ( dest.y );
-   stream.writeInt ( dest.getNumericalHeight() );
-   stream.writeInt ( dest_nwid );
-   stream.writeInt ( data );
-   AiValue::write( stream );
-   stream.writeInt ( task );
-   stream.writeInt ( jobPos );
-   stream.writeInt ( jobs.size() );
-   for ( int i = 0; i < jobs.size(); i++ )
-      stream.writeInt( jobs[i] );
-   stream.writeInt ( resetAfterJobCompletion );
+void AiParameter::write(tnstream& stream) {
+   stream.writeInt(aiParamVersion);
+   stream.writeInt(lastDamage);
+   stream.writeInt(damageTime.abstime);
+   stream.writeInt(dest.x);
+   stream.writeInt(dest.y);
+   stream.writeInt(dest.getNumericalHeight());
+   stream.writeInt(dest_nwid);
+   stream.writeInt(data);
+   AiValue::write(stream);
+   stream.writeInt(task);
+   stream.writeInt(jobPos);
+   stream.writeInt(jobs.size());
+   for (int i = 0; i < jobs.size(); i++)
+      stream.writeInt(jobs[i]);
+   stream.writeInt(resetAfterJobCompletion);
 }
 
-void AiParameter::read ( tnstream& stream )
-{
+void AiParameter::read(tnstream& stream) {
    int version = stream.readInt();
-   if ( version >= 3000 && version <= aiParamVersion ) {
+   if (version >= 3000 && version <= aiParamVersion) {
       lastDamage = stream.readInt();
       damageTime.abstime = stream.readInt();
       int x = stream.readInt();
       int y = stream.readInt();
       int z = stream.readInt();
-      dest.setnum ( x, y, z );
+      dest.setnum(x, y, z);
       dest_nwid = stream.readInt();
       data = stream.readInt();
-      AiValue::read( stream );
+      AiValue::read(stream);
       task = (Task) stream.readInt();
-      if ( version == 3000 ) {
+      if (version == 3000) {
          jobs.clear();
-         jobs.push_back ( Job( stream.readInt() ));
+         jobs.push_back(Job(stream.readInt()));
       } else {
          jobPos = stream.readInt();
          int num = stream.readInt();
          jobs.clear();
-         for ( int i = 0; i < num; i++ )
-            jobs.push_back ( Job( stream.readInt() ));
+         for (int i = 0; i < num; i++)
+            jobs.push_back(Job(stream.readInt()));
       }
-      if ( version >= 3002 )
+      if (version >= 3002)
          resetAfterJobCompletion = stream.readInt();
       else
          resetAfterJobCompletion = false;
    }
 }
 
-void AiThreat :: reset ( void )
-{
-   for ( int i = 0; i < aiValueTypeNum; i++ )
+void AiThreat ::reset(void) {
+   for (int i = 0; i < aiValueTypeNum; i++)
       threat[i] = 0;
 }
 
-AiParameter :: AiParameter ( Vehicle* _unit ) : AiValue ( getFirstBit( _unit->height ))
-{
-   reset( _unit );
+AiParameter ::AiParameter(Vehicle* _unit) : AiValue(getFirstBit(_unit->height)) {
+   reset(_unit);
 }
 
-
-void AiParameter :: resetTask ( )
-{
-   dest.setnum ( -1, -1, -1 );
+void AiParameter ::resetTask() {
+   dest.setnum(-1, -1, -1);
    dest_nwid = -1;
    task = tsk_nothing;
 }
 
-void AiParameter::addJob ( Job j, bool front )
-{
-   if ( front )
-      jobs.insert ( jobs.begin(), j );
+void AiParameter::addJob(Job j, bool front) {
+   if (front)
+      jobs.insert(jobs.begin(), j);
    else
-      jobs.push_back ( j );
+      jobs.push_back(j);
 }
 
-void AiParameter::setJob ( const JobList& jobs )
-{
+void AiParameter::setJob(const JobList& jobs) {
    this->jobs = jobs;
 }
 
-void AiParameter::setJob ( Job j )
-{
+void AiParameter::setJob(Job j) {
    int pos = 0;
-   for ( JobList::iterator i = jobs.begin(); i != jobs.end(); ++i, ++pos )
-      if ( *i == j ) {
+   for (JobList::iterator i = jobs.begin(); i != jobs.end(); ++i, ++pos)
+      if (*i == j) {
          jobPos = pos;
          return;
       }
 
-   addJob ( j, true );
+   addJob(j, true);
 }
 
-
-bool AiParameter::hasJob ( AiParameter::Job j )
-{
-   return find ( jobs.begin(), jobs.end(), j ) != jobs.end();
+bool AiParameter::hasJob(AiParameter::Job j) {
+   return find(jobs.begin(), jobs.end(), j) != jobs.end();
 }
 
-void AiParameter :: setNewHeight()
-{
-   AiValue::reset ( getFirstBit( unit->height ) );
+void AiParameter ::setNewHeight() {
+   AiValue::reset(getFirstBit(unit->height));
 }
 
-
-void AiParameter :: reset ( Vehicle* _unit )
-{
+void AiParameter ::reset(Vehicle* _unit) {
    unit = _unit;
    lastDamage = unit->damage;
-   AiValue::reset ( getFirstBit( _unit->height ) );
+   AiValue::reset(getFirstBit(_unit->height));
    data = 0;
 
    clearJobs();
@@ -2150,27 +2004,20 @@ void AiParameter :: reset ( Vehicle* _unit )
    resetAfterJobCompletion = false;
 }
 
-void AiParameter :: setNextJob()
-{
+void AiParameter ::setNextJob() {
    jobPos++;
 }
 
-void AiParameter :: restartJobs()
-{
+void AiParameter ::restartJobs() {
    jobPos = 0;
 }
 
-void AiParameter :: clearJobs()
-{
+void AiParameter ::clearJobs() {
    jobs.clear();
    jobPos = 0;
 }
 
-
-
-
-GameMap :: ReplayInfo :: ReplayInfo ( void )
-{
+GameMap ::ReplayInfo ::ReplayInfo(void) {
    for (int i = 0; i < 8; i++) {
       guidata[i] = NULL;
       map[i] = NULL;
@@ -2179,29 +2026,28 @@ GameMap :: ReplayInfo :: ReplayInfo ( void )
    stopRecordingActions = 0;
 }
 
-void GameMap :: ReplayInfo :: read ( tnstream& stream )
-{
+void GameMap ::ReplayInfo ::read(tnstream& stream) {
    bool loadgui[8];
    bool loadmap[8];
 
-   for ( int i = 0; i < 8; i++ )
+   for (int i = 0; i < 8; i++)
       loadgui[i] = stream.readInt();
 
-   for ( int i = 0; i < 8; i++ )
+   for (int i = 0; i < 8; i++)
       loadmap[i] = stream.readInt();
 
-   stream.readInt(); // was: actmemstream
+   stream.readInt();  // was: actmemstream
 
-   for ( int i = 0; i < 8; i++ ) {
-      if ( loadgui[i] ) {
+   for (int i = 0; i < 8; i++) {
+      if (loadgui[i]) {
          guidata[i] = new MemoryStreamStorage;
-         guidata[i]->readfromstream ( &stream );
+         guidata[i]->readfromstream(&stream);
       } else
          guidata[i] = NULL;
 
-      if ( loadmap[i] ) {
+      if (loadmap[i]) {
          map[i] = new MemoryStreamStorage;
-         map[i]->readfromstream ( &stream );
+         map[i]->readfromstream(&stream);
       } else
          map[i] = NULL;
    }
@@ -2209,91 +2055,124 @@ void GameMap :: ReplayInfo :: read ( tnstream& stream )
    actmemstream = NULL;
 }
 
-void GameMap :: ReplayInfo :: write ( tnstream& stream )
-{
-   for ( int i = 0; i < 8; i++ )
-      stream.writeInt ( guidata[i] != NULL );
+void GameMap ::ReplayInfo ::write(tnstream& stream) {
+   for (int i = 0; i < 8; i++)
+      stream.writeInt(guidata[i] != NULL);
 
-   for ( int i = 0; i < 8; i++ )
-      stream.writeInt ( map[i] != NULL );
+   for (int i = 0; i < 8; i++)
+      stream.writeInt(map[i] != NULL);
 
-   stream.writeInt ( actmemstream != NULL );
+   stream.writeInt(actmemstream != NULL);
 
-   for ( int i = 0; i < 8; i++ ) {
+   for (int i = 0; i < 8; i++) {
       // printf("GameMap :: ReplayInfo :: write  i=%d\n", i );
-      if ( guidata[i] )
-         guidata[i]->writetostream ( &stream );
+      if (guidata[i])
+         guidata[i]->writetostream(&stream);
 
-      if ( map[i] )
-         map[i]->writetostream ( &stream );
+      if (map[i])
+         map[i]->writetostream(&stream);
    }
 }
 
-void GameMap :: ReplayInfo :: closeLogging()
-{
-   if ( actmemstream ) {
+void GameMap ::ReplayInfo ::closeLogging() {
+   if (actmemstream) {
       delete actmemstream;
       actmemstream = NULL;
    }
 }
 
-GameMap :: ReplayInfo :: ~ReplayInfo ( )
-{
-   for (int i = 0; i < 8; i++)  {
-      if ( guidata[i] ) {
+GameMap ::ReplayInfo ::~ReplayInfo() {
+   for (int i = 0; i < 8; i++) {
+      if (guidata[i]) {
          delete guidata[i];
          guidata[i] = NULL;
       }
-      if ( map[i] ) {
+      if (map[i]) {
          delete map[i];
          map[i] = NULL;
       }
-  }
-  if ( actmemstream ) {
-     delete actmemstream ;
-     actmemstream = NULL;
-  }
+   }
+   if (actmemstream) {
+      delete actmemstream;
+      actmemstream = NULL;
+   }
 }
 
-GameParameterSettings gameParameterSettings[gameparameternum ] = { 
-      // name                                  default               min  max          EventChangable legace   description
-      {  "LifetimeTrack",                      1,                    1,   maxint,             true,   false,   "lifetime of tracks"},//       cgp_fahrspur                        
-      {  "LifetimeBrokenIce",                  2,                    1,   maxint,             true,   false,   "freezing time of icebreaker fairway"},   //       cgp_eis,                            
-      {  "MoveFromInaccessibleFields",         1,                    0,   1,                  true,   false,    "move vehicles from unaccessible fields"},   //       cgp_movefrominvalidfields,          
-      {  "BuildingConstructionFactorMaterial", 100,                  0,   maxint,             true,   false,   "building construction material factor (percent)"},   //       cgp_building_material_factor,
-      {  "BuildingConstructionFactorEnergy",   100,                  0,   maxint,             true,   false,   "building construction fuel factor (percent)"},   //       cgp_building_fuel_factor,
-      {  "ForbidBuildingConstruction",         0,                    0,   1,                  true,   false,   "forbid construction of buildings"},   //       cgp_forbid_building_construction,
-      {  "LimitUnitProductionByUnit",          0,                    0,   2,                  true,   false,   "limit construction of units by other units"},   //       cgp_forbid_unitunit_construction,   
-      {  "Bi3Training",                        0,                    0,   maxunitexperience,  true,   false,   "use BI3 style training factor "},   //       cgp_bi3_training,                   
-      {  "MaxMinesOnField",                    1,                    0,   maxint,             true,   false,   "maximum number of mines on a single field"},   //       cgp_maxminesonfield,                
-      {  "LifetimeAntipersonnelMine",          0,                    0,   maxint,             true,   false,   "lifetime of antipersonnel mine"},   //       cgp_antipersonnelmine_lifetime,     
-      {  "LifetimeAntiTankMine",               0,                    0,   maxint,             true,   false,   "lifetime of antitank mine"},   //       cgp_antitankmine_lifetime,          
-      {  "LifetimeAntiSubMine",                0,                    0,   maxint,             true,   false,   "lifetime of antisub mine"},   //       cgp_mooredmine_lifetime,            
-      {  "LifetimeAntiShipMine",               0,                    0,   maxint,             true,   false,   "lifetime of antiship mine"},   //       cgp_floatingmine_lifetime,          
-      {  "BuildingArmorFactor",                100,                  1,   maxint,             true,   false,   "building armor factor (percent)"},   //       cgp_buildingarmor,                  
-      {  "MaxBuildingRepair",                  100,                  0,   100,                true,   false,   "max building damage repair / turn"},   //       cgp_maxbuildingrepair,              
-      {  "BuildingRepairCostIncrease",         100,                  1,   maxint,             true,   false,   "building repair cost increase (percent)"},   //       cgp_buildingrepairfactor,           
-      {  "GlobalFuel",                         1,                    0,   1,                  true,   false,   "fuel globally available (BI Resource Mode)"},   //       cgp_globalfuel,                     
-      {  "MaxTrainingExperience",              maxunitexperience,    0,   maxunitexperience,  true,   false,   "maximum experience that can be gained by training"},   //       cgp_maxtrainingexperience,          
-      {  "InitialMapVisibility",               0,                    0,   2,                  true,   false,   "initial map visibility"},   //       cgp_initialMapVisibility,           
-      {  "AttackPower",                        40,                   1,   100,                true,   false,   "attack power (EXPERIMENTAL!)"},   //       cgp_attackPower,                    
-      {  "JammingAmplifier",                   100,                  0,   1000,               true,   false,   "jamming amplifier (EXPERIMENTAL!)"},   //       cgp_jammingAmplifier,               
-      {  "JammingSlope",                       10,                   0,   100,                true,   false,   "jamming slope (EXPERIMENTAL!)"},   //       cgp_jammingSlope,                   
-      {  "SupervisorMapSave",                  0,                    0,   1,                  false,  false,   "The Supervisor may save a game as new map (spying!!!)"},  //       cgp_superVisorCanSaveMap,           
-      {  "ObjectsDestroyedByTerrain",          1,                    0,   1,                  true,   false,   "objects can be destroyed by terrain"},   //       cgp_objectsDestroyedByTerrain,      
-      {  "TrainingIncrement",                  2,                    1,   maxunitexperience,  true,   false,   "training centers: training increment"},   //       cgp_trainingIncrement,              
-      {  "ExperienceEffectDivisorAttack",      1,                    1,   10,                 false,  false,   "experience effect divisor for attack"},  //       gp_experienceDivisorAttack
-      {  "DisableDirectView",                  1,                    0,   1,                  false,  false,   "disable direct View"},  //       cgp_disableDirectView
-      {  "DisableUnitTrade",                   0,                    0,   1,                  false,  false,   "disable transferring units/buildings to other players"},  //       cgp_disableUnitTransfer
-      {  "ExperienceEffectDivisorDefense",     1,                    1,   10,                 false,  false,   "experience effect divisor for defense"},  //       cgp_experienceDivisorDefense
-      {  "DebugGameEvents",                    0,                    0,   2,                  true,   false,   "debug game events"},  //       cgp_debugEvents
-      {  "ObjectGrowthRate",                   0,                    0,   maxint,             true,   false,   "Object growth rate (percentage)" },  //       cgp_objectGrowthMultiplier
-      {  "ObjectsGrowOnOtherObjects",          1,                    0,   1,                  false,  false,   "Objects can grow on fields with other objects"  },  //       cgp_objectGrowOnOtherObjects
-      {  "ResearchOutputMultiplier",           1,                    1,   maxint,             false,  false,   "Multiplies the research output of all labs"  },  //       cgp_researchOutputMultiplier
-      {  "ProduceOnlyResearchedStuffInternally", 0,                  0,   1,                  true,   false,   "Produce only researched stuff internally" },
-      {  "ProduceOnlyResearchedStuffExternally", 1,                  0,   1,                  true,   false,   "Produce only researched stuff externally" },
-      {  "ExperienceAt90PercentBonus",         25,                   3,   1000,               false,  false,   "Experience level to achieve 90% bonus" },   // cgp_experienceAt90percentbonus
-      {  "maxAttackExperienceBonus",           100,                  0,   1000,               false,  false,   "Max attack bonus for experience (percent)" },  // maxAttackExperienceBonus
-      {  "maxDefenseExperienceBonus",          100,                  0,   1000,               false,  false,   "Max defense bonus for experience (percent)" }  // maxDefenseExperienceBonus
+GameParameterSettings gameParameterSettings[gameparameternum] = {
+   // name                                  default               min  max          EventChangable
+   // legace   description
+   {"LifetimeTrack", 1, 1, maxint, true, false, "lifetime of tracks"},  //       cgp_fahrspur
+   {"LifetimeBrokenIce", 2, 1, maxint, true, false,
+    "freezing time of icebreaker fairway"},  //       cgp_eis,
+   {"MoveFromInaccessibleFields", 1, 0, 1, true, false,
+    "move vehicles from unaccessible fields"},  //       cgp_movefrominvalidfields,
+   {"BuildingConstructionFactorMaterial", 100, 0, maxint, true, false,
+    "building construction material factor (percent)"},  //       cgp_building_material_factor,
+   {"BuildingConstructionFactorEnergy", 100, 0, maxint, true, false,
+    "building construction fuel factor (percent)"},  //       cgp_building_fuel_factor,
+   {"ForbidBuildingConstruction", 0, 0, 1, true, false,
+    "forbid construction of buildings"},  //       cgp_forbid_building_construction,
+   {"LimitUnitProductionByUnit", 0, 0, 2, true, false,
+    "limit construction of units by other units"},  //       cgp_forbid_unitunit_construction,
+   {"Bi3Training", 0, 0, maxunitexperience, true, false,
+    "use BI3 style training factor "},  //       cgp_bi3_training,
+   {"MaxMinesOnField", 1, 0, maxint, true, false,
+    "maximum number of mines on a single field"},  //       cgp_maxminesonfield,
+   {"LifetimeAntipersonnelMine", 0, 0, maxint, true, false,
+    "lifetime of antipersonnel mine"},  //       cgp_antipersonnelmine_lifetime,
+   {"LifetimeAntiTankMine", 0, 0, maxint, true, false,
+    "lifetime of antitank mine"},  //       cgp_antitankmine_lifetime,
+   {"LifetimeAntiSubMine", 0, 0, maxint, true, false,
+    "lifetime of antisub mine"},  //       cgp_mooredmine_lifetime,
+   {"LifetimeAntiShipMine", 0, 0, maxint, true, false,
+    "lifetime of antiship mine"},  //       cgp_floatingmine_lifetime,
+   {"BuildingArmorFactor", 100, 1, maxint, true, false,
+    "building armor factor (percent)"},  //       cgp_buildingarmor,
+   {"MaxBuildingRepair", 100, 0, 100, true, false,
+    "max building damage repair / turn"},  //       cgp_maxbuildingrepair,
+   {"BuildingRepairCostIncrease", 100, 1, maxint, true, false,
+    "building repair cost increase (percent)"},  //       cgp_buildingrepairfactor,
+   {"GlobalFuel", 1, 0, 1, true, false,
+    "fuel globally available (BI Resource Mode)"},  //       cgp_globalfuel,
+   {"MaxTrainingExperience", maxunitexperience, 0, maxunitexperience, true, false,
+    "maximum experience that can be gained by training"},  //       cgp_maxtrainingexperience,
+   {"InitialMapVisibility", 0, 0, 2, true, false,
+    "initial map visibility"},  //       cgp_initialMapVisibility,
+   {"AttackPower", 40, 1, 100, true, false,
+    "attack power (EXPERIMENTAL!)"},  //       cgp_attackPower,
+   {"JammingAmplifier", 100, 0, 1000, true, false,
+    "jamming amplifier (EXPERIMENTAL!)"},  //       cgp_jammingAmplifier,
+   {"JammingSlope", 10, 0, 100, true, false,
+    "jamming slope (EXPERIMENTAL!)"},  //       cgp_jammingSlope,
+   {"SupervisorMapSave", 0, 0, 1, false, false,
+    "The Supervisor may save a game as new map (spying!!!)"},  //       cgp_superVisorCanSaveMap,
+   {"ObjectsDestroyedByTerrain", 1, 0, 1, true, false,
+    "objects can be destroyed by terrain"},  //       cgp_objectsDestroyedByTerrain,
+   {"TrainingIncrement", 2, 1, maxunitexperience, true, false,
+    "training centers: training increment"},  //       cgp_trainingIncrement,
+   {"ExperienceEffectDivisorAttack", 1, 1, 10, false, false,
+    "experience effect divisor for attack"},  //       gp_experienceDivisorAttack
+   {"DisableDirectView", 1, 0, 1, false, false,
+    "disable direct View"},  //       cgp_disableDirectView
+   {"DisableUnitTrade", 0, 0, 1, false, false,
+    "disable transferring units/buildings to other players"},  //       cgp_disableUnitTransfer
+   {"ExperienceEffectDivisorDefense", 1, 1, 10, false, false,
+    "experience effect divisor for defense"},  //       cgp_experienceDivisorDefense
+   {"DebugGameEvents", 0, 0, 2, true, false, "debug game events"},  //       cgp_debugEvents
+   {"ObjectGrowthRate", 0, 0, maxint, true, false,
+    "Object growth rate (percentage)"},  //       cgp_objectGrowthMultiplier
+   {"ObjectsGrowOnOtherObjects", 1, 0, 1, false, false,
+    "Objects can grow on fields with other objects"},  //       cgp_objectGrowOnOtherObjects
+   {"ResearchOutputMultiplier", 1, 1, maxint, false, false,
+    "Multiplies the research output of all labs"},  //       cgp_researchOutputMultiplier
+   {"ProduceOnlyResearchedStuffInternally", 0, 0, 1, true, false,
+    "Produce only researched stuff internally"},
+   {"ProduceOnlyResearchedStuffExternally", 1, 0, 1, true, false,
+    "Produce only researched stuff externally"},
+   {"ExperienceAt90PercentBonus", 25, 3, 1000, false, false,
+    "Experience level to achieve 90% bonus"},  // cgp_experienceAt90percentbonus
+   {"maxAttackExperienceBonus", 100, 0, 1000, false, false,
+    "Max attack bonus for experience (percent)"},  // maxAttackExperienceBonus
+   {"maxDefenseExperienceBonus", 100, 0, 1000, false, false,
+    "Max defense bonus for experience (percent)"}  // maxDefenseExperienceBonus
 };
-

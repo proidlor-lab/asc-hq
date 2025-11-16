@@ -59,12 +59,12 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
-#include <stdio.h> 
+#include <stdio.h>
 
 /*
 template<class T> dynamic_queue<T> :: dynamic_queue ( void )
@@ -90,15 +90,15 @@ template<class T> void dynamic_queue<T> :: putval ( T a )
    }
    buf[first] = a;
    first++;
-} 
+}
 
 template<class T> int dynamic_queue<T> :: valavail ( void )
 {
    if ( first > last )
       return 1;
-   else 
+   else
       return 0;
-} 
+}
 
 template<class T> T dynamic_queue<T> :: getval ( void )
 {
@@ -109,7 +109,7 @@ template<class T> T dynamic_queue<T> :: getval ( void )
       last = 0;
    }
    return b;
-} 
+}
 
 
 template<class T> dynamic_queue<T> :: ~dynamic_queue()
@@ -118,70 +118,63 @@ template<class T> dynamic_queue<T> :: ~dynamic_queue()
 }
 */
 
-
-
-
-template<class T> dynamic_array<T> :: dynamic_array ( void )
-{
+template <class T>
+dynamic_array<T>::dynamic_array(void) {
    maxaccessed = -1;
    blksize = 10;
    size = 0;
    buf = NULL;
-//   resize ( blksize );
+   //   resize ( blksize );
 }
-template<class T> dynamic_array<T> :: dynamic_array ( int sze )
-{
+template <class T>
+dynamic_array<T>::dynamic_array(int sze) {
    maxaccessed = -1;
    blksize = 10;
    size = 0;
    buf = NULL;
-//   resize ( sze );
+   //   resize ( sze );
 }
 
-template<class T> void dynamic_array<T> :: reset ( void )
-{
+template <class T>
+void dynamic_array<T>::reset(void) {
    maxaccessed = -1;
 }
 
-
-template<class T> void dynamic_array<T> :: resize ( int newsize )
-{
-   T* temp = new T [ newsize ];
-   if ( buf ) {
-      for ( int i = 0; i < size; i++ )
+template <class T>
+void dynamic_array<T>::resize(int newsize) {
+   T* temp = new T[newsize];
+   if (buf) {
+      for (int i = 0; i < size; i++)
          temp[i] = buf[i];
-    /*
-      for ( int j = size; j < newsize; j++ )
-         temp[j] = 0;
-     */
+      /*
+        for ( int j = size; j < newsize; j++ )
+           temp[j] = 0;
+       */
       delete[] buf;
    }
 
-   size=newsize;
+   size = newsize;
    buf = temp;
 }
 
-
-template<class T> T& dynamic_array<T> :: operator[]( int a )
-{
-   if ( a > maxaccessed )
+template <class T>
+T& dynamic_array<T>::operator[](int a) {
+   if (a > maxaccessed)
       maxaccessed = a;
 
-   if ( a >= size ) {
-      int newsize = ((a+1) / blksize + 1) * blksize;
-      resize ( newsize );
+   if (a >= size) {
+      int newsize = ((a + 1) / blksize + 1) * blksize;
+      resize(newsize);
    }
    return buf[a];
-} 
+}
 
-template<class T> dynamic_array<T> :: ~dynamic_array()
-{
+template <class T>
+dynamic_array<T>::~dynamic_array() {
    delete[] buf;
 }
 
-
-template<class T> int dynamic_array<T> :: getlength( void )
-{
+template <class T>
+int dynamic_array<T>::getlength(void) {
    return maxaccessed;
-} 
-
+}

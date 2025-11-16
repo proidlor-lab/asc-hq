@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #ifndef mapimageexportH
- #define mapimageexportH
+#define mapimageexportH
 
 #include "gamemap.h"
 #include "graphics/surface.h"
@@ -24,20 +24,20 @@
 #include "mapdisplay.h"
 
 class WholeMapRenderer : public MapRenderer {
-      GameMap* gamemap;
-      int xsize;
-      int ysize;
-   public:
-      Surface surface;
-      WholeMapRenderer( GameMap* actmap );
-      void render();
-      void writePCX( const ASCString& filename );
-      void writePNG( const ASCString& filename );
-      void renderVisibility();
+   GameMap* gamemap;
+   int xsize;
+   int ysize;
 
+  public:
+   Surface surface;
+   WholeMapRenderer(GameMap* actmap);
+   void render();
+   void writePCX(const ASCString& filename);
+   void writePNG(const ASCString& filename);
+   void renderVisibility();
 };
 
-extern void writemaptopcx ( GameMap* gamemap, bool addview = false );
-extern void writemaptostream ( GameMap* gamemap, int width, int height, tnstream& stream  );
-extern Surface loadmapfromstream ( tnstream& stream  );
+extern void writemaptopcx(GameMap* gamemap, bool addview = false);
+extern void writemaptostream(GameMap* gamemap, int width, int height, tnstream& stream);
+extern Surface loadmapfromstream(tnstream& stream);
 #endif

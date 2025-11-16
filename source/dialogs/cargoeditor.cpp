@@ -24,187 +24,172 @@
 #include "../edselfnt.h"
 #include "../edmisc.h"
 
-
-
 class CargoEditor : public PG_Window {
-      ContainerBase* container;
-      HighLightingManager highLightingManager;
-      int unitColumnCount;
-      CargoWidget* cargoWidget;
-      PG_ProgressBar* bgw;
-      static int stack;
+   ContainerBase* container;
+   HighLightingManager highLightingManager;
+   int unitColumnCount;
+   CargoWidget* cargoWidget;
+   PG_ProgressBar* bgw;
+   static int stack;
 
-      TemporaryContainerStorage tus;
+   TemporaryContainerStorage tus;
 
-      bool addUnit()
-      {
-         addCargo( container );
+   bool addUnit() {
+      addCargo(container);
+      cargoWidget->redrawAll();
+      updateGraph();
+      return true;
+   }
+
+   bool remove() {
+      if (cargoWidget->getMarkedUnit()) {
+         delete cargoWidget->getMarkedUnit();
          cargoWidget->redrawAll();
          updateGraph();
          return true;
-      }
-      
-      bool remove()
-      {
-         if ( cargoWidget->getMarkedUnit() ) {
-            delete cargoWidget->getMarkedUnit();
-            cargoWidget->redrawAll();
-            updateGraph();
-            return true;
-         } else
-            return false;
-      }
-
-      bool copyUnit()
-      {
-         if ( cargoWidget->getMarkedUnit() ) {
-            ClipBoard::Instance().clear();
-            ClipBoard::Instance().addUnit( cargoWidget->getMarkedUnit() );
-            return true;
-         } else
-            return false;
-      }
-      
-      bool pasteUnit()
-      {
-         Vehicle* veh = ClipBoard::Instance().pasteUnit();
-         if ( !veh )
-            return false;
-         
-         if ( container->doesVehicleFit( veh )) {
-            container->addToCargo( veh );
-            cargoWidget->redrawAll();
-            updateGraph();
-            return true;
-         } else {
-            delete veh;
-            return false;
-         }
-      }
-
-      bool editUnit()
-      {
-         changeUnitPropertyDialog( cargoWidget->getMarkedUnit() );
-         updateGraph();
-         return true;
-      }
-
-      bool editUnitCargo()
-      {
-         cargoEditor( cargoWidget->getMarkedUnit() );
-         updateGraph();
-         return true;
-      }
-               
-      bool ok()
-      {
-         QuitModal();
-         return true;
-      }
-
-      bool cancel()
-      {
-         tus.restore();
-         QuitModal();
-         return true;
-      }
-
-      void updateGraph()
-      {
-         if ( container->baseType->maxLoadableWeight > 0 ) {
-            bgw->SetProgress( float( container->cargoWeight()) / container->baseType->maxLoadableWeight * 100 );
-            bgw->Update();
-         }
-      }
-      
-   public:
-      CargoEditor( PG_Widget* parent, ContainerBase* my_container ) : PG_Window( parent, PG_Rect( 50 + stack * 20, 30 + stack * 20, 500, 400 ), "Cargo Editor" ), container( my_container ), tus( container, true)
-      {
-         bgw = new PG_ProgressBar( this, PG_Rect( 10, 35, Width() - 20, 15 ) );
-
-         updateGraph();
-         
-         ++stack;
-         cargoWidget = new CargoWidget( this, PG_Rect( 10, 60, Width()-20, Height() - 120 ), container, true);
-
-         int buttonLine = Height() - 110 + 60;
-         int buttonHeight = 30;
-         PG_Button* add = new PG_Button( this, PG_Rect( 10, buttonLine, 50, buttonHeight), "+" );
-         add->sigClick.connect( sigc::hide( sigc::mem_fun( *this, &CargoEditor::addUnit )));
-         
-         PG_Button* rem = new PG_Button( this, PG_Rect( 70, buttonLine, 50, buttonHeight), "-" );
-         rem->sigClick.connect( sigc::hide( sigc::mem_fun( *this, &CargoEditor::remove )));
-         
-         PG_Button* copy = new PG_Button( this, PG_Rect( 130, buttonLine, 50, buttonHeight), "copy" );
-         copy->sigClick.connect( sigc::hide( sigc::mem_fun( *this, &CargoEditor::copyUnit )));
-         
-         PG_Button* paste = new PG_Button( this, PG_Rect( 190, buttonLine, 50, buttonHeight), "paste" );
-         paste->sigClick.connect( sigc::hide( sigc::mem_fun( *this, &CargoEditor::pasteUnit )));
-         
-         PG_Button* edit = new PG_Button( this, PG_Rect( 250, buttonLine, 50, buttonHeight), "edit" );
-         edit->sigClick.connect( sigc::hide( sigc::mem_fun( *this, &CargoEditor::editUnit )));
-         
-         PG_Button* cargo = new PG_Button( this, PG_Rect( 310, buttonLine, 50, buttonHeight), "cargo" );
-         cargo->sigClick.connect( sigc::hide( sigc::mem_fun( *this, &CargoEditor::editUnitCargo )));
-         
-         PG_Button* cancel = new PG_Button( this, PG_Rect( 370, buttonLine, 50, buttonHeight), "cancel" );
-         cancel->sigClick.connect( sigc::hide( sigc::mem_fun( *this, &CargoEditor::cancel )));
-         
-         PG_Button* ok = new PG_Button( this, PG_Rect( 430, buttonLine, 50, buttonHeight), "ok" );
-         ok->sigClick.connect( sigc::hide( sigc::mem_fun( *this, &CargoEditor::ok )));
-      }
-
-      bool eventKeyDown(const SDL_KeyboardEvent* key)
-      {
-         int mod = SDL_GetModState() & ~(KMOD_NUM | KMOD_CAPS | KMOD_MODE);
-
-         if ( !mod  ) {
-            if ( key->keysym.sym == SDLK_ESCAPE )
-               return cancel();
-               
-            if ( key->keysym.sym == SDLK_RETURN || key->keysym.sym == SDLK_KP_ENTER )
-               return ok();
-               
-            if ( key->keysym.sym == SDLK_c )
-               return editUnitCargo();
-            
-            if ( key->keysym.sym == SDLK_p )
-               return editUnit();
-         
-            if ( key->keysym.sym == SDLK_PLUS || key->keysym.sym == SDLK_KP_PLUS)
-               return addUnit();
-
-            if ( key->keysym.sym == SDLK_MINUS || key->keysym.sym == SDLK_DELETE || key->keysym.sym == SDLK_KP_MINUS)
-               return remove();
-            
-         }
-         
-         if ( mod & KMOD_CTRL ) {
-            if ( key->keysym.sym == SDLK_c )
-               return copyUnit();
-            
-            if ( key->keysym.sym == SDLK_v )
-               return pasteUnit();
-
-         }
+      } else
          return false;
-      };
-      
-      ~CargoEditor()
-      {
-         --stack;
-      }
-};
+   }
 
+   bool copyUnit() {
+      if (cargoWidget->getMarkedUnit()) {
+         ClipBoard::Instance().clear();
+         ClipBoard::Instance().addUnit(cargoWidget->getMarkedUnit());
+         return true;
+      } else
+         return false;
+   }
+
+   bool pasteUnit() {
+      Vehicle* veh = ClipBoard::Instance().pasteUnit();
+      if (!veh)
+         return false;
+
+      if (container->doesVehicleFit(veh)) {
+         container->addToCargo(veh);
+         cargoWidget->redrawAll();
+         updateGraph();
+         return true;
+      } else {
+         delete veh;
+         return false;
+      }
+   }
+
+   bool editUnit() {
+      changeUnitPropertyDialog(cargoWidget->getMarkedUnit());
+      updateGraph();
+      return true;
+   }
+
+   bool editUnitCargo() {
+      cargoEditor(cargoWidget->getMarkedUnit());
+      updateGraph();
+      return true;
+   }
+
+   bool ok() {
+      QuitModal();
+      return true;
+   }
+
+   bool cancel() {
+      tus.restore();
+      QuitModal();
+      return true;
+   }
+
+   void updateGraph() {
+      if (container->baseType->maxLoadableWeight > 0) {
+         bgw->SetProgress(float(container->cargoWeight()) / container->baseType->maxLoadableWeight *
+                          100);
+         bgw->Update();
+      }
+   }
+
+  public:
+   CargoEditor(PG_Widget* parent, ContainerBase* my_container)
+      : PG_Window(parent, PG_Rect(50 + stack * 20, 30 + stack * 20, 500, 400), "Cargo Editor"),
+        container(my_container),
+        tus(container, true) {
+      bgw = new PG_ProgressBar(this, PG_Rect(10, 35, Width() - 20, 15));
+
+      updateGraph();
+
+      ++stack;
+      cargoWidget =
+         new CargoWidget(this, PG_Rect(10, 60, Width() - 20, Height() - 120), container, true);
+
+      int buttonLine = Height() - 110 + 60;
+      int buttonHeight = 30;
+      PG_Button* add = new PG_Button(this, PG_Rect(10, buttonLine, 50, buttonHeight), "+");
+      add->sigClick.connect(sigc::hide(sigc::mem_fun(*this, &CargoEditor::addUnit)));
+
+      PG_Button* rem = new PG_Button(this, PG_Rect(70, buttonLine, 50, buttonHeight), "-");
+      rem->sigClick.connect(sigc::hide(sigc::mem_fun(*this, &CargoEditor::remove)));
+
+      PG_Button* copy = new PG_Button(this, PG_Rect(130, buttonLine, 50, buttonHeight), "copy");
+      copy->sigClick.connect(sigc::hide(sigc::mem_fun(*this, &CargoEditor::copyUnit)));
+
+      PG_Button* paste = new PG_Button(this, PG_Rect(190, buttonLine, 50, buttonHeight), "paste");
+      paste->sigClick.connect(sigc::hide(sigc::mem_fun(*this, &CargoEditor::pasteUnit)));
+
+      PG_Button* edit = new PG_Button(this, PG_Rect(250, buttonLine, 50, buttonHeight), "edit");
+      edit->sigClick.connect(sigc::hide(sigc::mem_fun(*this, &CargoEditor::editUnit)));
+
+      PG_Button* cargo = new PG_Button(this, PG_Rect(310, buttonLine, 50, buttonHeight), "cargo");
+      cargo->sigClick.connect(sigc::hide(sigc::mem_fun(*this, &CargoEditor::editUnitCargo)));
+
+      PG_Button* cancel = new PG_Button(this, PG_Rect(370, buttonLine, 50, buttonHeight), "cancel");
+      cancel->sigClick.connect(sigc::hide(sigc::mem_fun(*this, &CargoEditor::cancel)));
+
+      PG_Button* ok = new PG_Button(this, PG_Rect(430, buttonLine, 50, buttonHeight), "ok");
+      ok->sigClick.connect(sigc::hide(sigc::mem_fun(*this, &CargoEditor::ok)));
+   }
+
+   bool eventKeyDown(const SDL_KeyboardEvent* key) {
+      int mod = SDL_GetModState() & ~(KMOD_NUM | KMOD_CAPS | KMOD_MODE);
+
+      if (!mod) {
+         if (key->keysym.sym == SDLK_ESCAPE)
+            return cancel();
+
+         if (key->keysym.sym == SDLK_RETURN || key->keysym.sym == SDLK_KP_ENTER)
+            return ok();
+
+         if (key->keysym.sym == SDLK_c)
+            return editUnitCargo();
+
+         if (key->keysym.sym == SDLK_p)
+            return editUnit();
+
+         if (key->keysym.sym == SDLK_PLUS || key->keysym.sym == SDLK_KP_PLUS)
+            return addUnit();
+
+         if (key->keysym.sym == SDLK_MINUS || key->keysym.sym == SDLK_DELETE ||
+             key->keysym.sym == SDLK_KP_MINUS)
+            return remove();
+      }
+
+      if (mod & KMOD_CTRL) {
+         if (key->keysym.sym == SDLK_c)
+            return copyUnit();
+
+         if (key->keysym.sym == SDLK_v)
+            return pasteUnit();
+      }
+      return false;
+   };
+
+   ~CargoEditor() { --stack; }
+};
 
 int CargoEditor::stack = 0;
 
-void cargoEditor( ContainerBase* container )
-{
-   if ( container && container->baseType->maxLoadableUnits ) {
-      CargoEditor ce ( NULL, container );
+void cargoEditor(ContainerBase* container) {
+   if (container && container->baseType->maxLoadableUnits) {
+      CargoEditor ce(NULL, container);
       ce.Show();
       ce.RunModal();
    }
 }
-

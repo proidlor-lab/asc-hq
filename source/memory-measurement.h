@@ -9,45 +9,37 @@
  ***************************************************************************/
 
 #ifndef memorymeasurementH
- #define memorymeasurementH
- 
+#define memorymeasurementH
+
 #include <map>
 #include "ascstring.h"
 #include "itemrepository.h"
 
- 
- 
- class MemoryMeasurement {
-   
-     class Node {
-        public:
-           Node( const ASCString& name ) : usage(0) { this->name = name; };
-           ASCString name;
-           int usage;
-           deallocating_vector<Node*> childs;
-           void add( Node* n) { childs.push_back( n ); };
-           
-           int sum();
-           ASCString prettyPrint( int indent );
-     };
-   
-     Node root;
-     
-     template<class T>
-     Node* measure(  ItemRepository<T>& repository );
-     
-     
-    public:
-       MemoryMeasurement() : root("root")  {};
-       
-       void measureTypes();
-       void measure( GameMap* gamemap );
-       void measureIcons( );
-       ASCString getResult();
-       
-       
-       
- };
- 
- 
-#endif 
+class MemoryMeasurement {
+   class Node {
+     public:
+      Node(const ASCString& name) : usage(0) { this->name = name; };
+      ASCString name;
+      int usage;
+      deallocating_vector<Node*> childs;
+      void add(Node* n) { childs.push_back(n); };
+
+      int sum();
+      ASCString prettyPrint(int indent);
+   };
+
+   Node root;
+
+   template <class T>
+   Node* measure(ItemRepository<T>& repository);
+
+  public:
+   MemoryMeasurement() : root("root"){};
+
+   void measureTypes();
+   void measure(GameMap* gamemap);
+   void measureIcons();
+   ASCString getResult();
+};
+
+#endif

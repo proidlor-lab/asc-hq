@@ -10,7 +10,6 @@
 #ifndef eventtestH
 #define eventtestH
 
- extern void testEvents();
-
+extern void testEvents();
 
 #endif

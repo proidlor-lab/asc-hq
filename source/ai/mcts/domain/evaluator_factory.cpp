@@ -9,8 +9,8 @@ namespace asc {
 namespace mcts {
 
 std::unique_ptr<ITacticalEvaluator> EvaluatorFactory::createSimpleCombatEvaluator() {
-    return std::make_unique<SimpleCombatEvaluator>();
+   return std::make_unique<SimpleCombatEvaluator>();
 }
 
-} // namespace mcts
-} // namespace asc
+}  // namespace mcts
+}  // namespace asc

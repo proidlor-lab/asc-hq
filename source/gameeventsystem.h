@@ -22,7 +22,6 @@
     Boston, MA  02111-1307  USA
 */
 
-
 #ifndef gameeventsystemH
 #define gameeventsystemH
 
@@ -37,19 +36,20 @@
 
 class MapDisplayInterface;
 
-enum  EventConnections { cconnection_destroy = 1,
-                         cconnection_conquer = 2,
-                         cconnection_lose  = 4,
-                         cconnection_seen = 8,
-                         cconnection_areaentered_anyunit = 16,
-                         cconnection_areaentered_specificunit = 32 };
+enum EventConnections {
+   cconnection_destroy = 1,
+   cconnection_conquer = 2,
+   cconnection_lose = 4,
+   cconnection_seen = 8,
+   cconnection_areaentered_anyunit = 16,
+   cconnection_areaentered_specificunit = 32
+};
 
+extern bool checkevents(GameMap* gamemap, MapDisplayInterface* md);
 
-extern bool  checkevents( GameMap* gamemap, MapDisplayInterface* md );
+extern void checktimedevents(GameMap* gamemap, MapDisplayInterface* md);
 
-extern void  checktimedevents( GameMap* gamemap, MapDisplayInterface* md );
-
-extern void eventReady( GameMap* gamemap );
+extern void eventReady(GameMap* gamemap);
 
 typedef int EventTriggerID;
 typedef int EventActionID;
@@ -57,118 +57,128 @@ typedef int EventActionID;
 class Event;
 
 class EventTrigger {
-      EventTriggerID triggerID;
-   public:
-      enum State { unfulfilled, fulfilled, finally_fulfilled, finally_failed };
-   protected:
-      EventTrigger ( EventTriggerID id ) : triggerID ( id ), gamemap(NULL), event(NULL), stateCache(unfulfilled), triggerFinal( false ), invert(false) {};
-      virtual State getState( int player ) = 0;
-      GameMap* gamemap;
-      Event* event;
+   EventTriggerID triggerID;
 
-      bool isFulfilled();
-   private:
-      State stateCache;
-      bool triggerFinal;
-   public:
-      bool invert;
-      //! takes the inversion into account, which getState(int) does not
-      State state( int player );
+  public:
+   enum State { unfulfilled, fulfilled, finally_fulfilled, finally_failed };
 
-      virtual void readData ( tnstream& stream ) = 0;
-      virtual void writeData ( tnstream& stream ) = 0;
-      
-      virtual ASCString getDetailledName() const = 0;
-      virtual ASCString getTypeName() const = 0;
-      virtual void setup() = 0;
-      virtual void arm() {};
-      void setMap( GameMap* gamemap_ ) { gamemap = gamemap_; };
-      void setEvent( Event* ev ) { event = ev; };
-      EventTriggerID getTriggerID() { return triggerID; };
+  protected:
+   EventTrigger(EventTriggerID id)
+      : triggerID(id),
+        gamemap(NULL),
+        event(NULL),
+        stateCache(unfulfilled),
+        triggerFinal(false),
+        invert(false){};
+   virtual State getState(int player) = 0;
+   GameMap* gamemap;
+   Event* event;
 
-      virtual ~EventTrigger(){};
+   bool isFulfilled();
 
+  private:
+   State stateCache;
+   bool triggerFinal;
+
+  public:
+   bool invert;
+   //! takes the inversion into account, which getState(int) does not
+   State state(int player);
+
+   virtual void readData(tnstream& stream) = 0;
+   virtual void writeData(tnstream& stream) = 0;
+
+   virtual ASCString getDetailledName() const = 0;
+   virtual ASCString getTypeName() const = 0;
+   virtual void setup() = 0;
+   virtual void arm() {};
+   void setMap(GameMap* gamemap_) { gamemap = gamemap_; };
+   void setEvent(Event* ev) { event = ev; };
+   EventTriggerID getTriggerID() { return triggerID; };
+
+   virtual ~EventTrigger(){};
 };
 
 class EventAction {
-      EventActionID actionID;
-   protected:
-      GameMap* gamemap;
-      EventAction( EventActionID id ) : actionID ( id ), gamemap(NULL) {};
-   public:
+   EventActionID actionID;
 
-      virtual void readData ( tnstream& stream ) = 0;
-      virtual void writeData ( tnstream& stream ) = 0;
-      virtual ASCString getName() const = 0;
+  protected:
+   GameMap* gamemap;
+   EventAction(EventActionID id) : actionID(id), gamemap(NULL){};
 
-      virtual ASCString getLocalizationString() const { return ""; };
-      virtual void setLocalizationString( const ASCString& s ) {};
-      
-      virtual void execute( MapDisplayInterface* md ) = 0;
-      virtual void setup() = 0;
-      void setMap( GameMap* gamemap_ ) { gamemap = gamemap_; };
-      EventActionID getActionID() { return actionID; };
-      virtual ~EventAction() {};
+  public:
+   virtual void readData(tnstream& stream) = 0;
+   virtual void writeData(tnstream& stream) = 0;
+   virtual ASCString getName() const = 0;
+
+   virtual ASCString getLocalizationString() const { return ""; };
+   virtual void setLocalizationString(const ASCString& s) {};
+
+   virtual void execute(MapDisplayInterface* md) = 0;
+   virtual void setup() = 0;
+   void setMap(GameMap* gamemap_) { gamemap = gamemap_; };
+   EventActionID getActionID() { return actionID; };
+   virtual ~EventAction(){};
 };
 
 class Event {
-      GameMap& gamemap;
+   GameMap& gamemap;
 
-      void clear();
-   public:
-      Event( GameMap& map_ );
-      const GameMap* getMap() const { return &gamemap; };
+   void clear();
 
-      enum Status { Untriggered, Triggered, Timed, Executed } status;
+  public:
+   Event(GameMap& map_);
+   const GameMap* getMap() const { return &gamemap; };
 
-      typedef vector<EventTrigger*> Trigger;
-      Trigger trigger;
+   enum Status { Untriggered, Triggered, Timed, Executed } status;
 
-      int id;
-      int playerBitmap; 
-      ASCString  description;
-      GameTime   triggerTime;
-      struct Delayedexecution {
-         Delayedexecution():turn(0),move(0){};
-         int turn;
-         int move;   // negative values allowed !!
-      } delayedexecution;
+   typedef vector<EventTrigger*> Trigger;
+   Trigger trigger;
 
-      //! the number of times this event can be executed; makes only sense in cunjunction with delayedexecution
-      int reArmNum;
+   int id;
+   int playerBitmap;
+   ASCString description;
+   GameTime triggerTime;
+   struct Delayedexecution {
+      Delayedexecution() : turn(0), move(0){};
+      int turn;
+      int move;  // negative values allowed !!
+   } delayedexecution;
 
-      EventAction* action;
-      enum TriggerConnection { AND, OR } triggerConnection;
+   //! the number of times this event can be executed; makes only sense in cunjunction with
+   //! delayedexecution
+   int reArmNum;
 
-      void check( MapDisplayInterface* md );
-      void execute( MapDisplayInterface* md );
-      void spawnAction( EventActionID eai );
-      EventTrigger* spawnTrigger( EventTriggerID eti );
+   EventAction* action;
+   enum TriggerConnection { AND, OR } triggerConnection;
 
-      Event& operator= ( const Event& ev  );
+   void check(MapDisplayInterface* md);
+   void execute(MapDisplayInterface* md);
+   void spawnAction(EventActionID eai);
+   EventTrigger* spawnTrigger(EventTriggerID eti);
 
-      void read ( tnstream& stream );
-      void write ( tnstream& stream );
+   Event& operator=(const Event& ev);
 
-      void arm();
+   void read(tnstream& stream);
+   void write(tnstream& stream);
 
-      sigc::signal<void> executed;
+   void arm();
 
-      virtual ~Event();
+   sigc::signal<void> executed;
+
+   virtual ~Event();
 };
 
 class VariableLocker {
    bool& var;
-   public:
-      VariableLocker( bool& variable ) : var ( variable ) { var = true; };
-      ~VariableLocker() { var = false; };
+
+  public:
+   VariableLocker(bool& variable) : var(variable) { var = true; };
+   ~VariableLocker() { var = false; };
 };
 
-
-typedef Loki::SingletonHolder< FactoryWithNames< EventTrigger, EventTriggerID > > eventTriggerFactory;
-typedef Loki::SingletonHolder< FactoryWithNames< EventAction , EventActionID  > > eventActionFactory;
-
-
+typedef Loki::SingletonHolder<FactoryWithNames<EventTrigger, EventTriggerID>> eventTriggerFactory;
+typedef Loki::SingletonHolder<FactoryWithNames<EventAction, EventActionID>> eventActionFactory;
 
 // }; // namespace GameEvents
 

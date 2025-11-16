@@ -22,64 +22,56 @@
 
 #include "dialogs/fileselector.h"
 
-
-
-void CampaignActionLogger::endTurn( Player& player )
-{
+void CampaignActionLogger::endTurn(Player& player) {
    gamemap->actions.breakUndo();
-   commands.push_back( "-- Ending turn " + ASCString::toString( player.getParentMap()->time.turn() ) + "\n" );
-   commands.push_back( "asc.endTurn()\n" );
+   commands.push_back("-- Ending turn " + ASCString::toString(player.getParentMap()->time.turn()) +
+                      "\n");
+   commands.push_back("asc.endTurn()\n");
 }
 
-void CampaignActionLogger::mapWon( Player& player )
-{
-   ASCString filename = selectFile( "*.lua", false );
-   if ( !filename.empty() ) {
-      tn_file_buf_stream stream ( filename, tnstream::writing );
-      for ( CommandList::const_iterator i = commands.begin(); i != commands.end(); ++i )
-         stream.writeString( *i, false );
+void CampaignActionLogger::mapWon(Player& player) {
+   ASCString filename = selectFile("*.lua", false);
+   if (!filename.empty()) {
+      tn_file_buf_stream stream(filename, tnstream::writing);
+      for (CommandList::const_iterator i = commands.begin(); i != commands.end(); ++i)
+         stream.writeString(*i, false);
    }
 }
 
-
-void CampaignActionLogger::commitCommand( GameMap* map, Command& command )
-{
-   if ( map == gamemap && map->getCurrentPlayer().isHuman() ) {
-      writer.printComment( command.getDescription() );
-      writer.printCommand( command.getCommandString() );
+void CampaignActionLogger::commitCommand(GameMap* map, Command& command) {
+   if (map == gamemap && map->getCurrentPlayer().isHuman()) {
+      writer.printComment(command.getDescription());
+      writer.printCommand(command.getCommandString());
    }
 }
 
-CampaignActionLogger::CampaignActionLogger ( GameMap* map ) : gamemap ( map ), commands(), writer( commands )
-{
-   gamemap->sigPlayerUserInteractionEnds.connect( sigc::mem_fun( *this, &CampaignActionLogger::endTurn ));
-   gamemap->sigMapWon.connect( sigc::mem_fun( *this, &CampaignActionLogger::mapWon ));
-   gamemap->actions.commitCommand.connect( sigc::mem_fun( *this, &CampaignActionLogger::commitCommand ));
+CampaignActionLogger::CampaignActionLogger(GameMap* map)
+   : gamemap(map), commands(), writer(commands) {
+   gamemap->sigPlayerUserInteractionEnds.connect(
+      sigc::mem_fun(*this, &CampaignActionLogger::endTurn));
+   gamemap->sigMapWon.connect(sigc::mem_fun(*this, &CampaignActionLogger::mapWon));
+   gamemap->actions.commitCommand.connect(
+      sigc::mem_fun(*this, &CampaignActionLogger::commitCommand));
 }
 
-
-void CampaignActionLogger::readData ( tnstream& stream )
-{
+void CampaignActionLogger::readData(tnstream& stream) {
    stream.readInt();
    int count = stream.readInt();
-   for ( int i = 0; i <count; ++i ) {
+   for (int i = 0; i < count; ++i) {
       ASCString s;
-      stream.readTextString( s, true );
-      commands.push_back( s );
+      stream.readTextString(s, true);
+      commands.push_back(s);
    }
    int check = stream.readInt();
-   if ( check != 0xbac0 )
+   if (check != 0xbac0)
       throw ASCmsgException("marker not matched when loading CampaignActionLogger");
-      
 }
 
-void CampaignActionLogger::writeData ( tnstream& stream )
-{
+void CampaignActionLogger::writeData(tnstream& stream) {
    stream.writeInt(1);
-   stream.writeInt( commands.size() );
-   for ( CommandList::const_iterator i = commands.begin(); i != commands.end(); ++i ) {
-      stream.writeString( *i );
+   stream.writeInt(commands.size());
+   for (CommandList::const_iterator i = commands.begin(); i != commands.end(); ++i) {
+      stream.writeString(*i);
    }
-   stream.writeInt( 0xbac0 );
+   stream.writeInt(0xbac0);
 };
-

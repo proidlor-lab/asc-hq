@@ -10,7 +10,6 @@
 #ifndef repairtestH
 #define repairtestH
 
- extern void testUnitRepair();
-
+extern void testUnitRepair();
 
 #endif

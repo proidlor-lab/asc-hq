@@ -13,12 +13,12 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
-#include <stdio.h>           
+#include <stdio.h>
 #include <cstring>
 #include <math.h>
 #include <stdarg.h>
@@ -56,148 +56,130 @@
 
 static TechnologyPresenter* techPresenter = NULL;
 
-SuppressTechPresentation::SuppressTechPresentation()
-{
+SuppressTechPresentation::SuppressTechPresentation() {
    presenter = techPresenter;
    techPresenter = NULL;
 }
 
-SuppressTechPresentation::~SuppressTechPresentation()
-{
+SuppressTechPresentation::~SuppressTechPresentation() {
    techPresenter = presenter;
 }
 
-void setResearchPresenter( TechnologyPresenter* presenter )
-{
+void setResearchPresenter(TechnologyPresenter* presenter) {
    techPresenter = presenter;
 }
 
-
-static bool anyTechAvailable( const Player& player )
-{
+static bool anyTechAvailable(const Player& player) {
    for (int i = 0; i < technologyRepository.getNum(); i++) {
-      const Technology* tech = technologyRepository.getObject_byPos( i );
-      if ( tech ) {
-         ResearchAvailabilityStatus a = player.research.techAvailable ( tech );
-         if ( a == Available )
+      const Technology* tech = technologyRepository.getObject_byPos(i);
+      if (tech) {
+         ResearchAvailabilityStatus a = player.research.techAvailable(tech);
+         if (a == Available)
             return true;
       }
    }
    return false;
 }
 
+//! checks, which vehicle and building types are newly available.
+class NewGadgetDetection {
+   std::list<const VehicleType*> units;
+   std::list<const BuildingType*> buildings;
+   Player& p;
 
-//! checks, which vehicle and building types are newly available. 
-class NewGadgetDetection  {
-      std::list<const VehicleType*>  units;
-      std::list<const BuildingType*>  buildings;
-      Player& p;
-   public:
-      NewGadgetDetection( Player& player ) : p(player )
-      {
-         for ( int i=0; i < vehicleTypeRepository.getNum() ; i++ ) {
-            const VehicleType* v = vehicleTypeRepository.getObject_byPos ( i );
-            if ( !v->techDependency.available( p.research ))
-               units.push_back( v );
-         }
-         
-         for ( int i=0; i < buildingTypeRepository.getNum() ; i++ ) {
-            const BuildingType* b = buildingTypeRepository.getObject_byPos ( i );
-            if ( !b->techDependency.available( p.research ))
-               buildings.push_back( b );
-         }
-         
+  public:
+   NewGadgetDetection(Player& player) : p(player) {
+      for (int i = 0; i < vehicleTypeRepository.getNum(); i++) {
+         const VehicleType* v = vehicleTypeRepository.getObject_byPos(i);
+         if (!v->techDependency.available(p.research))
+            units.push_back(v);
       }
 
-     //! checks, which vehicle are now available that where not available when constructor was called. 
-      void evaluate( TechnologyPresenter::Gadgets& storage )
-      {
-         for ( int i=0; i < vehicleTypeRepository.getNum() ; i++ ) {
-            const VehicleType* v = vehicleTypeRepository.getObject_byPos ( i );
-            if ( !v->techDependency.available( p.research ))
-               units.remove( v );
-         }
-         
-         for ( int i=0; i < buildingTypeRepository.getNum() ; i++ ) {
-            const BuildingType* b = buildingTypeRepository.getObject_byPos ( i );
-            if ( !b->techDependency.available( p.research ))
-               buildings.remove( b );
-         }
-         
-         storage.buildings = buildings;
-         storage.units = units;
+      for (int i = 0; i < buildingTypeRepository.getNum(); i++) {
+         const BuildingType* b = buildingTypeRepository.getObject_byPos(i);
+         if (!b->techDependency.available(p.research))
+            buildings.push_back(b);
       }
+   }
+
+   //! checks, which vehicle are now available that where not available when constructor was called.
+   void evaluate(TechnologyPresenter::Gadgets& storage) {
+      for (int i = 0; i < vehicleTypeRepository.getNum(); i++) {
+         const VehicleType* v = vehicleTypeRepository.getObject_byPos(i);
+         if (!v->techDependency.available(p.research))
+            units.remove(v);
+      }
+
+      for (int i = 0; i < buildingTypeRepository.getNum(); i++) {
+         const BuildingType* b = buildingTypeRepository.getObject_byPos(i);
+         if (!b->techDependency.available(p.research))
+            buildings.remove(b);
+      }
+
+      storage.buildings = buildings;
+      storage.units = units;
+   }
 };
 
-
-
-
-const Technology* getNextTechnologyTowardsGoal( Player& player )
-{
-   if ( !player.research.goal )
+const Technology* getNextTechnologyTowardsGoal(Player& player) {
+   if (!player.research.goal)
       return NULL;
-   
-   if ( player.research.techResearched( player.research.goal->id )) {
+
+   if (player.research.techResearched(player.research.goal->id)) {
       player.research.goal = NULL;
       return NULL;
    }
-   
+
    list<const Technology*> techs;
-   if ( player.research.goal->eventually_available( player.research, &techs ))
+   if (player.research.goal->eventually_available(player.research, &techs))
       return *techs.begin();
    else
       return NULL;
 }
 
-
-void runResearch( Player& player, vector<const Technology*>* newTechs, vector<ASCString>* newTechAdapter )
-{
+void runResearch(Player& player, vector<const Technology*>* newTechs,
+                 vector<ASCString>* newTechAdapter) {
    Research& research = player.research;
-   
-   if ( research.activetechnology && research.techResearched( research.activetechnology->id ) ) {
-      /* the current research may suddenly be researched already if the map was modified by the ditor */
-      research.progress = max( 0, research.progress - research.activetechnology->researchpoints ) ;
+
+   if (research.activetechnology && research.techResearched(research.activetechnology->id)) {
+      /* the current research may suddenly be researched already if the map was modified by the
+       * ditor */
+      research.progress = max(0, research.progress - research.activetechnology->researchpoints);
       research.activetechnology = NULL;
-      if ( !anyTechAvailable( player ) ) 
+      if (!anyTechAvailable(player))
          return;
    }
-   
-   while ( research.activetechnology  &&  (research.progress >= research.activetechnology->researchpoints)) {
-      
+
+   while (research.activetechnology &&
+          (research.progress >= research.activetechnology->researchpoints)) {
       const Technology* newTech = research.activetechnology;
       research.activetechnology = NULL;
-      
-      if ( newTechs )
-         newTechs->push_back( newTech );
-      
-      NewGadgetDetection ngd( player );
-      
-      vector<ASCString> techAdapters = research.addanytechnology( newTech );
-      if( newTechAdapter )
-         newTechAdapter->insert( newTechAdapter->end(), techAdapters.begin(), techAdapters.end() );
 
-      if ( techPresenter ) {
+      if (newTechs)
+         newTechs->push_back(newTech);
+
+      NewGadgetDetection ngd(player);
+
+      vector<ASCString> techAdapters = research.addanytechnology(newTech);
+      if (newTechAdapter)
+         newTechAdapter->insert(newTechAdapter->end(), techAdapters.begin(), techAdapters.end());
+
+      if (techPresenter) {
          TechnologyPresenter::Gadgets newItemsAvailable;
-         ngd.evaluate( newItemsAvailable );
-         techPresenter->showTechnology( newTech, newItemsAvailable );
+         ngd.evaluate(newItemsAvailable);
+         techPresenter->showTechnology(newTech, newItemsAvailable);
       }
-      
+
       research.progress -= newTech->researchpoints;
 
-      research.activetechnology = getNextTechnologyTowardsGoal( player );
+      research.activetechnology = getNextTechnologyTowardsGoal(player);
    }
-   
 }
 
-
-void checkForNewResearch( Player& player )
-{
+void checkForNewResearch(Player& player) {
    Research& research = player.research;
-   
-   while ( research.activetechnology == NULL && research.progress && anyTechAvailable( player ) ) 
-      if ( !chooseSingleTechnology( player ))
+
+   while (research.activetechnology == NULL && research.progress && anyTechAvailable(player))
+      if (!chooseSingleTechnology(player))
          return;
 }
-      
-
-

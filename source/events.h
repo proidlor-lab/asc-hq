@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
 /***************************************************************************
  *                                                                         *
  *   Event handling routines                                               *
@@ -31,23 +30,21 @@
   Defines what happens with the SDL events
   \param queue   Events are queued to be extracted with getQueuedEvent
   \param legacy  Events are evaluated and the global legacy structures updated
-  \returns the previous state of the event queing 
-*/    
-extern bool setEventRouting( bool queue, bool legacy );
+  \returns the previous state of the event queing
+*/
+extern bool setEventRouting(bool queue, bool legacy);
 
 extern bool legacyEventSystemActive();
 
-extern int initializeEventHandling ( int (*fn)(void *) , void *data );
-
+extern int initializeEventHandling(int (*fn)(void*), void* data);
 
 class EventHandlingMutex {
-   public:
-      EventHandlingMutex();
-      ~EventHandlingMutex();
+  public:
+   EventHandlingMutex();
+   ~EventHandlingMutex();
 };
 
-
-extern void exit_asc( int returnresult );
+extern void exit_asc(int returnresult);
 
 class ThreadExitException {};
 
@@ -59,26 +56,24 @@ extern bool redrawScreen;
  *                                                                         *
  ***************************************************************************/
 
-
 struct tmouserect {
-       int x1, y1;
-       int x2, y2;
-       tmouserect operator+ ( const tmouserect& b ) const;
-//       tmouserect ( int _x1, int _y1, int _x2, int _y2 ) : x1(_x1), y1(_y1), x2(_x2), y2(_y2 ) {};
-//       tmouserect(){ x1=0;y1=0;x2=0;y2=0;};
+   int x1, y1;
+   int x2, y2;
+   tmouserect operator+(const tmouserect& b) const;
+   //       tmouserect ( int _x1, int _y1, int _x2, int _y2 ) : x1(_x1), y1(_y1), x2(_x2), y2(_y2 )
+   //       {}; tmouserect(){ x1=0;y1=0;x2=0;y2=0;};
 };
 
-extern void mousevisible( int an );
-extern int getmousestatus ();
+extern void mousevisible(int an);
+extern int getmousestatus();
 
-extern void setmouseposition ( int x, int y );
+extern void setmouseposition(int x, int y);
 
-extern void setnewmousepointer ( void* picture, int hotspotx, int hotspoty );
+extern void setnewmousepointer(void* picture, int hotspotx, int hotspoty);
 
-extern int mouseinrect ( int x1, int y1, int x2, int y2 );
+extern int mouseinrect(int x1, int y1, int x2, int y2);
 
-
-extern int mouseinrect ( const tmouserect* rect );
+extern int mouseinrect(const tmouserect* rect);
 
 class tmousesettings {
   public:
@@ -88,8 +83,8 @@ class tmousesettings {
    int y1;
    int altx;
    int alty;
-   void *background;
-   void *pictpointer;
+   void* background;
+   void* pictpointer;
    int xsize;
    int ysize;
    Uint8 taste;
@@ -98,21 +93,31 @@ class tmousesettings {
    int hotspotx;
    int hotspoty;
    int backgroundsize;
-   tmousesettings ( ) { x=0;y=0;x1=0;y1=0;altx=0;alty=0;
-                        background=NULL;pictpointer=NULL;
-                        xsize=0;ysize=0;taste=0;status=0;
-                        hotspotx=0;hotspoty=0;backgroundsize=0;
-                        off.x1=0;off.y1=0;off.x2=0;off.y2=0;
-                      };
+   tmousesettings() {
+      x = 0;
+      y = 0;
+      x1 = 0;
+      y1 = 0;
+      altx = 0;
+      alty = 0;
+      background = NULL;
+      pictpointer = NULL;
+      xsize = 0;
+      ysize = 0;
+      taste = 0;
+      status = 0;
+      hotspotx = 0;
+      hotspoty = 0;
+      backgroundsize = 0;
+      off.x1 = 0;
+      off.y1 = 0;
+      off.x2 = 0;
+      off.y2 = 0;
+   };
 };
 
-
-
-
-
-extern void mouseintproc2( void );
+extern void mouseintproc2(void);
 extern volatile tmousesettings mouseparams;
-
 
 /***************************************************************************
  *                                                                         *
@@ -120,22 +125,20 @@ extern volatile tmousesettings mouseparams;
  *                                                                         *
  ***************************************************************************/
 
+#include "sdl/keysymbols.h"
 
-  #include "sdl/keysymbols.h"
+typedef int tkey;
 
- typedef int tkey;
+extern char skeypress(tkey keynr);
+extern char* get_key(tkey keynr);
+extern int keypress(void);
+extern void wait(void);
+extern tkey char2key(int ch);
+extern void getkeysyms(tkey* keysym, int* keyprnt);
 
- extern char  skeypress( tkey keynr);
- extern char *get_key(tkey keynr);
- extern int keypress(void);
- extern void wait(void);
- extern tkey char2key (int ch);
- extern void getkeysyms ( tkey* keysym, int* keyprnt );
+extern int exitprogram;
 
- extern int exitprogram;
-
-
- extern bool isKeyPressed(SDLKey key);
+extern bool isKeyPressed(SDLKey key);
 
 /***************************************************************************
  *                                                                         *
@@ -143,24 +146,22 @@ extern volatile tmousesettings mouseparams;
  *                                                                         *
  ***************************************************************************/
 
+extern volatile int ticker;
+extern void ndelay(int time);
 
-    extern volatile int ticker;
-    extern void ndelay(int time);
+extern void starttimer(void);        // resets Timer
+extern bool time_elapsed(int time);  // check if time msecs are elapsed, since starttimer
+extern int releasetimeslice(void);
 
-    extern void starttimer(void); //resets Timer
-    extern bool time_elapsed(int time); //check if time msecs are elapsed, since starttimer
-    extern int  releasetimeslice( void );
+extern int getTicker();
 
-    extern int getTicker();
+//! if the events are being queue, get one. \returns false if no event available
+extern bool getQueuedEvent(SDL_Event& event);
 
-    //! if the events are being queue, get one. \returns false if no event available
-    extern bool getQueuedEvent ( SDL_Event& event );
+//! gets the next event without removing it from the queue. \returns false if no event available
+extern bool peekEvent(SDL_Event& event);
 
-    //! gets the next event without removing it from the queue. \returns false if no event available
-    extern bool peekEvent ( SDL_Event& event );
-
-    //! passes a references which' value determines if the mouse cursor is hidden on screen updates
-    extern void setMouseUpdateFlag( const bool* flag );
-    
+//! passes a references which' value determines if the mouse cursor is hidden on screen updates
+extern void setMouseUpdateFlag(const bool* flag);
 
 #endif

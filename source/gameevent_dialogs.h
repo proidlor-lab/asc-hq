@@ -1,4 +1,4 @@
-/*! \file gameevent_dialogs.h 
+/*! \file gameevent_dialogs.h
     \brief Interface to game event dialogs
 */
 
@@ -24,7 +24,6 @@
     Boston, MA  02111-1307  USA
 */
 
-
 #ifndef gameevent_dialogsH
 #define gameevent_dialogsH
 
@@ -38,51 +37,52 @@
 
 #include "dialogs/fieldmarker.h"
 
-
 class ShowNewTechnology : public TechnologyPresenter {
-   public:
-      virtual void showTechnology( const Technology* tech, const Gadgets& newGadgetsAvailable );
+  public:
+   virtual void showTechnology(const Technology* tech, const Gadgets& newGadgetsAvailable);
 };
 
-extern void selectFields( FieldAddressing::Fields& fields );
-extern bool chooseWeather( int& weather );
-extern bool chooseTerrain( int& terrainID );
-extern bool chooseObject ( int& objectID );
-extern void editpolygon (Poly_gon& poly);
-extern void getxy_building(int *x,int *y);
-extern int selectunit ( int unitnetworkid );
-extern void playerselall( int *playerbitmap);
-extern bool chooseVehicleType( int& vehicleTypeID );
+extern void selectFields(FieldAddressing::Fields& fields);
+extern bool chooseWeather(int& weather);
+extern bool chooseTerrain(int& terrainID);
+extern bool chooseObject(int& objectID);
+extern void editpolygon(Poly_gon& poly);
+extern void getxy_building(int* x, int* y);
+extern int selectunit(int unitnetworkid);
+extern void playerselall(int* playerbitmap);
+extern bool chooseVehicleType(int& vehicleTypeID);
 
 class ReinforcementSelector : public SelectFromMap {
-   private:
-      MemoryStreamStorage& buf;
-      int& objectNum;
-      void cut( const MapCoordinate& pos );
-      CoordinateList cutPositions;
+  private:
+   MemoryStreamStorage& buf;
+   int& objectNum;
+   void cut(const MapCoordinate& pos);
+   CoordinateList cutPositions;
 
-   protected:
-      bool mark();
-      virtual bool isOk();
-   public:
-      ReinforcementSelector( CoordinateList& list, GameMap* map, MemoryStreamStorage& buffer, int& objNum ) : SelectFromMap( list, map ), buf( buffer), objectNum(objNum) {};
+  protected:
+   bool mark();
+   virtual bool isOk();
+
+  public:
+   ReinforcementSelector(CoordinateList& list, GameMap* map, MemoryStreamStorage& buffer,
+                         int& objNum)
+      : SelectFromMap(list, map), buf(buffer), objectNum(objNum){};
 };
-
 
 class BitMapEditor : public ASC_PG_Dialog {
-   public:
-      typedef int BitType;
-   private:
-      BitType& reference;
-      PG_PropertyEditor* propertyEditor;
-      bool values[64];
-      int bitCount;
+  public:
+   typedef int BitType;
 
-      bool ok();
+  private:
+   BitType& reference;
+   PG_PropertyEditor* propertyEditor;
+   bool values[64];
+   int bitCount;
 
-   public:
-      BitMapEditor( BitType& value, const ASCString& title, const vector<ASCString>& names );
+   bool ok();
+
+  public:
+   BitMapEditor(BitType& value, const ASCString& title, const vector<ASCString>& names);
 };
-
 
 #endif

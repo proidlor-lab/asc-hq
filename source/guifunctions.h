@@ -15,8 +15,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -24,18 +24,16 @@
 #error the mapeditor is not supposed the gui icons  !
 #endif
 
-
 #ifndef guifunctionsH
 #define guifunctionsH
 
 #include "guiiconhandler.h"
 
-extern void registerGuiFunctions( GuiIconHandler& handler );
-extern void registerReplayGuiFunctions( GuiIconHandler& handler );
+extern void registerGuiFunctions(GuiIconHandler& handler);
+extern void registerReplayGuiFunctions(GuiIconHandler& handler);
 
 namespace GuiFunctions {
-   extern GuiIconHandler primaryGuiIcons;
+extern GuiIconHandler primaryGuiIcons;
 }
 
 #endif
-

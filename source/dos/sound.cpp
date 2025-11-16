@@ -4,7 +4,7 @@
  *
  *  Implements the Sound class.  To load a wave file:
  *      Sound *s=new Sound( filename ).
- *  To play the sound : 
+ *  To play the sound :
  *      s.play();
  *  To release the sound :
  *      delete s;
@@ -20,27 +20,20 @@
 
 #include "sound.h"
 
+void initSound(int silent) {}
 
-void initSound(int silent) {
-}
+void closeSound(void) {}
 
-void closeSound(void) {
-}
+Sound::Sound(const char* filename) {}
 
-Sound::Sound( const char *filename ) {
-}
-
-void Sound::play(void) {
-}
+void Sound::play(void) {}
 
 /** Play the sound, but don't return control to this thread until
  *  the sound has finished playing.
  */
-void Sound::playWait(void) {
-}
+void Sound::playWait(void) {}
 
-Sound::~Sound(void) {
-}
+Sound::~Sound(void) {}
 
-void enableSound(){};
-void disableSound(){};
+void enableSound() {};
+void disableSound() {};

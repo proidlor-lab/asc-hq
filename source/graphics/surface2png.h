@@ -19,20 +19,16 @@
 */
 
 #ifndef surface2pngH
- #define surface2pngH
- 
- #include "surface.h"
- #include "../ascstring.h"
- 
+#define surface2pngH
 
- // these functions are really slow
+#include "surface.h"
+#include "../ascstring.h"
 
- void writePNG( const ASCString& filename, const Surface& s ); 
- void writePNGtrim( const ASCString& filename, const Surface& s ); 
- void writePNG( const ASCString& filename, const Surface& s, int x1, int y1, int x2, int y2  ); 
- void writePNG( const ASCString& filename, const Surface& s, const SDLmm::SRect& rect ); 
- 
- 
- 
+// these functions are really slow
+
+void writePNG(const ASCString& filename, const Surface& s);
+void writePNGtrim(const ASCString& filename, const Surface& s);
+void writePNG(const ASCString& filename, const Surface& s, int x1, int y1, int x2, int y2);
+void writePNG(const ASCString& filename, const Surface& s, const SDLmm::SRect& rect);
+
 #endif
-

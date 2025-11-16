@@ -37,9 +37,11 @@ else
 fi
 echo ""
 
-# Find all C++ source files
+# Find all C++ source files (excluding third-party libs)
 echo "Finding C++ source files..."
-FILES=$(find source/ \( -name "*.cpp" -o -name "*.h" -o -name "*.hpp" \) -type f)
+echo "(Excluding third-party libraries in source/libs/)"
+FILES=$(find source/ \( -name "*.cpp" -o -name "*.h" -o -name "*.hpp" \) -type f \
+    ! -path "source/libs/*")
 FILE_COUNT=$(echo "$FILES" | wc -l)
 
 echo -e "${GREEN}Found $FILE_COUNT files to format${NC}"

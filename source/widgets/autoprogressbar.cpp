@@ -15,60 +15,53 @@
 
 #include "../basestrm.h"
 
-void AutoProgressBar :: tick()
-{
-
-   newTickTimes.push_back ( ticker - starttime );
+void AutoProgressBar ::tick() {
+   newTickTimes.push_back(ticker - starttime);
 
    // limit to 25 Hz to reduce graphic updates
-   if ( lastdisplaytime + 4 < ticker ) {
+   if (lastdisplaytime + 4 < ticker) {
       double p;
       // double p = double(ticker - starttime) * 100  / time;
-      if ( counter < prevTickTimes.size() && time ) {
+      if (counter < prevTickTimes.size() && time) {
          int a = prevTickTimes[counter];
          p = 100 * a / time;
       } else
          p = counter / 100;
 
-      if ( p > 99 )
+      if (p > 99)
          p = 99;
 
-      SetProgress( p );
+      SetProgress(p);
       lastdisplaytime = ticker;
    }
 
    ++counter;
 
-
    lastticktime = ticker;
 };
 
-AutoProgressBar :: AutoProgressBar( sigc::signal<void>& tickSignal, PG_Widget *parent, const PG_Rect &r, const std::string &style ) : PG_ProgressBar( parent, r, style ), lastticktime(-1), counter(0)
-{
+AutoProgressBar ::AutoProgressBar(sigc::signal<void>& tickSignal, PG_Widget* parent,
+                                  const PG_Rect& r, const std::string& style)
+   : PG_ProgressBar(parent, r, style), lastticktime(-1), counter(0) {
    lastdisplaytime = starttime = ticker;
 
-   tickSignal.connect( sigc::mem_fun( *this, &AutoProgressBar::tick ));
+   tickSignal.connect(sigc::mem_fun(*this, &AutoProgressBar::tick));
 
    try {
-      tnfilestream stream ( "progress.dat", tnstream::reading  );
-      stream.readInt(); // version
-      time = stream.readInt( );
-      readClassContainer( prevTickTimes, stream );
-   }
-   catch ( ... ) {
+      tnfilestream stream("progress.dat", tnstream::reading);
+      stream.readInt();  // version
+      time = stream.readInt();
+      readClassContainer(prevTickTimes, stream);
+   } catch (...) {
       time = 200;
    };
 };
 
-void AutoProgressBar :: close( )
-{
+void AutoProgressBar ::close() {
    try {
-      tnfilestream stream ( "progress.dat", tnstream::writing  );
-      stream.writeInt( 1 );
-      stream.writeInt( lastticktime - starttime );
-      writeClassContainer( newTickTimes, stream );
-   }
-   catch ( ... ) {
-   }
+      tnfilestream stream("progress.dat", tnstream::writing);
+      stream.writeInt(1);
+      stream.writeInt(lastticktime - starttime);
+      writeClassContainer(newTickTimes, stream);
+   } catch (...) {}
 }
-

@@ -18,7 +18,6 @@
     Boston, MA  02111-1307  USA
 */
 
-
 #ifndef factoryWithNamesH
 #define factoryWithNamesH
 
@@ -28,45 +27,48 @@
 
 #include "factory.h"
 
+template <class AbstractProduct, typename IdentifierType,
+          typename ObjectCreatorCallBack = AbstractProduct* (*) (), typename NameType = ASCString>
+class FactoryWithNames : protected Factory<AbstractProduct, IdentifierType> {
+  private:
+   typedef std::map<NameType, IdentifierType> NameMap;
+   NameMap names;
 
-template < class AbstractProduct, typename IdentifierType, typename ObjectCreatorCallBack = AbstractProduct*(*)(), typename NameType = ASCString >
-class FactoryWithNames : protected Factory<AbstractProduct, IdentifierType>
-{
-   private:
-      typedef std::map<NameType, IdentifierType> NameMap;
-      NameMap names;
-   public:
-      vector<NameType> getNames(){
-         vector<NameType> nameList;
-         
-         for ( typename NameMap::iterator i = names.begin(); i != names.end(); ++i )
-            nameList.push_back( i->first );
-         return nameList;
-      }
+  public:
+   vector<NameType> getNames() {
+      vector<NameType> nameList;
 
-      IdentifierType getID( const ASCString& name )
-      {
-         return names[name];
-      }
+      for (typename NameMap::iterator i = names.begin(); i != names.end(); ++i)
+         nameList.push_back(i->first);
+      return nameList;
+   }
 
-      bool registerClass( IdentifierType id, typename FactoryWithNames<AbstractProduct, IdentifierType, typename FactoryWithNames::ObjectCreatorCallBack, NameType>::ObjectCreatorCallBack createFn, Loki::Functor<NameType, LOKI_TYPELIST_1(const IdentifierType&)> nameProvider )
-      {
-         return registerClass( id, createFn, nameProvider(id) );
-      }
+   IdentifierType getID(const ASCString& name) { return names[name]; }
 
-      bool registerClass( IdentifierType id, typename FactoryWithNames<AbstractProduct, IdentifierType, typename FactoryWithNames::ObjectCreatorCallBack, NameType>::ObjectCreatorCallBack createFn, NameType name )
-      {
-         if ( Factory<AbstractProduct, IdentifierType>::registerClass ( id, createFn )) {
-            names[name] = id;
-            return true;
-         } else
-            return false;
-      }
+   bool
+   registerClass(IdentifierType id,
+                 typename FactoryWithNames<AbstractProduct, IdentifierType,
+                                           typename FactoryWithNames::ObjectCreatorCallBack,
+                                           NameType>::ObjectCreatorCallBack createFn,
+                 Loki::Functor<NameType, LOKI_TYPELIST_1(const IdentifierType&)> nameProvider) {
+      return registerClass(id, createFn, nameProvider(id));
+   }
 
-      AbstractProduct* createObject( IdentifierType id ) {
-         return Factory<AbstractProduct, IdentifierType>::createObject( id );
-      }
+   bool registerClass(IdentifierType id,
+                      typename FactoryWithNames<AbstractProduct, IdentifierType,
+                                                typename FactoryWithNames::ObjectCreatorCallBack,
+                                                NameType>::ObjectCreatorCallBack createFn,
+                      NameType name) {
+      if (Factory<AbstractProduct, IdentifierType>::registerClass(id, createFn)) {
+         names[name] = id;
+         return true;
+      } else
+         return false;
+   }
 
+   AbstractProduct* createObject(IdentifierType id) {
+      return Factory<AbstractProduct, IdentifierType>::createObject(id);
+   }
 };
 
 #endif

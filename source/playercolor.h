@@ -15,20 +15,19 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef playercolorH
- #define playercolorH
- 
-#include "graphics/surface.h"
- 
- class PlayerColor {
-      int playernumber;
-      DI_Color color;
-    public:
-       PlayerColor(int number, const DI_Color& col );
-       int getNum() const { return playernumber; };
-       DI_Color getColor() const { return color; };
- };
- 
-#endif 
+#define playercolorH
 
+#include "graphics/surface.h"
+
+class PlayerColor {
+   int playernumber;
+   DI_Color color;
+
+  public:
+   PlayerColor(int number, const DI_Color& col);
+   int getNum() const { return playernumber; };
+   DI_Color getColor() const { return color; };
+};
+
+#endif

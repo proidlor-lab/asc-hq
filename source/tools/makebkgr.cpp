@@ -13,11 +13,10 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
-
 
 #include <malloc.h>
 #include <stdio.h>
@@ -36,58 +35,54 @@ int* bufptr;
 
 dacpalette256 pal;
 
-main(int argc, char *argv[], char *envp[])
-{
-   if ( argc <= 1) {
-      printf( " Syntax: MAKEBKGR <filename> \n" );
+main(int argc, char* argv[], char* envp[]) {
+   if (argc <= 1) {
+      printf(" Syntax: MAKEBKGR <filename> \n");
       return 1;
    }
 
-   initsvga ( 0x103 );
-   loadpcxxy ( argv[1], 1, 0, 0 );
-   void* buf = malloc ( 1000000 );
+   initsvga(0x103);
+   loadpcxxy(argv[1], 1, 0, 0);
+   void* buf = malloc(1000000);
    getch();
    {
-//      tnfilestream stream ( "hexmap.raw", 2 );
-      tn_file_buf_stream stream ( "hexmap.raw", 2 );
-   
-      getimage ( 10, 15, 38, 42, buf );  // Links oben
-//      stream.writerlepict  ( buf );
-      stream.writedata ( buf, getpicsize2 ( buf ));
-   
-      getimage ( 294, 15, 357, 42, buf );  // oben
-  //    stream.writerlepict  ( buf );
-      stream.writedata ( buf, getpicsize2 ( buf ));
-   
-      getimage ( 487, 15, 545, 66, buf );  // rechts oben
-//      stream.writerlepict  ( buf );
-      stream.writedata ( buf, getpicsize2 ( buf ));
+      //      tnfilestream stream ( "hexmap.raw", 2 );
+      tn_file_buf_stream stream("hexmap.raw", 2);
 
-      getimage ( 10, 43, 39, 90, buf );  // Links 
-  //    stream.writerlepict  ( buf );
-      stream.writedata ( buf, getpicsize2 ( buf ));
-   
-   
-      getimage ( 525, 67, 545, 115, buf );  // rechts
-//      stream.writerlepict  ( buf );
-      stream.writedata ( buf, getpicsize2 ( buf ));
-   
-      getimage ( 10, 475, 69, 526, buf );  // Links unten
-  //    stream.writerlepict  ( buf );
-      stream.writedata ( buf, getpicsize2 ( buf ));
-   
-      getimage ( 70, 499, 133, 526, buf );  // unten
-//      stream.writerlepict  ( buf );
-      stream.writedata ( buf, getpicsize2 ( buf ));
-   
-      getimage ( 519, 499, 545, 526, buf );  // rechts unten
-//      stream.writerlepict  ( buf ); 
-      stream.writedata ( buf, getpicsize2 ( buf ));
+      getimage(10, 15, 38, 42, buf);  // Links oben
+                                      //      stream.writerlepict  ( buf );
+      stream.writedata(buf, getpicsize2(buf));
+
+      getimage(294, 15, 357, 42, buf);  // oben
+                                        //    stream.writerlepict  ( buf );
+      stream.writedata(buf, getpicsize2(buf));
+
+      getimage(487, 15, 545, 66, buf);  // rechts oben
+                                        //      stream.writerlepict  ( buf );
+      stream.writedata(buf, getpicsize2(buf));
+
+      getimage(10, 43, 39, 90, buf);  // Links
+                                      //    stream.writerlepict  ( buf );
+      stream.writedata(buf, getpicsize2(buf));
+
+      getimage(525, 67, 545, 115, buf);  // rechts
+                                         //      stream.writerlepict  ( buf );
+      stream.writedata(buf, getpicsize2(buf));
+
+      getimage(10, 475, 69, 526, buf);  // Links unten
+                                        //    stream.writerlepict  ( buf );
+      stream.writedata(buf, getpicsize2(buf));
+
+      getimage(70, 499, 133, 526, buf);  // unten
+                                         //      stream.writerlepict  ( buf );
+      stream.writedata(buf, getpicsize2(buf));
+
+      getimage(519, 499, 545, 526, buf);  // rechts unten
+                                          //      stream.writerlepict  ( buf );
+      stream.writedata(buf, getpicsize2(buf));
    }
 
    getch();
-   settextmode ( 3 );
+   settextmode(3);
    return 0;
 }
-
-

@@ -23,13 +23,12 @@
     Boston, MA  02111-1307  USA
 */
 
-
 #ifndef prehistoriceventsH
 #define prehistoriceventsH
 
 #include "typen.h"
 
 class GameMap;
-extern void  readOldEventLists ( tnstream* stream, bool passedEvents, GameMap* spfld );
+extern void readOldEventLists(tnstream* stream, bool passedEvents, GameMap* spfld);
 
 #endif

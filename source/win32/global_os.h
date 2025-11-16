@@ -37,8 +37,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -46,17 +46,17 @@
 // global.h
 
 #ifdef __BORLANDC__
- #include "win32\borland\global_os.h"
+#include "win32\borland\global_os.h"
 #else
- #ifdef __GNUG__
-  #include "gcc/global_os.h"
- #else
-  #ifdef __WATCOMC__
-   #include "watcom/global_os.h"
-  #else
-   #ifdef _MSC_VER
-    #include "msvc/global_os.h"
-   #endif
-  #endif
- #endif
+#ifdef __GNUG__
+#include "gcc/global_os.h"
+#else
+#ifdef __WATCOMC__
+#include "watcom/global_os.h"
+#else
+#ifdef _MSC_VER
+#include "msvc/global_os.h"
+#endif
+#endif
+#endif
 #endif

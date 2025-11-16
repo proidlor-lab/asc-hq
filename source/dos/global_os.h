@@ -46,8 +46,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -55,22 +55,21 @@
 // are being included in basestrm.cpp
 
 #ifndef global_os_h_included
- #define global_os_h_included
+#define global_os_h_included
 
-  #define HAVE_STRICMP
-  #define HAVE_ITOA
-  #define HAVE_EXCEPTION
-  #define HAVE_LIMITS
-  #define HAVE_LOG2
-  #define StaticClassVariable static
-  #ifdef __WATCOM_CPLUSPLUS__      // and not Watcom C
-  namespace std {};
-  #endif
+#define HAVE_STRICMP
+#define HAVE_ITOA
+#define HAVE_EXCEPTION
+#define HAVE_LIMITS
+#define HAVE_LOG2
+#define StaticClassVariable static
+#ifdef __WATCOM_CPLUSPLUS__  // and not Watcom C
+namespace std {};
+#endif
 
-  #include <wchar.h>
+#include <wchar.h>
 
-  #define CASE_SENSITIVE_FILE_NAMES 0
-  #define USE_HOME_DIRECTORY 0
-
+#define CASE_SENSITIVE_FILE_NAMES 0
+#define USE_HOME_DIRECTORY 0
 
 #endif

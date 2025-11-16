@@ -18,7 +18,6 @@
      Boston, MA  02111-1307  USA
 */
 
-
 #include "renamecontainercommand.h"
 
 #include "../vehicle.h"
@@ -34,118 +33,98 @@
 #include "servicecommand.h"
 #include "convertcontainer.h"
 
-bool RenameContainerCommand :: avail ( const ContainerBase* container )
-{
-   if ( !container  )
+bool RenameContainerCommand ::avail(const ContainerBase* container) {
+   if (!container)
       return false;
-   
+
    return true;
 }
 
+RenameContainerCommand ::RenameContainerCommand(ContainerBase* container)
+   : ContainerCommand(container) {}
 
-RenameContainerCommand :: RenameContainerCommand ( ContainerBase* container )
-   : ContainerCommand ( container )
-{
-
-}
-
-
-
-void RenameContainerCommand::setName( const ASCString& publicName, const ASCString& privateName )
-{
+void RenameContainerCommand::setName(const ASCString& publicName, const ASCString& privateName) {
    this->publicName = publicName;
    this->privateName = privateName;
-   setState( SetUp );
+   setState(SetUp);
 }
 
-
-ActionResult RenameContainerCommand::go ( const Context& context )
-{
-   if ( getState() != SetUp )
+ActionResult RenameContainerCommand::go(const Context& context) {
+   if (getState() != SetUp)
       return ActionResult(22000);
 
-   if ( !avail( getContainer() ))
+   if (!avail(getContainer()))
       return ActionResult(22800);
-   
+
    ContainerBase* container = getContainer();
-   
+
    originalPublicName = container->name;
    originalPrivateName = container->privateName;
    container->name = publicName;
    container->privateName = privateName;
-   
-   setState( Finished );
+
+   setState(Finished);
 
    return ActionResult(0);
 }
 
-ActionResult RenameContainerCommand::undoAction( const Context& context )
-{
+ActionResult RenameContainerCommand::undoAction(const Context& context) {
    ContainerBase* container = getContainer();
-   if ( !container )
+   if (!container)
       return ActionResult(23600);
-      
+
    container->name = originalPublicName;
    container->privateName = originalPrivateName;
-   
-   return ContainerCommand::undoAction( context );
-}
 
+   return ContainerCommand::undoAction(context);
+}
 
 static const int RenameContainerCommandVersion = 1;
 
-void RenameContainerCommand :: readData ( tnstream& stream )
-{
-   ContainerCommand::readData( stream );
+void RenameContainerCommand ::readData(tnstream& stream) {
+   ContainerCommand::readData(stream);
    int version = stream.readInt();
-   if ( version > RenameContainerCommandVersion )
-      throw tinvalidversion ( "RenameContainerCommand", RenameContainerCommandVersion, version );
+   if (version > RenameContainerCommandVersion)
+      throw tinvalidversion("RenameContainerCommand", RenameContainerCommandVersion, version);
    originalPublicName = stream.readString();
    originalPrivateName = stream.readString();
    publicName = stream.readString();
    privateName = stream.readString();
 }
 
-void RenameContainerCommand :: writeData ( tnstream& stream ) const
-{
-   ContainerCommand::writeData( stream );
-   stream.writeInt( RenameContainerCommandVersion );
-   stream.writeString( originalPublicName );
-   stream.writeString( originalPrivateName );
-   stream.writeString( publicName );
-   stream.writeString( privateName );
+void RenameContainerCommand ::writeData(tnstream& stream) const {
+   ContainerCommand::writeData(stream);
+   stream.writeInt(RenameContainerCommandVersion);
+   stream.writeString(originalPublicName);
+   stream.writeString(originalPrivateName);
+   stream.writeString(publicName);
+   stream.writeString(privateName);
 }
 
-
-ASCString RenameContainerCommand :: getCommandString() const
-{
+ASCString RenameContainerCommand ::getCommandString() const {
    ASCString c;
-   c.format("renameContainer ( map, %d, '%s', '%s' )", getContainerID(), publicName.c_str(), privateName.c_str() );
+   c.format("renameContainer ( map, %d, '%s', '%s' )", getContainerID(), publicName.c_str(),
+            privateName.c_str());
    return c;
-
 }
 
-GameActionID RenameContainerCommand::getID() const
-{
+GameActionID RenameContainerCommand::getID() const {
    return ActionRegistry::RenameContainerCommand;
 }
 
-ASCString RenameContainerCommand::getDescription() const
-{
+ASCString RenameContainerCommand::getDescription() const {
    ASCString s = "Rename ";
-   
-   if ( getContainer(true) ) {
+
+   if (getContainer(true)) {
       s += getContainer()->baseType->getName();
    } else
       s += originalPublicName;
-   
+
    s += " to " + publicName;
-   
+
    return s;
 }
 
-namespace
-{
-   const bool r1 = registerAction<RenameContainerCommand> ( ActionRegistry::RenameContainerCommand );
+namespace {
+const bool r1 = registerAction<RenameContainerCommand>(ActionRegistry::RenameContainerCommand);
 }
-

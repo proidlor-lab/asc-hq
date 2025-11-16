@@ -93,15 +93,15 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
 #ifndef newfont_h
 
 #define newfont_h
-#include "global.h" 
+#include "global.h"
 #include "basestrm.h"
 #include "palette.h"
 
@@ -109,103 +109,93 @@
 
 typedef char charr[49];
 
-struct  toldcharacter {
-	       Uint8    width;
-           Uint16  size;
-           int     diskposition;
-           Uint8*   memposition;
-           Uint8    dummy;
-        };
+struct toldcharacter {
+   Uint8 width;
+   Uint16 size;
+   int diskposition;
+   Uint8* memposition;
+   Uint8 dummy;
+};
 
-typedef signed char    tkerning[101][101];
-typedef char           tkernchartable[256];
+typedef signed char tkerning[101][101];
+typedef char tkernchartable[256];
 
 // tkerning=Array[0..100,0..100] of Shortint;
 
 struct toldfont {
-         charr            id;
-         char             name[256];
-         Uint8             number;
-         Uint8          color;
-         toldcharacter    character[256];
-         Sint16          height;
-         tkernchartable   kernchartable;
-         tkerning         kerning;
-         Uint16           dummy;
-         Uint8             useems;
-         Uint8             caps;
-         dacpalette256*   palette;
-         Uint8      groundline;
-         void read ( tnstream& stream );
-      };
+   charr id;
+   char name[256];
+   Uint8 number;
+   Uint8 color;
+   toldcharacter character[256];
+   Sint16 height;
+   tkernchartable kernchartable;
+   tkerning kerning;
+   Uint16 dummy;
+   Uint8 useems;
+   Uint8 caps;
+   dacpalette256* palette;
+   Uint8 groundline;
+   void read(tnstream& stream);
+};
 
-
-
-struct  tcharacter {
-           Uint16  width;
-           Uint16  size;
-           Uint8*   memposition;
-        };
+struct tcharacter {
+   Uint16 width;
+   Uint16 size;
+   Uint8* memposition;
+};
 
 struct tfont {
-         char*            name;
-         Uint8          color;
-         Uint8          caps;
-         Sint16          height;
-         tcharacter       character[256];
-         signed char      kerning[256][256]; 
-         dacpalette256*   palette;
-         char      groundline;
-      };
-
+   char* name;
+   Uint8 color;
+   Uint8 caps;
+   Sint16 height;
+   tcharacter character[256];
+   signed char kerning[256][256];
+   dacpalette256* palette;
+   char groundline;
+};
 
 typedef tfont* pfont;
 
-
-
-
-
 struct tfontsettings {
-         pfont   font;
-         Uint8    color;
-         Uint8    background;
-         Uint8    markcolor;
-         Uint8 colorfont;
-         Uint16  length;
-         Uint8    direction;
-         Uint8    justify;
-         signed char italic;
-         Uint8    height;
-         Uint8    compmode;
-         pfont   markfont;
-     };
-
+   pfont font;
+   Uint8 color;
+   Uint8 background;
+   Uint8 markcolor;
+   Uint8 colorfont;
+   Uint16 length;
+   Uint8 direction;
+   Uint8 justify;
+   signed char italic;
+   Uint8 height;
+   Uint8 compmode;
+   pfont markfont;
+};
 
 #define lefttext 0
 #define centertext 1
 #define righttext 2
 
 extern void expand(void* p1, void* q1, int size);
-extern void showtext2( const ASCString& TextToOutput, int x1, int x2 );
-extern void showtext2c( const ASCString& TextToOutput, int x1, int x2 );
+extern void showtext2(const ASCString& TextToOutput, int x1, int x2);
+extern void showtext2c(const ASCString& TextToOutput, int x1, int x2);
 
 extern tfontsettings activefontsettings;
 
-extern pfont loadfont( tnstream* stream );
+extern pfont loadfont(tnstream* stream);
 
-extern void showtext4 ( const char* TextToOutput, int x1, int y1, ... );
-extern void showtext4c ( const char* TextToOutput, int x1, int y1, ... );
+extern void showtext4(const char* TextToOutput, int x1, int y1, ...);
+extern void showtext4c(const char* TextToOutput, int x1, int y1, ...);
 
+extern void showtext3(const char* txt, int xpos, int ypos);
+extern void showtext3c(const char* txt, int xpos, int ypos);
 
-extern void         showtext3( const char *       txt, int xpos, int  ypos);
-extern void         showtext3c( const char *       txt, int xpos, int ypos);
-
-extern int gettextwdth ( const char* txt, pfont font );
-extern void shrinkfont ( pfont font, int diff );
-
+extern int gettextwdth(const char* txt, pfont font);
+extern void shrinkfont(pfont font, int diff);
 
 extern const char* fontid;
-extern char* int2string ( int i, char* buf );
+extern char* int2string(int i, char* buf);
 
 #pragma pack()
 
