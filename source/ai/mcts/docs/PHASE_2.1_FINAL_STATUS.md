@@ -14,7 +14,7 @@ All architectural questions for Phase 2.1 have been resolved. Implementation has
 - Unit ordering in rollouts follows spec (long-range → close-range → service).
 - MCTS_AI now constructs MCTSSearch in production; legacy command context updated (actingPlayer set) to avoid crashes when executing MCTS-issued moves.
 
-Next focus: wire MCTS_AI to instantiate MCTSSearch with agent profiles, add state/material agents and service abilities, and expose profile selection at runtime.
+Next focus: align layers with target architecture (strategic = agent-only; coordination = MCTS over multi-unit plans; execution = plan replay), then tune profile thresholds (Balanced/Aggressive/Defensive are live via `mcts_agents.ini`; Fast/Deep reuse Balanced), add state/material agents and service abilities, and expose profile selection at runtime.
 
 ---
 

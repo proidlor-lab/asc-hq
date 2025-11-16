@@ -1,6 +1,6 @@
 # MCTS AI Implementation Status
 
-**Last Updated**: 2025-11-12 18:00 UTC  
+**Last Updated**: 2025-11-15 20:30 UTC  
 **Current Phase**: Phase 2.1 - Utility-Agent Framework 🚧 IN PROGRESS (~25%)  
 **Runtime Status**: ✅ **PRODUCTION READY** (97% test pass rate on Phase 1.2 code)  
 **Overall Progress**: 75%
@@ -10,8 +10,12 @@
 - ✅ MCTS_AI now uses the real MCTS search pipeline (state reader + MCTSSearch) instead of the MVP heuristic.
 - ✅ Legacy command context now sets `actingPlayer`, fixing a nullptr crash when executing moves from MCTS decisions.
 - ✅ libmcts build includes agent, adapter, and calculator components (AgentSuite, UnitRoleClassifier, CombatCalculatorAdapter).
-- ⚠️ Current behavior: actions may look random/greedy because profiles use the default agent weights; tuning still pending.
-- Next: tune agent profiles per AI variant and tighten action selection to reduce "random" moves.
+- ✅ Agent profiles now load from `mcts_agents.ini` and map to AI variants (Balanced/Aggressive/Defensive; Fast/Deep fall back to Balanced).
+- Next: refine weight thresholds per profile and expand the action space (service/build abilities) to reduce greedy-looking moves.
+
+**Critical alignment gap (2025-11-15):**
+- Intended design: *Strategic layer = agent-only aggregation*; *Coordination layer = MCTS over multi-unit plans*; *Per-unit execution = replay plan with safety checks*.
+- Current implementation: MCTS runs per-unit in the combat layer, coordination layer is deferred, strategic layer is stubbed. We need to pivot MCTS upward (coordination), keep strategy agent-only, and make tactical execution plan-driven.
 
 ---
 
@@ -29,10 +33,13 @@ What landed:
 - ✅ Rollouts use agent ranking (no heuristic fallback), respect `maxActionsRollout`
 - ✅ Unit ordering for rollouts follows spec (long-range → close-range → service)
 
+Completed since this update:
+- ✅ MCTS_AI constructs MCTSSearch with the configured agent profile; heuristic rollout path removed.
+- ✅ Agent profiles load from `mcts_agents.ini` and are selected per AI variant (Aggressive/Defensive overrides supported via config).
+
 Still pending:
-- ⏳ Wire MCTS_AI to construct MCTSSearch with agent profiles (still on MVP heuristic path)
 - ⏳ Service/build abilities and Material/State agents
-- ⏳ Profile selection per AI variant at runtime
+- ⏳ Profile threshold tuning (veto/prune) and weight calibration for Fast/Deep variants
 
 ### Previous Update (2025-11-10) - Phase 1.2 COMPLETE - Action System Extensions ✅
 
