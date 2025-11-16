@@ -21,6 +21,7 @@
 #include "ai_factory.h"
 #include "mcts/domain/action_types.h"
 #include "mcts/core/mcts_config.h"
+#include "mcts/infrastructure/mcts_config_loader.h"
 #include <memory>
 #include <string>
 #include <vector>

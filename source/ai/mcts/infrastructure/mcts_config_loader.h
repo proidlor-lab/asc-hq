@@ -44,6 +44,31 @@ struct MCTSConfig;
 class MCTSConfigLoader {
 public:
     /**
+     * @brief Extended profile config (search + evaluation/agent profile)
+     */
+    struct ProfileConfig {
+        // Search
+        int maxIterations{200};
+        int maxTimeMs{2000};
+        int rolloutDepthLimit{10};
+        double explorationConstant{1.414};
+        double earlyTerminationThreshold{0.95};
+
+        // Evaluation weights
+        double materialWeight{2.0};
+        double positionWeight{1.0};
+        double healthWeight{1.5};
+        double threatWeight{1.2};
+
+        // Agent weight profile name
+        std::string agentProfile{"Balanced"};
+
+        // Logging
+        bool enableLogging{false};
+        bool enableDebugOutput{false};
+    };
+
+    /**
      * @brief Configuration source
      */
     enum class Source {
@@ -72,6 +97,13 @@ public:
      * @throws std::runtime_error if configuration not found
      */
     static MCTSConfig loadConfig(const std::string& name);
+
+    /**
+     * @brief Load profile config (search + evaluation weights)
+     *
+     * Searches runtime -> config file -> built-in. Safe default always returned.
+     */
+    static ProfileConfig loadProfile(const std::string& name);
     
     /**
      * @brief Load configuration from file
