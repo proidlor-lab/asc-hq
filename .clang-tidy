@@ -1,0 +1,90 @@
+# clang-tidy configuration for ASC (Advanced Strategic Command)
+# Tailored for legacy C++ codebase transitioning to modern C++23
+#
+# Philosophy:
+# - Focus on critical bugs and security issues
+# - Modernization suggestions (not errors)
+# - Minimal noise for legacy code patterns
+# - MCTS module should pass with stricter checks
+
+---
+# Checks to enable (use patterns to select check categories)
+Checks: >
+  -*,
+  bugprone-*,
+  -bugprone-easily-swappable-parameters,
+  -bugprone-narrowing-conversions,
+  performance-*,
+  -performance-avoid-endl,
+  modernize-*,
+  -modernize-use-trailing-return-type,
+  -modernize-avoid-c-arrays,
+  -modernize-use-auto,
+  readability-*,
+  -readability-identifier-length,
+  -readability-magic-numbers,
+  -readability-function-cognitive-complexity,
+  -readability-else-after-return,
+  cppcoreguidelines-*,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-avoid-c-arrays,
+  -cppcoreguidelines-pro-type-reinterpret-cast,
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  -cppcoreguidelines-owning-memory,
+  -cppcoreguidelines-no-malloc,
+  clang-analyzer-*,
+  -clang-analyzer-cplusplus.NewDeleteLeaks
+
+# Treat warnings as errors? (false for legacy code)
+WarningsAsErrors: ''
+
+# Header filter (analyze headers in source/ directory)
+HeaderFilterRegex: 'source/.*\.(h|hpp)$'
+
+# Check options (fine-tune specific checks)
+CheckOptions:
+  # Naming conventions
+  - key: readability-identifier-naming.ClassCase
+    value: CamelCase
+  - key: readability-identifier-naming.FunctionCase
+    value: camelBack
+  - key: readability-identifier-naming.VariableCase
+    value: camelBack
+  - key: readability-identifier-naming.ConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.NamespaceCase
+    value: lower_case
+
+  # Allow longer functions in legacy code
+  - key: readability-function-size.LineThreshold
+    value: 300
+  - key: readability-function-size.StatementThreshold
+    value: 200
+
+  # Modern C++ preferences
+  - key: modernize-use-nullptr.NullMacros
+    value: 'NULL'
+  - key: modernize-use-override.IgnoreDestructors
+    value: true
+
+  # Performance
+  - key: performance-move-const-arg.CheckTriviallyCopyableMove
+    value: false
+
+  # Bugprone
+  - key: bugprone-argument-comment.StrictMode
+    value: false
+  - key: bugprone-suspicious-string-compare.WarnOnLogicalNotComparison
+    value: true
+
+  # Core Guidelines
+  - key: cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
+    value: true
+
+# File patterns to exclude from analysis
+# (Third-party libraries, generated code)
+ExcludeHeaderFilterRegex: >
+  (source/libs/.*|
+   source/dos/.*|
+   .*\.(pb|generated)\.h)
