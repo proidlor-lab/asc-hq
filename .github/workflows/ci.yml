@@ -48,7 +48,7 @@ jobs:
           libsdl-mixer1.2-dev \
           libsdl-sound1.2-dev \
           liblua5.1-0-dev \
-          libwxgtk3.0-gtk3-dev \
+          libwxgtk3.2-dev \
           libsigc++-2.0-dev \
           libfreetype6-dev \
           libexpat1-dev \
@@ -131,7 +131,7 @@ jobs:
           libsdl-mixer1.2-dev \
           libsdl-sound1.2-dev \
           liblua5.1-0-dev \
-          libwxgtk3.0-gtk3-dev \
+          libwxgtk3.2-dev \
           libsigc++-2.0-dev \
           libfreetype6-dev \
           libexpat1-dev \
@@ -194,7 +194,7 @@ jobs:
           libsdl-mixer1.2-dev \
           libsdl-sound1.2-dev \
           liblua5.1-0-dev \
-          libwxgtk3.0-gtk3-dev \
+          libwxgtk3.2-dev \
           libsigc++-2.0-dev \
           libfreetype6-dev \
           libexpat1-dev \
@@ -257,7 +257,7 @@ jobs:
           libsdl-image1.2-dev \
           libsdl-mixer1.2-dev \
           liblua5.1-0-dev \
-          libwxgtk3.0-gtk3-dev \
+          libwxgtk3.2-dev \
           libsigc++-2.0-dev \
           libfreetype6-dev \
           libexpat1-dev \
