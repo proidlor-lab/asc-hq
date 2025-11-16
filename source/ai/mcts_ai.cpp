@@ -11,16 +11,29 @@
 #include "../player.h"
 #include "../vehicle.h"
 #include "../mapfield.h"
-// MCTS includes - commented out for MVP (Phase 1.1b uses heuristics)
-// #include "mcts/core/mcts_search.h"
-// #include "mcts/domain/i_game_state_reader.h"
-// #include "mcts/domain/game_state_reader.h"
-// #include "mcts/domain/i_action_executor.h"
-// #include "mcts/domain/i_tactical_evaluator.h"
-// #include "mcts/domain/action_types.h"
+#include "mcts/domain/i_game_state_reader.h"
+#include "mcts/domain/i_action_executor.h"
+#include "mcts/domain/i_tactical_evaluator.h"
+#include "mcts/core/mcts_search.h"
 #include "mcts/infrastructure/legacy_game_interface.h"
 #include <iostream>
 #include <algorithm>
+
+namespace {
+
+constexpr int kTacticalRadius = 12;
+
+MapCoordinate toLegacyCoordinate(const asc::mcts::MapCoordinate& coord) {
+    return MapCoordinate(coord.x, coord.y);
+}
+
+std::string toLowerCopy(const std::string& input) {
+    std::string result = input;
+    std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+    return result;
+}
+
+} // namespace
 
 // ===== Constructor =====
 
@@ -32,6 +45,8 @@ MCTS_AI::MCTS_AI(GameMap* gameMap, int playerID, const Profile& profile, const A
     , running(false)
     , vision(visible_all)  // AI has full vision
     , initialized(false)
+    , stateReader(nullptr)
+    , searchEngine(nullptr)
 {
     if (!gameMap) {
         throw std::invalid_argument("MCTS_AI: gameMap cannot be null");
@@ -71,7 +86,7 @@ void MCTS_AI::run(MapDisplayInterface* mapDisplay)
         log(">>> AI Profile: " + profile.name + " (explorationConstant=" + 
             std::to_string(profile.explorationConstant) + ", iterations=" + 
             std::to_string(profile.maxIterations) + ")");
-        log(">>> NOTE: Phase 1.1b MVP - Using simple heuristics, not actual MCTS search yet");
+        debug(">>> Using wired MCTS search engine (agents profile: " + profile.agentProfile + ")");
         
         // Process all units
         processUnits(mapDisplay);
@@ -164,8 +179,7 @@ void MCTS_AI::setProfile(const Profile& newProfile)
 
 MCTS_AI::Profile MCTS_AI::getProfileByName(const std::string& name)
 {
-    std::string lowerName = name;
-    std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::tolower);
+    std::string lowerName = toLowerCopy(name);
     
     if (lowerName == "balanced") return createBalancedProfile();
     if (lowerName == "aggressive") return createAggressiveProfile();
@@ -180,28 +194,30 @@ MCTS_AI::Profile MCTS_AI::getProfileByName(const std::string& name)
 
 void MCTS_AI::initialize()
 {
-    log("Initializing MCTS components... (STUB - MVP uses heuristics)");
-    
-    // PHASE 1.1b MVP: Using simple heuristics instead of full MCTS
-    // FUTURE (Phase 1.2+): Implement actual MCTS initialization
-    //
-    // TODO: Uncomment when MCTS factories are implemented:
-    // stateReader = asc::mcts::createGameStateReader(gameMap, playerID);
-    // evaluator = asc::mcts::EvaluatorFactory::createSimpleCombatEvaluator(...);
-    // actionExecutor = asc::mcts::ActionExecutorFactory::createSimulationExecutor(...);
-    // searchEngine = std::make_unique<asc::mcts::MCTSSearch>(...);
-    
+    log("Initializing MCTS components...");
+
+    auto cfg = createMCTSConfig();
+    mctsConfig = *cfg;
+
+    stateReader = asc::mcts::createGameStateReader(gameMap);
+    auto evaluator = asc::mcts::EvaluatorFactory::createDefault();
+    searchEngine = std::make_unique<asc::mcts::MCTSSearch>(std::move(evaluator), mctsConfig);
+
     initialized = true;
-    log("MCTS components initialized (stub)");
+    log("MCTS components initialized");
 }
 
-// MVP: createMCTSConfig() commented out - not used in Phase 1.1b
-// std::unique_ptr<asc::mcts::MCTSConfig> MCTS_AI::createMCTSConfig() const
-// {
-//     // STUB: Not used in MVP
-//     // FUTURE (Phase 1.2+): Return actual MCTS configuration
-//     return nullptr;
-// }
+std::unique_ptr<asc::mcts::MCTSConfig> MCTS_AI::createMCTSConfig() const
+{
+    auto config = std::make_unique<asc::mcts::MCTSConfig>();
+    config->maxIterations = profile.maxIterations;
+    config->maxTimeMs = profile.maxTimeMs;
+    config->rolloutDepthLimit = profile.rolloutDepthLimit;
+    config->explorationConstant = profile.explorationConstant;
+    config->earlyTerminationThreshold = profile.earlyTerminationThreshold;
+    config->agentProfile = profile.agentProfile;
+    return config;
+}
 
 void MCTS_AI::processUnits(MapDisplayInterface* mapDisplay)
 {
@@ -258,39 +274,49 @@ bool MCTS_AI::processUnit(Vehicle* unit,
 {
     debug("Processing unit " + std::to_string(unit->networkid) + 
           " at (" + std::to_string(unit->xpos) + "," + std::to_string(unit->ypos) + ")");
-    
-    // MVP IMPLEMENTATION:
-    // For Phase 1.1b, use simple heuristic instead of full MCTS
-    // This allows testing the integration without requiring complete MCTS implementation
-    
-    // FUTURE (Phase 1.2+): Replace with actual MCTS search
-    // 1. Create tactical snapshot around unit
-    // 2. Run MCTS search engine
-    // 3. Get best action from search
-    // 4. Execute best action
-    
-    // Simple heuristic: Look for nearby enemies and attack, or wait
-    auto nearbyEnemies = findNearbyEnemies(unit);
-    
-    if (!nearbyEnemies.empty()) {
-        // Try to attack first enemy
-        int targetID = nearbyEnemies[0];
-        
-        if (legacyInterface->canAttack(unit->networkid, targetID)) {
-            debug("Attacking unit " + std::to_string(targetID));
-            
-            if (legacyInterface->executeAttack(unit->networkid, targetID, mapDisplay)) {
-                log("Unit " + std::to_string(unit->networkid) + " attacked unit " + 
-                    std::to_string(targetID));
-                return true;
-            }
-        }
+
+    if (!stateReader || !searchEngine) {
+        debug("MCTS components not initialized; waiting");
+        legacyInterface->executeWait(unit->networkid);
+        return false;
     }
-    
-    // No attack available - wait
-    debug("Unit " + std::to_string(unit->networkid) + " waiting");
-    legacyInterface->executeWait(unit->networkid);
-    return false;  // Waiting doesn't count as action taken
+
+    // Build tactical snapshot around the acting unit
+    std::vector<int> unitIDs{unit->networkid};
+    asc::mcts::MapCoordinate center(
+        static_cast<int16_t>(unit->xpos),
+        static_cast<int16_t>(unit->ypos));
+    auto snapshot = stateReader->createTacticalSnapshot(unitIDs, center, kTacticalRadius);
+
+    if (!snapshot) {
+        debug("Snapshot creation failed; waiting");
+        legacyInterface->executeWait(unit->networkid);
+        return false;
+    }
+
+    snapshot->currentPlayer = static_cast<asc::mcts::PlayerID>(playerID);
+    snapshot->perspective = static_cast<asc::mcts::PlayerID>(playerID);
+
+    auto result = searchEngine->search(*snapshot, static_cast<asc::mcts::PlayerID>(playerID));
+
+    if (!result.bestAction.has_value()) {
+        debug("MCTS returned no action; waiting");
+        legacyInterface->executeWait(unit->networkid);
+        return false;
+    }
+
+    const auto& action = *result.bestAction;
+    bool executed = executeAction(action, legacyInterface, mapDisplay);
+
+    if (!executed) {
+        debug("Failed to execute action; waiting");
+        legacyInterface->executeWait(unit->networkid);
+        return false;
+    }
+
+    log("Executed " + asc::mcts::getActionTypeName(action) + " for unit " +
+        std::to_string(unit->networkid));
+    return true;
 }
 
 std::vector<int> MCTS_AI::findNearbyEnemies(Vehicle* unit)
@@ -333,19 +359,43 @@ std::vector<int> MCTS_AI::findNearbyEnemies(Vehicle* unit)
     return enemies;
 }
 
-bool MCTS_AI::executeAction(int unitID, const std::string& action)
+bool MCTS_AI::executeAction(const asc::mcts::Action& action,
+                           asc::mcts::ILegacyGameInterface* legacyInterface,
+                           MapDisplayInterface* mapDisplay)
 {
-    // STUB IMPLEMENTATION:
-    // Convert MCTS action to ASC Command and execute
-    
-    debug("Executing action for unit " + std::to_string(unitID) + ": " + action);
-    
-    // TODO: Implement actual action execution using ASC Command system
-    // LEGACY CODE INTEGRATION:
-    // - Must use commands.h classes (MoveUnitCommand, AttackCommand, etc.)
-    // - Cannot use simulation executor (that's for MCTS tree only)
-    
-    return false;  // Not yet implemented
+    if (!legacyInterface) {
+        return false;
+    }
+
+    return std::visit(asc::mcts::overloaded {
+        [this, legacyInterface, mapDisplay](const asc::mcts::MoveAction& move) {
+            MapCoordinate dest = toLegacyCoordinate(move.destination);
+            if (!legacyInterface->canMove(move.unitID, dest)) {
+                debug("Move not legal for unit " + std::to_string(move.unitID));
+                return false;
+            }
+            return legacyInterface->executeMove(move.unitID, dest, mapDisplay);
+        },
+        [this, legacyInterface, mapDisplay](const asc::mcts::AttackAction& attack) {
+            MapCoordinate targetPos = toLegacyCoordinate(attack.target);
+            const int targetID = legacyInterface->getUnitAt(targetPos);
+            if (targetID < 0) {
+                debug("No target at attack position for unit " + std::to_string(attack.attackerID));
+                return false;
+            }
+
+            if (!legacyInterface->canAttack(attack.attackerID, targetID)) {
+                debug("Attack not legal for unit " + std::to_string(attack.attackerID) +
+                      " -> target " + std::to_string(targetID));
+                return false;
+            }
+
+            return legacyInterface->executeAttack(attack.attackerID, targetID, mapDisplay);
+        },
+        [legacyInterface](const asc::mcts::WaitAction& wait) {
+            return legacyInterface->executeWait(wait.unitID);
+        }
+    }, action);
 }
 
 void MCTS_AI::log(const std::string& message) const
@@ -382,6 +432,7 @@ MCTS_AI::Profile MCTS_AI::createBalancedProfile()
     
     p.enableLogging = false;
     p.enableDebugOutput = false;
+    p.agentProfile = "Balanced";
     
     return p;
 }
@@ -401,6 +452,7 @@ MCTS_AI::Profile MCTS_AI::createAggressiveProfile()
     p.positionWeight = 0.5;
     p.threatWeight = 0.8;  // Less concerned about RF
     
+    p.agentProfile = "Aggressive";
     return p;
 }
 
@@ -420,6 +472,7 @@ MCTS_AI::Profile MCTS_AI::createDefensiveProfile()
     p.healthWeight = 2.0;
     p.threatWeight = 2.5;  // Very concerned about RF
     
+    p.agentProfile = "Defensive";
     return p;
 }
 
@@ -433,6 +486,7 @@ MCTS_AI::Profile MCTS_AI::createFastProfile()
     p.maxTimeMs = 1000;
     p.rolloutDepthLimit = 5;
     
+    p.agentProfile = "Balanced";
     return p;
 }
 
@@ -446,5 +500,6 @@ MCTS_AI::Profile MCTS_AI::createDeepProfile()
     p.maxTimeMs = 5000;
     p.rolloutDepthLimit = 20;
     
+    p.agentProfile = "Balanced";
     return p;
 }

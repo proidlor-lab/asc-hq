@@ -1,15 +1,20 @@
 # Phase 2.1 Final Status Report
 
-**Date**: 2025-11-12 09:28 UTC  
-**Status**: ✅ ALL QUESTIONS RESOLVED - Ready for Week 1 Implementation
+**Date**: 2025-11-15 18:00 UTC  
+**Status**: 🚧 IMPLEMENTATION STARTED - Week 1-2 underway (agents + scoring wired, search live)
 
 ---
 
 ## Executive Summary
 
-All architectural questions for Phase 2.1 have been resolved. **NO BLOCKING ISSUES REMAIN**.
+All architectural questions for Phase 2.1 have been resolved. Implementation has started:
+- Agent interfaces, context, aggregation, and weight loading implemented.
+- MVP agent set implemented (LegalMove, ReactionFire, Aggressiveness, TargetPriority, ServiceUtility).
+- AgentSuite integrated into MCTS expansion and rollouts; heuristic rollout fallback removed.
+- Unit ordering in rollouts follows spec (long-range → close-range → service).
+- MCTS_AI now constructs MCTSSearch in production; legacy command context updated (actingPlayer set) to avoid crashes when executing MCTS-issued moves.
 
-Implementation can begin immediately with Week 1 (Core Interfaces + Infrastructure).
+Next focus: wire MCTS_AI to instantiate MCTSSearch with agent profiles, add state/material agents and service abilities, and expose profile selection at runtime.
 
 ---
 

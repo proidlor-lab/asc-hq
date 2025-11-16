@@ -7,9 +7,64 @@
 #include "../domain/i_action_executor.h"
 #include "../domain/simulation_action_executor.h"
 #include "../domain/abilities/ability_registry.h"
+#include "../domain/game_state_snapshot.h"
+#include "../agents/unit_role.h"
 #include <algorithm>
 #include <random>
 #include <chrono>
+#include <limits>
+
+namespace {
+
+using asc::mcts::UnitRole;
+using asc::mcts::UnitRoleClassifier;
+using asc::mcts::UnitSnapshot;
+
+std::vector<const UnitSnapshot*> orderUnitsByPriority(
+    const std::vector<const UnitSnapshot*>& units) {
+    std::vector<const UnitSnapshot*> longRange;
+    std::vector<const UnitSnapshot*> closeRange;
+    std::vector<const UnitSnapshot*> service;
+    std::vector<const UnitSnapshot*> others;
+
+    longRange.reserve(units.size());
+    closeRange.reserve(units.size());
+    service.reserve(units.size());
+    others.reserve(units.size());
+
+    for (const auto* unit : units) {
+        if (!unit || unit->isDestroyed()) {
+            continue;
+        }
+
+        const UnitRole role = UnitRoleClassifier::detectRole(*unit);
+        if (role == UnitRole::SERVICE_PRIMARY) {
+            service.push_back(unit);
+            continue;
+        }
+
+        if (UnitRoleClassifier::hasOffensiveCapability(unit->type)) {
+            const int maxRange = UnitRoleClassifier::getMaxWeaponRange(unit->type);
+            if (maxRange > 10) {
+                longRange.push_back(unit);
+            } else {
+                closeRange.push_back(unit);
+            }
+        } else {
+            others.push_back(unit);
+        }
+    }
+
+    std::vector<const UnitSnapshot*> ordered;
+    ordered.reserve(longRange.size() + closeRange.size() + service.size() + others.size());
+    ordered.insert(ordered.end(), longRange.begin(), longRange.end());
+    ordered.insert(ordered.end(), closeRange.begin(), closeRange.end());
+    ordered.insert(ordered.end(), service.begin(), service.end());
+    ordered.insert(ordered.end(), others.begin(), others.end());
+    return ordered;
+}
+
+} // namespace
 
 namespace asc {
 namespace mcts {
@@ -211,52 +266,61 @@ double MCTSSearch::simulate(MCTSNode* node) {
             break;  // No units to move
         }
         
-        // Simple rollout: select random unit and random action
         static std::random_device rd;
         static std::mt19937 gen(rd());
         
-        // Pick random unit
-        std::uniform_int_distribution<size_t> unitDist(0, units.size() - 1);
-        const auto* unit = units[unitDist(gen)];
-        
-        // Generate legal actions for this unit
-        auto actions = executor->generateLegalActions(unit->networkID);
-        if (actions.empty()) {
+        const auto orderedUnits = orderUnitsByPriority(units);
+        const UnitSnapshot* actingUnit = nullptr;
+        std::vector<Action> actions;
+        for (const auto* candidate : orderedUnits) {
+            auto candidateActions = executor->generateLegalActions(candidate->networkID);
+            if (candidateActions.empty()) {
+                continue;
+            }
+            actingUnit = candidate;
+            actions = std::move(candidateActions);
+            break;
+        }
+
+        if (!actingUnit || actions.empty()) {
             break;  // No legal actions
         }
         
-        // Pick random action (or best heuristic if configured)
+        // Pick action via agents if available
         Action actionToExecute;
-        if (config_.useRandomRollout || actions.size() == 1) {
+        bool selectedViaAgents = false;
+        if (const auto* snapshot = dynamic_cast<const GameStateSnapshot*>(&currentState)) {
+            AgentAggregationConfig aggConfig{config_.vetoThreshold, config_.pruneThreshold};
+            auto scored = agentSuite_.scoreActions(
+                *snapshot,
+                currentState.getCurrentPlayer(),
+                actions,
+                &combatCalculator_,
+                aggConfig,
+                node->getDepth() + depth,
+                true
+            );
+
+            if (!scored.empty()) {
+                size_t limit = scored.size();
+                if (config_.maxActionsRollout > 0) {
+                    limit = std::min(limit, static_cast<size_t>(config_.maxActionsRollout));
+                    scored.resize(limit);
+                }
+
+                if (config_.useRandomRollout && scored.size() > 1) {
+                    std::uniform_int_distribution<size_t> actionDist(0, scored.size() - 1);
+                    actionToExecute = scored[actionDist(gen)].action;
+                } else {
+                    actionToExecute = scored.front().action;
+                }
+                selectedViaAgents = true;
+            }
+        }
+
+        if (!selectedViaAgents) {
             std::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
             actionToExecute = actions[actionDist(gen)];
-        } else {
-            // Heuristic rollout: evaluate each action and pick best
-            // (More expensive but better quality)
-            double bestScore = -std::numeric_limits<double>::infinity();
-            actionToExecute = actions[0];
-            
-            EvaluationContext evalCtx;
-            evalCtx.perspectivePlayer = node->getPerspective();
-            
-            for (const auto& action : actions) {
-                // Try action
-                ExecutionContext execCtx;
-                auto result = executor->execute(action, execCtx);
-                
-                if (result.success) {
-                    // Evaluate resulting state
-                    auto evalResult = evaluator_->evaluate(simExec->getState(), evalCtx);
-                    
-                    if (evalResult.score > bestScore) {
-                        bestScore = evalResult.score;
-                        actionToExecute = action;
-                    }
-                    
-                    // Undo action
-                    executor->undo();
-                }
-            }
         }
         
         // Execute chosen action
@@ -343,6 +407,38 @@ std::vector<Action> MCTSSearch::getUnexpandedActions(MCTSNode* node) const {
         node->getState(), 
         node->getState().getCurrentPlayer()
     );
+
+    const auto* snapshot = dynamic_cast<const GameStateSnapshot*>(&node->getState());
+    if (snapshot) {
+        AgentAggregationConfig aggConfig{config_.vetoThreshold, config_.pruneThreshold};
+        auto scored = agentSuite_.scoreActions(
+            *snapshot,
+            snapshot->getCurrentPlayer(),
+            allActions,
+            &combatCalculator_,
+            aggConfig,
+            node->getDepth(),
+            false
+        );
+
+        std::vector<Action> pruned;
+        const size_t maxCount = config_.maxActionsExpansion > 0
+            ? static_cast<size_t>(config_.maxActionsExpansion)
+            : scored.size();
+        pruned.reserve(std::min(maxCount, scored.size()));
+
+        for (const auto& entry : scored) {
+            pruned.push_back(entry.action);
+            if (pruned.size() >= maxCount) {
+                break;
+            }
+        }
+
+        allActions = std::move(pruned);
+    } else if (config_.maxActionsExpansion > 0 &&
+               allActions.size() > static_cast<size_t>(config_.maxActionsExpansion)) {
+        allActions.resize(config_.maxActionsExpansion);
+    }
     
     // Filter out actions already tried (have child nodes)
     std::vector<Action> unexpandedActions;

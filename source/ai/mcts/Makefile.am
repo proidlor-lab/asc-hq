@@ -32,6 +32,12 @@ libmcts_la_SOURCES = \
 	domain/abilities/ability_registry.cpp \
 	domain/abilities/movement_ability.cpp \
 	domain/abilities/combat_ability.cpp \
+	agents/utility_aggregator.cpp \
+	agents/reaction_fire_detector.cpp \
+	agents/unit_role.cpp \
+	agents/agent_weight_config.cpp \
+	agents/mvp_agents.cpp \
+	agents/agent_suite.cpp \
 	core/mcts_search.cpp \
 	infrastructure/legacy_game_interface.cpp \
 	infrastructure/pathfinding_adapter.cpp \
@@ -48,7 +54,8 @@ EXTRA_DIST = \
 	$(srcdir)/coordination/*.h \
 	$(srcdir)/infrastructure/*.h \
 	$(srcdir)/*.md \
-	$(srcdir)/docs/*.md
+	$(srcdir)/docs/*.md \
+	$(srcdir)/mcts_agents.ini
 
 # Test binaries
 noinst_PROGRAMS = snapshot_test action_executor_test evaluator_test

@@ -4,7 +4,7 @@ MAINTAINERCLEANFILES	= Makefile.in
 # Build MCTS AI subdirectory
 SUBDIRS = mcts
 
-AM_CXXFLAGS		= @SDL_CFLAGS@ @SIGC_CFLAGS@ -Dsgmain @LokiInclude@
+AM_CXXFLAGS		= @SDL_CFLAGS@ @SIGC_CFLAGS@ -Dsgmain @LokiInclude@ -std=c++23
 
 AM_CPPFLAGS = -I$(top_srcdir)/source/libs/paragui/include 
 

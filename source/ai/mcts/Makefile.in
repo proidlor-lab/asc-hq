@@ -108,12 +108,14 @@ PROGRAMS = $(noinst_PROGRAMS)
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libmcts_la_LIBADD =
 am_libmcts_la_OBJECTS = unit_snapshot.lo game_state_reader.lo \
-	action_types.lo combat_calculator.lo \
+	action_types.lo combat_calculator.lo combat_calculator_adapter.lo \
 	simulation_action_executor.lo real_game_action_executor.lo \
 	action_executor_factory.lo simple_combat_evaluator.lo \
 	evaluator_factory.lo i_ability.lo ability_registry.lo \
-	movement_ability.lo combat_ability.lo mcts_search.lo \
-	legacy_game_interface.lo pathfinding_adapter.lo \
+	movement_ability.lo combat_ability.lo \
+	utility_aggregator.lo reaction_fire_detector.lo unit_role.lo \
+	agent_weight_config.lo mvp_agents.lo agent_suite.lo \
+	mcts_search.lo legacy_game_interface.lo pathfinding_adapter.lo \
 	mcts_manual_test.lo
 libmcts_la_OBJECTS = $(am_libmcts_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -430,6 +432,7 @@ libmcts_la_SOURCES = \
 	domain/game_state_reader.cpp \
 	domain/action_types.cpp \
 	domain/combat_calculator.cpp \
+	domain/combat_calculator_adapter.cpp \
 	domain/simulation_action_executor.cpp \
 	domain/real_game_action_executor.cpp \
 	domain/action_executor_factory.cpp \
@@ -439,6 +442,12 @@ libmcts_la_SOURCES = \
 	domain/abilities/ability_registry.cpp \
 	domain/abilities/movement_ability.cpp \
 	domain/abilities/combat_ability.cpp \
+	agents/utility_aggregator.cpp \
+	agents/reaction_fire_detector.cpp \
+	agents/unit_role.cpp \
+	agents/agent_weight_config.cpp \
+	agents/mvp_agents.cpp \
+	agents/agent_suite.cpp \
 	core/mcts_search.cpp \
 	infrastructure/legacy_game_interface.cpp \
 	infrastructure/pathfinding_adapter.cpp \
@@ -625,6 +634,12 @@ combat_calculator.lo: domain/combat_calculator.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='domain/combat_calculator.cpp' object='combat_calculator.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o combat_calculator.lo `test -f 'domain/combat_calculator.cpp' || echo '$(srcdir)/'`domain/combat_calculator.cpp
+combat_calculator_adapter.lo: domain/combat_calculator_adapter.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT combat_calculator_adapter.lo -MD -MP -MF $(DEPDIR)/combat_calculator_adapter.Tpo -c -o combat_calculator_adapter.lo `test -f 'domain/combat_calculator_adapter.cpp' || echo '$(srcdir)/'`domain/combat_calculator_adapter.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/combat_calculator_adapter.Tpo $(DEPDIR)/combat_calculator_adapter.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='domain/combat_calculator_adapter.cpp' object='combat_calculator_adapter.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o combat_calculator_adapter.lo `test -f 'domain/combat_calculator_adapter.cpp' || echo '$(srcdir)/'`domain/combat_calculator_adapter.cpp
 
 simulation_action_executor.lo: domain/simulation_action_executor.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT simulation_action_executor.lo -MD -MP -MF $(DEPDIR)/simulation_action_executor.Tpo -c -o simulation_action_executor.lo `test -f 'domain/simulation_action_executor.cpp' || echo '$(srcdir)/'`domain/simulation_action_executor.cpp
@@ -688,6 +703,48 @@ combat_ability.lo: domain/abilities/combat_ability.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='domain/abilities/combat_ability.cpp' object='combat_ability.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o combat_ability.lo `test -f 'domain/abilities/combat_ability.cpp' || echo '$(srcdir)/'`domain/abilities/combat_ability.cpp
+
+utility_aggregator.lo: agents/utility_aggregator.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT utility_aggregator.lo -MD -MP -MF $(DEPDIR)/utility_aggregator.Tpo -c -o utility_aggregator.lo `test -f 'agents/utility_aggregator.cpp' || echo '$(srcdir)/'`agents/utility_aggregator.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/utility_aggregator.Tpo $(DEPDIR)/utility_aggregator.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='agents/utility_aggregator.cpp' object='utility_aggregator.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o utility_aggregator.lo `test -f 'agents/utility_aggregator.cpp' || echo '$(srcdir)/'`agents/utility_aggregator.cpp
+
+reaction_fire_detector.lo: agents/reaction_fire_detector.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT reaction_fire_detector.lo -MD -MP -MF $(DEPDIR)/reaction_fire_detector.Tpo -c -o reaction_fire_detector.lo `test -f 'agents/reaction_fire_detector.cpp' || echo '$(srcdir)/'`agents/reaction_fire_detector.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/reaction_fire_detector.Tpo $(DEPDIR)/reaction_fire_detector.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='agents/reaction_fire_detector.cpp' object='reaction_fire_detector.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o reaction_fire_detector.lo `test -f 'agents/reaction_fire_detector.cpp' || echo '$(srcdir)/'`agents/reaction_fire_detector.cpp
+
+unit_role.lo: agents/unit_role.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unit_role.lo -MD -MP -MF $(DEPDIR)/unit_role.Tpo -c -o unit_role.lo `test -f 'agents/unit_role.cpp' || echo '$(srcdir)/'`agents/unit_role.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unit_role.Tpo $(DEPDIR)/unit_role.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='agents/unit_role.cpp' object='unit_role.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unit_role.lo `test -f 'agents/unit_role.cpp' || echo '$(srcdir)/'`agents/unit_role.cpp
+
+agent_weight_config.lo: agents/agent_weight_config.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT agent_weight_config.lo -MD -MP -MF $(DEPDIR)/agent_weight_config.Tpo -c -o agent_weight_config.lo `test -f 'agents/agent_weight_config.cpp' || echo '$(srcdir)/'`agents/agent_weight_config.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/agent_weight_config.Tpo $(DEPDIR)/agent_weight_config.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='agents/agent_weight_config.cpp' object='agent_weight_config.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o agent_weight_config.lo `test -f 'agents/agent_weight_config.cpp' || echo '$(srcdir)/'`agents/agent_weight_config.cpp
+
+mvp_agents.lo: agents/mvp_agents.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mvp_agents.lo -MD -MP -MF $(DEPDIR)/mvp_agents.Tpo -c -o mvp_agents.lo `test -f 'agents/mvp_agents.cpp' || echo '$(srcdir)/'`agents/mvp_agents.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mvp_agents.Tpo $(DEPDIR)/mvp_agents.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='agents/mvp_agents.cpp' object='mvp_agents.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mvp_agents.lo `test -f 'agents/mvp_agents.cpp' || echo '$(srcdir)/'`agents/mvp_agents.cpp
+
+agent_suite.lo: agents/agent_suite.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT agent_suite.lo -MD -MP -MF $(DEPDIR)/agent_suite.Tpo -c -o agent_suite.lo `test -f 'agents/agent_suite.cpp' || echo '$(srcdir)/'`agents/agent_suite.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/agent_suite.Tpo $(DEPDIR)/agent_suite.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='agents/agent_suite.cpp' object='agent_suite.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o agent_suite.lo `test -f 'agents/agent_suite.cpp' || echo '$(srcdir)/'`agents/agent_suite.cpp
 
 mcts_search.lo: core/mcts_search.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mcts_search.lo -MD -MP -MF $(DEPDIR)/mcts_search.Tpo -c -o mcts_search.lo `test -f 'core/mcts_search.cpp' || echo '$(srcdir)/'`core/mcts_search.cpp

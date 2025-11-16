@@ -44,6 +44,8 @@ int PlayerSetupWidget::guessHeight( GameMap* gamemap )
 PlayerSetupWidget::PlayerSetupWidget( GameMap* gamemap, Mode mode, PG_Widget *parent, const PG_Rect &r, const std::string &style ) : PG_ScrollWidget( parent, r, style ) , actmap ( gamemap )
 {
    this->mode = mode;
+   // Avoid vector reallocations so stored pointers for signal callbacks stay valid.
+   playerWidgets.reserve(actmap->getPlayerCount());
    
    int counter = 0; 
    for ( int i = 0; i < actmap->getPlayerCount(); ++i ) 

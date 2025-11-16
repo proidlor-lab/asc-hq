@@ -1,17 +1,40 @@
 # MCTS AI Implementation Status
 
-**Last Updated**: 2025-11-10 13:00 UTC  
-**Current Phase**: Phase 1.2 - Action System Extensions ✅ COMPLETE (100%)  
-**Runtime Status**: ✅ **PRODUCTION READY** (97% test pass rate)  
-**Overall Progress**: 70%
+**Last Updated**: 2025-11-12 18:00 UTC  
+**Current Phase**: Phase 2.1 - Utility-Agent Framework 🚧 IN PROGRESS (~25%)  
+**Runtime Status**: ✅ **PRODUCTION READY** (97% test pass rate on Phase 1.2 code)  
+**Overall Progress**: 75%
+
+### Latest Update (2025-11-15) - Search Wiring + Legacy Context Fix
+
+- ✅ MCTS_AI now uses the real MCTS search pipeline (state reader + MCTSSearch) instead of the MVP heuristic.
+- ✅ Legacy command context now sets `actingPlayer`, fixing a nullptr crash when executing moves from MCTS decisions.
+- ✅ libmcts build includes agent, adapter, and calculator components (AgentSuite, UnitRoleClassifier, CombatCalculatorAdapter).
+- ⚠️ Current behavior: actions may look random/greedy because profiles use the default agent weights; tuning still pending.
+- Next: tune agent profiles per AI variant and tighten action selection to reduce "random" moves.
 
 ---
 
 ## Current Work
 
-**Active Phase**: ✅ Phase 1.2 COMPLETE - Action System Extensions Ready for Phase 2.1!
+**Active Phase**: 🚧 Phase 2.1 - Utility-Agent Framework (Week 1-2 in progress)
 
-### Latest Update (2025-11-10) - Phase 1.2 COMPLETE - Action System Extensions ✅
+### Latest Update (2025-11-12) - Agent Framework Wiring (Phase 2.1)
+
+What landed:
+- ✅ Agent interfaces, context, aggregation logic implemented
+- ✅ MVP agents implemented (LegalMove, ReactionFire, Aggressiveness, TargetPriority, ServiceUtility) with weight profiles
+- ✅ AgentSuite + INI loader (`mcts_agents.ini`) with profile selection
+- ✅ Expansion pruning uses agent scoring + profile thresholds (`vetoThreshold/pruneThreshold`, `maxActionsExpansion`)
+- ✅ Rollouts use agent ranking (no heuristic fallback), respect `maxActionsRollout`
+- ✅ Unit ordering for rollouts follows spec (long-range → close-range → service)
+
+Still pending:
+- ⏳ Wire MCTS_AI to construct MCTSSearch with agent profiles (still on MVP heuristic path)
+- ⏳ Service/build abilities and Material/State agents
+- ⏳ Profile selection per AI variant at runtime
+
+### Previous Update (2025-11-10) - Phase 1.2 COMPLETE - Action System Extensions ✅
 
 **Phase 1.2 Achievements** (Capability-Based Actions + Combat + Pathfinding API):
 - ✅ **IGameState abstraction** - Introduced interface so MCTS, abilities, and evaluators no longer depend on concrete snapshots
@@ -271,7 +294,7 @@ See [docs/implementation_roadmap.md](docs/implementation_roadmap.md) for detaile
 | 0.3 | Basic Evaluation Function | ✅ Done | 100% | 26/26 tests passing, ~0.3ms evaluation time |
 | 1.1 | Core MCTS Engine | ✅ Done | 100% | MCTS algorithm complete, manual test interface ready |
 | 1.1b | Integration Skeleton | ✅ Done | 100% | **FULLY FUNCTIONAL** - All 6 AI types working, bugs fixed, runtime verified |
-| 1.2 | Utility-Agent Framework | ⏸️ Not Started | 0% | - |
+| 1.2 | Utility-Agent Framework | 🚧 In Progress | 25% | Agent suite, scoring, rollout integration done |
 | 1.3 | Rollout Policy | ⏸️ Not Started | 0% | - |
 | 1.4 | Full Integration | ⏸️ Not Started | 0% | - |
 | 2 | Tactical Domain | ⏸️ Not Started | 0% | - |

@@ -31,7 +31,7 @@ LegacyGameInterface::LegacyGameInterface(GameMap* gameMap)
 }
 
 bool LegacyGameInterface::executeMove(UnitID unitID, 
-                                     MapCoordinate destination,
+                                     ::MapCoordinate destination,
                                      MapDisplayInterface* display)
 {
     // LEGACY CODE INTEGRATION:
@@ -74,6 +74,7 @@ bool LegacyGameInterface::executeMove(UnitID unitID,
     Context context;
     context.gamemap = gameMap;
     context.display = display;
+    context.actingPlayer = &gameMap->player[unit->getOwner()];
     
     ActionResult result = command->execute(context);
     
@@ -120,7 +121,7 @@ bool LegacyGameInterface::executeAttack(UnitID attackerID,
     
     // Check if target is attackable
     const auto& attackableUnits = command->getAttackableUnits();
-    MapCoordinate targetPos(target->xpos, target->ypos);
+    ::MapCoordinate targetPos(target->xpos, target->ypos);
     
     if (attackableUnits.find(targetPos) == attackableUnits.end()) {
         return false;  // Target not in range
@@ -133,6 +134,7 @@ bool LegacyGameInterface::executeAttack(UnitID attackerID,
     Context context;
     context.gamemap = gameMap;
     context.display = display;
+    context.actingPlayer = &gameMap->player[attacker->getOwner()];
     
     ActionResult result = command->execute(context);
     
@@ -165,7 +167,7 @@ bool LegacyGameInterface::executeWait(UnitID unitID)
     return true;
 }
 
-bool LegacyGameInterface::canMove(UnitID unitID, MapCoordinate destination) const
+bool LegacyGameInterface::canMove(UnitID unitID, ::MapCoordinate destination) const
 {
     // LEGACY CODE ISSUE: Must cast away const to use ASC's non-const API
     // FUTURE: Make GameMap query methods const-correct
@@ -222,7 +224,7 @@ bool LegacyGameInterface::canAttack(UnitID attackerID, UnitID targetID) const
     }
     
     // Check if target is in attackable list
-    MapCoordinate targetPos(target->xpos, target->ypos);
+    ::MapCoordinate targetPos(target->xpos, target->ypos);
     const auto& attackableUnits = command->getAttackableUnits();
     
     return (attackableUnits.find(targetPos) != attackableUnits.end());
@@ -252,7 +254,7 @@ std::vector<UnitID> LegacyGameInterface::getPlayerUnits(PlayerID playerID) const
     return units;
 }
 
-UnitID LegacyGameInterface::getUnitAt(MapCoordinate position) const
+UnitID LegacyGameInterface::getUnitAt(::MapCoordinate position) const
 {
     // LEGACY CODE: Get field, check for vehicle
     // FUTURE: GameMap should have getUnitAt(MapCoordinate) method

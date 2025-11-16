@@ -22,43 +22,19 @@
 #ifndef MCTS_SEARCH_H
 #define MCTS_SEARCH_H
 
+#include "mcts_config.h"
 #include "mcts_node.h"
 #include "../domain/i_tactical_evaluator.h"
 #include "../domain/i_action_executor.h"
+#include "../agents/agent_suite.h"
+#include "../domain/combat_calculator_adapter.h"
 #include <memory>
 #include <optional>
 #include <chrono>
+#include <string>
 
 namespace asc {
 namespace mcts {
-
-/**
- * Configuration for MCTS search
- * 
- * Tunable parameters for controlling search behavior
- */
-struct MCTSConfig {
-    // Search budget
-    int maxIterations{1000};               // Max MCTS iterations
-    int maxTimeMs{5000};                   // Max search time in milliseconds
-    
-    // UCB1 parameters
-    double explorationConstant{1.414};     // C in UCB1 formula (sqrt(2))
-    
-    // Rollout parameters
-    int rolloutDepthLimit{10};             // Max moves in rollout
-    bool useRandomRollout{false};          // Random vs. heuristic rollout
-    
-    // Expansion control
-    int minVisitsBeforeExpansion{1};       // Visit parent N times before expanding
-    int maxChildrenPerNode{25};            // Limit branching factor
-    
-    // Optimization
-    bool enableEarlyTermination{true};     // Stop if clear winner found
-    double earlyTerminationThreshold{0.95}; // Win probability threshold
-    
-    constexpr MCTSConfig() noexcept = default;
-};
 
 /**
  * Result of MCTS search
@@ -111,7 +87,9 @@ public:
         : evaluator_(std::move(evaluator))
         , config_(config)
         , root_(nullptr)
-    {}
+    {
+        agentSuite_.selectProfile(config_.agentProfile);
+    }
     
     // Prevent copying (owns unique resources)
     MCTSSearch(const MCTSSearch&) = delete;
@@ -165,10 +143,16 @@ public:
     
     void setConfig(const MCTSConfig& config) {
         config_ = config;
+        agentSuite_.selectProfile(config_.agentProfile);
     }
     
     const MCTSConfig& getConfig() const noexcept {
         return config_;
+    }
+
+    void setAgentProfile(const std::string& profile) {
+        config_.agentProfile = profile;
+        agentSuite_.selectProfile(profile);
     }
     
     // ========== Statistics ==========
@@ -272,6 +256,8 @@ private:
     std::unique_ptr<ITacticalEvaluator> evaluator_;
     MCTSConfig config_;
     std::unique_ptr<MCTSNode> root_;
+    AgentSuite agentSuite_;
+    CombatCalculatorAdapter combatCalculator_;
     
     // Statistics
     int iterationsRun_{0};

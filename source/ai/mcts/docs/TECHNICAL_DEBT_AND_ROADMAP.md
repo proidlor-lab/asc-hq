@@ -1,6 +1,6 @@
 # MCTS AI - Technical Debt & Development Roadmap
 
-**Last Updated**: 2025-11-10  
+**Last Updated**: 2025-11-15  
 **Purpose**: Consolidated technical debt tracking and implementation priorities  
 **Source**: Merged from TECHNICAL_DEBT_AND_ROADMAP.md + CRITICAL_FINDINGS.md
 
@@ -9,6 +9,11 @@
 ## Executive Summary
 
 The MCTS AI implementation has a **solid architectural foundation** with clean interfaces and modern C++23 patterns. Phase 1.2 (Action System Extensions: Capability-Based Actions + Combat Integration + Pathfinding API) is complete. The system is now production-ready with fallback mechanisms and ready for Phase 2.1 (Utility-Agent Framework).
+
+**Operational Update (2025-11-15)**:
+- MCTS_AI now uses the real MCTS search pipeline (state reader + MCTSSearch) in-game; the MVP heuristic path is retired.
+- Legacy command context sets `actingPlayer`, fixing the null-pointer crash when executing MCTS-issued moves.
+- Agent and adapter components are linked into `libmcts`; actions execute end-to-end (current behavior still heuristic/random until profile tuning lands).
 
 **Overall Assessment**:
 - Architecture Quality: **8.5/10** (Strong interfaces, adapter pattern for legacy integration)
@@ -89,12 +94,12 @@ The MCTS AI implementation has a **solid architectural foundation** with clean i
 **Impact**: Architectural blocker removed, but value comes once alternative states exist  
 **Effort**: 2-3 days to add first non-tactical implementation, +2 days to clean remaining downcasts
 
-### 1.2 Rollout Policy Abstraction - HARD-CODED
-**Issue**: 90-line monolithic simulate() method with if-else branching  
-**Current State**: Only supports random vs. simple heuristic rollout  
-**Impact**: Cannot experiment with learned policies, ε-greedy, or domain-specific heuristics  
-**Blocker For**: Advanced agent behaviors, ML integration  
-**Effort**: 2 days
+### 1.2 Rollout Policy Abstraction - PARTIAL
+**Issue**: Rollout selection was random/heuristic only  
+**Current State (2025-11-12)**: AgentSuite drives rollout action selection (scored/pruned list, no heuristic fallback); still need pluggable policy interface and profile wiring from MCTS_AI  
+**Impact**: Better rollouts but policy selection not yet configurable externally  
+**Blocker For**: Learned policies, ε-greedy experiments  
+**Effort**: 1-2 days to add policy interface + runtime selection
 
 ### 1.3 Executor Factory Pattern - INCOMPLETE
 **Issue**: Static factory with no customization or dependency injection  
@@ -153,7 +158,7 @@ The MCTS AI implementation has a **solid architectural foundation** with clean i
 **Documents**: See `PATHFINDING_ACTIVATION_GUIDE.md`
 
 ### 3.3 Reaction Fire - PARTIAL
-**Current**: Uses the shared `CombatCalculator` for true ASC damage values but still assumes deterministic shots (as in the base game) and never consumes ammo/weapon state  
+**Current**: Uses the shared `CombatCalculator` for true ASC damage values; RFDetector computes threats for agent scoring. Still assumes deterministic shots and never consumes ammo/weapon state.  
 **Missing**: Ammo depletion, weapon cooldown, multiple shooters, and other side effects handled in `reactionfire.cpp`  
 **Impact**: RF threat assessment still optimistic/pessimistic in edge cases, service/logistics agents cannot reason about ammo usage  
 **Effort**: 2 days

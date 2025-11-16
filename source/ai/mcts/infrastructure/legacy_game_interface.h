@@ -19,6 +19,7 @@
 #include <memory>
 #include <vector>
 #include "../../../typen.h"  // For ASC's MapCoordinate and other types
+#include "../domain/types.h"
 
 // Forward declarations to avoid including legacy headers
 class GameMap;
@@ -27,10 +28,6 @@ class MapDisplayInterface;
 
 namespace asc {
 namespace mcts {
-
-// Type aliases for legacy ASC types
-using UnitID = int;      // ASC uses int for network IDs
-using PlayerID = int;    // ASC uses int for player IDs (0-7)
 
 /**
  * @brief Interface to execute actions on the real game (not simulation)
@@ -70,7 +67,7 @@ public:
      * - Must trigger all side effects (view updates, events, etc.)
      */
     virtual bool executeMove(UnitID unitID, 
-                            MapCoordinate destination,
+                            ::MapCoordinate destination,
                             MapDisplayInterface* display = nullptr) = 0;
     
     /**
@@ -109,7 +106,7 @@ public:
      * - Must use legacy pathfinding system
      * - Must check terrain, fuel, other units, etc.
      */
-    virtual bool canMove(UnitID unitID, MapCoordinate destination) const = 0;
+    virtual bool canMove(UnitID unitID, ::MapCoordinate destination) const = 0;
     
     /**
      * @brief Check if a unit can attack a target
@@ -141,7 +138,7 @@ public:
      * @param position Hex coordinate
      * @return Unit ID, or -1 if no unit at position
      */
-    virtual UnitID getUnitAt(MapCoordinate position) const = 0;
+    virtual UnitID getUnitAt(::MapCoordinate position) const = 0;
     
     /**
      * @brief Check if a unit has finished its turn
@@ -185,7 +182,7 @@ public:
     
     // Interface implementation
     bool executeMove(UnitID unitID, 
-                    MapCoordinate destination,
+                    ::MapCoordinate destination,
                     MapDisplayInterface* display = nullptr) override;
     
     bool executeAttack(UnitID attackerID,
@@ -194,13 +191,13 @@ public:
     
     bool executeWait(UnitID unitID) override;
     
-    bool canMove(UnitID unitID, MapCoordinate destination) const override;
+    bool canMove(UnitID unitID, ::MapCoordinate destination) const override;
     
     bool canAttack(UnitID attackerID, UnitID targetID) const override;
     
     std::vector<UnitID> getPlayerUnits(PlayerID playerID) const override;
     
-    UnitID getUnitAt(MapCoordinate position) const override;
+    UnitID getUnitAt(::MapCoordinate position) const override;
     
     bool hasUnitFinishedTurn(UnitID unitID) const override;
 

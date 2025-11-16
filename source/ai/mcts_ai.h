@@ -19,6 +19,8 @@
 #include "../typen.h"
 #include "../baseaiinterface.h"
 #include "ai_factory.h"
+#include "mcts/domain/action_types.h"
+#include "mcts/core/mcts_config.h"
 #include <memory>
 #include <string>
 #include <vector>
@@ -81,6 +83,7 @@ public:
         
         bool enableLogging;
         bool enableDebugOutput;
+        std::string agentProfile;
     };
     
     /**
@@ -230,12 +233,9 @@ private:
     bool initialized;
     
     // MODERN C++ COMPONENTS (using smart pointers internally):
-    // MVP NOTE: Commented out for Phase 1.1b - using heuristics instead of MCTS
-    // Phase 1.2+ will uncomment and implement actual MCTS
-    // std::unique_ptr<asc::mcts::IGameStateReader> stateReader;
-    // std::unique_ptr<asc::mcts::ITacticalEvaluator> evaluator;
-    // std::unique_ptr<asc::mcts::IActionExecutor> actionExecutor;
-    // std::unique_ptr<asc::mcts::MCTSSearch> searchEngine;
+    std::unique_ptr<asc::mcts::IGameStateReader> stateReader;
+    std::unique_ptr<asc::mcts::MCTSSearch> searchEngine;
+    asc::mcts::MCTSConfig mctsConfig;
     
     // ===== Internal Methods =====
     
@@ -248,7 +248,7 @@ private:
      * @brief Create MCTS configuration from profile
      * MVP: Not used in Phase 1.1b
      */
-    // std::unique_ptr<asc::mcts::MCTSConfig> createMCTSConfig() const;
+    std::unique_ptr<asc::mcts::MCTSConfig> createMCTSConfig() const;
     
     /**
      * @brief Process all player units
@@ -291,7 +291,9 @@ private:
      * @param action Action to execute
      * @return true if action executed successfully
      */
-    bool executeAction(int unitID, const std::string& action);
+    bool executeAction(const asc::mcts::Action& action,
+                       asc::mcts::ILegacyGameInterface* legacyInterface,
+                       MapDisplayInterface* mapDisplay);
     
     /**
      * @brief Logging helper
