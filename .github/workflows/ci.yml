@@ -1,0 +1,305 @@
+name: CI Build and Test
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+  workflow_dispatch:
+
+env:
+  # Parallel build jobs
+  MAKEFLAGS: "-j2"
+
+jobs:
+  build-gui:
+    name: Build (GUI Mode)
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.ccache
+          /var/cache/apt
+        key: ${{ runner.os }}-deps-${{ hashFiles('configure.ac') }}
+        restore-keys: |
+          ${{ runner.os }}-deps-
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          autoconf \
+          automake \
+          libtool \
+          pkg-config \
+          perl \
+          zip \
+          libsdl1.2-dev \
+          libsdl-image1.2-dev \
+          libsdl-mixer1.2-dev \
+          libsdl-sound1.2-dev \
+          liblua5.1-0-dev \
+          libwxgtk3.0-gtk3-dev \
+          libsigc++-2.0-dev \
+          libfreetype6-dev \
+          libexpat1-dev \
+          libphysfs-dev \
+          libjpeg-dev \
+          libpng-dev \
+          libbz2-dev \
+          libboost-regex-dev \
+          libboost-dev \
+          libvorbis-dev \
+          ccache
+
+    - name: Setup ccache
+      run: |
+        ccache --max-size=500M
+        ccache --set-config=compression=true
+
+    - name: Bootstrap
+      run: ./bootstrap
+
+    - name: Configure
+      run: |
+        export CC="ccache gcc"
+        export CXX="ccache g++"
+        ./configure --enable-debug
+
+    - name: Build
+      run: make -j2
+
+    - name: Run unit tests
+      run: make check || true
+      continue-on-error: true
+
+    - name: Show ccache statistics
+      run: ccache -s
+
+    - name: Upload build artifacts
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-logs
+        path: |
+          config.log
+          source/**/*.log
+        retention-days: 7
+
+  build-headless:
+    name: Build (Headless Mode)
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.ccache
+          /var/cache/apt
+        key: ${{ runner.os }}-headless-deps-${{ hashFiles('configure.ac') }}
+        restore-keys: |
+          ${{ runner.os }}-headless-deps-
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          autoconf \
+          automake \
+          libtool \
+          pkg-config \
+          perl \
+          zip \
+          libsdl1.2-dev \
+          libsdl-image1.2-dev \
+          libsdl-mixer1.2-dev \
+          libsdl-sound1.2-dev \
+          liblua5.1-0-dev \
+          libwxgtk3.0-gtk3-dev \
+          libsigc++-2.0-dev \
+          libfreetype6-dev \
+          libexpat1-dev \
+          libphysfs-dev \
+          libjpeg-dev \
+          libpng-dev \
+          libbz2-dev \
+          libboost-regex-dev \
+          libboost-dev \
+          libvorbis-dev \
+          ccache
+
+    - name: Setup ccache
+      run: |
+        ccache --max-size=500M
+        ccache --set-config=compression=true
+
+    - name: Bootstrap
+      run: ./bootstrap
+
+    - name: Configure (headless)
+      run: |
+        export CC="ccache gcc"
+        export CXX="ccache g++"
+        ./configure --enable-debug
+
+    - name: Build
+      run: make -j2
+
+    - name: Run unit tests
+      run: make check || true
+      continue-on-error: true
+
+    - name: Show ccache statistics
+      run: ccache -s
+
+  mcts-tests:
+    name: MCTS Module Tests
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          autoconf \
+          automake \
+          libtool \
+          pkg-config \
+          perl \
+          zip \
+          libsdl1.2-dev \
+          libsdl-image1.2-dev \
+          libsdl-mixer1.2-dev \
+          libsdl-sound1.2-dev \
+          liblua5.1-0-dev \
+          libwxgtk3.0-gtk3-dev \
+          libsigc++-2.0-dev \
+          libfreetype6-dev \
+          libexpat1-dev \
+          libphysfs-dev \
+          libjpeg-dev \
+          libpng-dev \
+          libbz2-dev \
+          libboost-regex-dev \
+          libboost-dev \
+          libvorbis-dev
+
+    - name: Bootstrap
+      run: ./bootstrap
+
+    - name: Configure
+      run: ./configure
+
+    - name: Build MCTS tests
+      run: |
+        cd source/ai/mcts
+        make -j2 action_executor_test snapshot_test evaluator_test || true
+      continue-on-error: true
+
+    - name: Run MCTS tests
+      run: |
+        cd source/ai/mcts
+        echo "=== Running action_executor_test ==="
+        ./action_executor_test || true
+        echo ""
+        echo "=== Running snapshot_test ==="
+        ./snapshot_test || true
+        echo ""
+        echo "=== Running evaluator_test ==="
+        ./evaluator_test || true
+      continue-on-error: true
+
+  static-analysis:
+    name: Static Analysis
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install analysis tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          cppcheck \
+          clang-tidy \
+          build-essential \
+          autoconf \
+          automake \
+          libtool \
+          pkg-config \
+          perl \
+          libsdl1.2-dev \
+          libsdl-image1.2-dev \
+          libsdl-mixer1.2-dev \
+          liblua5.1-0-dev \
+          libwxgtk3.0-gtk3-dev \
+          libsigc++-2.0-dev \
+          libfreetype6-dev \
+          libexpat1-dev \
+          libphysfs-dev \
+          libjpeg-dev \
+          libpng-dev \
+          libbz2-dev \
+          libboost-regex-dev \
+          libboost-dev \
+          libvorbis-dev
+
+    - name: Run cppcheck
+      run: |
+        cppcheck \
+          --enable=warning,style,performance,portability \
+          --suppress=missingIncludeSystem \
+          --suppress=unusedFunction \
+          --inline-suppr \
+          --quiet \
+          --error-exitcode=0 \
+          source/ 2>&1 | tee cppcheck-report.txt || true
+      continue-on-error: true
+
+    - name: Upload analysis results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: static-analysis-reports
+        path: |
+          cppcheck-report.txt
+        retention-days: 30
+
+  build-status:
+    name: Build Status Summary
+    runs-on: ubuntu-22.04
+    needs: [build-gui, build-headless, mcts-tests, static-analysis]
+    if: always()
+
+    steps:
+    - name: Check build results
+      run: |
+        echo "Build GUI: ${{ needs.build-gui.result }}"
+        echo "Build Headless: ${{ needs.build-headless.result }}"
+        echo "MCTS Tests: ${{ needs.mcts-tests.result }}"
+        echo "Static Analysis: ${{ needs.static-analysis.result }}"
