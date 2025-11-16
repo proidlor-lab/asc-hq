@@ -56,6 +56,6 @@ $(BZIP2_LIBS) $(SIGC_LIBS) $(SDL_LIBS) $(FREETYPE_LIBS) $(BOOST_LIBS) $(SDL_SOUN
 nodist_asc_SOURCES = $(commonSources) sg.cpp gamedialog.cpp 
 asc_LDADD = $(commonLibs)
 
-nodist_unittester_SOURCES  =  $(commonSources) 
-unittester_LDADD = $(top_builddir)/source/unittests/libunittests.la  $(commonLibs) 
+nodist_unittester_SOURCES  =  $(commonSources)
+unittester_LDADD = $(top_builddir)/source/unittests/libunittests.la  $(top_builddir)/source/ai/mcts/libmcts.la  $(commonLibs) 
 
