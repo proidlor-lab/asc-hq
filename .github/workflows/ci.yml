@@ -14,7 +14,7 @@ env:
 jobs:
   build-gui:
     name: Build (GUI Mode)
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
     - name: Checkout code
@@ -97,7 +97,7 @@ jobs:
 
   build-headless:
     name: Build (Headless Mode)
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
     - name: Checkout code
@@ -170,7 +170,7 @@ jobs:
 
   mcts-tests:
     name: MCTS Module Tests
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
     - name: Checkout code
@@ -233,7 +233,7 @@ jobs:
 
   static-analysis:
     name: Static Analysis
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
     - name: Checkout code
@@ -292,7 +292,7 @@ jobs:
 
   build-status:
     name: Build Status Summary
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: [build-gui, build-headless, mcts-tests, static-analysis]
     if: always()
 
