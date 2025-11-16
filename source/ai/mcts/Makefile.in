@@ -108,15 +108,15 @@ PROGRAMS = $(noinst_PROGRAMS)
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libmcts_la_LIBADD =
 am_libmcts_la_OBJECTS = unit_snapshot.lo game_state_reader.lo \
-	action_types.lo combat_calculator.lo combat_calculator_adapter.lo \
-	simulation_action_executor.lo real_game_action_executor.lo \
-	action_executor_factory.lo simple_combat_evaluator.lo \
-	evaluator_factory.lo i_ability.lo ability_registry.lo \
-	movement_ability.lo combat_ability.lo \
+	action_types.lo combat_calculator.lo \
+	combat_calculator_adapter.lo simulation_action_executor.lo \
+	real_game_action_executor.lo action_executor_factory.lo \
+	simple_combat_evaluator.lo evaluator_factory.lo i_ability.lo \
+	ability_registry.lo movement_ability.lo combat_ability.lo \
 	utility_aggregator.lo reaction_fire_detector.lo unit_role.lo \
 	agent_weight_config.lo mvp_agents.lo agent_suite.lo \
-	mcts_search.lo legacy_game_interface.lo pathfinding_adapter.lo \
-	mcts_manual_test.lo
+	mcts_search.lo legacy_game_interface.lo mcts_config_loader.lo \
+	pathfinding_adapter.lo mcts_manual_test.lo
 libmcts_la_OBJECTS = $(am_libmcts_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -149,19 +149,26 @@ am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ./$(DEPDIR)/ability_registry.Plo \
 	./$(DEPDIR)/action_executor_factory.Plo \
 	./$(DEPDIR)/action_executor_test.Po \
-	./$(DEPDIR)/action_types.Plo ./$(DEPDIR)/combat_ability.Plo \
+	./$(DEPDIR)/action_types.Plo ./$(DEPDIR)/agent_suite.Plo \
+	./$(DEPDIR)/agent_weight_config.Plo \
+	./$(DEPDIR)/combat_ability.Plo \
 	./$(DEPDIR)/combat_calculator.Plo \
+	./$(DEPDIR)/combat_calculator_adapter.Plo \
 	./$(DEPDIR)/evaluator_factory.Plo \
 	./$(DEPDIR)/evaluator_test.Po \
 	./$(DEPDIR)/game_state_reader.Plo ./$(DEPDIR)/i_ability.Plo \
 	./$(DEPDIR)/legacy_game_interface.Plo \
+	./$(DEPDIR)/mcts_config_loader.Plo \
 	./$(DEPDIR)/mcts_manual_test.Plo ./$(DEPDIR)/mcts_search.Plo \
-	./$(DEPDIR)/movement_ability.Plo \
+	./$(DEPDIR)/movement_ability.Plo ./$(DEPDIR)/mvp_agents.Plo \
 	./$(DEPDIR)/pathfinding_adapter.Plo \
+	./$(DEPDIR)/reaction_fire_detector.Plo \
 	./$(DEPDIR)/real_game_action_executor.Plo \
 	./$(DEPDIR)/simple_combat_evaluator.Plo \
 	./$(DEPDIR)/simulation_action_executor.Plo \
-	./$(DEPDIR)/snapshot_test.Po ./$(DEPDIR)/unit_snapshot.Plo
+	./$(DEPDIR)/snapshot_test.Po ./$(DEPDIR)/unit_role.Plo \
+	./$(DEPDIR)/unit_snapshot.Plo \
+	./$(DEPDIR)/utility_aggregator.Plo
 am__mv = mv -f
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -182,11 +189,9 @@ am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
 SOURCES = $(libmcts_la_SOURCES) $(action_executor_test_SOURCES) \
-	$(evaluator_test_SOURCES) \
-	$(snapshot_test_SOURCES)
+	$(evaluator_test_SOURCES) $(snapshot_test_SOURCES)
 DIST_SOURCES = $(libmcts_la_SOURCES) $(action_executor_test_SOURCES) \
-	$(evaluator_test_SOURCES) \
-	$(snapshot_test_SOURCES)
+	$(evaluator_test_SOURCES) $(snapshot_test_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -470,6 +475,7 @@ EXTRA_DIST = \
 	$(srcdir)/mcts_agents.ini \
 	$(srcdir)/config/*.ini
 
+# pathfinding_integration_test - TODO: Requires full ASC library linkage (Vehicle, AStar3D)
 # mcts_test - TODO: Requires full ASC library linkage (Phase 1.4 integration)
 
 # Phase 0.1 test
@@ -483,10 +489,6 @@ action_executor_test_LDADD = libmcts.la
 # Phase 0.3 test
 evaluator_test_SOURCES = domain/evaluator_test.cpp
 evaluator_test_LDADD = libmcts.la
-
-# Phase 1.3 test (Pathfinding integration)
-pathfinding_integration_test_SOURCES = domain/pathfinding_integration_test.cpp
-pathfinding_integration_test_LDADD = libmcts.la
 all: all-am
 
 .SUFFIXES:
@@ -566,22 +568,30 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/action_executor_factory.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/action_executor_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/action_types.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/agent_suite.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/agent_weight_config.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/combat_ability.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/combat_calculator.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/combat_calculator_adapter.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evaluator_factory.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evaluator_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/game_state_reader.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/i_ability.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/legacy_game_interface.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcts_config_loader.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcts_manual_test.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcts_search.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/movement_ability.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mvp_agents.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pathfinding_adapter.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reaction_fire_detector.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/real_game_action_executor.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_combat_evaluator.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simulation_action_executor.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/snapshot_test.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unit_role.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unit_snapshot.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utility_aggregator.Plo@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -637,6 +647,7 @@ combat_calculator.lo: domain/combat_calculator.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='domain/combat_calculator.cpp' object='combat_calculator.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o combat_calculator.lo `test -f 'domain/combat_calculator.cpp' || echo '$(srcdir)/'`domain/combat_calculator.cpp
+
 combat_calculator_adapter.lo: domain/combat_calculator_adapter.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT combat_calculator_adapter.lo -MD -MP -MF $(DEPDIR)/combat_calculator_adapter.Tpo -c -o combat_calculator_adapter.lo `test -f 'domain/combat_calculator_adapter.cpp' || echo '$(srcdir)/'`domain/combat_calculator_adapter.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/combat_calculator_adapter.Tpo $(DEPDIR)/combat_calculator_adapter.Plo
@@ -762,6 +773,13 @@ legacy_game_interface.lo: infrastructure/legacy_game_interface.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='infrastructure/legacy_game_interface.cpp' object='legacy_game_interface.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o legacy_game_interface.lo `test -f 'infrastructure/legacy_game_interface.cpp' || echo '$(srcdir)/'`infrastructure/legacy_game_interface.cpp
+
+mcts_config_loader.lo: infrastructure/mcts_config_loader.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mcts_config_loader.lo -MD -MP -MF $(DEPDIR)/mcts_config_loader.Tpo -c -o mcts_config_loader.lo `test -f 'infrastructure/mcts_config_loader.cpp' || echo '$(srcdir)/'`infrastructure/mcts_config_loader.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mcts_config_loader.Tpo $(DEPDIR)/mcts_config_loader.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='infrastructure/mcts_config_loader.cpp' object='mcts_config_loader.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mcts_config_loader.lo `test -f 'infrastructure/mcts_config_loader.cpp' || echo '$(srcdir)/'`infrastructure/mcts_config_loader.cpp
 
 pathfinding_adapter.lo: infrastructure/pathfinding_adapter.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT pathfinding_adapter.lo -MD -MP -MF $(DEPDIR)/pathfinding_adapter.Tpo -c -o pathfinding_adapter.lo `test -f 'infrastructure/pathfinding_adapter.cpp' || echo '$(srcdir)/'`infrastructure/pathfinding_adapter.cpp
@@ -947,22 +965,30 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/action_executor_factory.Plo
 	-rm -f ./$(DEPDIR)/action_executor_test.Po
 	-rm -f ./$(DEPDIR)/action_types.Plo
+	-rm -f ./$(DEPDIR)/agent_suite.Plo
+	-rm -f ./$(DEPDIR)/agent_weight_config.Plo
 	-rm -f ./$(DEPDIR)/combat_ability.Plo
 	-rm -f ./$(DEPDIR)/combat_calculator.Plo
+	-rm -f ./$(DEPDIR)/combat_calculator_adapter.Plo
 	-rm -f ./$(DEPDIR)/evaluator_factory.Plo
 	-rm -f ./$(DEPDIR)/evaluator_test.Po
 	-rm -f ./$(DEPDIR)/game_state_reader.Plo
 	-rm -f ./$(DEPDIR)/i_ability.Plo
 	-rm -f ./$(DEPDIR)/legacy_game_interface.Plo
+	-rm -f ./$(DEPDIR)/mcts_config_loader.Plo
 	-rm -f ./$(DEPDIR)/mcts_manual_test.Plo
 	-rm -f ./$(DEPDIR)/mcts_search.Plo
 	-rm -f ./$(DEPDIR)/movement_ability.Plo
+	-rm -f ./$(DEPDIR)/mvp_agents.Plo
 	-rm -f ./$(DEPDIR)/pathfinding_adapter.Plo
+	-rm -f ./$(DEPDIR)/reaction_fire_detector.Plo
 	-rm -f ./$(DEPDIR)/real_game_action_executor.Plo
 	-rm -f ./$(DEPDIR)/simple_combat_evaluator.Plo
 	-rm -f ./$(DEPDIR)/simulation_action_executor.Plo
 	-rm -f ./$(DEPDIR)/snapshot_test.Po
+	-rm -f ./$(DEPDIR)/unit_role.Plo
 	-rm -f ./$(DEPDIR)/unit_snapshot.Plo
+	-rm -f ./$(DEPDIR)/utility_aggregator.Plo
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -1012,22 +1038,30 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/action_executor_factory.Plo
 	-rm -f ./$(DEPDIR)/action_executor_test.Po
 	-rm -f ./$(DEPDIR)/action_types.Plo
+	-rm -f ./$(DEPDIR)/agent_suite.Plo
+	-rm -f ./$(DEPDIR)/agent_weight_config.Plo
 	-rm -f ./$(DEPDIR)/combat_ability.Plo
 	-rm -f ./$(DEPDIR)/combat_calculator.Plo
+	-rm -f ./$(DEPDIR)/combat_calculator_adapter.Plo
 	-rm -f ./$(DEPDIR)/evaluator_factory.Plo
 	-rm -f ./$(DEPDIR)/evaluator_test.Po
 	-rm -f ./$(DEPDIR)/game_state_reader.Plo
 	-rm -f ./$(DEPDIR)/i_ability.Plo
 	-rm -f ./$(DEPDIR)/legacy_game_interface.Plo
+	-rm -f ./$(DEPDIR)/mcts_config_loader.Plo
 	-rm -f ./$(DEPDIR)/mcts_manual_test.Plo
 	-rm -f ./$(DEPDIR)/mcts_search.Plo
 	-rm -f ./$(DEPDIR)/movement_ability.Plo
+	-rm -f ./$(DEPDIR)/mvp_agents.Plo
 	-rm -f ./$(DEPDIR)/pathfinding_adapter.Plo
+	-rm -f ./$(DEPDIR)/reaction_fire_detector.Plo
 	-rm -f ./$(DEPDIR)/real_game_action_executor.Plo
 	-rm -f ./$(DEPDIR)/simple_combat_evaluator.Plo
 	-rm -f ./$(DEPDIR)/simulation_action_executor.Plo
 	-rm -f ./$(DEPDIR)/snapshot_test.Po
+	-rm -f ./$(DEPDIR)/unit_role.Plo
 	-rm -f ./$(DEPDIR)/unit_snapshot.Plo
+	-rm -f ./$(DEPDIR)/utility_aggregator.Plo
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
@@ -1064,6 +1098,10 @@ uninstall-am:
 
 .PRECIOUS: Makefile
 
+
+# Phase 1.3 test (DISABLED - needs full ASC library for Vehicle, AStar3D)
+# pathfinding_integration_test_SOURCES = domain/pathfinding_integration_test.cpp
+# pathfinding_integration_test_LDADD = libmcts.la $(top_builddir)/source/libasc.la
 
 # Phase 1 test (DISABLED - needs full ASC library)
 # mcts_test_SOURCES = core/mcts_test.cpp
