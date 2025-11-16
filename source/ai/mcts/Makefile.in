@@ -450,6 +450,7 @@ libmcts_la_SOURCES = \
 	agents/agent_suite.cpp \
 	core/mcts_search.cpp \
 	infrastructure/legacy_game_interface.cpp \
+	infrastructure/mcts_config_loader.cpp \
 	infrastructure/pathfinding_adapter.cpp \
 	mcts_manual_test.cpp
 
@@ -465,7 +466,9 @@ EXTRA_DIST = \
 	$(srcdir)/coordination/*.h \
 	$(srcdir)/infrastructure/*.h \
 	$(srcdir)/*.md \
-	$(srcdir)/docs/*.md
+	$(srcdir)/docs/*.md \
+	$(srcdir)/mcts_agents.ini \
+	$(srcdir)/config/*.ini
 
 # mcts_test - TODO: Requires full ASC library linkage (Phase 1.4 integration)
 

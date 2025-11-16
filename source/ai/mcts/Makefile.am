@@ -40,6 +40,7 @@ libmcts_la_SOURCES = \
 	agents/agent_suite.cpp \
 	core/mcts_search.cpp \
 	infrastructure/legacy_game_interface.cpp \
+	infrastructure/mcts_config_loader.cpp \
 	infrastructure/pathfinding_adapter.cpp \
 	mcts_manual_test.cpp
 
@@ -55,7 +56,8 @@ EXTRA_DIST = \
 	$(srcdir)/infrastructure/*.h \
 	$(srcdir)/*.md \
 	$(srcdir)/docs/*.md \
-	$(srcdir)/mcts_agents.ini
+	$(srcdir)/mcts_agents.ini \
+	$(srcdir)/config/*.ini
 
 # Test binaries
 noinst_PROGRAMS = snapshot_test action_executor_test evaluator_test

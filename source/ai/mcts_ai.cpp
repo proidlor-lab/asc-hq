@@ -16,6 +16,7 @@
 #include "mcts/domain/i_tactical_evaluator.h"
 #include "mcts/core/mcts_search.h"
 #include "mcts/infrastructure/legacy_game_interface.h"
+#include "mcts/infrastructure/mcts_config_loader.h"
 #include <iostream>
 #include <algorithm>
 
@@ -145,12 +146,37 @@ MCTS_AI* MCTS_AI::createBalanced(GameMap* gameMap, int playerID, const AIFactory
 
 MCTS_AI* MCTS_AI::createAggressive(GameMap* gameMap, int playerID, const AIFactory::AIConfig& config)
 {
-    return new MCTS_AI(gameMap, playerID, createAggressiveProfile(), config);
+    // Load profile from config loader to allow runtime overrides
+    auto loaded = asc::mcts::MCTSConfigLoader::loadProfile("aggressive");
+    Profile p = createAggressiveProfile();
+    p.maxIterations = loaded.maxIterations;
+    p.maxTimeMs = loaded.maxTimeMs;
+    p.rolloutDepthLimit = loaded.rolloutDepthLimit;
+    p.explorationConstant = loaded.explorationConstant;
+    p.earlyTerminationThreshold = loaded.earlyTerminationThreshold;
+    p.materialWeight = loaded.materialWeight;
+    p.positionWeight = loaded.positionWeight;
+    p.healthWeight = loaded.healthWeight;
+    p.threatWeight = loaded.threatWeight;
+    p.agentProfile = loaded.agentProfile;
+    return new MCTS_AI(gameMap, playerID, p, config);
 }
 
 MCTS_AI* MCTS_AI::createDefensive(GameMap* gameMap, int playerID, const AIFactory::AIConfig& config)
 {
-    return new MCTS_AI(gameMap, playerID, createDefensiveProfile(), config);
+    auto loaded = asc::mcts::MCTSConfigLoader::loadProfile("defensive");
+    Profile p = createDefensiveProfile();
+    p.maxIterations = loaded.maxIterations;
+    p.maxTimeMs = loaded.maxTimeMs;
+    p.rolloutDepthLimit = loaded.rolloutDepthLimit;
+    p.explorationConstant = loaded.explorationConstant;
+    p.earlyTerminationThreshold = loaded.earlyTerminationThreshold;
+    p.materialWeight = loaded.materialWeight;
+    p.positionWeight = loaded.positionWeight;
+    p.healthWeight = loaded.healthWeight;
+    p.threatWeight = loaded.threatWeight;
+    p.agentProfile = loaded.agentProfile;
+    return new MCTS_AI(gameMap, playerID, p, config);
 }
 
 MCTS_AI* MCTS_AI::createFast(GameMap* gameMap, int playerID, const AIFactory::AIConfig& config)

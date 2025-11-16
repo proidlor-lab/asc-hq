@@ -13,13 +13,13 @@ The MCTS AI implementation has a **solid architectural foundation** with clean i
 **Operational Update (2025-11-15)**:
 - MCTS_AI now uses the real MCTS search pipeline (state reader + MCTSSearch) in-game; the MVP heuristic path is retired.
 - Legacy command context sets `actingPlayer`, fixing the null-pointer crash when executing MCTS-issued moves.
-- Agent and adapter components are linked into `libmcts`; actions execute end-to-end (current behavior still heuristic/random until profile tuning lands).
+- Agent and adapter components are linked into `libmcts`; actions execute end-to-end with profile-specific agent weights loaded from `mcts_agents.ini` (Balanced/Aggressive/Defensive; Fast/Deep fall back to Balanced).
 
 **Overall Assessment**:
 - Architecture Quality: **8.5/10** (Strong interfaces, adapter pattern for legacy integration)
 - Extensibility: **9/10** (Ability registry + context propagation - significantly improved)
-- Feature Completeness: **70%** (Combat complete, pathfinding API ready, service actions remain)
-- Production Readiness: **85%** (Core works, combat accurate, pathfinding fallback functional)
+- Feature Completeness: **70%** (Combat complete, pathfinding API ready, service actions remain; layer alignment pending)
+- Production Readiness: **85%** (Core works, combat accurate, pathfinding fallback functional; coordination MCTS not in place yet)
 
 **Open Issues**: 16 tracked (4 P1, 4 P2, 4 P3, 4 P4/P5)  
 **Resolved**: 3 critical blockers (Action space extensibility, Combat integration, Pathfinding API)
@@ -94,14 +94,20 @@ The MCTS AI implementation has a **solid architectural foundation** with clean i
 **Impact**: Architectural blocker removed, but value comes once alternative states exist  
 **Effort**: 2-3 days to add first non-tactical implementation, +2 days to clean remaining downcasts
 
-### 1.2 Rollout Policy Abstraction - PARTIAL
+### 1.2 Layer Alignment (NEW) - CRITICAL
+**Issue**: Intended design is Strategic = agent-only, Coordination = MCTS over multi-unit plans, Execution = plan replay. Current code runs MCTS per-unit in the combat layer; coordination layer is absent.  
+**Impact**: No multi-unit deconfliction, self-blocking risk, strategic layer not exercised; hierarchy benefits unrealized.  
+**Needed**: Move MCTS entry point to coordination state/action space, add coordination state/plan generator, make strategic agent-only producer of orders.  
+**Effort**: 4-6 days to refactor entry point + minimal coordination state; +2 days for tests.
+
+### 1.3 Rollout Policy Abstraction - PARTIAL
 **Issue**: Rollout selection was random/heuristic only  
 **Current State (2025-11-12)**: AgentSuite drives rollout action selection (scored/pruned list, no heuristic fallback); still need pluggable policy interface and profile wiring from MCTS_AI  
 **Impact**: Better rollouts but policy selection not yet configurable externally  
 **Blocker For**: Learned policies, ε-greedy experiments  
 **Effort**: 1-2 days to add policy interface + runtime selection
 
-### 1.3 Executor Factory Pattern - INCOMPLETE
+### 1.4 Executor Factory Pattern - INCOMPLETE
 **Issue**: Static factory with no customization or dependency injection  
 **Impact**: Cannot create executors with varied simulation fidelity or inject mocks for testing  
 **Needed**: Builder pattern with pluggable components (combat resolver, cost calculator, etc.)  

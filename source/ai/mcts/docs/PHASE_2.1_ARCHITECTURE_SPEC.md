@@ -3,7 +3,7 @@
 **Date**: 2025-11-11  
 **Status**: ✅ FINALIZED - Ready for Implementation  
 **Purpose**: Detailed specification for utility-agent framework with MCTS integration  
-**Architecture**: 2-layer MVP with coordination layer deferred to Phase 2.2/3.0
+**Architecture**: 3-layer intent (Strategic agent-only, Coordination MCTS for multi-unit, Execution/tactical replay). MVP currently runs MCTS at per-unit combat layer (misaligned; see alignment note below). Coordination layer is deferred to Phase 2.2/3.0 but should host MCTS.
 
 ---
 
@@ -20,18 +20,22 @@ Phase 2.1 implements a **multi-layer agent-MCTS hybrid architecture** where:
 
 ## 1. Layer Architecture
 
-### Architecture Decision: Pragmatic MVP Approach
+### Architecture Decision: MVP with corrected layer roles
 
-**Phase 2.1 MVP**: 2-layer system (Strategic + Combat Groups)
-- Focus: Get MCTS + agents working for basic combat
-- Limitation: No multi-unit coordination (sequential unit planning)
-- Rationale: Validate core architecture before adding complexity
+**Intended target**:
+- **Strategic Layer**: Agent-only aggregation (no MCTS) producing orders/goals.
+- **Coordination Layer**: MCTS over multi-unit plans (ordering, resource budgets, deconfliction).
+- **Execution Layer**: Replay plan per unit with safety/legality checks.
 
-**Phase 2.2/3.0 Future**: Add Tactical Coordination Layer
-- Multi-unit choreography (repair sequences, blocker coordination)
-- Service action orchestration
-- Movement point budgeting
-- Infrastructure building coordination
+**Current MVP (misaligned)**:
+- MCTS runs per-unit in the combat layer (sequential unit planning).
+- Coordination layer is deferred; no multi-unit choreography.
+- Strategic layer is stubbed (no real agent aggregation feeding plans).
+
+**Adjustment needed**:
+- Move MCTS up to the coordination layer when it lands (Phase 2.2).
+- Keep strategic agent-only; feed Coordination MCTS with orders/context.
+- Reduce tactical to plan replay + local safety checks.
 
 **Motivation for Future Coordination Layer**:
 
@@ -93,34 +97,25 @@ bool shouldReplanStrategic() {
 
 ---
 
-### 1.2 Tactical Coordination Layer (DEFERRED to Phase 2.2/3.0)
+### 1.2 Coordination Layer (DEFERRED to Phase 2.2/3.0) — TARGET HOST FOR MCTS
 
-**Status**: NOT IMPLEMENTED in Phase 2.1 MVP
+**Status**: NOT IMPLEMENTED in Phase 2.1 MVP (currently empty; MCTS sits in combat layer and must be lifted here).
 
-**Future Responsibility**: Multi-unit choreography and coordination
+**Responsibility**: Multi-unit choreography and coordination
 - Plan multi-step sequences (repair → attack)
 - Coordinate movement (resolve blocker units)
-- Allocate movement point budgets
-- Orchestrate service actions across multiple units
-- Schedule infrastructure building
+- Allocate movement/action point budgets
+- Orchestrate service actions and block/unblock sequences
+- Produce ordered plans for execution
 
-**Decision Method**: TBD (MCTS or specialized coordination agents)
+**Decision Method**: MCTS over multi-unit action sets with agent scoring/pruning.
 
-**Why Deferred**:
-- Complex requirements not fully understood
-- Need to validate basic MCTS + agents first
-- Will add significant implementation complexity
-- Can be added later without breaking existing architecture
+**Phase 2.1 Workaround (current)**: Sequential per-unit planning (MCTS in combat layer) — causes self-blocking risk; to be replaced.
 
-**Phase 2.1 Workaround**: Sequential unit planning
-- Units planned one at a time
-- No coordination (units may interfere)
-- Acceptable for MVP testing
-
-**Communication** (Future):
-- Input: `StrategicOrder` (from strategic layer)
-- Output: `TacticalStatusReport` (to strategic layer)
-- Output: Coordinated action sequences (to combat groups)
+**Communication (target)**:
+- Input: `StrategicOrder` (from strategic agent layer)
+- Output: `CoordinationPlan` (ordered multi-unit actions) to execution
+- Feedback: `TacticalStatusReport` upstream to strategic
 
 ---
 

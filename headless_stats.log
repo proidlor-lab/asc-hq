@@ -224,3 +224,21 @@ Statistics:
 Player 1 (player 0): damage done 0, damage taken 0, units destroyed 0, units lost 0
 Player 2 (player 1): damage done 0, damage taken 0, units destroyed 0, units lost 0
 
+Timestamp: 2025-11-16 09:35:05
+Map: /home/manu/.asc/SeaBattle.map
+Participants: player 1 -> mcts_balanced, player 2 -> classic
+Result: Headless simulation reached the turn limit after 1 rounds.
+Rounds: 1 (turn limit 1 reached)
+Statistics:
+Player 1 (human 0): damage done 0, damage taken 200, units destroyed 0, units lost 2
+Player 2 (human 1): damage done 200, damage taken 0, units destroyed 2, units lost 0
+
+Timestamp: 2025-11-16 09:35:50
+Map: /home/manu/.asc/SeaBattle.map
+Participants: player 1 -> mcts_balanced, player 2 -> classic
+Result: Headless simulation reached the turn limit after 1 rounds.
+Rounds: 1 (turn limit 1 reached)
+Statistics:
+Player 1 (human 0): damage done 0, damage taken 200, units destroyed 0, units lost 2
+Player 2 (human 1): damage done 200, damage taken 0, units destroyed 2, units lost 0
+
