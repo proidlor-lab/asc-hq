@@ -467,6 +467,7 @@ EXTRA_DIST = \
 	$(srcdir)/infrastructure/*.h \
 	$(srcdir)/*.md \
 	$(srcdir)/docs/*.md \
+	$(srcdir)/mcts_agents.ini \
 	$(srcdir)/config/*.ini
 
 # mcts_test - TODO: Requires full ASC library linkage (Phase 1.4 integration)
