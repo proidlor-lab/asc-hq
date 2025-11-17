@@ -3,7 +3,8 @@
 **Purpose**: Documentation for the ASC modernization effort to transform the codebase into a production-ready game server.
 
 **Created**: 2025-11-16
-**Status**: Planning & Initial Implementation
+**Last Updated**: 2025-11-17
+**Status**: Tier 1 Complete - In Progress
 
 ---
 
@@ -19,43 +20,34 @@ Transform this GPL repository into a **game server** that exposes game logic via
 
 ## Documentation Index
 
-### Planning Documents
+### Status & Planning
 
-1. **[ARCHITECTURAL_FOUNDATION_TODOS.md](./ARCHITECTURAL_FOUNDATION_TODOS.md)**
-   - Comprehensive TODO list for pre-API-extraction modernization
-   - Organized into 4 tiers by priority
-   - Estimated timelines and effort
-   - Success criteria
+1. **[STATUS.md](./STATUS.md)** - Current progress, metrics, and next actions
+2. **[ARCHITECTURAL_FOUNDATION_TODOS.md](./ARCHITECTURAL_FOUNDATION_TODOS.md)** - Detailed task list organized by tier
 
 ### Implementation Guides
 
-2. **[CI_CD_SETUP.md](./CI_CD_SETUP.md)**
-   - GitHub Actions CI/CD pipeline documentation
-   - Dependency management
-   - Build process
-   - Troubleshooting guide
+3. **[CI_CD_SETUP.md](./CI_CD_SETUP.md)** - GitHub Actions CI/CD pipeline
+4. **[STATIC_ANALYSIS.md](./STATIC_ANALYSIS.md)** - Static analysis tools (cppcheck, clang-tidy)
+5. **[TEST_FRAMEWORK_MIGRATION.md](./TEST_FRAMEWORK_MIGRATION.md)** - Google Test migration plan
+6. **[BUILD_SYSTEM_MODERNIZATION.md](./BUILD_SYSTEM_MODERNIZATION.md)** - Build optimization strategies
+
+**Note**: Code formatting already applied (`.clang-format` config, enforced by CI)
 
 ---
 
-## Quick Start
+## Current Status
 
-### Current Phase: Tier 1 - Development Infrastructure
+**Phase**: Tier 1 Complete (Development Infrastructure)
+**Progress**: 40% overall (4/10 tasks complete)
 
-**Focus**: Building safety nets before major refactoring
+**Recent completions**:
+- ✅ CI/CD pipeline (GitHub Actions)
+- ✅ Code formatting applied (1,051+ files)
+- ✅ Static analysis baseline (1,650 issues identified)
+- ✅ Test framework migration planned
 
-#### Completed
-- ✅ Architectural TODO list created
-- ✅ CI/CD pipeline configured (`.github/workflows/ci.yml`)
-- ✅ Documentation structure established
-
-#### In Progress
-- 🔄 CI/CD pipeline testing and refinement
-
-#### Next Steps
-1. Test CI/CD pipeline on GitHub
-2. Configure clang-format
-3. Set up static analysis
-4. Modernize test framework
+**See [STATUS.md](./STATUS.md) for detailed progress and next actions.**
 
 ---
 
@@ -102,32 +94,15 @@ Transform this GPL repository into a **game server** that exposes game logic via
 
 ## Modernization Roadmap
 
-### Phase 1: Foundation (Weeks 1-2) - **CURRENT**
-- [x] Create TODO list
-- [x] Set up CI/CD
-- [ ] Configure code formatting
-- [ ] Set up static analysis
-- [ ] Modernize test framework
+**See [ARCHITECTURAL_FOUNDATION_TODOS.md](./ARCHITECTURAL_FOUNDATION_TODOS.md) for detailed roadmap.**
 
-### Phase 2: Critical Fixes (Weeks 3-6)
-- [ ] Memory leak audit and fixes
-- [ ] Security audit of dependencies
-- [ ] Build system optimization
+High-level phases:
+1. **Tier 1: Development Infrastructure** (Weeks 1-2) - ✅ Complete
+2. **Tier 2: Code Safety** (Weeks 2-4) - Memory leaks, security audit
+3. **Tier 3: Build Optimization** (Weeks 3-5) - Build speed improvements
+4. **Tier 4: Organization** (Weeks 4-6) - Architecture docs, God class refactoring
 
-### Phase 3: Organization (Weeks 7-8)
-- [ ] Architectural documentation
-- [ ] Dead code removal
-
-### Phase 4: Structural (Weeks 9-14)
-- [ ] Refactor God classes
-
-### Phase 5: API Extraction (Months 4-6)
-- [ ] Design game state API
-- [ ] Extract core game mechanics
-- [ ] Implement authentication
-- [ ] Create network protocol
-
-**Total Timeline**: ~6 months to production-ready game server
+**Total Timeline**: ~3 months for foundation, then 3+ months for API extraction
 
 ---
 
@@ -165,54 +140,13 @@ Not a rewrite - modernize piece by piece:
 
 ## Success Criteria
 
-After Tier 1-4 completion, you should have:
+**See [ARCHITECTURAL_FOUNDATION_TODOS.md](./ARCHITECTURAL_FOUNDATION_TODOS.md) for complete success criteria.**
 
-✅ **Safe Development**
-- CI/CD catches regressions automatically
-- Tests run on every commit
-- Static analysis finds bugs early
-
-✅ **Clean Code**
-- Consistent formatting (clang-format)
-- No dead code
-- Clear module boundaries
-- Documented architecture
-
-✅ **Stable Server**
-- Zero known memory leaks
-- Security audit complete
-- Can run 24/7 without crashes
-
-✅ **Fast Iteration**
-- Incremental builds <30 seconds
-- Easy code navigation
-- Modular, testable structure
-
----
-
-## Contributing to Modernization
-
-### Before Starting Work
-
-1. Read relevant TODO document
-2. Check CI/CD is passing
-3. Update TODO status (mark in_progress)
-4. Create feature branch
-
-### During Work
-
-1. Keep CI/CD passing (fix breaks immediately)
-2. Add tests for changes
-3. Follow MCTS patterns for new code
-4. Document significant decisions
-
-### Before Completing
-
-1. All tests pass
-2. CI/CD green
-3. Update documentation
-4. Mark TODO complete
-5. Create pull request
+After Tier 1-4 completion:
+- ✅ Safe development (CI/CD, tests, static analysis)
+- ✅ Clean code (consistent formatting, clear architecture)
+- ✅ Stable server (no memory leaks, security audited)
+- ✅ Fast iteration (<30s builds, modular structure)
 
 ---
 
@@ -230,41 +164,17 @@ When in doubt: "How would this be done in MCTS?"
 
 ## Tools & Resources
 
-### Build Tools
-- GCC 13.3.0 with C++23 support
-- Autotools (Automake 1.16.5, Autoconf 2.71+)
-- ccache for fast builds
+**See individual implementation guides for detailed tool documentation.**
 
-### Analysis Tools
-- cppcheck (static analysis)
-- clang-tidy (modern C++ linting)
-- Valgrind (memory leaks)
-- AddressSanitizer (memory errors)
-
-### Testing
-- Custom framework (to be replaced)
-- Target: Google Test or Catch2
-- MCTS: 97% pass rate (64/66 tests)
+- **Build**: GCC 13.3.0 (C++23), Autotools, ccache, CMake (MCTS module)
+- **Analysis**: cppcheck 2.13.0, clang-tidy (LLVM 18.1.3), Valgrind, AddressSanitizer
+- **Testing**: Google Test (target), custom framework (legacy)
+- **CI/CD**: GitHub Actions
 
 ---
 
 ## Questions?
 
-- Check existing documentation first
-- Look at MCTS module for examples
-- Review codebase analysis (from initial exploration)
-- Ask for clarification when needed
-
----
-
-## Status Updates
-
-**2025-11-16**: Initial planning complete
-- Architectural TODO list created
-- CI/CD pipeline configured
-- Documentation structure established
-- Ready to begin Tier 1 implementation
-
----
-
-**Next Update**: After CI/CD testing complete
+- Check [STATUS.md](./STATUS.md) for current progress
+- Look at `source/ai/mcts/` module for modern C++23 examples
+- Refer to specific implementation guides for detailed instructions
