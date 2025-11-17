@@ -202,9 +202,25 @@ jobs:
           cmake \
           ninja-build \
           pkg-config \
+          autoconf \
+          automake \
+          libtool \
+          perl \
           libsdl1.2-dev \
           libsdl-image1.2-dev \
+          libsdl-mixer1.2-dev \
+          libsdl-sound1.2-dev \
+          liblua5.1-0-dev \
           libsigc++-2.0-dev \
+          libfreetype6-dev \
+          libexpat1-dev \
+          libphysfs-dev \
+          libjpeg-dev \
+          libpng-dev \
+          libbz2-dev \
+          libboost-regex-dev \
+          libboost-dev \
+          libvorbis-dev \
           ccache
 
     - name: Setup ccache
