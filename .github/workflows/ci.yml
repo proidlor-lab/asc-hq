@@ -69,21 +69,34 @@ jobs:
     - name: Bootstrap
       run: ./bootstrap
 
-    - name: Configure
+    - name: Configure (out-of-tree build)
       run: |
         export CC="ccache gcc"
         export CXX="ccache g++"
-        ./configure --enable-debug
+        mkdir -p build-autotools
+        cd build-autotools
+        ../configure --enable-debug
 
-    - name: Clean (force fresh build after formatting)
-      run: make clean || true
-
-    - name: Build
-      run: make -j2
+    - name: Build (out-of-tree)
+      run: |
+        cd build-autotools
+        make -j2
 
     - name: Run unit tests
-      run: make check || true
+      run: |
+        cd build-autotools
+        make check || true
       continue-on-error: true
+
+    - name: Verify clean source tree (out-of-tree build)
+      run: |
+        echo "=== Checking for build artifacts in source tree ==="
+        if find source -name "*.o" -o -name "*.lo" -o -name "*.a" | grep -v ".libs" | grep -q .; then
+          echo "⚠️  Warning: Build artifacts found in source tree"
+          find source -name "*.o" -o -name "*.lo" -o -name "*.a" | grep -v ".libs" | head -20
+        else
+          echo "✓ Source tree is clean (out-of-tree build working)"
+        fi
 
     - name: Show ccache statistics
       run: ccache -s
@@ -92,10 +105,10 @@ jobs:
       if: failure()
       uses: actions/upload-artifact@v4
       with:
-        name: build-logs
+        name: build-logs-autotools-gui
         path: |
-          config.log
-          source/**/*.log
+          build-autotools/config.log
+          build-autotools/**/*.log
         retention-days: 7
 
   build-headless:
@@ -155,21 +168,34 @@ jobs:
     - name: Bootstrap
       run: ./bootstrap
 
-    - name: Configure (headless)
+    - name: Configure (out-of-tree build, headless)
       run: |
         export CC="ccache gcc"
         export CXX="ccache g++"
-        ./configure --enable-debug
+        mkdir -p build-autotools-headless
+        cd build-autotools-headless
+        ../configure --enable-debug
 
-    - name: Clean (force fresh build after formatting)
-      run: make clean || true
-
-    - name: Build
-      run: make -j2
+    - name: Build (out-of-tree)
+      run: |
+        cd build-autotools-headless
+        make -j2
 
     - name: Run unit tests
-      run: make check || true
+      run: |
+        cd build-autotools-headless
+        make check || true
       continue-on-error: true
+
+    - name: Verify clean source tree (out-of-tree build)
+      run: |
+        echo "=== Checking for build artifacts in source tree ==="
+        if find source -name "*.o" -o -name "*.lo" -o -name "*.a" | grep -v ".libs" | grep -q .; then
+          echo "⚠️  Warning: Build artifacts found in source tree"
+          find source -name "*.o" -o -name "*.lo" -o -name "*.a" | grep -v ".libs" | head -20
+        else
+          echo "✓ Source tree is clean (out-of-tree build working)"
+        fi
 
     - name: Show ccache statistics
       run: ccache -s
@@ -342,18 +368,21 @@ jobs:
     - name: Bootstrap
       run: ./bootstrap
 
-    - name: Configure
-      run: ./configure
+    - name: Configure (out-of-tree build)
+      run: |
+        mkdir -p build-autotools-mcts
+        cd build-autotools-mcts
+        ../configure
 
     - name: Build MCTS tests
       run: |
-        cd source/ai/mcts
+        cd build-autotools-mcts/source/ai/mcts
         make -j2 action_executor_test snapshot_test evaluator_test || true
       continue-on-error: true
 
     - name: Run MCTS tests
       run: |
-        cd source/ai/mcts
+        cd build-autotools-mcts/source/ai/mcts
         echo "=== Running action_executor_test ==="
         ./action_executor_test || true
         echo ""

@@ -102,7 +102,36 @@ sudo apt-get install build-essential autoconf automake libtool \
     libphysfs-dev libexpat1-dev liblua5.1-0-dev
 ```
 
-### Build Commands (In-Tree - Legacy)
+### Build Commands (Out-of-Tree - Recommended)
+
+**Out-of-tree builds keep your source directory clean:**
+
+```bash
+# Bootstrap (generate configure script)
+./bootstrap
+
+# Create build directory
+mkdir build-autotools
+cd build-autotools
+
+# Configure (pointing to parent directory)
+../configure
+
+# Build
+make -j$(nproc)
+
+# Binaries will be in:
+# - build-autotools/source/unix/asc/asc (main game)
+# - build-autotools/source/unix/mapeditor/asc_mapedit
+```
+
+**Benefits:**
+- ✅ Source tree stays clean (no .o files mixed with code)
+- ✅ Multiple build configs possible (debug, release)
+- ✅ Easy to clean: `rm -rf build-autotools/`
+- ✅ Matches CI/CD behavior
+
+### Build Commands (In-Tree - Not Recommended)
 
 ```bash
 # Configure
@@ -115,34 +144,19 @@ make -j$(nproc)
 sudo make install
 ```
 
-### Build Commands (Out-of-Tree - Recommended)
-
-Out-of-tree builds keep your source directory clean:
-
-```bash
-# Create build directory
-mkdir build-autotools
-cd build-autotools
-
-# Configure (pointing to parent directory)
-../configure
-
-# Build
-make -j$(nproc)
-
-# Binaries will be in build-autotools/source/unix/asc/
-```
+**Warning:** In-tree builds scatter `.o`, `.lo`, and `.a` files throughout your source tree. Use out-of-tree builds instead.
 
 ## Build System Comparison
 
 | Feature | CMake (Modern) | Autotools (Legacy) |
 |---------|----------------|-------------------|
-| **Build artifacts** | `build/` directory (clean) | Mixed with source (messy) |
+| **Build artifacts** | `build/` directory (clean) | `build-autotools/` (clean with out-of-tree) |
 | **Reconfigure speed** | 1-2 seconds | 20-30 seconds |
 | **Build speed** | Fast (especially with Ninja) | Moderate |
 | **Source discovery** | Auto-glob (mostly automatic) | Manual file listing |
-| **Multiple configs** | Easy (build-debug/, build-release/) | Requires clean rebuild |
+| **Multiple configs** | Easy (build-debug/, build-release/) | Easy with out-of-tree builds |
 | **IDE support** | Excellent (CLion, VS Code) | Poor |
+| **Out-of-tree builds** | Enforced (impossible to build in-tree) | Supported (must create build dir manually) |
 | **Current coverage** | MCTS module only | Full project |
 
 ## Troubleshooting

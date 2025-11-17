@@ -52,7 +52,7 @@ source/unix/asc/.deps/
 analysis-reports/
 compile_commands.json
 
-# CMake build directories (out-of-tree builds)
+# Build directories (out-of-tree builds)
 /build/
 /build-*/
 /cmake-build-*/
