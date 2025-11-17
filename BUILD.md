@@ -2,6 +2,8 @@
 
 This document contains quick build instructions for ASC-HQ.
 
+**For in-depth build system modernization and optimization strategies**, see [docs/modernization/BUILD_SYSTEM_MODERNIZATION.md](docs/modernization/BUILD_SYSTEM_MODERNIZATION.md).
+
 ## Quick Start - CMake (Recommended)
 
 CMake provides the fastest builds with out-of-tree artifact management (clean source tree).
@@ -229,7 +231,7 @@ With Autotools, you must manually edit `source/ai/mcts/Makefile.am` and add the 
 **Phase 1 (Current):** MCTS module builds with CMake
 **Phase 2 (Planned):** Full project CMake migration
 
-See `docs/modernization/BUILD_SYSTEM_MODERNIZATION.md` for the complete migration roadmap.
+For detailed migration roadmap, IWYU setup, build optimization strategies, and advanced topics, see [docs/modernization/BUILD_SYSTEM_MODERNIZATION.md](docs/modernization/BUILD_SYSTEM_MODERNIZATION.md).
 
 ## Additional Documentation
 

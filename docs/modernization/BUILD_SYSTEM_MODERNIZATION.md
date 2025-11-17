@@ -3,7 +3,10 @@
 **Purpose**: Improve build reliability, reproducibility, and developer experience.
 
 **Created**: 2025-11-16
+**Last Updated**: 2025-11-17
 **Status**: Analysis & Planning
+
+**For quick build instructions**, see [BUILD.md](../../BUILD.md) in the project root.
 
 ---
 
@@ -550,331 +553,38 @@ conan install boost/1.82.0@ --build=missing
 
 ---
 
-## CMake Migration: Step-by-Step Guide
-
-### Prerequisites
-
-```bash
-# Install CMake (Ubuntu/Debian)
-sudo apt-get update
-sudo apt-get install cmake ninja-build
-
-# Verify installation
-cmake --version    # Should be 3.20+
-ninja --version
-```
-
-### Step 1: Create Top-Level CMakeLists.txt (15 minutes)
-
-Create `CMakeLists.txt` in project root:
-
-```cmake
-cmake_minimum_required(VERSION 3.20)
-project(asc-hq VERSION 2.0 LANGUAGES CXX)
-
-# C++ standard
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-# Build type
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release)
-endif()
-
-# Compiler flags
-set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wextra")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
-
-# Find dependencies
-find_package(SDL REQUIRED)
-find_package(Boost REQUIRED COMPONENTS regex)
-find_package(PNG REQUIRED)
-
-# Include subdirectories
-add_subdirectory(source/ai/mcts)
-
-# Main executable (to be added later)
-# add_subdirectory(source)
-```
-
-**Test:**
-```bash
-mkdir build && cd build
-cmake ..
-# Should configure successfully (no build targets yet)
-```
-
-### Step 2: Create MCTS Module CMakeLists.txt (30 minutes)
-
-Create `source/ai/mcts/CMakeLists.txt`:
-
-```cmake
-# MCTS AI Module
-# Modern C++23, strict warnings
-
-# Auto-discover source files by category
-file(GLOB DOMAIN_SOURCES "domain/*.cpp")
-file(GLOB DOMAIN_ABILITY_SOURCES "domain/abilities/*.cpp")
-file(GLOB AGENT_SOURCES "agents/*.cpp")
-file(GLOB CORE_SOURCES "core/*.cpp")
-file(GLOB INFRA_SOURCES "infrastructure/*.cpp")
-
-# Exclude test files from library
-list(FILTER DOMAIN_SOURCES EXCLUDE REGEX ".*_test\\.cpp$")
-
-# Build MCTS library
-add_library(mcts
-    ${DOMAIN_SOURCES}
-    ${DOMAIN_ABILITY_SOURCES}
-    ${AGENT_SOURCES}
-    ${CORE_SOURCES}
-    ${INFRA_SOURCES}
-    mcts_manual_test.cpp
-)
-
-# Include directories
-target_include_directories(mcts PUBLIC
-    ${CMAKE_SOURCE_DIR}/source
-    ${CMAKE_SOURCE_DIR}/source/libs/paragui/include
-)
-
-# Compiler flags for MCTS module (strict)
-target_compile_options(mcts PRIVATE
-    -Wall
-    -Wextra
-    -Wpedantic
-    -Werror=return-type
-    -Werror=switch
-    -Wno-deprecated
-)
-
-# Test executables
-add_executable(snapshot_test domain/snapshot_test.cpp)
-target_link_libraries(snapshot_test PRIVATE mcts)
-
-add_executable(action_executor_test domain/action_executor_test.cpp)
-target_link_libraries(action_executor_test PRIVATE mcts)
-
-add_executable(evaluator_test domain/evaluator_test.cpp)
-target_link_libraries(evaluator_test PRIVATE mcts)
-
-# Enable testing
-enable_testing()
-add_test(NAME snapshot_test COMMAND snapshot_test)
-add_test(NAME action_executor_test COMMAND action_executor_test)
-add_test(NAME evaluator_test COMMAND evaluator_test)
-```
-
-**Test:**
-```bash
-cd build
-cmake ..
-cmake --build .
-# Should build MCTS library and tests
-```
-
-### Step 3: Test the Build (10 minutes)
-
-```bash
-# Clean build
-cd /home/vboxuser/projects/asc-hq-codex
-rm -rf build
-mkdir build && cd build
-
-# Configure
-cmake -G Ninja ..
-# Or: cmake .. (uses Make by default)
-
-# Build
-ninja -j$(nproc)
-# Or: make -j$(nproc)
-
-# Run tests
-ctest --output-on-failure
-# Or: ./source/ai/mcts/snapshot_test
-```
-
-**Expected output:**
-```
-[1/25] Building CXX object source/ai/mcts/CMakeFiles/mcts.dir/domain/action_types.cpp.o
-[2/25] Building CXX object source/ai/mcts/CMakeFiles/mcts.dir/domain/combat_calculator.cpp.o
-...
-[25/25] Linking CXX executable source/ai/mcts/evaluator_test
-Test project /home/vboxuser/projects/asc-hq-codex/build
-    Start 1: snapshot_test
-1/3 Test #1: snapshot_test ....................   Passed    0.01 sec
-    Start 2: action_executor_test
-2/3 Test #2: action_executor_test .............   Passed    0.02 sec
-    Start 3: evaluator_test
-3/3 Test #3: evaluator_test ...................   Passed    0.01 sec
-
-100% tests passed, 0 tests failed out of 3
-```
-
-### Step 4: Update .gitignore (2 minutes)
-
-Add to `.gitignore`:
-
-```gitignore
-# CMake build directories
-/build/
-/build-*/
-/cmake-build-*/
-
-# CMake files (if accidentally generated in source)
-CMakeCache.txt
-CMakeFiles/
-cmake_install.cmake
-```
-
-### Step 5: Document New Build Process (5 minutes)
-
-Update `README.md` with CMake instructions:
-
-```markdown
-## Building with CMake (Recommended)
-
-### Quick Start
-```bash
-# Out-of-tree build
-mkdir build && cd build
-cmake -G Ninja ..
-ninja
-
-# Run tests
-ctest --output-on-failure
-```
-
-### Build Configurations
-
-```bash
-# Debug build
-mkdir build-debug && cd build-debug
-cmake -DCMAKE_BUILD_TYPE=Debug ..
-ninja
-
-# Release build
-mkdir build-release && cd build-release
-cmake -DCMAKE_BUILD_TYPE=Release ..
-ninja
-```
-
-### Using Make instead of Ninja
-
-```bash
-mkdir build && cd build
-cmake ..                # Don't specify -G Ninja
-make -j$(nproc)
-```
-
-### Incremental Builds
-
-```bash
-# After making code changes
-cd build
-ninja                   # Only rebuilds changed files
-
-# Force clean rebuild
-ninja clean
-ninja
-```
-
-### Legacy Build (Autotools - Deprecated)
-
-See [Autotools Build Instructions](docs/AUTOTOOLS_BUILD.md) if needed.
-```
-
-### Step 6: Parallel Build Systems (Transition Period)
-
-**Keep both systems working:**
-
-- Autotools remains the "official" build (for now)
-- CMake is "experimental" but fully functional
-- CI can test both builds in parallel
-
-**Timeline:**
-- Week 1-2: CMake builds MCTS module only
-- Week 3-4: Test and fix any issues
-- Month 2: Migrate main application to CMake
-- Month 3: Make CMake the default, deprecate Autotools
-
-### Step 7: Common Issues and Solutions
-
-#### Issue: "Could not find SDL"
-
-**Solution:**
-```bash
-# Ubuntu/Debian
-sudo apt-get install libsdl1.2-dev libsdl-image1.2-dev
-
-# Or tell CMake where to find it
-cmake -DSDL_INCLUDE_DIR=/usr/include/SDL ..
-```
-
-#### Issue: File globbing doesn't detect new files
-
-**Solution:**
-```bash
-# Force CMake to re-scan
-rm CMakeCache.txt
-cmake ..
-
-# Or touch CMakeLists.txt
-touch source/ai/mcts/CMakeLists.txt
-ninja
-```
-
-#### Issue: Build artifacts in source tree
-
-**Solution:** CMake prevents this by design. If you see artifacts in `source/`, you're using Autotools, not CMake.
-
-```bash
-# Verify you're using CMake
-cd build
-cmake --build .   # This is CMake
-make              # This might be Autotools if build/ has Makefile.am
-```
-
-### Migration Checklist
-
-**Phase 1: MCTS Module (Week 1)**
-- [ ] Install CMake and Ninja
-- [ ] Create top-level CMakeLists.txt
-- [ ] Create source/ai/mcts/CMakeLists.txt
-- [ ] Test build: `mkdir build && cd build && cmake .. && ninja`
-- [ ] Verify tests pass: `ctest`
-- [ ] Update .gitignore
-- [ ] Document new build process
-
-**Phase 2: Validation (Week 2-3)**
-- [ ] Compare Autotools vs CMake build outputs
-- [ ] Run full test suite with both builds
-- [ ] Measure build times (CMake should be faster)
-- [ ] Test on clean system (CI environment)
-
-**Phase 3: Expansion (Month 2)**
-- [ ] Migrate main application build
-- [ ] Migrate all subdirectories
-- [ ] Update CI to use CMake
-- [ ] Update developer documentation
-
-**Phase 4: Completion (Month 3)**
-- [ ] Make CMake the default build
-- [ ] Mark Autotools as deprecated
-- [ ] Remove Autotools files (or archive)
-- [ ] Celebrate! 🎉
-
-### Benefits Achieved
-
-After migration:
-- ✅ **Clean source tree** - No more .o/.lo files in source/
-- ✅ **Multiple build configs** - Debug, Release, ASAN builds simultaneously
-- ✅ **Faster builds** - Ninja is 3-5x faster than Make
-- ✅ **Better IDE support** - CLion, VS Code work seamlessly
-- ✅ **Modern tooling** - Industry-standard build system
-- ✅ **Easier onboarding** - New developers familiar with CMake
-
----
-
-**Next Steps**: Start with Step 1 - create top-level CMakeLists.txt and test basic configuration.
+## CMake Migration: Quick Reference
+
+**For detailed CMake build instructions**, see [BUILD.md](../../BUILD.md).
+
+**This document focuses on:**
+- Build system problems and their solutions
+- IWYU (Include-What-You-Use) setup
+- Out-of-tree build strategy
+- Advanced build optimization
+
+**BUILD.md covers:**
+- Step-by-step CMake setup
+- Quick start commands
+- Build configurations (Debug/Release)
+- Troubleshooting common issues
+
+### Migration Strategy Summary
+
+**Phase 1: MCTS Module Only**
+- CMake builds currently supported for MCTS module
+- See BUILD.md for instructions
+
+**Phase 2-4: Full Migration**
+- Gradual migration to CMake for entire project
+- Keep Autotools working in parallel during transition
+- Timeline: 2-3 months
+
+**Benefits:**
+- ✅ Clean source tree (no .o/.lo files)
+- ✅ Multiple build configs (Debug, Release, ASAN)
+- ✅ Faster builds (Ninja 3-5x faster than Make)
+- ✅ Better IDE support
+- ✅ Modern tooling
+
+For implementation details, see [BUILD.md](../../BUILD.md).
