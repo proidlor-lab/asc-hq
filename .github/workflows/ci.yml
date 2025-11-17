@@ -174,8 +174,117 @@ jobs:
     - name: Show ccache statistics
       run: ccache -s
 
-  mcts-tests:
-    name: MCTS Module Tests
+  cmake-build:
+    name: CMake Build (MCTS Module)
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Cache CMake build
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.ccache
+          build
+        key: ${{ runner.os }}-cmake-${{ hashFiles('CMakeLists.txt', 'source/ai/mcts/CMakeLists.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-cmake-
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          cmake \
+          ninja-build \
+          pkg-config \
+          libsdl1.2-dev \
+          libsdl-image1.2-dev \
+          libsigc++-2.0-dev \
+          ccache
+
+    - name: Setup ccache
+      run: |
+        ccache --max-size=500M
+        ccache --set-config=compression=true
+
+    - name: Generate config.h (required during transition)
+      run: |
+        # CMake build needs config.h from Autotools during transition phase
+        ./bootstrap
+        ./configure
+        # Keep only config.h, clean everything else
+        make clean || true
+
+    - name: Configure CMake (Debug)
+      run: |
+        export CC="ccache gcc"
+        export CXX="ccache g++"
+        mkdir -p build
+        cd build
+        cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug ..
+
+    - name: Build with CMake
+      run: |
+        cd build
+        ninja -v
+
+    - name: Verify build artifacts
+      run: |
+        echo "=== Build Artifacts ==="
+        ls -lh build/lib/
+        ls -lh build/bin/
+        echo ""
+        echo "=== Verify MCTS library ==="
+        file build/lib/libmcts.a
+        echo ""
+        echo "=== Verify test executables ==="
+        file build/bin/snapshot_test
+        file build/bin/action_executor_test
+        file build/bin/evaluator_test
+
+    - name: Run MCTS tests (CMake build)
+      run: |
+        cd build/bin
+        echo "=== Running snapshot_test ==="
+        ./snapshot_test
+        echo ""
+        echo "=== Running action_executor_test ==="
+        ./action_executor_test
+        echo ""
+        echo "=== Running evaluator_test ==="
+        ./evaluator_test
+
+    - name: Verify clean source tree (out-of-tree build)
+      run: |
+        echo "=== Checking for build artifacts in source tree ==="
+        if find source/ai/mcts -name "*.o" -o -name "*.a" | grep -q .; then
+          echo "ERROR: Build artifacts found in source tree!"
+          find source/ai/mcts -name "*.o" -o -name "*.a"
+          exit 1
+        else
+          echo "✓ Source tree is clean (out-of-tree build working correctly)"
+        fi
+
+    - name: Show ccache statistics
+      run: ccache -s
+
+    - name: Upload build artifacts
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: cmake-build-logs
+        path: |
+          build/CMakeFiles/CMakeOutput.log
+          build/CMakeFiles/CMakeError.log
+        retention-days: 7
+
+  mcts-tests-autotools:
+    name: MCTS Module Tests (Autotools)
     runs-on: ubuntu-24.04
 
     steps:
@@ -299,13 +408,21 @@ jobs:
   build-status:
     name: Build Status Summary
     runs-on: ubuntu-24.04
-    needs: [build-gui, build-headless, mcts-tests, static-analysis]
+    needs: [build-gui, build-headless, cmake-build, mcts-tests-autotools, static-analysis]
     if: always()
 
     steps:
     - name: Check build results
       run: |
-        echo "Build GUI: ${{ needs.build-gui.result }}"
-        echo "Build Headless: ${{ needs.build-headless.result }}"
-        echo "MCTS Tests: ${{ needs.mcts-tests.result }}"
+        echo "Build GUI (Autotools): ${{ needs.build-gui.result }}"
+        echo "Build Headless (Autotools): ${{ needs.build-headless.result }}"
+        echo "CMake Build (MCTS): ${{ needs.cmake-build.result }}"
+        echo "MCTS Tests (Autotools): ${{ needs.mcts-tests-autotools.result }}"
         echo "Static Analysis: ${{ needs.static-analysis.result }}"
+        echo ""
+        if [ "${{ needs.cmake-build.result }}" = "success" ]; then
+          echo "✓ CMake migration Phase 1 successful!"
+        else
+          echo "✗ CMake build failed - check logs"
+          exit 1
+        fi
