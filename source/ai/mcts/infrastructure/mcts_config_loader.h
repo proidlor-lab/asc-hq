@@ -20,7 +20,7 @@
 #include <map>
 #include <memory>
 #include <vector>
-#include "core/mcts_config.h"
+#include "mcts/core/mcts_config.h"
 
 // Forward declaration no longer needed - MCTSConfig included above
 namespace asc {
