@@ -61,4 +61,18 @@ compile_commands.json
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
+CTestTestfile.cmake
 Makefile  # Note: This conflicts with Autotools Makefile, both are gitignored
+
+# Test executables (should be in build/ directory)
+source/ai/mcts/snapshot_test
+source/ai/mcts/action_executor_test
+source/ai/mcts/evaluator_test
+
+# IDE files
+.idea/
+
+# Editor backup files
+*~
+*.swp
+*.swo
