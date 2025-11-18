@@ -23,17 +23,15 @@
 */
 
 #ifndef tosH
- #define tosH
+#define tosH
 
- #include "ascstring.h"
- #include "typen.h"
- 
+#include "ascstring.h"
+#include "typen.h"
+
 namespace toString {
-   ASCString tos( int i );
-   ASCString tos( const MapCoordinate& pos );
+ASCString tos(int i);
+ASCString tos(const MapCoordinate& pos);
 
-};
-
+};  // namespace toString
 
 #endif
-

@@ -10,7 +10,6 @@
 #ifndef jumptestH
 #define jumptestH
 
- extern void testJumpdrive();
-
+extern void testJumpdrive();
 
 #endif

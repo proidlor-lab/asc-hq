@@ -1,156 +1,226 @@
 /*
      This file is part of Advanced Strategic Command; http://www.asc-hq.de
      Copyright (C) 1994-2010  Martin Bickel  and  Marc Schellenberger
- 
+
      This program is free software; you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by
      the Free Software Foundation; either version 2 of the License, or
      (at your option) any later version.
- 
+
      This program is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
      GNU General Public License for more details.
- 
+
      You should have received a copy of the GNU General Public License
-     along with this program; see the file COPYING. If not, write to the 
-     Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+     along with this program; see the file COPYING. If not, write to the
+     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
      Boston, MA  02111-1307  USA
 */
 
-
 #include <sstream>
 #include <pgimage.h>
+#include <pglabel.h>
 
 #include "playersetup.h"
+#include "../ai/ai_factory.h"
 
-
-
-
-
-int PlayerSetupWidget::guessHeight( GameMap* gamemap )
-{
+int PlayerSetupWidget::guessHeight(GameMap* gamemap) {
    int counter = 0;
-   for ( int i = 0; i < gamemap->getPlayerCount(); ++i )
-      if ( gamemap->player[i].exist() )
+   for (int i = 0; i < gamemap->getPlayerCount(); ++i)
+      if (gamemap->player[i].exist())
          ++counter;
-   
-   return yoffset + counter * spacing + 5;
+
+   // Increased spacing to accommodate AI type dropdown
+   return yoffset + counter * (spacing + 25) + 5;
 }
 
-PlayerSetupWidget::PlayerSetupWidget( GameMap* gamemap, Mode mode, PG_Widget *parent, const PG_Rect &r, const std::string &style ) : PG_ScrollWidget( parent, r, style ) , actmap ( gamemap )
-{
+PlayerSetupWidget::PlayerSetupWidget(GameMap* gamemap, Mode mode, PG_Widget* parent,
+                                     const PG_Rect& r, const std::string& style)
+   : PG_ScrollWidget(parent, r, style), actmap(gamemap) {
    this->mode = mode;
-   
-   int counter = 0; 
-   for ( int i = 0; i < actmap->getPlayerCount(); ++i ) 
-      if ( actmap->player[i].exist() ) {
-      
+   // Avoid vector reallocations so stored pointers for signal callbacks stay valid.
+   playerWidgets.reserve(actmap->getPlayerCount());
+
+   int counter = 0;
+   for (int i = 0; i < actmap->getPlayerCount(); ++i)
+      if (actmap->player[i].exist()) {
          PlayerWidgets pw;
-         pw.pos  = i;
-         
-         int y = yoffset + counter * spacing;
-         
-         ColoredBar* colbar = new ColoredBar( actmap->player[i].getColor(), this, PG_Rect( 20, y, Width() - 60, 30 ));
-         colbar->SetTransparency( 128 );
-         
-         
+         pw.pos = i;
+
+         int y = yoffset + counter * (spacing + 25);  // Increased spacing for AI type dropdown
+
+         ColoredBar* colbar =
+            new ColoredBar(actmap->player[i].getColor(), this, PG_Rect(20, y, Width() - 60, 60));
+         colbar->SetTransparency(128);
+
          int y1 = Width() * 4 / 10;
-         
-         pw.name = new PG_LineEdit( colbar, PG_Rect( 40, 5, y1 - 40, 20 ));
-         pw.name->SetText( actmap->player[i].getName());
-         
-         
-         PG_Rect r = PG_Rect( y1 + 20, 5, colbar->Width() - y1 - 40, 20 );
-         if ( mode != SelfEditable  || actmap->actplayer == i ) {
-            pw.type = new PG_DropDown( colbar, r);
-            
+
+         pw.name = new PG_LineEdit(colbar, PG_Rect(40, 5, y1 - 40, 20));
+         pw.name->SetText(actmap->player[i].getName());
+
+         PG_Rect r = PG_Rect(y1 + 20, 5, colbar->Width() - y1 - 40, 20);
+         if (mode != SelfEditable || actmap->actplayer == i) {
+            pw.type = new PG_DropDown(colbar, r);
+
             int pos = 0;
-            while ( Player :: playerStatusNames[pos] ) {
-               pw.type->AddItem( Player :: playerStatusNames[pos] );
+            while (Player ::playerStatusNames[pos]) {
+               pw.type->AddItem(Player ::playerStatusNames[pos]);
                ++pos;
             }
-            
-            pw.type->SelectItem( actmap->player[i].stat );
+
+            pw.type->SelectItem(actmap->player[i].stat);
             pw.type->SetEditable(false);
          } else {
-            pw.name->SetEditable( false );
+            pw.name->SetEditable(false);
             pw.type = NULL;
-            PG_LineEdit* le = new PG_LineEdit( colbar, r );
-            le->SetText( Player :: playerStatusNames[ actmap->player[i].stat ] );
-            le->SetEditable( false );
+            PG_LineEdit* le = new PG_LineEdit(colbar, r);
+            le->SetText(Player ::playerStatusNames[actmap->player[i].stat]);
+            le->SetEditable(false);
          }
-         
-         PG_ThemeWidget* col = new PG_ThemeWidget( colbar, PG_Rect( 5, 5, 20, 20 ));
+
+         PG_ThemeWidget* col = new PG_ThemeWidget(colbar, PG_Rect(5, 5, 20, 20));
          col->SetSimpleBackground(true);
-         col->SetBackgroundColor ( actmap->player[i].getColor());
+         col->SetBackgroundColor(actmap->player[i].getColor());
          col->SetBorderSize(0);
 
-         playerWidgets.push_back( pw );
-                        
+         // NEW: Add AI type selection dropdown (initially hidden)
+         if (mode != SelfEditable || actmap->actplayer == i) {
+            int aiY = 35;  // Position below player status dropdown
+
+            pw.aiTypeLabel = new PG_Label(colbar, PG_Rect(y1 + 20, aiY, 60, 15), "AI Type:");
+            pw.aiTypeLabel->SetFontSize(10);
+
+            pw.aiType =
+               new PG_DropDown(colbar, PG_Rect(y1 + 85, aiY, colbar->Width() - y1 - 105, 20));
+            pw.aiType->SetEditable(false);
+
+            // Populate AI types
+            pw.aiType->AddItem("Classic AI");
+            pw.aiType->AddItem("MCTS Balanced");
+            pw.aiType->AddItem("MCTS Aggressive");
+            pw.aiType->AddItem("MCTS Defensive");
+            pw.aiType->AddItem("MCTS Fast");
+            pw.aiType->AddItem("MCTS Deep");
+
+            // Set current AI type
+            int aiTypeIndex = actmap->player[i].aiType;
+            if (aiTypeIndex >= 0 && aiTypeIndex < 6) {
+               pw.aiType->SelectItem(aiTypeIndex);
+            } else {
+               pw.aiType->SelectItem(0);  // Default to Classic
+            }
+
+            // Initial visibility update
+            updateAITypeVisibility(pw, actmap->player[i].stat);
+         } else {
+            pw.aiType = NULL;
+            pw.aiTypeLabel = NULL;
+         }
+
+         playerWidgets.push_back(pw);
+
+         // Connect signal AFTER adding to vector so we have valid pointer
+         if (pw.type) {
+            PlayerWidgets* pwPtr = &playerWidgets.back();
+            pw.type->sigSelectItem.connect(sigc::bind(
+               sigc::mem_fun(*this, &PlayerSetupWidget::SIGC_onPlayerTypeChanged), pwPtr));
+         }
+
          ++counter;
       } else
          actmap->player[i].stat = Player::off;
-      
+
    SetTransparency(255);
 };
 
 bool PlayerSetupWidget::Valid() {
-   if ( mode == AllEditableSinglePlayer ) {
+   if (mode == AllEditableSinglePlayer) {
       int humanNum = 0;
-      for ( vector<PlayerWidgets>::iterator i = playerWidgets.begin(); i != playerWidgets.end(); ++i ) 
-         if ( i->type )
-            if (    Player::PlayerStatus( i->type->GetSelectedItemIndex()) == Player::human
-                 || Player::PlayerStatus( i->type->GetSelectedItemIndex()) == Player::supervisor
-                 || Player::PlayerStatus( i->type->GetSelectedItemIndex()) == Player::suspended  ) 
+      for (vector<PlayerWidgets>::iterator i = playerWidgets.begin(); i != playerWidgets.end(); ++i)
+         if (i->type)
+            if (Player::PlayerStatus(i->type->GetSelectedItemIndex()) == Player::human ||
+                Player::PlayerStatus(i->type->GetSelectedItemIndex()) == Player::supervisor ||
+                Player::PlayerStatus(i->type->GetSelectedItemIndex()) == Player::suspended)
                ++humanNum;
-               
-       if ( humanNum > 1 ) {
-         MessagingHub::Instance().error("Only a single human player allowed in SinglePlayer mode allowed!");
+
+      if (humanNum > 1) {
+         MessagingHub::Instance().error(
+            "Only a single human player allowed in SinglePlayer mode allowed!");
          return false;
-       }
+      }
    }
    return true;
 }
 
-
 bool PlayerSetupWidget::Apply() {
-   if ( !Valid() )
+   if (!Valid())
       return false;
-      
-   for ( vector<PlayerWidgets>::iterator i = playerWidgets.begin(); i != playerWidgets.end(); ++i ) {
-      actmap->player[i->pos].setName( i->name->GetText() );
-      if ( i->type )
-         actmap->player[i->pos].stat = Player::PlayerStatus( i->type->GetSelectedItemIndex() );
+
+   for (vector<PlayerWidgets>::iterator i = playerWidgets.begin(); i != playerWidgets.end(); ++i) {
+      actmap->player[i->pos].setName(i->name->GetText());
+      if (i->type) {
+         actmap->player[i->pos].stat = Player::PlayerStatus(i->type->GetSelectedItemIndex());
+
+         // NEW: Save AI type selection
+         if (i->aiType) {
+            actmap->player[i->pos].aiType = i->aiType->GetSelectedItemIndex();
+         }
+      }
    }
    return true;
 };
 
+// NEW: Update visibility of AI type dropdown based on player status
+void PlayerSetupWidget::updateAITypeVisibility(PlayerWidgets& pw, int selectedStatus) {
+   if (!pw.aiType || !pw.aiTypeLabel)
+      return;
+
+   // Show AI type dropdown only when player is "computer"
+   bool isComputer = (selectedStatus == Player::computer);
+
+   if (isComputer) {
+      pw.aiType->Show();
+      pw.aiTypeLabel->Show();
+   } else {
+      pw.aiType->Hide();
+      pw.aiTypeLabel->Hide();
+   }
+}
+
+// NEW: Signal handler for player type changes
+bool PlayerSetupWidget::SIGC_onPlayerTypeChanged(PG_ListBoxBaseItem* item, PlayerWidgets* pw) {
+   if (pw && pw->type) {
+      int selectedIndex = pw->type->GetSelectedItemIndex();
+      updateAITypeVisibility(*pw, selectedIndex);
+   }
+   return true;
+}
 
 class PlayerSetupWindow : public ASC_PG_Dialog {
    PlayerSetupWidget* asw;
-   public:
-      PlayerSetupWindow( GameMap* actmap, bool allEditable, PG_Widget *parent, const PG_Rect &r ) : ASC_PG_Dialog( parent, r, "Players" )
-      {
-         asw = new PlayerSetupWidget( actmap, PlayerSetupWidget::AllEditable, this, PG_Rect( 5, 30, r.Width() - 10, r.Height() - 60 ));
-         PG_Button* ok = new PG_Button( this, PG_Rect( Width() - 200, Height() - 30, 90, 20 ), "OK" );
-         ok->sigClick.connect( sigc::hide( sigc::mem_fun( *this, &PlayerSetupWindow::Apply )));
-         PG_Button* cancel = new PG_Button( this, PG_Rect( Width() - 100, Height() - 30, 90, 20 ), "Cancel" );
-         cancel->sigClick.connect( sigc::hide( sigc::mem_fun( *this, &PlayerSetupWindow::QuitModal )));
-      }
 
-      bool Apply()
-      {
-         asw->Apply();
-         QuitModal();
-         return true;
-      }
+  public:
+   PlayerSetupWindow(GameMap* actmap, bool allEditable, PG_Widget* parent, const PG_Rect& r)
+      : ASC_PG_Dialog(parent, r, "Players") {
+      asw = new PlayerSetupWidget(actmap, PlayerSetupWidget::AllEditable, this,
+                                  PG_Rect(5, 30, r.Width() - 10, r.Height() - 60));
+      PG_Button* ok = new PG_Button(this, PG_Rect(Width() - 200, Height() - 30, 90, 20), "OK");
+      ok->sigClick.connect(sigc::hide(sigc::mem_fun(*this, &PlayerSetupWindow::Apply)));
+      PG_Button* cancel =
+         new PG_Button(this, PG_Rect(Width() - 100, Height() - 30, 90, 20), "Cancel");
+      cancel->sigClick.connect(sigc::hide(sigc::mem_fun(*this, &PlayerSetupWindow::QuitModal)));
+   }
 
+   bool Apply() {
+      asw->Apply();
+      QuitModal();
+      return true;
+   }
 };
 
-void  setupPlayers( GameMap* actmap, bool supervisor  )
-{
-   PlayerSetupWindow asw ( actmap, supervisor, NULL, PG_Rect( 100, 100, 600, 500 ));
+void setupPlayers(GameMap* actmap, bool supervisor) {
+   PlayerSetupWindow asw(actmap, supervisor, NULL, PG_Rect(100, 100, 600, 500));
    asw.Show();
    asw.RunModal();
 }

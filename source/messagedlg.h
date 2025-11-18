@@ -16,26 +16,26 @@
  ***************************************************************************/
 
 #ifndef messagedlgH
- #define messagedlgH
+#define messagedlgH
 
- #include "messages.h"
+#include "messages.h"
 
 class Player;
 class Message;
 
-extern void editmessage( Message& msg );
+extern void editmessage(Message& msg);
 extern void newmessage();
 extern void newreminder();
-extern void viewmessages( const char* title, const MessagePntrContainer& msgc, bool editable  ) ;
+extern void viewmessages(const char* title, const MessagePntrContainer& msgc, bool editable);
 
-/** Views the message. 
+/** Views the message.
     returns true if the user requested to keep the message in his inbox
-    */ 
-extern bool viewmessage( const Message& message );
-extern void editmessage( Message& msg );
+    */
+extern bool viewmessage(const Message& message);
+extern void editmessage(Message& msg);
 extern void editjournal();
-extern void viewjournal( bool showEmptyDialog );
-extern void viewunreadmessages( Player& player );
-extern void checkJournal( Player& player );
+extern void viewjournal(bool showEmptyDialog);
+extern void viewunreadmessages(Player& player);
+extern void checkJournal(Player& player);
 
 #endif

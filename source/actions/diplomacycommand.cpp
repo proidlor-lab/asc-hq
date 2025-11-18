@@ -1,23 +1,22 @@
 /*
      This file is part of Advanced Strategic Command; http://www.asc-hq.de
      Copyright (C) 1994-2010  Martin Bickel  and  Marc Schellenberger
- 
+
      This program is free software; you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by
      the Free Software Foundation; either version 2 of the License, or
      (at your option) any later version.
- 
+
      This program is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
      GNU General Public License for more details.
- 
+
      You should have received a copy of the GNU General Public License
-     along with this program; see the file COPYING. If not, write to the 
-     Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+     along with this program; see the file COPYING. If not, write to the
+     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
      Boston, MA  02111-1307  USA
 */
-
 
 #include "diplomacycommand.h"
 
@@ -30,273 +29,252 @@
 
 #include "changediplomaticstate.h"
 
-DiplomacyCommand::DiplomacyCommand( GameMap* map )
-   : Command( map ), actingPlayer(-1), sneak ( false), newState(WAR), towardsPlayer(-1)
-{
-}
+DiplomacyCommand::DiplomacyCommand(GameMap* map)
+   : Command(map), actingPlayer(-1), sneak(false), newState(WAR), towardsPlayer(-1) {}
 
+DiplomacyCommand::DiplomacyCommand(Player& player)
+   : Command(player.getParentMap()),
+     actingPlayer(player.getPosition()),
+     sneak(false),
+     newState(WAR),
+     towardsPlayer(-1) {}
 
-DiplomacyCommand::DiplomacyCommand( Player& player )
-   : Command( player.getParentMap() ), actingPlayer( player.getPosition() ), sneak ( false), newState(WAR), towardsPlayer(-1)
-{
-   
-}
-
-
-
-
-void DiplomacyCommand::readData ( tnstream& stream )
-{
-   Command::readData( stream );
+void DiplomacyCommand::readData(tnstream& stream) {
+   Command::readData(stream);
    stream.readInt();
    actingPlayer = stream.readInt();
-   readClassContainer( generatedMessages, stream );
+   readClassContainer(generatedMessages, stream);
    sneak = stream.readInt();
    newState = (DiplomaticStates) stream.readInt();
    towardsPlayer = stream.readInt();
 }
 
-
-void DiplomacyCommand::writeData ( tnstream& stream ) const
-{
-   Command::writeData( stream );
-   stream.writeInt( 1 );
-   stream.writeInt( actingPlayer );
-   writeClassContainer( generatedMessages, stream );
-   stream.writeInt( sneak );
-   stream.writeInt( newState );
-   stream.writeInt( towardsPlayer );
+void DiplomacyCommand::writeData(tnstream& stream) const {
+   Command::writeData(stream);
+   stream.writeInt(1);
+   stream.writeInt(actingPlayer);
+   writeClassContainer(generatedMessages, stream);
+   stream.writeInt(sneak);
+   stream.writeInt(newState);
+   stream.writeInt(towardsPlayer);
 }
 
-
-void DiplomacyCommand::sneakAttack( Player& enemy )
-{
+void DiplomacyCommand::sneakAttack(Player& enemy) {
    sneak = true;
    towardsPlayer = enemy.getPosition();
    newState = WAR;
-   setState( SetUp ); 
+   setState(SetUp);
 }
 
-void DiplomacyCommand::newstate( DiplomaticStates state, Player& towards )
-{
+void DiplomacyCommand::newstate(DiplomaticStates state, Player& towards) {
    sneak = false;
    towardsPlayer = towards.getPosition();
    newState = state;
-   setState( SetUp );
+   setState(SetUp);
 }
 
-void DiplomacyCommand::deleteMessage( int id, MessagePntrContainer& list ) 
-{
-   for ( MessagePntrContainer::iterator i = list.begin(); i != list.end(); ) {
-       if ( (*i)->id == id )
-          i = list.erase( i );
-       else
-          ++i;
+void DiplomacyCommand::deleteMessage(int id, MessagePntrContainer& list) {
+   for (MessagePntrContainer::iterator i = list.begin(); i != list.end();) {
+      if ((*i)->id == id)
+         i = list.erase(i);
+      else
+         ++i;
    }
 }
 
-void DiplomacyCommand::deleteMessage( int id )
-{
-   for ( int p = 0; p < getMap()->getPlayerCount(); ++p ) {
-      deleteMessage( id, getMap()->getPlayer(p).unreadmessage );
-      deleteMessage( id, getMap()->getPlayer(p).oldmessage );
-      deleteMessage( id, getMap()->getPlayer(p).sentmessage );
+void DiplomacyCommand::deleteMessage(int id) {
+   for (int p = 0; p < getMap()->getPlayerCount(); ++p) {
+      deleteMessage(id, getMap()->getPlayer(p).unreadmessage);
+      deleteMessage(id, getMap()->getPlayer(p).oldmessage);
+      deleteMessage(id, getMap()->getPlayer(p).sentmessage);
    }
-   
-   deleteMessage( id, getMap()->unsentmessage );
-   
-   for ( MessageContainer::iterator i = getMap()->messages.begin(); i != getMap()->messages.end(); ) {
-      if ( (*i)->id == id ) {
+
+   deleteMessage(id, getMap()->unsentmessage);
+
+   for (MessageContainer::iterator i = getMap()->messages.begin(); i != getMap()->messages.end();) {
+      if ((*i)->id == id) {
          delete *i;
-         i = getMap()->messages.erase( i );
+         i = getMap()->messages.erase(i);
       } else
          ++i;
    }
 }
 
-void DiplomacyCommand::sendMessage( int to, const ASCString& body )
-{
-   Message* m = new Message ( body, getMap(), to );
-   generatedMessages.push_back( m->id );
+void DiplomacyCommand::sendMessage(int to, const ASCString& body) {
+   Message* m = new Message(body, getMap(), to);
+   generatedMessages.push_back(m->id);
 }
 
-void DiplomacyCommand::immediateTwoWayChange( DiplomaticStates newState, const Context& context )
-{
-   Player& acting = getMap()->getPlayer( actingPlayer );
-   Player& towards = getMap()->getPlayer( towardsPlayer );
-   
-   ActionResult res = (new ChangeDiplomaticState( acting, towards, 0, newState ))->execute(context);
-   if ( !res.successful() )
+void DiplomacyCommand::immediateTwoWayChange(DiplomaticStates newState, const Context& context) {
+   Player& acting = getMap()->getPlayer(actingPlayer);
+   Player& towards = getMap()->getPlayer(towardsPlayer);
+
+   ActionResult res = (new ChangeDiplomaticState(acting, towards, 0, newState))->execute(context);
+   if (!res.successful())
       throw res;
-             
-   res = (new ChangeDiplomaticState( towards, acting, 0, newState ))->execute(context);
-   if ( !res.successful() )
+
+   res = (new ChangeDiplomaticState(towards, acting, 0, newState))->execute(context);
+   if (!res.successful())
       throw res;
 }
 
-
-ActionResult DiplomacyCommand::go ( const Context& context )
-{
-   if ( getState() != SetUp )
+ActionResult DiplomacyCommand::go(const Context& context) {
+   if (getState() != SetUp)
       return ActionResult(22000);
-   
-   if ( actingPlayer  < 0 || actingPlayer >= getMap()->getPlayerCount() )
-      return ActionResult( 23100 );
-   
-   if ( towardsPlayer  < 0 || towardsPlayer >= getMap()->getPlayerCount() )
-      return ActionResult( 23100 );
-   
-   Player& acting = getMap()->getPlayer( actingPlayer );
-   Player& towards = getMap()->getPlayer( towardsPlayer );
-   
-   
-   bool oldShareView = acting.diplomacy.sharesView( towards );
-   
-   if ( sneak ) {
-      
-      immediateTwoWayChange( newState, context );
-      
+
+   if (actingPlayer < 0 || actingPlayer >= getMap()->getPlayerCount())
+      return ActionResult(23100);
+
+   if (towardsPlayer < 0 || towardsPlayer >= getMap()->getPlayerCount())
+      return ActionResult(23100);
+
+   Player& acting = getMap()->getPlayer(actingPlayer);
+   Player& towards = getMap()->getPlayer(towardsPlayer);
+
+   bool oldShareView = acting.diplomacy.sharesView(towards);
+
+   if (sneak) {
+      immediateTwoWayChange(newState, context);
+
       int to = 0;
-      for ( int j = 0; j < 8; j++ )
-         if ( j != actingPlayer )
-            if ( getMap()->getPlayer(j).exist() )
+      for (int j = 0; j < 8; j++)
+         if (j != actingPlayer)
+            if (getMap()->getPlayer(j).exist())
                to |= 1 << j;
 
       ASCString txt;
-      txt.format ( getmessage( 10001 ), acting.getName().c_str(), getMap()->player[towardsPlayer].getName().c_str() );
-      sendMessage( to, txt );
+      txt.format(getmessage(10001), acting.getName().c_str(),
+                 getMap()->player[towardsPlayer].getName().c_str());
+      sendMessage(to, txt);
    } else {
-      
-      
       DiplomaticStateVector& targ = towards.diplomacy;
 
-      DiplomaticStateVector::QueuedStateChanges::iterator i = targ.queuedStateChanges.find( acting.getPosition() );
-         
-      DiplomaticStates currentState = acting.diplomacy.getState( towards ) ;
+      DiplomaticStateVector::QueuedStateChanges::iterator i =
+         targ.queuedStateChanges.find(acting.getPosition());
+
+      DiplomaticStates currentState = acting.diplomacy.getState(towards);
 
       bool initialProposal = i == targ.queuedStateChanges.end();
-      
-      if ( initialProposal || (newState < currentState && i->second > currentState)) {
+
+      if (initialProposal || (newState < currentState && i->second > currentState)) {
          // we only send a message if this is an initial proposal OR
-         // if the other player proposed a more peaceful state, but we are setting a more hostile state
+         // if the other player proposed a more peaceful state, but we are setting a more hostile
+         // state
          ASCString txt;
          int msgid;
-         if ( newState > acting.diplomacy.getState( towardsPlayer )) 
+         if (newState > acting.diplomacy.getState(towardsPlayer))
             msgid = 10003;  //  propose peace
          else
             msgid = 10002;  //  declare war
-            
-         txt.format( getmessage( msgid ), acting.getName().c_str(), diplomaticStateNames[newState]  ); 
-         
-         sendMessage(1 << towardsPlayer, txt );
-      
-         ActionResult res = (new ChangeDiplomaticState( acting, towards, 1, newState ))->execute(context);
-         if ( !res.successful() )
-            return res;
-         
-         
-         
-      }  else {
-         // we are answering a proposal by the other player
-      
-         if ( newState > acting.diplomacy.getState( towardsPlayer )) {
-            // our proposal is about going to a more peaceful state 
 
-            if ( newState > i->second ) {
-               // we are proposing even more peace, but we'll only set the state he proposed and make a proposal ourself
-               
-               immediateTwoWayChange( i->second, context );
-               
-               ActionResult res = (new ChangeDiplomaticState( acting, towards, 1, newState ))->execute(context);
-               if ( !res.successful() )
+         txt.format(getmessage(msgid), acting.getName().c_str(), diplomaticStateNames[newState]);
+
+         sendMessage(1 << towardsPlayer, txt);
+
+         ActionResult res =
+            (new ChangeDiplomaticState(acting, towards, 1, newState))->execute(context);
+         if (!res.successful())
+            return res;
+
+      } else {
+         // we are answering a proposal by the other player
+
+         if (newState > acting.diplomacy.getState(towardsPlayer)) {
+            // our proposal is about going to a more peaceful state
+
+            if (newState > i->second) {
+               // we are proposing even more peace, but we'll only set the state he proposed and
+               // make a proposal ourself
+
+               immediateTwoWayChange(i->second, context);
+
+               ActionResult res =
+                  (new ChangeDiplomaticState(acting, towards, 1, newState))->execute(context);
+               if (!res.successful())
                   return res;
-               
+
             } else {
-               // he proposes less or equal peace, but we'll set the lower state 
-              
-               immediateTwoWayChange( newState, context );
-               
+               // he proposes less or equal peace, but we'll set the lower state
+
+               immediateTwoWayChange(newState, context);
             }
-            
+
             // we'll delete the other's proposal, because we have now reacted to it
-            ActionResult res = (new ChangeDiplomaticState( towards, acting, -1, newState ))->execute(context);
-            if ( !res.successful() )
+            ActionResult res =
+               (new ChangeDiplomaticState(towards, acting, -1, newState))->execute(context);
+            if (!res.successful())
                return res;
-            
+
          } else {
-            if ( newState < i->second ) {
-               // we go to an even more hostile state 
-               immediateTwoWayChange( i->second, context );
-               
-               
-               ActionResult res = (new ChangeDiplomaticState( towards, acting, -1, newState ))->execute(context);
-               if ( !res.successful() )
+            if (newState < i->second) {
+               // we go to an even more hostile state
+               immediateTwoWayChange(i->second, context);
+
+               ActionResult res =
+                  (new ChangeDiplomaticState(towards, acting, -1, newState))->execute(context);
+               if (!res.successful())
                   return res;
-               
-               res = (new ChangeDiplomaticState( acting, towards, 1, newState ))->execute(context);
-               if ( !res.successful() )
+
+               res = (new ChangeDiplomaticState(acting, towards, 1, newState))->execute(context);
+               if (!res.successful())
                   return res;
-               
+
                ASCString txt;
-               // declare war 
-               txt.format( getmessage( 10002 ), acting.getName().c_str(), diplomaticStateNames[newState]  ); 
-               sendMessage(1 << towardsPlayer, txt );
-               
+               // declare war
+               txt.format(getmessage(10002), acting.getName().c_str(),
+                          diplomaticStateNames[newState]);
+               sendMessage(1 << towardsPlayer, txt);
+
             } else {
-              // we are going to a state that is more hostile than the current one, but less hostile then the other players declaration
-               immediateTwoWayChange( newState, context);
+               // we are going to a state that is more hostile than the current one, but less
+               // hostile then the other players declaration
+               immediateTwoWayChange(newState, context);
             }
          }
       }
    }
-   
-   if ( acting.diplomacy.sharesView( towards ) != oldShareView ) {
-      computeview( getMap(), 0, false, &context );
-      mapChanged( getMap() );
+
+   if (acting.diplomacy.sharesView(towards) != oldShareView) {
+      computeview(getMap(), 0, false, &context);
+      mapChanged(getMap());
       repaintMap();
    }
-   
-   setState( Finished );
-   
+
+   setState(Finished);
+
    return ActionResult(0);
 }
 
+ActionResult DiplomacyCommand ::undoAction(const Context& context) {
+   for (vector<int>::iterator i = generatedMessages.begin(); i != generatedMessages.end(); ++i)
+      deleteMessage(*i);
 
-ActionResult DiplomacyCommand :: undoAction( const Context& context )
-{
-   for ( vector<int>::iterator i = generatedMessages.begin(); i != generatedMessages.end(); ++i )
-      deleteMessage( *i );
-   
-   return Command::undoAction(context );
+   return Command::undoAction(context);
 }
 
-
-ASCString DiplomacyCommand :: getCommandString() const 
-{
+ASCString DiplomacyCommand ::getCommandString() const {
    ASCString c;
-   c.format("setDiplomacy( map, %d, %d, %s, %d  )", actingPlayer, towardsPlayer, sneak?"true":"false", newState );
+   c.format("setDiplomacy( map, %d, %d, %s, %d  )", actingPlayer, towardsPlayer,
+            sneak ? "true" : "false", newState);
    return c;
 }
 
-GameActionID DiplomacyCommand::getID() const 
-{
-   return ActionRegistry::DiplomacyCommand;   
+GameActionID DiplomacyCommand::getID() const {
+   return ActionRegistry::DiplomacyCommand;
 }
 
-ASCString DiplomacyCommand::getDescription() const
-{
+ASCString DiplomacyCommand::getDescription() const {
    ASCString s;
-   if ( sneak ) 
-      s = getMap()->getPlayer( actingPlayer ).getName() + " sneak attacks " + getMap()->getPlayer( towardsPlayer ).getName() ;
+   if (sneak)
+      s = getMap()->getPlayer(actingPlayer).getName() + " sneak attacks " +
+          getMap()->getPlayer(towardsPlayer).getName();
    else {
-      s = getMap()->getPlayer( actingPlayer ).getName() + " set diplomatic state towards " + getMap()->getPlayer( towardsPlayer ).getName() 
-            + " to " + diplomaticStateNames[newState];
+      s = getMap()->getPlayer(actingPlayer).getName() + " set diplomatic state towards " +
+          getMap()->getPlayer(towardsPlayer).getName() + " to " + diplomaticStateNames[newState];
    }
    return s;
 }
 
-
 namespace {
-   const bool r1 = registerAction<DiplomacyCommand> ( ActionRegistry::DiplomacyCommand );
+const bool r1 = registerAction<DiplomacyCommand>(ActionRegistry::DiplomacyCommand);
 }
-

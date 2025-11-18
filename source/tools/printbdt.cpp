@@ -13,8 +13,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -33,43 +33,39 @@
 
 dacpalette256 pal;
 
+main(int argc, char* argv[]) {
+   FILE* fp = fopen("terrain.txt", "wt");
 
-main(int argc, char *argv[] )
-{
-   FILE* fp = fopen ( "terrain.txt", "wt" );
+   int quantity = 0;
 
-   int quantity=0;   
+   struct find_t fileinfo;
+   unsigned rc; /* return code */
 
-   struct find_t  fileinfo;
-   unsigned rc;        /* return code */ 
-
-   if ( argc == 2 ) {
-      rc = _dos_findfirst( argv[1], _A_NORMAL, &fileinfo );
-      fprintf( fp, " %s \n", argv[1] );
+   if (argc == 2) {
+      rc = _dos_findfirst(argv[1], _A_NORMAL, &fileinfo);
+      fprintf(fp, " %s \n", argv[1]);
    } else {
-      rc = _dos_findfirst( "*.trr", _A_NORMAL, &fileinfo );
-      fprintf( fp, " *.trr \n");
+      rc = _dos_findfirst("*.trr", _A_NORMAL, &fileinfo);
+      fprintf(fp, " *.trr \n");
    }
-          
-   fprintf ( fp, " %10.10s %15.15s %5.5s %5.5s %5.5s \n\n",
 
-                   "filename", "name", "defensebonus", "attackbonus", "movemalus" );
+   fprintf(fp, " %10.10s %15.15s %5.5s %5.5s %5.5s \n\n",
+
+           "filename", "name", "defensebonus", "attackbonus", "movemalus");
 
    while (rc == 0) {
-      pterraintype   ft;
+      pterraintype ft;
       ft = loadbodentyp(fileinfo.name);
 
-      fprintf ( fp, " %10.10s %15.15s %5.5d %5.5d %5.5d \n",
+      fprintf(fp, " %10.10s %15.15s %5.5d %5.5d %5.5d \n",
 
-      fileinfo.name, ft->name, ft->weather[0]->defensebonus, ft->weather[0]->attackbonus, ft->weather[0]->movemalus[0] );
+              fileinfo.name, ft->name, ft->weather[0]->defensebonus, ft->weather[0]->attackbonus,
+              ft->weather[0]->movemalus[0]);
 
-      rc = _dos_findnext( &fileinfo ); 
+      rc = _dos_findnext(&fileinfo);
    }
 
-   fclose ( fp );
+   fclose(fp);
 
    return 0;
 };
-
-
-

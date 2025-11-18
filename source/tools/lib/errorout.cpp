@@ -4,7 +4,7 @@
  */
 
 #if HAVE_CONFIG_H
-#  include <config.h>
+#include <config.h>
 #endif
 
 #include <iostream>
@@ -12,8 +12,8 @@
 #include <cstdarg>
 
 #ifdef _WIN32_
-# include <windows.h>
-# include <winuser.h>
+#include <windows.h>
+#include <winuser.h>
 #endif
 
 #include "../../global.h"
@@ -24,9 +24,9 @@ void fatalError ( const ASCString& text )
 {
    fprintf ( stderr, text.c_str() );
 
-   #ifdef _WIN32_
+#ifdef _WIN32_
    MessageBox(NULL, text.c_str(), "Fatal Error", MB_ICONERROR | MB_OK | MB_TASKMODAL );
-   #endif
+#endif
 
    exit ( 1 );
 }
@@ -55,4 +55,3 @@ void longWarning ( const ASCString& output )
    cerr << "ASC: " << output.c_str() << endl;
 }
 #endif
-

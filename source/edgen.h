@@ -63,8 +63,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -99,39 +99,37 @@
 #define clmaterial 3
 #define clfuel 4
 
-
 struct tmemoryblock {
-   int *mempointer;
-   int maxset,actpres;
+   int* mempointer;
+   int maxset, actpres;
    int res;
-   int color[maxtilevals+1];
+   int color[maxtilevals + 1];
    int tileval[maxtilevals];
    char bordername[maxtilevals][20];
    Uint8 generated;
    int startblocksize;
-   int tilevalcount,acttile;
-   };
+   int tilevalcount, acttile;
+};
 
-typedef tmemoryblock *pmemoryblock;
+typedef tmemoryblock* pmemoryblock;
 
 class tplasma {
-    public :
-        int maxx,maxy,maxvalue;
-        Uint8 flip;
-        int blockcount;
-        pmemoryblock memblock;
-        tplasma(void);
-        void membar(int x1 ,int y1 ,int x2 ,int y2, int color );
-        int getmem(int x, int y);
-        int creatememblock(void);
-        void setmemory(int x, int y, int color);
-        /*void preview(int sx, int sy,int barsize);
-        void process(int sx, int sy,int barsize);*/
-        void generateplasma(Uint8 resettile);
+  public:
+   int maxx, maxy, maxvalue;
+   Uint8 flip;
+   int blockcount;
+   pmemoryblock memblock;
+   tplasma(void);
+   void membar(int x1, int y1, int x2, int y2, int color);
+   int getmem(int x, int y);
+   int creatememblock(void);
+   void setmemory(int x, int y, int color);
+   /*void preview(int sx, int sy,int barsize);
+   void process(int sx, int sy,int barsize);*/
+   void generateplasma(Uint8 resettile);
 
-        int xsymm, ysymm;
-   };
-
+   int xsymm, ysymm;
+};
 
 extern int random(int max);
 extern int mapgenerator(void);

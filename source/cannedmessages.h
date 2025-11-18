@@ -7,15 +7,13 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef cannedmessagesH
- #define cannedmessagesH
+#define cannedmessagesH
 
 //! returns a pointer to the message id. The messages must have been loaded with loadmessages
-extern const char* getmessage( int id );
+extern const char* getmessage(int id);
 
 //! loads all messages from the files message?.txt
-extern void  loadmessages();
-
+extern void loadmessages();
 
 #endif

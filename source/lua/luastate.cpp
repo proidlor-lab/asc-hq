@@ -1,35 +1,28 @@
 
 
+extern "C" {
+#include <lua.h>
+#include <lauxlib.h>
+#include <lualib.h>
 
-extern "C"
-{
-   #include <lua.h>
-   #include <lauxlib.h>
-   #include <lualib.h>
-
-   int luaopen_asc(lua_State* L); // declare the wrapped module
+int luaopen_asc(lua_State* L);  // declare the wrapped module
 }
 
 #include "luastate.h"
 
-
 class LuaStatePrivate {
-   public:
-      LuaStatePrivate() : myLuaState( NULL ) {};
-      lua_State *myLuaState; 
+  public:
+   LuaStatePrivate() : myLuaState(NULL){};
+   lua_State* myLuaState;
 };
 
-
-LuaState::LuaState()
-{
+LuaState::LuaState() {
    myLuaState = luaL_newstate();
-   
-   luaopen_asc(myLuaState); // declare the wrapped module   
-   luaL_openlibs(myLuaState); 
+
+   luaopen_asc(myLuaState);  // declare the wrapped module
+   luaL_openlibs(myLuaState);
 }
 
-
-LuaState::~LuaState()
-{
+LuaState::~LuaState() {
    lua_close(myLuaState);
 }

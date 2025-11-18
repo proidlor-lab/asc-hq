@@ -13,11 +13,10 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
-
 
 #include "applicationstarter.h"
 
@@ -31,16 +30,14 @@
 #include "replay.h"
 #include "guifunctions.h"
 
-
-void loaddata()
-{
+void loaddata() {
    GraphicSetManager::Instance().loadData();
    dataLoaderTicker();
-   
-   registerDataLoader ( new PlayListLoader() );
-   registerDataLoader ( new BI3TranslationTableLoader() );
+
+   registerDataLoader(new PlayListLoader());
+   registerDataLoader(new BI3TranslationTableLoader());
    dataLoaderTicker();
-   
+
    loadAllData();
    dataLoaderTicker();
 
@@ -49,15 +46,14 @@ void loaddata()
 
    loadpalette();
    dataLoaderTicker();
-   
+
    loadmessages();
    dataLoaderTicker();
 
    loadUnitSets();
    dataLoaderTicker();
 
-   registerGuiFunctions( GuiFunctions::primaryGuiIcons );
+   registerGuiFunctions(GuiFunctions::primaryGuiIcons);
 
    hookReplayToSystem();
 }
-

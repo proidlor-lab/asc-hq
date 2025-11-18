@@ -13,8 +13,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -22,51 +22,44 @@
 #include "selectionwindow.h"
 #include "../paradialog.h"
 
-bool SelectionWidget::eventMouseButtonUp (const SDL_MouseButtonEvent *button) 
-{
-   if ( button->type == SDL_MOUSEBUTTONUP && button->button == SDL_BUTTON_LEFT ) {
-      itemSelected( this );
+bool SelectionWidget::eventMouseButtonUp(const SDL_MouseButtonEvent* button) {
+   if (button->type == SDL_MOUSEBUTTONUP && button->button == SDL_BUTTON_LEFT) {
+      itemSelected(this);
       return true;
-   }   
+   }
    return false;
 };
 
-bool SelectionWidget::eventMouseButtonDown (const SDL_MouseButtonEvent *button) 
-{
-   if ( button->type == SDL_MOUSEBUTTONDOWN && button->button == SDL_BUTTON_LEFT ) {
-      itemMarked( this );
+bool SelectionWidget::eventMouseButtonDown(const SDL_MouseButtonEvent* button) {
+   if (button->type == SDL_MOUSEBUTTONDOWN && button->button == SDL_BUTTON_LEFT) {
+      itemMarked(this);
       Update();
       return true;
-   }   
+   }
    return false;
 };
 
-void SelectionWidget::eventBlit ( SDL_Surface * surface, const PG_Rect & src, const PG_Rect & dst )
-{
-   if ( selectionCallBack && selectionCallBack->operator()(this) )
-      SDL_FillRect( PG_Application::GetScreen(), const_cast<PG_Rect*>(&dst), 0xff888888 );
-      
-   display( PG_Application::GetScreen(), src, dst );
+void SelectionWidget::eventBlit(SDL_Surface* surface, const PG_Rect& src, const PG_Rect& dst) {
+   if (selectionCallBack && selectionCallBack->operator()(this))
+      SDL_FillRect(PG_Application::GetScreen(), const_cast<PG_Rect*>(&dst), 0xff888888);
+
+   display(PG_Application::GetScreen(), src, dst);
 };
 
-
-
-bool ItemSelectorWidget::moveSelection( int amount ) 
-{
+bool ItemSelectorWidget::moveSelection(int amount) {
    WidgetList::iterator i;
-   if ( !selectedItem ) {
+   if (!selectedItem) {
       i = widgets.begin();
    } else {
-      i = find( widgets.begin(), widgets.end(), selectedItem );
-      if ( i != widgets.end() ) {
-         if ( amount > 0 ) {
-            if ( widgets.end() - i > amount )
+      i = find(widgets.begin(), widgets.end(), selectedItem);
+      if (i != widgets.end()) {
+         if (amount > 0) {
+            if (widgets.end() - i > amount)
                i += amount;
             else
                i = widgets.end() - 1;
-         } else
-         if ( amount < 0 ) {
-            if ( i - widgets.begin() >= -amount )
+         } else if (amount < 0) {
+            if (i - widgets.begin() >= -amount)
                i += amount;
             else
                i = widgets.begin();
@@ -74,22 +67,21 @@ bool ItemSelectorWidget::moveSelection( int amount )
       }
    }
 
-   if ( i == widgets.end() )
+   if (i == widgets.end())
       return false;
-   
-   if ( *i != selectedItem ) {
+
+   if (*i != selectedItem) {
       selectedItem = *i;
       resetNamesearch();
-      scrollWidget->ScrollToWidget( *i );
+      scrollWidget->ScrollToWidget(*i);
       Update();
       return true;
-   } 
+   }
    return false;
 }
 
-bool ItemSelectorWidget::eventKeyDown(const SDL_KeyboardEvent* key) 
-{
-   if ( key->keysym.sym == SDLK_BACKSPACE ) {
+bool ItemSelectorWidget::eventKeyDown(const SDL_KeyboardEvent* key) {
+   if (key->keysym.sym == SDLK_BACKSPACE) {
       nameSearch->SendBackspace();
       /*
       ASCString s = nameSearch->GetText();
@@ -99,263 +91,254 @@ bool ItemSelectorWidget::eventKeyDown(const SDL_KeyboardEvent* key)
       }
       */
       return true;
-   } 
-   if ( key->keysym.sym == SDLK_RIGHT )  {
+   }
+   if (key->keysym.sym == SDLK_RIGHT) {
       moveSelection(1);
       return true;
    }
-   if ( key->keysym.sym == SDLK_LEFT )  {
+   if (key->keysym.sym == SDLK_LEFT) {
       moveSelection(-1);
       return true;
    }
-   if ( key->keysym.sym == SDLK_UP )  {
+   if (key->keysym.sym == SDLK_UP) {
       moveSelection(-columnCount);
       return true;
    }
-   if ( key->keysym.sym == SDLK_DOWN )  {
+   if (key->keysym.sym == SDLK_DOWN) {
       moveSelection(columnCount);
       return true;
    }
-   if ( key->keysym.sym == SDLK_HOME )  {
-      moveSelection(-int(widgets.size()) );
+   if (key->keysym.sym == SDLK_HOME) {
+      moveSelection(-int(widgets.size()));
       return true;
    }
-   if ( key->keysym.sym == SDLK_END )  {
+   if (key->keysym.sym == SDLK_END) {
       moveSelection(widgets.size());
       return true;
    }
-   if ( key->keysym.sym == SDLK_PAGEUP )  {
-      moveSelection( -columnCount * visibleRowCount );
+   if (key->keysym.sym == SDLK_PAGEUP) {
+      moveSelection(-columnCount * visibleRowCount);
       return true;
    }
-   if ( key->keysym.sym == SDLK_PAGEDOWN )  {
+   if (key->keysym.sym == SDLK_PAGEDOWN) {
       moveSelection(columnCount * visibleRowCount);
       return true;
    }
 
-   if ( key->keysym.sym == SDLK_RETURN || key->keysym.sym == SDLK_KP_ENTER) {
-      if ( namesConstrained ) {
-         if ( selectedItem && (nameMatch( selectedItem, nameSearch->GetText()) || nameSearch->GetText().length() == 0) ) {
-            itemSelected( selectedItem, false );
+   if (key->keysym.sym == SDLK_RETURN || key->keysym.sym == SDLK_KP_ENTER) {
+      if (namesConstrained) {
+         if (selectedItem && (nameMatch(selectedItem, nameSearch->GetText()) ||
+                              nameSearch->GetText().length() == 0)) {
+            itemSelected(selectedItem, false);
             return true;
-         }   
+         }
       } else {
-         if ( nameSearch->GetText().length() ) {
-            nameEntered( nameSearch->GetText() );
+         if (nameSearch->GetText().length()) {
+            nameEntered(nameSearch->GetText());
             return true;
          } else {
-            if ( selectedItem ) {
-               itemSelected( selectedItem, false );
+            if (selectedItem) {
+               itemSelected(selectedItem, false);
                return true;
-            }   
-         }   
+            }
+         }
       }
-   } 
+   }
 
-      
-            
-   if ( key->keysym.unicode <= 255 && key->keysym.unicode >= 0x20 ) {
-      ASCString newtext = nameSearch->GetText() + char ( key->keysym.unicode );
-      if ( locateObject( newtext ) || !namesConstrained ) 
-         nameSearch->SendChar( key->keysym.unicode );
-      
+   if (key->keysym.unicode <= 255 && key->keysym.unicode >= 0x20) {
+      ASCString newtext = nameSearch->GetText() + char(key->keysym.unicode);
+      if (locateObject(newtext) || !namesConstrained)
+         nameSearch->SendChar(key->keysym.unicode);
+
       return true;
-   }   
-   
+   }
+
    return false;
 };
 
-void ItemSelectorWidget::itemSelected( const SelectionWidget* w, bool mouse )
-{
+void ItemSelectorWidget::itemSelected(const SelectionWidget* w, bool mouse) {
    Update();
-   factory->itemSelected( w, mouse );
-   sigItemSelected( w );
+   factory->itemSelected(w, mouse);
+   sigItemSelected(w);
 }
 
-void ItemSelectorWidget::markItem( const SelectionWidget* w )
-{
+void ItemSelectorWidget::markItem(const SelectionWidget* w) {
    selectedItem = w;
-   factory->itemMarked( w );
+   factory->itemMarked(w);
 }
 
-
-bool ItemSelectorWidget::isItemMarked( const SelectionWidget* w )
-{
+bool ItemSelectorWidget::isItemMarked(const SelectionWidget* w) {
    return w == selectedItem;
 }
-      
-bool ItemSelectorWidget::locateObject( const ASCString& name ) 
-{
-   for ( WidgetList::iterator i = widgets.begin(); i != widgets.end(); ++i ) {
-      if ( nameMatch( *i, name )  ) {
-         markItem( *i );         
-         scrollWidget->ScrollToWidget( *i );
+
+bool ItemSelectorWidget::locateObject(const ASCString& name) {
+   for (WidgetList::iterator i = widgets.begin(); i != widgets.end(); ++i) {
+      if (nameMatch(*i, name)) {
+         markItem(*i);
+         scrollWidget->ScrollToWidget(*i);
          Update();
          return true;
-      }   
+      }
    }
    return false;
 }
 
-bool ItemSelectorWidget::nameMatch( const SelectionWidget* selection, const ASCString& name )
-{
+bool ItemSelectorWidget::nameMatch(const SelectionWidget* selection, const ASCString& name) {
    ASCString a = name;
    a.toLower();
    ASCString b = selection->getName().toLower();
-   if ( a.length() > 0 && b.length() > 0 )
-      if ( b.find ( a ) == 0 ) 
+   if (a.length() > 0 && b.length() > 0)
+      if (b.find(a) == 0)
          return true;
    return false;
-};   
-
-
-class NonEditableLineEdit : public    PG_LineEdit {
-   public:
-      NonEditableLineEdit (PG_Widget *parent, const PG_Rect &r=PG_Rect::null, const std::string &style="LineEdit", int maximumLength=1000000) : PG_LineEdit( parent, r, style, maximumLength)
-      {
-         EditBegin();
-         SetTransparency(255);
-         SetBorderSize(0);
-      };
-      virtual bool   eventKeyDown (const SDL_KeyboardEvent *key) { return false; };
-      virtual bool   eventFilterKey (const SDL_KeyboardEvent *key) { return true; };
-      
 };
 
-ItemSelectorWidget::ItemSelectorWidget( PG_Widget *parent, const PG_Rect &r , SelectionItemFactory* itemFactory ) 
-   : PG_Widget( parent,r ), namesConstrained(true), rowCount(0), scrollWidget( NULL), nameSearch(NULL), selectedItem(NULL), factory( itemFactory ), columnCount(-1), visibleRowCount(-1), selectionCallBack( this, &ItemSelectorWidget::isItemMarked ) {
+class NonEditableLineEdit : public PG_LineEdit {
+  public:
+   NonEditableLineEdit(PG_Widget* parent, const PG_Rect& r = PG_Rect::null,
+                       const std::string& style = "LineEdit", int maximumLength = 1000000)
+      : PG_LineEdit(parent, r, style, maximumLength) {
+      EditBegin();
+      SetTransparency(255);
+      SetBorderSize(0);
+   };
+   virtual bool eventKeyDown(const SDL_KeyboardEvent* key) { return false; };
+   virtual bool eventFilterKey(const SDL_KeyboardEvent* key) { return true; };
+};
+
+ItemSelectorWidget::ItemSelectorWidget(PG_Widget* parent, const PG_Rect& r,
+                                       SelectionItemFactory* itemFactory)
+   : PG_Widget(parent, r),
+     namesConstrained(true),
+     rowCount(0),
+     scrollWidget(NULL),
+     nameSearch(NULL),
+     selectedItem(NULL),
+     factory(itemFactory),
+     columnCount(-1),
+     visibleRowCount(-1),
+     selectionCallBack(this, &ItemSelectorWidget::isItemMarked) {
    SetTransparency(255);
    reLoad();
 
-   markItem( itemFactory->getDefaultItem() );
-   int bottom = 0; // itemFactory->getBottomLineHeight();
-   Emboss* e = new Emboss( this, PG_Rect( 1, Height() - 26 - bottom, Width()-20, 22), true );
-   nameSearch = new NonEditableLineEdit ( e, PG_Rect( 4,1, e->Width()-4 , e->Height()-2 ));
+   markItem(itemFactory->getDefaultItem());
+   int bottom = 0;  // itemFactory->getBottomLineHeight();
+   Emboss* e = new Emboss(this, PG_Rect(1, Height() - 26 - bottom, Width() - 20, 22), true);
+   nameSearch = new NonEditableLineEdit(e, PG_Rect(4, 1, e->Width() - 4, e->Height() - 2));
 
    // factory->spawnBottonWidgets( this, PG_Rect( 1, Height() - bottom, Width()-20, bottom-1));
    // nameSearch = new PG_Label ( this, PG_Rect( 5, Height() - 25, Width() - 10, 20 ));
 };
 
-
-void ItemSelectorWidget::constrainNames( bool constrain )
-{
+void ItemSelectorWidget::constrainNames(bool constrain) {
    namesConstrained = constrain;
-}   
+}
 
-void ItemSelectorWidget::reLoad( bool show ) 
-{
+void ItemSelectorWidget::reLoad(bool show) {
    int orgx = -1;
    int orgy = -1;
-   if ( scrollWidget ) {
+   if (scrollWidget) {
       orgx = scrollWidget->GetScrollPosX();
       orgy = scrollWidget->GetScrollPosY();
    }
    delete scrollWidget;
-   scrollWidget = new PG_ScrollWidget( this , PG_Rect( 0, 0, Width(), Height() - 30 ));
+   scrollWidget = new PG_ScrollWidget(this, PG_Rect(0, 0, Width(), Height() - 30));
    scrollWidget->SetTransparency(255);
    widgets.clear();
 
    int x = 0;
    int y = 0;
-   
+
    factory->restart();
-   SelectionWidget* w; 
-   while ( (w = factory->spawnNextItem( scrollWidget, PG_Point(x,y))) ) {
-   
-      if ( columnCount < 0 )
+   SelectionWidget* w;
+   while ((w = factory->spawnNextItem(scrollWidget, PG_Point(x, y)))) {
+      if (columnCount < 0)
          columnCount = scrollWidget->Width() / (w->Width() + w->gap());
 
-      if ( visibleRowCount < 0 )
+      if (visibleRowCount < 0)
          visibleRowCount = scrollWidget->Height() / (w->Height() + w->gap());
 
-      w->itemSelected.connect( sigc::bind( sigc::mem_fun( *this, &ItemSelectorWidget::itemSelected ), true ));
-      w->itemMarked.connect( sigc::mem_fun( *this, &ItemSelectorWidget::markItem ));
-      w->setSelectionCallback( &selectionCallBack );
-      widgets.push_back ( w );
-      
+      w->itemSelected.connect(
+         sigc::bind(sigc::mem_fun(*this, &ItemSelectorWidget::itemSelected), true));
+      w->itemMarked.connect(sigc::mem_fun(*this, &ItemSelectorWidget::markItem));
+      w->setSelectionCallback(&selectionCallBack);
+      widgets.push_back(w);
+
       x += w->Width() + w->gap();
-      if ( x + w->Width() + w->gap() >= scrollWidget->Width() ) {
-         x = 0; 
+      if (x + w->Width() + w->gap() >= scrollWidget->Width()) {
+         x = 0;
          y += w->Height() + w->gap();
       }
    }
 
-   if ( orgx >= 0 && orgy >= 0 )
-      scrollWidget->ScrollTo ( orgx, orgy );
-   
-   if ( show ) 
+   if (orgx >= 0 && orgy >= 0)
+      scrollWidget->ScrollTo(orgx, orgy);
+
+   if (show)
       // scrollWidget->Update();
       scrollWidget->Show();
 }
 
-
-void ItemSelectorWidget::resetNamesearch()
-{
-   nameSearch->SetText( "" );
+void ItemSelectorWidget::resetNamesearch() {
+   nameSearch->SetText("");
 }
 
-ItemSelectorWidget::~ItemSelectorWidget()
-{
+ItemSelectorWidget::~ItemSelectorWidget() {
    delete factory;
 }
 
+ItemSelectorWindow::ItemSelectorWindow(PG_Widget* parent, const PG_Rect& r, const ASCString& title,
+                                       SelectionItemFactory* itemFactory)
+   : ASC_PG_Dialog(parent, r, title) {
+   SetTransparency(0);
 
+   itemSelector = new ItemSelectorWidget(
+      this, PG_Rect(5, GetTitlebarHeight() + 2, Width() - 5, Height() - GetTitlebarHeight() - 5),
+      itemFactory);
 
-ItemSelectorWindow::ItemSelectorWindow( PG_Widget *parent, const PG_Rect &r , const ASCString& title, SelectionItemFactory* itemFactory )
-   : ASC_PG_Dialog( parent,r, title)
-{
-   SetTransparency( 0 );
-   
-   itemSelector = new ItemSelectorWidget( this, PG_Rect( 5, GetTitlebarHeight () + 2, Width()-5, Height()- GetTitlebarHeight ()- 5 ), itemFactory );
-   
-   itemSelector->sigItemSelected.connect(  sigc::mem_fun( *this, &ItemSelectorWindow::itemSelected ));
-   itemSelector->sigQuitModal.connect( sigc::mem_fun( *this, &ItemSelectorWindow::QuitModal));
+   itemSelector->sigItemSelected.connect(sigc::mem_fun(*this, &ItemSelectorWindow::itemSelected));
+   itemSelector->sigQuitModal.connect(sigc::mem_fun(*this, &ItemSelectorWindow::QuitModal));
 };
 
-void ItemSelectorWindow::itemSelected( const SelectionWidget* )
-{
+void ItemSelectorWindow::itemSelected(const SelectionWidget*) {
    Hide();
    QuitModal();
 }
 
-bool ItemSelectorWindow::eventKeyDown(const SDL_KeyboardEvent* key)
-{
-   if ( key->keysym.sym == SDLK_ESCAPE )  {
+bool ItemSelectorWindow::eventKeyDown(const SDL_KeyboardEvent* key) {
+   if (key->keysym.sym == SDLK_ESCAPE) {
       QuitModal();
       return true;
    }
    return false;
 }
 
-int ItemSelectorWindow::RunModal()
-{
-   itemSelector ->resetNamesearch();
+int ItemSelectorWindow::RunModal() {
+   itemSelector->resetNamesearch();
    return PG_Window::RunModal();
 }
 
-void ItemSelectorWindow::reLoad()
-{
+void ItemSelectorWindow::reLoad() {
    itemSelector->reLoad();
 }
 
-void ItemSelectorWidget::selectItem(Loki::Functor<bool, LOKI_TYPELIST_1(SelectionWidget*)> predicate, bool fromTop )
-{
-	if ( fromTop ) {
-		for ( WidgetList::const_iterator i = widgets.begin(); i != widgets.end(); ++i) {
-			if ( predicate(*i) ) {
-				markItem(*i);
-		        scrollWidget->ScrollToWidget( *i );
-				return;
-			}
-		}
-	} else {
-		for ( WidgetList::const_reverse_iterator i = widgets.rbegin(); i != widgets.rend(); ++i) {
-			if ( predicate(*i) ) {
-				markItem(*i);
-		        scrollWidget->ScrollToWidget( *i );
-				return;
-			}
-		}
-	}
+void ItemSelectorWidget::selectItem(
+   Loki::Functor<bool, LOKI_TYPELIST_1(SelectionWidget*)> predicate, bool fromTop) {
+   if (fromTop) {
+      for (WidgetList::const_iterator i = widgets.begin(); i != widgets.end(); ++i) {
+         if (predicate(*i)) {
+            markItem(*i);
+            scrollWidget->ScrollToWidget(*i);
+            return;
+         }
+      }
+   } else {
+      for (WidgetList::const_reverse_iterator i = widgets.rbegin(); i != widgets.rend(); ++i) {
+         if (predicate(*i)) {
+            markItem(*i);
+            scrollWidget->ScrollToWidget(*i);
+            return;
+         }
+      }
+   }
 }
-

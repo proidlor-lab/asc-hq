@@ -19,7 +19,6 @@
     Boston, MA  02111-1307  USA
 */
 
-
 #ifndef unitinfodialogH
 #define unitinfodialogH
 
@@ -27,8 +26,7 @@
 
 class Panel;
 
-extern void unitInfoDialog( const VehicleType* vt = NULL );
-extern void assignWeaponInfo ( Panel* panel, PG_Widget* widget, const SingleWeapon& weapon );
+extern void unitInfoDialog(const VehicleType* vt = NULL);
+extern void assignWeaponInfo(Panel* panel, PG_Widget* widget, const SingleWeapon& weapon);
 
 #endif
-

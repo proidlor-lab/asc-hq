@@ -29,8 +29,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -38,19 +38,19 @@
 // are being included in basestrm.cpp
 
 #ifdef __BORLANDC__
- #include "borland/fileio.h"
+#include "borland/fileio.h"
 #else
- #ifdef __GNUG__
-  #include "gcc/fileio.h"
- #else
-  #ifdef __WATCOM_CPLUSPLUS__
-   #include "watcom/fileio.h"
-  #else
-   #ifdef _MSC_VER
-    #include "msvc/fileio.h"
-   #endif
-  #endif
- #endif
+#ifdef __GNUG__
+#include "gcc/fileio.h"
+#else
+#ifdef __WATCOM_CPLUSPLUS__
+#include "watcom/fileio.h"
+#else
+#ifdef _MSC_VER
+#include "msvc/fileio.h"
+#endif
+#endif
+#endif
 #endif
 
- extern const bool has_drive_letters;
+extern const bool has_drive_letters;

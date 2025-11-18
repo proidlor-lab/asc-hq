@@ -8,9 +8,8 @@
  ***************************************************************************/
 
 #ifndef aiservice1H
- #define aiservice1H
+#define aiservice1H
 
- extern void testAiService();
-
+extern void testAiService();
 
 #endif

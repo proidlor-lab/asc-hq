@@ -19,38 +19,40 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef stringtokenizerH
- #define stringtokenizerH
+#define stringtokenizerH
 
- #include "ascstring.h"
+#include "ascstring.h"
 
- //! This String Tokenizer is NOT intended to be a general purpose tool. It is exclusively used by the TextFileParser
- class StringTokenizer {
-       const ASCString& str;
-       int i;
-       bool includeOperators;
-       ASCString delimitter;
-    private:
-       int CharSpace ( char c );
-    public:
-       StringTokenizer ( const ASCString& _str, bool includeOperators_ = false );
-       StringTokenizer ( const ASCString& _str, const ASCString& delimitter_ );
-       StringTokenizer ( const ASCString& _str, const char* delimitter_ );
-       ASCString getNextToken ( );
-       ASCString getRemaining ( );
-       void skipTill(char endchar );
- };
+//! This String Tokenizer is NOT intended to be a general purpose tool. It is exclusively used by
+//! the TextFileParser
+class StringTokenizer {
+   const ASCString& str;
+   int i;
+   bool includeOperators;
+   ASCString delimitter;
 
-  class StringSplit {
-       const ASCString& str;
-       int i;
-       ASCString delimitter;
-       bool isDelimitter ( char c );
-     public:
-       StringSplit ( const ASCString& _str, const ASCString& delimitter_ );
-       ASCString getNextToken ( );
-  };
+  private:
+   int CharSpace(char c);
 
+  public:
+   StringTokenizer(const ASCString& _str, bool includeOperators_ = false);
+   StringTokenizer(const ASCString& _str, const ASCString& delimitter_);
+   StringTokenizer(const ASCString& _str, const char* delimitter_);
+   ASCString getNextToken();
+   ASCString getRemaining();
+   void skipTill(char endchar);
+};
+
+class StringSplit {
+   const ASCString& str;
+   int i;
+   ASCString delimitter;
+   bool isDelimitter(char c);
+
+  public:
+   StringSplit(const ASCString& _str, const ASCString& delimitter_);
+   ASCString getNextToken();
+};
 
 #endif

@@ -13,8 +13,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -31,48 +31,42 @@
 #include "..\vesa.h"
 #include "..\stack.h"
 
-
-
-main(int argc, char *argv[] )
-{ 
-   if ( argc < 2 ) {
+main(int argc, char* argv[]) {
+   if (argc < 2) {
       printf("syntax: convbodn filename/wildcard\n");
       return 1;
    }
 
-  find_t  fileinfo;
-  unsigned rc;        /* return code */
-  pterraintype bdt;
-  int i;
+   find_t fileinfo;
+   unsigned rc; /* return code */
+   pterraintype bdt;
+   int i;
 
    loadpalette();
 
+   tterrainbits bts(0, 1);
 
-   tterrainbits bts ( 0, 1 );
+   tterrainbits packeis(1 << 30, 0);
 
-
-   tterrainbits packeis ( 1 << 30, 0 );
-
-
-  rc = _dos_findfirst( argv[1], _A_NORMAL, &fileinfo );
-  while( rc == 0 ) { 
-      bdt = loadterraintype ( fileinfo.name );
-      int modi =0;
-      for ( int w = 0 ; w < cwettertypennum; w++ )
-         if ( bdt->weather[w] )
-            if ( bdt->weather[w]->art & packeis ) {
+   rc = _dos_findfirst(argv[1], _A_NORMAL, &fileinfo);
+   while (rc == 0) {
+      bdt = loadterraintype(fileinfo.name);
+      int modi = 0;
+      for (int w = 0; w < cwettertypennum; w++)
+         if (bdt->weather[w])
+            if (bdt->weather[w]->art & packeis) {
                bdt->weather[w]->art |= bts;
                bdt->weather[w]->art = bdt->weather[w]->art ^ packeis;
-               printf(" %s weather %d modified \n", fileinfo.name, w );
+               printf(" %s weather %d modified \n", fileinfo.name, w);
                modi = 1;
             }
 
-      if ( modi ) {
-         tn_file_buf_stream mainstream ( fileinfo.name ,2);
-         writeterrain ( bdt, &mainstream );                
+      if (modi) {
+         tn_file_buf_stream mainstream(fileinfo.name, 2);
+         writeterrain(bdt, &mainstream);
       }
 
-      rc = _dos_findnext( &fileinfo );
+      rc = _dos_findnext(&fileinfo);
    }
    return 0;
 }

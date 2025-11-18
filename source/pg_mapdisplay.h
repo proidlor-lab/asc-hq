@@ -9,8 +9,7 @@
  ***************************************************************************/
 
 #ifndef pgmapdisplayH
- #define pgmapdisplayH
-
+#define pgmapdisplayH
 
 #include "mapdisplayinterface.h"
 

@@ -46,8 +46,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -55,43 +55,43 @@
 // are being included in basestrm.cpp
 
 #ifndef fileio_h_included
- #define fileio_h_included
+#define fileio_h_included
 
- #include <vector>
- #include "../../ASCString.h"
+#include <vector>
+#include "../../ASCString.h"
 
-  #ifdef HAVE_SYS_DIRENT_H
-   #include <sys/dirent.h>
-  #endif
- 
-  #ifdef HAVE_DIRENT_H
-  # include <dirent.h>
-  # define NAMLEN(dirent) strlen((dirent)->d_name)
-  #else
-  # define dirent direct
-  # define NAMLEN(dirent) (dirent)->d_namlen
-  # if HAVE_SYS_NDIR_H
-  #  include <sys/ndir.h>
-  # endif
-  # if HAVE_SYS_DIR_H
-  #  include <sys/dir.h>
-  # endif
-  # if HAVE_NDIR_H
-  #  include <ndir.h>
-  # endif
-  #endif
-  #define ASC_direct dirent
+#ifdef HAVE_SYS_DIRENT_H
+#include <sys/dirent.h>
+#endif
 
- extern const char* filereadmode;
- extern const char* filewritemode;
- extern const char* filereadmodetext;
- extern const char* filewritemodetext;
- extern const char pathdelimitter;
- extern const char* pathdelimitterstring;
- extern const char  foreignPathDelimitter;
- extern const char* foreignPathDelimitterString;
+#ifdef HAVE_DIRENT_H
+#include <dirent.h>
+#define NAMLEN(dirent) strlen((dirent)->d_name)
+#else
+#define dirent direct
+#define NAMLEN(dirent) (dirent)->d_namlen
+#if HAVE_SYS_NDIR_H
+#include <sys/ndir.h>
+#endif
+#if HAVE_SYS_DIR_H
+#include <sys/dir.h>
+#endif
+#if HAVE_NDIR_H
+#include <ndir.h>
+#endif
+#endif
+#define ASC_direct dirent
 
- extern const int maxfilenamelength;
- extern const char* asc_configurationfile;
+extern const char* filereadmode;
+extern const char* filewritemode;
+extern const char* filereadmodetext;
+extern const char* filewritemodetext;
+extern const char pathdelimitter;
+extern const char* pathdelimitterstring;
+extern const char foreignPathDelimitter;
+extern const char* foreignPathDelimitterString;
+
+extern const int maxfilenamelength;
+extern const char* asc_configurationfile;
 
 #endif

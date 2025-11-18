@@ -10,17 +10,16 @@
 class LuaState;
 
 class LuaRunner {
-      LuaState& state;
-      
-      ASCString errors;
-      
-   public:
-      LuaRunner( LuaState& luaState );
-      
-      void runFile( const ASCString& filename );
-      void runCommand( const ASCString& command );
+   LuaState& state;
 
-      const ASCString& getErrors();
-      
+   ASCString errors;
+
+  public:
+   LuaRunner(LuaState& luaState);
+
+   void runFile(const ASCString& filename);
+   void runCommand(const ASCString& command);
+
+   const ASCString& getErrors();
 };
 #endif

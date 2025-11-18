@@ -20,8 +20,7 @@
 */
 
 struct Rect {
-  MapField *a, *b, *c, *d;
-
+   MapField *a, *b, *c, *d;
 };
 
 typedef list<Rect> RectList;
@@ -31,71 +30,71 @@ typedef list<Rect> RectList;
 */
 
 class ResourcePlacement {
-private:
-  GameMap& map;
-  double fuelRoughness;
-  double materialRoughness;
-  bool placeFuel;
-  bool placeMaterial;
-  unsigned short maxFuelOffset;
-  unsigned short maxMaterialOffset;
-  int additionalResourceFreeFieldsPercentageFuel;
-  int additionalResourceFreeFieldsPercentageMaterial;
-  
-  int stepCount;
+  private:
+   GameMap& map;
+   double fuelRoughness;
+   double materialRoughness;
+   bool placeFuel;
+   bool placeMaterial;
+   unsigned short maxFuelOffset;
+   unsigned short maxMaterialOffset;
+   int additionalResourceFreeFieldsPercentageFuel;
+   int additionalResourceFreeFieldsPercentageMaterial;
 
-  unsigned short createRandomValue(int limit);
-  short createAlgebraicSign();
-  
-  void setFieldValueFuel(MapField* f);
-  void setFieldValueMaterial(MapField* f);
-  int calculateCornerValueFuel(MapField* a, MapField* b, MapField* c);
-  int calculateDiamondValueFuel(MapField* a, MapField* b, MapField* c, MapField* d);
-  int calculateCornerValueMaterial(MapField* a, MapField* b, MapField* c);
-  int calculateDiamondValueMaterial(MapField* a, MapField* b, MapField* c, MapField* d);
-  MapField* calculateCornerPoint(MapField* a, MapField* b, MapField* c);
-  MapField* calculateDiamondPoint(MapField* a, MapField* b, MapField* c, MapField* d);
-  int calculateCurrentOffset(int offset);
-  void step(Rect r);
-  void runDS();
+   int stepCount;
 
-public:
-  /**  
-  @brief Constructor. Configures algorithm with algorithm determining parameters
-  @param map The map which is filled with resources
-  @param fuelRoughness Decides how large the offset (relative) for fuel between the fields may be. Value must be 0 < value < 4.0
-         The higher the value the more "hills" and "valleys" you get
-  @param materialRoughness Decides how large the offset (relative) for material between neighbouring fields may be. Value must be 0 < value < 4.0
-         The higher the value the more "hills" and "valleys" you get
-  @param maxFuelOffSet Determines the absolut offset fuelFields might have
-  @param maxMaterialOffSet Determines the absolut offset materialFields might have
-  */
-  ResourcePlacement(GameMap& map, double fuelRoughness, double materialRoughness, unsigned short maxFuelOffSet, unsigned short maxMaterialOffSet, 
-                    int additionalFreeFieldsPercFuel = 0, int additionalFreeFieldsPercMaterial = 0);
-  /**  
-  @brief Destructor
-  */
-  ~ResourcePlacement();
-  /**  
-  @brief Fills the map with all resources 
-  */
-  void placeResources();
-  /**  
-  @brief Fills the map only with fuel resources
-  */
-  void placeFuelResources();
-  /**  
-  @brief Fills the map only with material resources
-  */
-  void placeMaterialResources();
-  
-  static const int MAXFUELVALUE;
-  static const int MINFUELVALUE;
-  static const int MAXMATERIALVALUE;
-  static const int MINMATERIALVALUE;
+   unsigned short createRandomValue(int limit);
+   short createAlgebraicSign();
 
+   void setFieldValueFuel(MapField* f);
+   void setFieldValueMaterial(MapField* f);
+   int calculateCornerValueFuel(MapField* a, MapField* b, MapField* c);
+   int calculateDiamondValueFuel(MapField* a, MapField* b, MapField* c, MapField* d);
+   int calculateCornerValueMaterial(MapField* a, MapField* b, MapField* c);
+   int calculateDiamondValueMaterial(MapField* a, MapField* b, MapField* c, MapField* d);
+   MapField* calculateCornerPoint(MapField* a, MapField* b, MapField* c);
+   MapField* calculateDiamondPoint(MapField* a, MapField* b, MapField* c, MapField* d);
+   int calculateCurrentOffset(int offset);
+   void step(Rect r);
+   void runDS();
+
+  public:
+   /**
+   @brief Constructor. Configures algorithm with algorithm determining parameters
+   @param map The map which is filled with resources
+   @param fuelRoughness Decides how large the offset (relative) for fuel between the fields may be.
+   Value must be 0 < value < 4.0 The higher the value the more "hills" and "valleys" you get
+   @param materialRoughness Decides how large the offset (relative) for material between
+   neighbouring fields may be. Value must be 0 < value < 4.0 The higher the value the more "hills"
+   and "valleys" you get
+   @param maxFuelOffSet Determines the absolut offset fuelFields might have
+   @param maxMaterialOffSet Determines the absolut offset materialFields might have
+   */
+   ResourcePlacement(GameMap& map, double fuelRoughness, double materialRoughness,
+                     unsigned short maxFuelOffSet, unsigned short maxMaterialOffSet,
+                     int additionalFreeFieldsPercFuel = 0,
+                     int additionalFreeFieldsPercMaterial = 0);
+   /**
+   @brief Destructor
+   */
+   ~ResourcePlacement();
+   /**
+   @brief Fills the map with all resources
+   */
+   void placeResources();
+   /**
+   @brief Fills the map only with fuel resources
+   */
+   void placeFuelResources();
+   /**
+   @brief Fills the map only with material resources
+   */
+   void placeMaterialResources();
+
+   static const int MAXFUELVALUE;
+   static const int MINFUELVALUE;
+   static const int MAXMATERIALVALUE;
+   static const int MINMATERIALVALUE;
 };
 
 #endif
-
-

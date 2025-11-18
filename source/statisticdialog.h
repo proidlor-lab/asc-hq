@@ -20,10 +20,9 @@
     Boston, MA  02111-1307  USA
 
 */
-#ifndef  statisticdialogH
-#define  statisticdialogH
+#ifndef statisticdialogH
+#define statisticdialogH
 
 extern void statisticDialog();
 
-#endif  
-
+#endif

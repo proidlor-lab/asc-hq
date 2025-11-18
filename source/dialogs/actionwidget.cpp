@@ -25,41 +25,32 @@
 #include "../actions/unitcommand.h"
 #include "../itemrepository.h"
 
+ActionWidget::ActionWidget(PG_Widget* parent, const PG_Point& pos, int width, const Command& action,
+                           GameMap* map)
+   : SelectionWidget(parent, PG_Rect(pos.x, pos.y, width, fieldsizey)), act(action) {
+   int offset = 0;
 
-ActionWidget::ActionWidget( PG_Widget* parent, const PG_Point& pos, int width, const Command& action, GameMap* map )
-        : SelectionWidget( parent, PG_Rect( pos.x, pos.y, width, fieldsizey )), act( action )
-{
+   const UnitCommand* uc = dynamic_cast<const UnitCommand*>(&action);
+   if (uc != NULL && uc->getUnitTypeID() > 0) {
+      VehicleType* vt = vehicleTypeRepository.getObject_byID(uc->getUnitTypeID());
+      if (vt) {
+         PG_Widget* w = new VehicleTypeImage(this, PG_Point(25, 0), vt, map->getCurrentPlayer());
+         offset += w->Width() + 5;
+      }
+   }
+   PG_Label* lbl1 =
+      new PG_Label(this, PG_Rect(25 + offset, 0, Width() - 30, Height()), action.getDescription());
+   lbl1->SetFontSize(lbl1->GetFontSize() - 2);
 
-    int offset = 0;
-
-    const UnitCommand* uc = dynamic_cast<const UnitCommand*>(&action);
-    if ( uc != NULL && uc->getUnitTypeID() > 0 ) {
-        VehicleType* vt = vehicleTypeRepository.getObject_byID( uc->getUnitTypeID() );
-        if ( vt ) {
-            PG_Widget* w = new VehicleTypeImage( this, PG_Point( 25, 0), vt, map->getCurrentPlayer() );
-            offset += w->Width() + 5;
-        }
-    }
-    PG_Label* lbl1 = new PG_Label( this, PG_Rect( 25 + offset, 0, Width()-30, Height() ), action.getDescription() );
-    lbl1->SetFontSize( lbl1->GetFontSize() -2 );
-
-    SetTransparency( 255 );
+   SetTransparency(255);
 };
 
-ASCString ActionWidget::getName() const
-{
-    return act.getDescription();
+ASCString ActionWidget::getName() const {
+   return act.getDescription();
 };
 
-vector<MapCoordinate> ActionWidget::getCoordinates() const
-{
-    return act.getCoordinates();
+vector<MapCoordinate> ActionWidget::getCoordinates() const {
+   return act.getCoordinates();
 }
 
-
-void ActionWidget::display( SDL_Surface * surface, const PG_Rect & src, const PG_Rect & dst )
-{
-}
-;
-
-
+void ActionWidget::display(SDL_Surface* surface, const PG_Rect& src, const PG_Rect& dst) {};

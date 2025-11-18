@@ -24,9 +24,6 @@
 #include "statisticdialog.h"
 #include "dialog.h"
 
-void statisticDialog() 
-{
-   displaymessage("not available yet!",1);
+void statisticDialog() {
+   displaymessage("not available yet!", 1);
 };
-
-

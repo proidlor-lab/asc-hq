@@ -13,11 +13,10 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
-
 
 #include <malloc.h>
 #include <stdio.h>
@@ -43,115 +42,103 @@ char buf[500];
 
 int cat[100][200];
 
-void load_palette ( void )
-{
+void load_palette(void) {
    loadpalette();
-   setvgapalette256 ( pal );
+   setvgapalette256(pal);
 }
 
-
-int searchline ( int x1, int y1, int x2, int y2 )
-{
-   if ( x1 == x2 ) {
-      for ( int y = y1; y <= y2; y++ )
-         if ( getpixel ( x1, y ) != 255 )
+int searchline(int x1, int y1, int x2, int y2) {
+   if (x1 == x2) {
+      for (int y = y1; y <= y2; y++)
+         if (getpixel(x1, y) != 255)
             return 1;
-         
+
       return 0;
    } else {
-      for ( int x = x1; x <= x2; x++ )
-         if ( getpixel ( x, y1 ) != 255 )
+      for (int x = x1; x <= x2; x++)
+         if (getpixel(x, y1) != 255)
             return 1;
-         
+
       return 0;
    }
 }
 
-main(int argc, char *argv[] )
-{
-   memset ( text, 0, sizeof(text));
-   memset ( header, 0, sizeof(header));
+main(int argc, char* argv[]) {
+   memset(text, 0, sizeof(text));
+   memset(header, 0, sizeof(header));
    int num = 0;
 
-   int quantity=0;   
+   int quantity = 0;
 
    char* wildcard;
 
-   if ( argc == 2 ) {
+   if (argc == 2) {
       wildcard = argv[1];
-      sprintf( buf, " %s   %c%c%c\n", argv[1], 27,33,5 );
-      strcat ( header[0], buf);
+      sprintf(buf, " %s   %c%c%c\n", argv[1], 27, 33, 5);
+      strcat(header[0], buf);
    } else {
-      wildcard =  "*.trr";
-      sprintf( buf, " *.trr %c%c%c\n",27,33,5 );
-      strcat ( header[0], buf );
+      wildcard = "*.trr";
+      sprintf(buf, " *.trr %c%c%c\n", 27, 33, 5);
+      strcat(header[0], buf);
    }
-          
+
    t_carefor_containerstream cfcs;
- 
+
    void* hexshape;
    {
-      tnfilestream s ( "hxkontur.raw", tnstream::reading );
+      tnfilestream s("hxkontur.raw", tnstream::reading);
       int w;
-      s.readrlepict ( &hexshape, 0, &w );
+      s.readrlepict(&hexshape, 0, &w);
    }
 
+   tfindfile ff(wildcard);
 
-
-   tfindfile ff ( wildcard );
- 
    string cn = ff.getnextname();
 
-   initgraphics ( 640, 480, 8 );
+   initgraphics(640, 480, 8);
    load_palette();
    loadbi3graphics();
- 
-   while( !cn.empty() ) { 
 
-      pterraintype   tt;
-      tt = loadterraintype( cn.c_str() );
+   while (!cn.empty()) {
+      pterraintype tt;
+      tt = loadterraintype(cn.c_str());
 
-      bar ( 0, 0, 600, 120, 255 );
-      for ( int w = 0; w < cwettertypennum; w++ )
-         if ( tt->weather[w] ) {
-            putspriteimage( w * 64, 0, tt->weather[w]->picture[0]); 
-            if ( tt->weather[w]->bi_picture[0] >= 0 )
-               putpixel ( w * 64, 64, 1 );
+      bar(0, 0, 600, 120, 255);
+      for (int w = 0; w < cwettertypennum; w++)
+         if (tt->weather[w]) {
+            putspriteimage(w * 64, 0, tt->weather[w]->picture[0]);
+            if (tt->weather[w]->bi_picture[0] >= 0)
+               putpixel(w * 64, 64, 1);
          } else {
-            putspriteimage( w * 64, 0, hexshape); 
-            putpixel ( w * 64, 65, 1 );
+            putspriteimage(w * 64, 0, hexshape);
+            putpixel(w * 64, 65, 1);
          }
 
-      putpixel ( 0, 69, 2 );
+      putpixel(0, 69, 2);
 
       char m[100];
-      strcpy ( m, cn.c_str() );
+      strcpy(m, cn.c_str());
       char* d = m;
-      while ( *d != '.' )
+      while (*d != '.')
          d++;
 
-      strcpy ( d+1, "pcx" );
-
+      strcpy(d + 1, "pcx");
 
       int maxx = 600;
-      while ( !searchline ( maxx, 0, maxx, 100 ))
+      while (!searchline(maxx, 0, maxx, 100))
          maxx--;
-   
-   
+
       int maxy = 100;
-      while ( !searchline ( 0, maxy, 600, maxy ))
+      while (!searchline(0, maxy, 600, maxy))
          maxy--;
 
-      writepcx ( m, 0, 0, cwettertypennum*64, 70, pal );
+      writepcx(m, 0, 0, cwettertypennum * 64, 70, pal);
       cn = ff.getnextname();
 
       num++;
    }
 
-   closegraphics (  );
+   closegraphics();
 
    return 0;
 };
-
-
-

@@ -72,7 +72,7 @@ namespace Loki
     ///  \class RegisterOnCreateSet
     ///
     ///  \ingroup RegisterGroup
-    ///  Implements a generic register class which registers classes of a typelist
+    ///  Implements a generic class which registers classes of a typelist
     ///
     ///  \par Usage
     ///  see test/Register
@@ -87,7 +87,7 @@ namespace Loki
     ///  \class UnRegisterOnDeleteSet
     ///
     ///  \ingroup RegisterGroup
-    ///  Implements a generic register class which unregisters classes of a typelist
+    ///  Implements a generic class which unregisters classes of a typelist
     ///
     ///  \par Usage
     ///  see test/Register

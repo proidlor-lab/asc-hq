@@ -10,7 +10,6 @@
 #ifndef diplomacyTestH
 #define diplomacyTestH
 
- extern void testDiplomacy();
-
+extern void testDiplomacy();
 
 #endif

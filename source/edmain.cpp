@@ -1,5 +1,5 @@
 /*! \file edmain.cpp
-    \brief The map editor's main program 
+    \brief The map editor's main program
 */
 
 /*
@@ -17,8 +17,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -50,33 +50,28 @@
 #include "packagerepository.h"
 
 #ifdef WIN32
-# include "win32/win32-errormsg.h"
-# include  "win32/msvc/mdump.h"
- MiniDumper miniDumper( "mapeditor" );
+#include "win32/win32-errormsg.h"
+#include "win32/msvc/mdump.h"
+MiniDumper miniDumper("mapeditor");
 #endif
-
-
 
 // #define MEMCHK
 #include "memorycheck.cpp"
 
-pfont load_font(const char* name)
-{
-   tnfilestream stream ( name, tnstream::reading );
-   return loadfont ( &stream );
+pfont load_font(const char* name) {
+   tnfilestream stream(name, tnstream::reading);
+   return loadfont(&stream);
 }
 
-
-void loadEditordata( void ) 
-{
+void loadEditordata(void) {
    loadmessages();
 
    dataLoaderTicker();
 
    GraphicSetManager::Instance().loadData();
-      
-   registerDataLoader ( new PlayListLoader() );
-   registerDataLoader ( new BI3TranslationTableLoader() );
+
+   registerDataLoader(new PlayListLoader());
+   registerDataLoader(new BI3TranslationTableLoader());
 
    loadAllData();
 
@@ -93,29 +88,26 @@ void loadEditordata( void )
    uselessCallToTextRenderAddons();
 }
 
-void buildemptymap ( void )
-{
+void buildemptymap(void) {
    TerrainType::Weather* w = terrainTypeRepository.getObject_byID(30)->weather[0];
-   if ( !w )
+   if (!w)
       w = terrainTypeRepository.getObject_byPos(0)->weather[0];
 
    actmap = new GameMap;
-   actmap->allocateFields( 10, 20, w );
+   actmap->allocateFields(10, 20, w);
 }
 
-
-int mapeditorMainThread ( void* _mapname )
-{
+int mapeditorMainThread(void* _mapname) {
    const char* mapname = (const char*) _mapname;
    loadpalette();
 
    try {
-      StartupScreen sus( "title_mapeditor.jpg", dataLoaderTicker );
-      
+      StartupScreen sus("title_mapeditor.jpg", dataLoaderTicker);
+
       GraphicSetManager::Instance().loadData();
       loadEditordata();
 
-      if ( mapname && mapname[0] ) {
+      if (mapname && mapname[0]) {
          /*
          if( patimat ( savegameextension, mapname )) {
             if( validatesavfile( mapname ) == 0 )
@@ -127,18 +119,19 @@ int mapeditorMainThread ( void* _mapname )
                fatalError ( "%s is not a legal savegame. ", mapname );
             }
       } else*/
-            if( patimat ( mapextension, mapname )) 
-               actmap = mapLoadingExceptionChecker( mapname, MapLoadingFunction( tmaploaders::loadmap )); 
-            else
-               fatalError ( "%s is not an accepted file format", mapname );
+         if (patimat(mapextension, mapname))
+            actmap = mapLoadingExceptionChecker(mapname, MapLoadingFunction(tmaploaders::loadmap));
+         else
+            fatalError("%s is not an accepted file format", mapname);
       } else
          buildemptymap();
 
       mapSwitcher.toggle();
-      if ( exist ( "palette.map" ))
-         actmap = mapLoadingExceptionChecker( "palette.map", MapLoadingFunction( tmaploaders::loadmap )); 
-      
-      if (!actmap )
+      if (exist("palette.map"))
+         actmap =
+            mapLoadingExceptionChecker("palette.map", MapLoadingFunction(tmaploaders::loadmap));
+
+      if (!actmap)
          buildemptymap();
 
       actmap->preferredFileNames.mapname[0] = "";
@@ -146,37 +139,35 @@ int mapeditorMainThread ( void* _mapname )
       mapSwitcher.toggle();
 
    } /* end try */
-   catch ( ParsingError& err ) {
-      fatalError ( "Error parsing text file " + err.getMessage() );
-   }
-   catch ( tfileerror& err ) {
-      fatalError ( "Error loading file " + err.getFileName() );
+   catch (ParsingError& err) {
+      fatalError("Error parsing text file " + err.getMessage());
+   } catch (tfileerror& err) {
+      fatalError("Error loading file " + err.getFileName());
    } /* end catch */
-   catch ( ASCmsgException& err ) {
-      fatalError( "Error loading file " + err.getMessage() );
+   catch (ASCmsgException& err) {
+      fatalError("Error loading file " + err.getMessage());
    }
 
    activefontsettings.font = schriften.arial8;
-   activefontsettings.color =lightblue ;
-   activefontsettings.background =3;
-   activefontsettings.length =100;
-   activefontsettings.justify =lefttext;
-
+   activefontsettings.color = lightblue;
+   activefontsettings.background = 3;
+   activefontsettings.length = 100;
+   activefontsettings.justify = lefttext;
 
    setstartvariables();
 
-   mainScreenWidget = new Maped_MainScreenWidget( getPGApplication());
+   mainScreenWidget = new Maped_MainScreenWidget(getPGApplication());
    mainScreenWidget->Show();
-   
+
    mousevisible(true);
 
    getPGApplication().Run();
 
-   if (mapsaved == false )
-      if (choice_dlg("You have unsaved changes! Save?","~y~es","~n~o") == 1)
+   if (mapsaved == false)
+      if (choice_dlg("You have unsaved changes! Save?", "~y~es", "~n~o") == 1)
          k_savemap(false);
-  
-   if ( actmap ) {
+
+   if (actmap) {
       delete actmap;
       actmap = NULL;
    }
@@ -186,117 +177,112 @@ int mapeditorMainThread ( void* _mapname )
 // including the command line parser, which is generated by genparse
 #include "clparser/mapedit.cpp"
 
-void setSaveNotification()
-{
+void setSaveNotification() {
    mapsaved = false;
 }
 
-int main(int argc, char *argv[] )
-{
+int main(int argc, char* argv[]) {
    StdIoErrorHandler stdIoErrorHandler(false);
    packageRepository.addProgramPackage(argv[0]);
-   
-   putenv(const_cast<char*>("SDL_VIDEO_CENTERED=1")) ;
+
+   putenv(const_cast<char*>("SDL_VIDEO_CENTERED=1"));
 
    Cmdline* cl = NULL;
    try {
-      cl = new Cmdline ( argc, argv );
-   }
-   catch ( string& s ) {
+      cl = new Cmdline(argc, argv);
+   } catch (string& s) {
       cerr << s;
       exit(1);
    }
-   auto_ptr<Cmdline> apcl ( cl );
+   std::unique_ptr<Cmdline> apcl(cl);
 
-   if ( cl->next_param() < argc ) {
+   if (cl->next_param() < argc) {
       cerr << "invalid command line parameter\n";
       exit(1);
    }
 
-   if ( cl->v() ) {
+   if (cl->v()) {
       ASCString msg = kgetstartupmessage();
-      printf( "%s", msg.c_str() );
+      printf("%s", msg.c_str());
       exit(0);
    }
 
-   MessagingHub::Instance().setVerbosity( cl->r() );
-   MessagingHub::Instance().exitHandler.connect( sigc::bind( &exit_asc, -1 ));
+   MessagingHub::Instance().setVerbosity(cl->r());
+   MessagingHub::Instance().exitHandler.connect(sigc::bind(&exit_asc, -1));
 
-   #ifdef logging
-    logtofile ( kgetstartupmessage() );
-    logtofile ( "\n new log started \n ");
-   #endif
+#ifdef logging
+   logtofile(kgetstartupmessage());
+   logtofile("\n new log started \n ");
+#endif
 
 #ifdef WIN32
    Win32IoErrorHandler* win32ErrorDialogGenerator = new Win32IoErrorHandler;
 #endif
 
-   ConfigurationFileLocator::Instance().setExecutableLocation( argv[0] );
-   initFileIO( cl->c() );
+   ConfigurationFileLocator::Instance().setExecutableLocation(argv[0]);
+   initFileIO(cl->c());
 
-   signal ( SIGINT, SIG_IGN );
+   signal(SIGINT, SIG_IGN);
 
    bool fullscreen = !CGameOptions::Instance()->mapeditWindowedMode;
-   if ( cl->f() )
+   if (cl->f())
       fullscreen = true;
-   if (  cl->w() )
+   if (cl->w())
       fullscreen = false;
 
    checkDataVersion();
 
    // determining the graphics resolution
-   int xr  = CGameOptions::Instance()->mapeditor_xresolution;
-   if ( cl->x() != 800 )
+   int xr = CGameOptions::Instance()->mapeditor_xresolution;
+   if (cl->x() != 800)
       xr = cl->x();
 
-   int yr  = CGameOptions::Instance()->mapeditor_yresolution;
-   if ( cl->y() != 600 )
+   int yr = CGameOptions::Instance()->mapeditor_yresolution;
+   if (cl->y() != 600)
       yr = cl->y();
 
-   PG_FileArchive archive( argv[0] );
+   PG_FileArchive archive(argv[0]);
 
-   ASC_PG_App app ( "asc2_dlg" );
-   
+   ASC_PG_App app("asc2_dlg");
+
    int flags = SDL_SWSURFACE;
-   if ( fullscreen )
+   if (fullscreen)
       flags |= SDL_FULLSCREEN;
-   
-   #ifdef pbpeditor
-   app.setIcon( "pbpeditor-icon.png" );
-   #else
-   app.setIcon( "mapeditor-icon.png" );
-   #endif
 
-   if ( !app.InitScreen( xr, yr, 32, flags))
-      fatalError( "Could not initialize video mode");
+#ifdef pbpeditor
+   app.setIcon("pbpeditor-icon.png");
+#else
+   app.setIcon("mapeditor-icon.png");
+#endif
+
+   if (!app.InitScreen(xr, yr, 32, flags))
+      fatalError("Could not initialize video mode");
 #ifdef WIN32
    delete win32ErrorDialogGenerator;
 #endif
-      
-   #ifdef pbpeditor
-   setWindowCaption ( "PBP Editor - Advanced Strategic Command");
-   #else
-   setWindowCaption ( "Map Editor - Advanced Strategic Command");
-   #endif
+
+#ifdef pbpeditor
+   setWindowCaption("PBP Editor - Advanced Strategic Command");
+#else
+   setWindowCaption("Map Editor - Advanced Strategic Command");
+#endif
 
    virtualscreenbuf.init();
 
-   mapChanged.connect( sigc::hide( repaintMap.make_slot() ) );
-   mapChanged.connect( sigc::hide( updateFieldInfo.make_slot() ) );
-   mapChanged.connect( sigc::hide( sigc::ptr_fun( &setSaveNotification) ));
-   
+   mapChanged.connect(sigc::hide(repaintMap.make_slot()));
+   mapChanged.connect(sigc::hide(updateFieldInfo.make_slot()));
+   mapChanged.connect(sigc::hide(sigc::ptr_fun(&setSaveNotification)));
+
    TaskHibernatingContainer::registerHooks();
 
-   
-   char* buf = new char[cl->l().length()+10];
-   strcpy ( buf, cl->l().c_str() );
-   initializeEventHandling ( mapeditorMainThread, buf  );
+   char* buf = new char[cl->l().length() + 10];
+   strcpy(buf, cl->l().c_str());
+   initializeEventHandling(mapeditorMainThread, buf);
    delete[] buf;
 
-   writegameoptions ();
-   
+   writegameoptions();
+
    mapSwitcher.deleteMaps();
 
    return 0;
 }
-

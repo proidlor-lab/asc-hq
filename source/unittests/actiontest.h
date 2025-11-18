@@ -10,7 +10,6 @@
 #ifndef actiontestH
 #define actiontestH
 
- extern void testActions();
-
+extern void testActions();
 
 #endif

@@ -13,38 +13,33 @@
 #include "typen.h"
 #include "vehicle.h"
 
-
 #include "mapdisplayinterface.h"
 
 #include "mapdisplay.h"
 
-
-
-
 class UnitWeaponRangeLayer : public MapLayer {
-      Surface& icon1;
-      Surface& icon2;
-      GameMap* gamemap;
-   
-      map<MapCoordinate,int> fields;
-   
-      void markField( const MapCoordinate& pos );
-   
-      bool addUnit( Vehicle* veh );
-      void reset();
-      
-      bool fieldVisible( const MapCoordinate& pos );
-      
-   public:
+   Surface& icon1;
+   Surface& icon2;
+   GameMap* gamemap;
 
-      void operateField( GameMap* actmap, const MapCoordinate& pos );
-      
-      UnitWeaponRangeLayer();
+   map<MapCoordinate, int> fields;
 
-      bool onLayer( int layer ) { return layer == 17; };
-      
-      void paintSingleField( const MapRenderer::FieldRenderInfo& fieldInfo,  int layer, const SPoint& pos );
+   void markField(const MapCoordinate& pos);
+
+   bool addUnit(Vehicle* veh);
+   void reset();
+
+   bool fieldVisible(const MapCoordinate& pos);
+
+  public:
+   void operateField(GameMap* actmap, const MapCoordinate& pos);
+
+   UnitWeaponRangeLayer();
+
+   bool onLayer(int layer) { return layer == 17; };
+
+   void paintSingleField(const MapRenderer::FieldRenderInfo& fieldInfo, int layer,
+                         const SPoint& pos);
 };
-
 
 #endif

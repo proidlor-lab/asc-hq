@@ -26,51 +26,42 @@
 **
 **--------------------------------------------------------------------------*/
 
-Cmdline::Cmdline(int argc, char *argv[])
-{
-  extern int optind;
-  int option_index = 0;
-  int c;
+Cmdline::Cmdline(int argc, char* argv[]) {
+   extern int optind;
+   int option_index = 0;
+   int c;
 
-  static struct option long_options[] =
-  {
-    {"quiet", 0, 0, 'q'},
-    {"help", 0, 0, 'h'},
-    {"version", 0, 0, 'v'},
-    {0, 0, 0, 0}
-  };
+   static struct option long_options[] = {
+      {"quiet", 0, 0, 'q'}, {"help", 0, 0, 'h'}, {"version", 0, 0, 'v'}, {0, 0, 0, 0}};
 
-  _executable += argv[0];
+   _executable += argv[0];
 
-  /* default values */
-  _q = false;
-  _h = false;
-  _v = false;
+   /* default values */
+   _q = false;
+   _h = false;
+   _v = false;
 
-  while ((c = getopt_long(argc, argv, "qhv", long_options, &option_index)) != EOF)
-    {
-      switch(c)
-        {
-        case 'q': 
-          _q = true;
-          break;
+   while ((c = getopt_long(argc, argv, "qhv", long_options, &option_index)) != EOF) {
+      switch (c) {
+         case 'q':
+            _q = true;
+            break;
 
-        case 'h': 
-          _h = true;
-          this->usage();
-          break;
+         case 'h':
+            _h = true;
+            this->usage();
+            break;
 
-        case 'v': 
-          _v = true;
-          break;
+         case 'v':
+            _v = true;
+            break;
 
-        default:
-          this->usage();
+         default:
+            this->usage();
+      }
+   } /* while */
 
-        }
-    } /* while */
-
-  _optind = optind;
+   _optind = optind;
 }
 
 /*----------------------------------------------------------------------------
@@ -81,31 +72,29 @@ Cmdline::Cmdline(int argc, char *argv[])
 **
 **--------------------------------------------------------------------------*/
 
-void Cmdline::usage()
-{
-  cout << "extracts the contents of ASC archive files. " << endl;
-  cout << "usage: " << _executable << " [ -qhv ]  ARCHIVEFILE [...]" << endl;
-  cout << "  [ -q ] ";
-  cout << "[ --quiet ]  ";
-  cout << "(";
-  cout << "type=";
-  cout << "FLAG";
-  cout << ")\n";
-  cout << "         Disable informational output\n";
-  cout << "  [ -h ] ";
-  cout << "[ --help ]  ";
-  cout << "(";
-  cout << "type=";
-  cout << "FLAG";
-  cout << ")\n";
-  cout << "         Display help information.\n";
-  cout << "  [ -v ] ";
-  cout << "[ --version ]  ";
-  cout << "(";
-  cout << "type=";
-  cout << "FLAG";
-  cout << ")\n";
-  cout << "         Output version.\n";
-  exit(0);
+void Cmdline::usage() {
+   cout << "extracts the contents of ASC archive files. " << endl;
+   cout << "usage: " << _executable << " [ -qhv ]  ARCHIVEFILE [...]" << endl;
+   cout << "  [ -q ] ";
+   cout << "[ --quiet ]  ";
+   cout << "(";
+   cout << "type=";
+   cout << "FLAG";
+   cout << ")\n";
+   cout << "         Disable informational output\n";
+   cout << "  [ -h ] ";
+   cout << "[ --help ]  ";
+   cout << "(";
+   cout << "type=";
+   cout << "FLAG";
+   cout << ")\n";
+   cout << "         Display help information.\n";
+   cout << "  [ -v ] ";
+   cout << "[ --version ]  ";
+   cout << "(";
+   cout << "type=";
+   cout << "FLAG";
+   cout << ")\n";
+   cout << "         Output version.\n";
+   exit(0);
 }
-

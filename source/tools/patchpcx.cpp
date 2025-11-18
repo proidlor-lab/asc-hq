@@ -13,54 +13,49 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
 #include <stdio.h>
-#include <direct.h> 
+#include <direct.h>
 
-int filesize ( char* name )
-{ 
+int filesize(char* name) {
    int size = -1;
    {
-      DIR *dirp; 
-      struct ASC_direct *direntp; 
-  
-      dirp = opendir( name ); 
-      if( dirp != NULL ) { 
-        for(;;) { 
-          direntp = readdir( dirp ); 
-          if ( direntp == NULL ) 
-             break; 
-          size = direntp -> d_size;
-        } 
-        closedir( dirp ); 
-      } 
-    }
+      DIR* dirp;
+      struct ASC_direct* direntp;
+
+      dirp = opendir(name);
+      if (dirp != NULL) {
+         for (;;) {
+            direntp = readdir(dirp);
+            if (direntp == NULL)
+               break;
+            size = direntp->d_size;
+         }
+         closedir(dirp);
+      }
+   }
    return size;
+}
 
-}                 
-
-
-void main(int argc, char *argv[])
-{
-   if ( argc < 2 ) {
+void main(int argc, char* argv[]) {
+   if (argc < 2) {
       printf(" usage: patchpcx filename \n");
       return;
    }
 
    for (int i = 1; i < argc; i++) {
-      FILE* file = fopen ( argv[i], "rb+" );
-      if ( !file ) {
-         printf(" Unable to open %s for writing. \n\n", argv[i] );
+      FILE* file = fopen(argv[i], "rb+");
+      if (!file) {
+         printf(" Unable to open %s for writing. \n\n", argv[i]);
          return;
       }
-      fseek ( file, 124, SEEK_SET );
-      int size = filesize ( argv[i] );
-      fwrite ( &size, 1, 4, file );
-      fclose ( file );
+      fseek(file, 124, SEEK_SET);
+      int size = filesize(argv[i]);
+      fwrite(&size, 1, 4, file);
+      fclose(file);
    } /* endfor */
-
 }

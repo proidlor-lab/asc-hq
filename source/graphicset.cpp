@@ -10,7 +10,6 @@
     \brief A system that provides a set of images for vehicles, buildings, etc.
 */
 
-
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -33,70 +32,54 @@
 #include "itemrepository.h"
 #include "iconrepository.h"
 
+GraphicSetManager_Base::GraphicSetManager_Base() : activeSet(NULL) {}
 
-GraphicSetManager_Base::GraphicSetManager_Base() : activeSet(NULL)
-{
-
-}
-
-
-bool GraphicSetManager_Base :: picAvail ( int num ) const
-{
-   if ( activeSet )
+bool GraphicSetManager_Base ::picAvail(int num) const {
+   if (activeSet)
       return activeSet->picAvail(num);
    else
       return false;
 }
 
-
-int GraphicSetManager_Base :: getMode ( int num ) const
-{
-   if ( activeSet && activeSet->picmode.size() > num )
+int GraphicSetManager_Base ::getMode(int num) const {
+   if (activeSet && activeSet->picmode.size() > num)
       return activeSet->picmode[num];
    else
       return 0;
 }
 
-
-
-Surface& GraphicSetManager_Base :: getPic ( int num )
-{
-   if( num >= activeSet->image.size() )
+Surface& GraphicSetManager_Base ::getPic(int num) {
+   if (num >= activeSet->image.size())
       return IconRepository::getIcon("emptyfld.raw");
    else
       return activeSet->image[num];
 }
 
-void GraphicSetManager_Base :: setPic( int num, Surface pic )
-{
+void GraphicSetManager_Base ::setPic(int num, Surface pic) {
    activeSet->image[num] = pic;
 }
 
-
-
-int GraphicSetManager_Base :: setActive ( int id )
-{
-   if ( activeSet && id == activeSet->id )
+int GraphicSetManager_Base ::setActive(int id) {
+   if (activeSet && id == activeSet->id)
       return id;
 
-   for ( GraphicSets::iterator i = graphicSets.begin(); i != graphicSets.end(); ++i )
-      if ( (*i)->id == id ) {
+   for (GraphicSets::iterator i = graphicSets.begin(); i != graphicSets.end(); ++i)
+      if ((*i)->id == id) {
          activeSet = *i;
          return id;
       }
 
-   if ( graphicSets.size() < 1 )
-      fatalError( "no graphic sets (*.gfx) found! Check that asc.gfx is in your search path" );
-   activeSet = *graphicSets.begin();   
+   if (graphicSets.size() < 1)
+      fatalError("no graphic sets (*.gfx) found! Check that asc.gfx is in your search path");
+   activeSet = *graphicSets.begin();
    return 0;
 }
 
-const OverviewMapImage* GraphicSetManager_Base::getQuickView( int id )
-{
-   if ( picAvail ( id )) {
-      map<int,OverviewMapImage>::iterator qv = activeSet->quickViewImages.find ( id );
-      if ( qv == activeSet->quickViewImages.end()) {
-         OverviewMapImage* fqv = new OverviewMapImage ( getPic( id ) );
+const OverviewMapImage* GraphicSetManager_Base::getQuickView(int id) {
+   if (picAvail(id)) {
+      map<int, OverviewMapImage>::iterator qv = activeSet->quickViewImages.find(id);
+      if (qv == activeSet->quickViewImages.end()) {
+         OverviewMapImage* fqv = new OverviewMapImage(getPic(id));
          activeSet->quickViewImages[id] = *fqv;
          delete fqv;
          return &activeSet->quickViewImages[id];
@@ -105,41 +88,33 @@ const OverviewMapImage* GraphicSetManager_Base::getQuickView( int id )
 
    } else {
       static OverviewMapImage* emptyFieldQuickView = NULL;
-      if ( !emptyFieldQuickView )
+      if (!emptyFieldQuickView)
          emptyFieldQuickView = new OverviewMapImage();
 
       return emptyFieldQuickView;
    }
 }
 
+int getGraphicSetIdFromFilename(const ASCString& filename) {
+   tnfilestream stream(filename, tnstream::reading);
 
-
-int getGraphicSetIdFromFilename ( const ASCString& filename )
-{
-    tnfilestream stream ( filename, tnstream::reading );
-
-    int magic = stream.readInt();
-    if ( magic == -1 ) {
-       return stream.readInt();
-    } else
-       return 0;
+   int magic = stream.readInt();
+   if (magic == -1) {
+      return stream.readInt();
+   } else
+      return 0;
 }
 
-
-
-void GraphicSetManager_Base::loadData()
-{
-   if ( activeSet )
+void GraphicSetManager_Base::loadData() {
+   if (activeSet)
       return;
 
-   #ifdef logging
+#ifdef logging
    logtofile("loadbi3graphics");
-   #endif
+#endif
 
    loadpalette();
 
-  
-   
    /*
 
    #ifdef genimg
@@ -154,61 +129,55 @@ void GraphicSetManager_Base::loadData()
    IconRepository::getIcon("emptyfld.raw");
 
    ASCString location;
-   tfindfile ff ( "*.gfx" );
-   ASCString filename = ff.getnextname( NULL, NULL, &location);
-   while ( !filename.empty() ) {
+   tfindfile ff("*.gfx");
+   ASCString filename = ff.getnextname(NULL, NULL, &location);
+   while (!filename.empty()) {
+      tnfilestream s(filename, tnstream::reading);
 
-      tnfilestream s ( filename, tnstream::reading );
-
-      displayLogMessage ( 5, "loading graphic set " + location + filename + "\n" );
+      displayLogMessage(5, "loading graphic set " + location + filename + "\n");
 
       int magic = s.readInt();
-      if ( magic == -1 ) {
-
+      if (magic == -1) {
          GraphicSet* gs = new GraphicSet;
 
          gs->id = s.readInt();
          int picnum = s.readInt();
-         s.readInt(); // maxPicSize
+         s.readInt();  // maxPicSize
 
          int* picmode = new int[picnum];
-         for ( int i = 0; i < picnum; ++i )
+         for (int i = 0; i < picnum; ++i)
             picmode[i] = s.readInt();
-            
-         gs->image.resize   ( picnum );
-         gs->picmode.resize ( picnum );
-         for ( int i = 0; i < picnum; i++ ) {
-            if ( picmode[i] >= 1 ) {
+
+         gs->image.resize(picnum);
+         gs->picmode.resize(picnum);
+         for (int i = 0; i < picnum; i++) {
+            if (picmode[i] >= 1) {
                Surface& surf = gs->image[i];
-               surf.read ( s );
-               if ( surf.w() != fieldsizex || surf.h() != fieldsizey ) 
-                  surf.strech ( fieldsizex, fieldsizey );
+               surf.read(s);
+               if (surf.w() != fieldsizex || surf.h() != fieldsizey)
+                  surf.strech(fieldsizex, fieldsizey);
                gs->picmode[i] = picmode[i];
             } else {
                gs->picmode[i] = 256 + 2;
                gs->image[i] = IconRepository::getIcon("emptyfld.raw");
             }
-           gs->image[i].assignDefaultPalette();
+            gs->image[i].assignDefaultPalette();
 
-           dataLoaderTicker();
-
+            dataLoaderTicker();
          }
 
          delete[] picmode;
 
-         graphicSets.push_back ( gs );
+         graphicSets.push_back(gs);
       }
 
       filename = ff.getnextname();
    }
 
-   setActive ( 0 );
+   setActive(0);
 }
 
-
-GraphicSetManager_Base::~GraphicSetManager_Base()
-{
-   for ( GraphicSets::iterator i = graphicSets.begin(); i != graphicSets.end(); ++i)
+GraphicSetManager_Base::~GraphicSetManager_Base() {
+   for (GraphicSets::iterator i = graphicSets.begin(); i != graphicSets.end(); ++i)
       delete *i;
 }
-

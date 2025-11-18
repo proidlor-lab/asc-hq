@@ -7,42 +7,44 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef luacommandwriterH
-#define  luacommandwriterH
-
+#define luacommandwriterH
 
 #include "actions/commandwriter.h"
 #include "basestrm.h"
 
-   class LuaCommandWriter : public AbstractCommandWriter {
-         int commandCounter;
-      protected:
-         void splitString( const ASCString& string );
-         virtual void outputLine( const ASCString& line ) = 0;
-         void writeHeader();
-      public:
-         LuaCommandWriter();
-               
-         virtual void printCommand( const ASCString& command );
-         virtual void printComment( const ASCString& comment );
-   };
+class LuaCommandWriter : public AbstractCommandWriter {
+   int commandCounter;
 
-   class LuaCommandFileWriter : public LuaCommandWriter {
-         virtual void outputLine( const ASCString& line );
-      public:
-         tn_file_buf_stream stream;
-         LuaCommandFileWriter ( const ASCString& filename );
-   };
-   
-   template <class C>
-         class LuaCommandListWriter : public LuaCommandWriter {
-         C& cont;
-      protected:
-         virtual void outputLine( const ASCString& line ) { cont.push_back( line ); }; 
-      public:
-         LuaCommandListWriter ( C& container ) : cont( container)  { LuaCommandWriter::writeHeader(); };
-   };
-   
+  protected:
+   void splitString(const ASCString& string);
+   virtual void outputLine(const ASCString& line) = 0;
+   void writeHeader();
+
+  public:
+   LuaCommandWriter();
+
+   virtual void printCommand(const ASCString& command);
+   virtual void printComment(const ASCString& comment);
+};
+
+class LuaCommandFileWriter : public LuaCommandWriter {
+   virtual void outputLine(const ASCString& line);
+
+  public:
+   tn_file_buf_stream stream;
+   LuaCommandFileWriter(const ASCString& filename);
+};
+
+template <class C>
+class LuaCommandListWriter : public LuaCommandWriter {
+   C& cont;
+
+  protected:
+   virtual void outputLine(const ASCString& line) { cont.push_back(line); };
+
+  public:
+   LuaCommandListWriter(C& container) : cont(container) { LuaCommandWriter::writeHeader(); };
+};
 
 #endif

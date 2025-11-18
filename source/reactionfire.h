@@ -13,15 +13,14 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
-#if defined(karteneditor) 
- #error the mapeditor should not need to use reactionfire.h !
+#if defined(karteneditor)
+#error the mapeditor should not need to use reactionfire.h !
 #endif
-
 
 #ifndef reactionfireH
 #define reactionfireH
@@ -32,43 +31,38 @@
 
 class MapDisplayInterface;
 
-
 class treactionfire {
-          public:
-             virtual int  checkfield ( const MapCoordinate3D& pos, Vehicle* &eht, const Context& context ) = 0;
-             virtual void init ( Vehicle* eht, const AStar3D::Path&  fieldlist ) = 0;
-             virtual int  finalCheck ( int currentPlayer, const Context& context ) = 0;
-             virtual ~treactionfire() {};
-        };
+  public:
+   virtual int checkfield(const MapCoordinate3D& pos, Vehicle*& eht, const Context& context) = 0;
+   virtual void init(Vehicle* eht, const AStar3D::Path& fieldlist) = 0;
+   virtual int finalCheck(int currentPlayer, const Context& context) = 0;
+   virtual ~treactionfire(){};
+};
 
-        
 class tsearchreactionfireingunits : public treactionfire {
-           private: 
-                void initLimits();
-                void findOffensiveUnits( Vehicle* vehicle, int height, int x1, int y1, int x2, int y2 );
+  private:
+   void initLimits();
+   void findOffensiveUnits(Vehicle* vehicle, int height, int x1, int y1, int x2, int y2);
 
-                GameMap* gamemap;
-           protected:
-                int attack( Vehicle* attacker, Vehicle* target, const Context& context );
+   GameMap* gamemap;
 
-                static int maxshootdist[8];     // f?r jede Hhenstufe eine
-                void addunit ( Vehicle* vehicle );
-                void removeunit ( Vehicle* vehicle );
-                
-                typedef map<const Vehicle*,int> VisibleUnits;
-                VisibleUnits visibleUnits;
-                
-           public:
+  protected:
+   int attack(Vehicle* attacker, Vehicle* target, const Context& context);
 
-                tsearchreactionfireingunits( GameMap* gamemap );
-                void init ( Vehicle* eht, const AStar3D::Path& fieldlist );
-                void init ( Vehicle* eht, const MapCoordinate3D& pos );
-                int  checkfield ( const MapCoordinate3D& pos, Vehicle* &eht, const Context& context  );
-                virtual int  finalCheck ( int currentPlayer, const Context& context );
-                ~tsearchreactionfireingunits();
-      };
+   static int maxshootdist[8];  // f?r jede Hhenstufe eine
+   void addunit(Vehicle* vehicle);
+   void removeunit(Vehicle* vehicle);
 
-  
-    
+   typedef map<const Vehicle*, int> VisibleUnits;
+   VisibleUnits visibleUnits;
+
+  public:
+   tsearchreactionfireingunits(GameMap* gamemap);
+   void init(Vehicle* eht, const AStar3D::Path& fieldlist);
+   void init(Vehicle* eht, const MapCoordinate3D& pos);
+   int checkfield(const MapCoordinate3D& pos, Vehicle*& eht, const Context& context);
+   virtual int finalCheck(int currentPlayer, const Context& context);
+   ~tsearchreactionfireingunits();
+};
 
 #endif

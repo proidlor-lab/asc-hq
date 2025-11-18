@@ -17,8 +17,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -26,7 +26,6 @@
 #include <cstring>
 #include <utility>
 #include <map>
-
 
 #include "vehicletype.h"
 #include "buildingtype.h"
@@ -46,302 +45,267 @@ sigc::signal<void> repaintMap;
 sigc::signal<void> repaintDisplay;
 sigc::signal<void> updateFieldInfo;
 sigc::signal<void> cursorMoved;
-sigc::signal<void,ContainerBase*> showContainerInfo;
-sigc::signal<void,VehicleType*> showVehicleTypeInfo;
+sigc::signal<void, ContainerBase*> showContainerInfo;
+sigc::signal<void, VehicleType*> showVehicleTypeInfo;
 sigc::signal<void> viewChanged;
-sigc::signal<void,GameMap*> mapChanged;
+sigc::signal<void, GameMap*> mapChanged;
 sigc::signal<bool> idleEvent;
 sigc::signal<void, const Context&> fieldCrossed;
 
-
-
-void displaymap()
-{
+void displaymap() {
    repaintMap();
-}   
+}
 
-  
-   GameMap*    actmap = NULL;
+GameMap* actmap = NULL;
 
-   Schriften schriften;
+Schriften schriften;
 
-
-
-int          terrainaccessible ( const MapField*        field, const Vehicle*     vehicle, int uheight )
-{
-   int res  = terrainaccessible2 ( field, vehicle, uheight );
-   if ( res < 0 )
+int terrainaccessible(const MapField* field, const Vehicle* vehicle, int uheight) {
+   int res = terrainaccessible2(field, vehicle, uheight);
+   if (res < 0)
       return 0;
    else
       return res;
 }
 
-int          terrainaccessible2 ( const MapField*        field, const Vehicle*     vehicle, int uheight )
-{
-   if ( uheight == -1 )
+int terrainaccessible2(const MapField* field, const Vehicle* vehicle, int uheight) {
+   if (uheight == -1)
       uheight = vehicle->height;
 
-   if ( !(uheight & vehicle->typ->height))
+   if (!(uheight & vehicle->typ->height))
       return 0;
 
-
-   return terrainaccessible2( field, vehicle->typ->terrainaccess, uheight );
+   return terrainaccessible2(field, vehicle->typ->terrainaccess, uheight);
 }
 
-int          terrainaccessible2 ( const MapField*        field, const TerrainAccess& terrainAccess, int uheight )
-{
-   if ( uheight >= chtieffliegend)
+int terrainaccessible2(const MapField* field, const TerrainAccess& terrainAccess, int uheight) {
+   if (uheight >= chtieffliegend)
       return 2;
    else {
-        if ( uheight == chtiefgetaucht )
-           if ( (field->bdt & getTerrainBitType(cbwater3) ).any() )
-              return 2;
-           else
-              return -1;
-        else
-           if ( uheight == chgetaucht )
-              if ( (field->bdt & ( getTerrainBitType(cbwater3) | getTerrainBitType(cbwater2 )) ).any() )
-                 return 2;
-              else
-                 return -2;
-           else {
-              if ( terrainAccess.accessible ( field->bdt ) > 0 ) {
-                 if ( uheight == chschwimmend ) {
-                    if ( (field->bdt & getTerrainBitType(cbwater)).any() )
-                       return 2;
-                    else
-                       return -3;
-                 } else
-                    return 2;
-              } else
-                 return -3;
-            }
+      if (uheight == chtiefgetaucht)
+         if ((field->bdt & getTerrainBitType(cbwater3)).any())
+            return 2;
+         else
+            return -1;
+      else if (uheight == chgetaucht)
+         if ((field->bdt & (getTerrainBitType(cbwater3) | getTerrainBitType(cbwater2))).any())
+            return 2;
+         else
+            return -2;
+      else {
+         if (terrainAccess.accessible(field->bdt) > 0) {
+            if (uheight == chschwimmend) {
+               if ((field->bdt & getTerrainBitType(cbwater)).any())
+                  return 2;
+               else
+                  return -3;
+            } else
+               return 2;
+         } else
+            return -3;
+      }
    }
 }
 
-
-
-int         fieldAccessible( const MapField*        field,
-                            const Vehicle*     vehicle,
-                            int  uheight,
-                            const bool* attacked,
-                            bool ignoreVisibility )
-{
-   if ( !field || !vehicle )
+int fieldAccessible(const MapField* field, const Vehicle* vehicle, int uheight,
+                    const bool* attacked, bool ignoreVisibility) {
+   if (!field || !vehicle)
       return 0;
 
-   if ( uheight == -2 )
+   if (uheight == -2)
       uheight = vehicle->height;
 
-   if ( !ignoreVisibility ) {
-      int c = fieldVisibility ( field, vehicle->getOwner() );
+   if (!ignoreVisibility) {
+      int c = fieldVisibility(field, vehicle->getOwner());
 
       if (field == NULL)
-        return 0;
+         return 0;
 
       if (c == visible_not)
          return 0;
    }
 
-/*
-   if ( c == visible_all)
-      if ( field->mines.size() )
-         for ( int i = 0; i < field->mines.size(); i++ )
-            if ( field->getMine(i).attacksunit( vehicle ))
-               return 0;
-*/
+   /*
+      if ( c == visible_all)
+         if ( field->mines.size() )
+            for ( int i = 0; i < field->mines.size(); i++ )
+               if ( field->getMine(i).attacksunit( vehicle ))
+                  return 0;
+   */
 
-
-   if ( (!field->vehicle || field->vehicle == vehicle) && !field->building ) {
-      if ( vehicle->typ->height & uheight )
-         return terrainaccessible ( field, vehicle, uheight );
+   if ((!field->vehicle || field->vehicle == vehicle) && !field->building) {
+      if (vehicle->typ->height & uheight)
+         return terrainaccessible(field, vehicle, uheight);
       else
          return 0;
    } else {
       if (field->vehicle) {
-         if ( vehicle->getMap()->getPlayer(vehicle).diplomacy.isAllied( field->vehicle->getOwner()) ) {
-            if ( field->vehicle->vehicleLoadable ( vehicle, uheight ) )
+         if (vehicle->getMap()->getPlayer(vehicle).diplomacy.isAllied(field->vehicle->getOwner())) {
+            if (field->vehicle->vehicleLoadable(vehicle, uheight))
                return 2;
+            else if (terrainaccessible(field, vehicle, uheight))
+               return 1;
             else
-               if ( terrainaccessible ( field, vehicle, uheight ))
-                  return 1;
-               else
-                  return 0;
-         }
-         else   ///////   keine eigene vehicle
-           if ( terrainaccessible ( field, vehicle, uheight ) ) {
-              if (vehicleplattfahrbar(vehicle,field))
-                 return 2;
+               return 0;
+         } else  ///////   keine eigene vehicle
+            if (terrainaccessible(field, vehicle, uheight)) {
+               if (vehicleplattfahrbar(vehicle, field))
+                  return 2;
                else {
-                  if ( getheightdelta(getFirstBit(field->vehicle->height), getFirstBit(uheight)) || (attackpossible28(field->vehicle,vehicle) == false) || ( vehicle->getMap()->getPlayer(vehicle).diplomacy.getState( field->vehicle->getOwner()) >= PEACE ))
-                    return 1;
+                  if (getheightdelta(getFirstBit(field->vehicle->height), getFirstBit(uheight)) ||
+                      (attackpossible28(field->vehicle, vehicle) == false) ||
+                      (vehicle->getMap()->getPlayer(vehicle).diplomacy.getState(
+                          field->vehicle->getOwner()) >= PEACE))
+                     return 1;
                }
-           }
-      }
-      else {   // building
-        if ((field->bdt & getTerrainBitType(cbbuildingentry) ).any() && field->building->vehicleLoadable ( vehicle, uheight, attacked ))
-           return 2;
-        else
-           if (uheight >= chtieffliegend || (field->building->typ->height <= chgetaucht && uheight >=  chschwimmend && terrainaccessible ( field, vehicle, uheight )))
-              return 1;
-           else
-              return 0;
+            }
+      } else {  // building
+         if ((field->bdt & getTerrainBitType(cbbuildingentry)).any() &&
+             field->building->vehicleLoadable(vehicle, uheight, attacked))
+            return 2;
+         else if (uheight >= chtieffliegend ||
+                  (field->building->typ->height <= chgetaucht && uheight >= chschwimmend &&
+                   terrainaccessible(field, vehicle, uheight)))
+            return 1;
+         else
+            return 0;
       }
    }
    return 0;
 }
 
-
-
-
-
-
-MapField*        getfield(int          x,
-                     int          y)
-{ 
+MapField* getfield(int x, int y) {
    if ((x < 0) || (y < 0) || (x >= actmap->xsize) || (y >= actmap->ysize))
-      return NULL; 
+      return NULL;
    else
-      return (   &actmap->field[y * actmap->xsize + x] );
+      return (&actmap->field[y * actmap->xsize + x]);
 }
 
+void putbuilding(GameMap* actmap, const MapCoordinate& entryPosition, int color,
+                 const BuildingType* buildingtyp, int completion, int ignoreunits) {
+   if (color & 7)
+      fatalError("putbuilding muss eine farbe aus 0,8,16,24,.. uebergeben werden !", 2);
 
-
-void         putbuilding( GameMap* actmap,
-                          const MapCoordinate& entryPosition,
-                         int          color,
-                         const BuildingType* buildingtyp,
-                         int          completion,
-                         int          ignoreunits )
-{ 
-   if ( color & 7 )
-      fatalError("putbuilding muss eine farbe aus 0,8,16,24,.. uebergeben werden !",2);
-
-   for ( int a = 0; a < 4; a++)
-      for ( int b = 0; b < 6; b++ )
-         if ( buildingtyp->fieldExists ( BuildingType::LocalCoordinate( a, b ) ) ) {
-            MapField* field = actmap->getField( buildingtyp->getFieldCoordinate( entryPosition, BuildingType::LocalCoordinate(a,b) ));
-            if (field == NULL) 
-               return ;
+   for (int a = 0; a < 4; a++)
+      for (int b = 0; b < 6; b++)
+         if (buildingtyp->fieldExists(BuildingType::LocalCoordinate(a, b))) {
+            MapField* field = actmap->getField(
+               buildingtyp->getFieldCoordinate(entryPosition, BuildingType::LocalCoordinate(a, b)));
+            if (field == NULL)
+               return;
             else {
-               if ( field->vehicle && (!ignoreunits ) ) 
+               if (field->vehicle && (!ignoreunits))
                   return;
                if (field->building != NULL)
                   return;
             }
-         } 
+         }
 
-
-   Building* gbde = new Building ( actmap , entryPosition, buildingtyp, color/8 );
+   Building* gbde = new Building(actmap, entryPosition, buildingtyp, color / 8);
 
    if (completion >= buildingtyp->construction_steps)
       completion = buildingtyp->construction_steps - 1;
 
-   gbde->setCompletion ( completion );
+   gbde->setCompletion(completion);
 }
 
-
-
-
-
-void checkobjectsforremoval ( GameMap* gamemap )
-{
-   for ( int y = 0; y < gamemap->ysize; y++ )
-      for ( int x = 0; x < gamemap->xsize; x++ ) {
-         MapField* fld = getfield ( x, y );
-         for ( MapField::ObjectContainer::iterator i = fld->objects.begin(); i != fld->objects.end();  )
-            if ( i->typ->getFieldModification(fld->getWeather()).terrainaccess.accessible ( fld->bdt ) < 0 ) {
-               fld->removeObject ( i->typ, true );
+void checkobjectsforremoval(GameMap* gamemap) {
+   for (int y = 0; y < gamemap->ysize; y++)
+      for (int x = 0; x < gamemap->xsize; x++) {
+         MapField* fld = getfield(x, y);
+         for (MapField::ObjectContainer::iterator i = fld->objects.begin();
+              i != fld->objects.end();)
+            if (i->typ->getFieldModification(fld->getWeather()).terrainaccess.accessible(fld->bdt) <
+                0) {
+               fld->removeObject(i->typ, true);
                i = fld->objects.begin();
             } else
                i++;
       }
 }
 
-void  checkunitsforremoval ( GameMap* gamemap )
-{
+void checkunitsforremoval(GameMap* gamemap) {
    ASCString messages[playerNum];
-   for ( int y = 0; y < gamemap->ysize; y++ )
-      for ( int x = 0; x < gamemap->xsize; x++ ) {
-         MapField* fld = gamemap->getField ( x, y );
-         if ( (fld->building && fld->building->typ->terrainaccess.accessible( fld->bdt ) < 0) && (fld->building->typ->height <= chfahrend) ) {
-            messages[fld->building->getOwner()] += getBuildingReference( fld->building ) + " was destroyed \n\n";
+   for (int y = 0; y < gamemap->ysize; y++)
+      for (int x = 0; x < gamemap->xsize; x++) {
+         MapField* fld = gamemap->getField(x, y);
+         if ((fld->building && fld->building->typ->terrainaccess.accessible(fld->bdt) < 0) &&
+             (fld->building->typ->height <= chfahrend)) {
+            messages[fld->building->getOwner()] +=
+               getBuildingReference(fld->building) + " was destroyed \n\n";
             delete fld->building;
          }
       }
 
-
-   for ( int c=0; c<=8 ;c++ ) {
+   for (int c = 0; c <= 8; c++) {
       ASCString msg = messages[c];
-      for ( Player::VehicleList::iterator i = gamemap->player[c].vehicleList.begin(); i != gamemap->player[c].vehicleList.end();  ) {
+      for (Player::VehicleList::iterator i = gamemap->player[c].vehicleList.begin();
+           i != gamemap->player[c].vehicleList.end();) {
+         Vehicle* eht = *i;
+         MapField* field = gamemap->getField(eht->xpos, eht->ypos);
+         bool erase = false;
 
-          Vehicle* eht = *i;
-          MapField* field = gamemap->getField(eht->xpos,eht->ypos);
-          bool erase = false;
+         ASCString reason;
+         if (field->vehicle == eht) {
+            if (eht->height <= chfahrend)
+               if (eht->typ->terrainaccess.accessible(field->bdt) < 0) {
+                  erase = true;
+                  reason = "was swallowed by the ground";
+               }
+            if (eht)
+               if (getmaxwindspeedforunit(eht) < gamemap->weather.windSpeed * maxwindspeed) {
+                  reason = "was blown away by the wind";
+                  erase = true;
+               }
+         }
+         if (erase) {
+            msg += getUnitReference(eht) + reason;
+            msg += "\n\n";
 
-          ASCString reason;
-          if (field->vehicle == eht) {
-             if ( eht->height <= chfahrend )
-                if ( eht->typ->terrainaccess.accessible ( field->bdt ) < 0 ) {
-                   erase = true;
-                   reason = "was swallowed by the ground";
-                }
-             if ( eht )
-                if ( getmaxwindspeedforunit( eht ) < gamemap->weather.windSpeed*maxwindspeed ) {
-                   reason = "was blown away by the wind";
-                   erase = true;
-                }
-          }
-          if ( erase ) {
-             msg += getUnitReference( eht ) + reason;
-             msg += "\n\n";
+            Vehicle* pv = *i;
+            gamemap->player[c].vehicleList.erase(i);
+            delete pv;
 
-             Vehicle* pv = *i;
-             gamemap->player[c].vehicleList.erase ( i );
-             delete pv;
-
-
-
-             /* if the unit was a transport and had other units loaded, these units have been deleted as well.
-                We don't know which elements of the container are still valid, so we start from the beginning again. */
-             i = gamemap->player[c].vehicleList.begin();
-          } else
-             i++;
+            /* if the unit was a transport and had other units loaded, these units have been deleted
+               as well. We don't know which elements of the container are still valid, so we start
+               from the beginning again. */
+            i = gamemap->player[c].vehicleList.begin();
+         } else
+            i++;
       }
 
-      if ( !msg.empty() )
-         new Message ( msg, gamemap, 1<<c);
+      if (!msg.empty())
+         new Message(msg, gamemap, 1 << c);
    }
 }
 
-
-int  getwindheightforunit ( const Vehicle* eht, int uheight )
-{
-   if ( uheight == -1 )
+int getwindheightforunit(const Vehicle* eht, int uheight) {
+   if (uheight == -1)
       uheight = eht->height;
 
-   if ( uheight == chfliegend )
+   if (uheight == chfliegend)
       return 1;
+   else if (uheight == chhochfliegend)
+      return 2;
    else
-      if ( uheight == chhochfliegend )
-         return 2;
-      else
-         return 0;
+      return 0;
 }
 
-int  getmaxwindspeedforunit ( const Vehicle* eht )
-{
-   MapField* field = eht->getMap()->getField(eht->xpos,eht->ypos);
-   if ( field->vehicle == eht) {
-      if (eht->height >= chtieffliegend && eht->height <= chhochfliegend ) //    || ((eht->height == chfahrend) && ( field->typ->art & cbwater ))) ) 
-         return eht->typ->movement[getFirstBit(eht->height)] * 256 ;
+int getmaxwindspeedforunit(const Vehicle* eht) {
+   MapField* field = eht->getMap()->getField(eht->xpos, eht->ypos);
+   if (field->vehicle == eht) {
+      if (eht->height >= chtieffliegend &&
+          eht->height <= chhochfliegend)  //    || ((eht->height == chfahrend) && ( field->typ->art
+                                          //    & cbwater ))) )
+         return eht->typ->movement[getFirstBit(eht->height)] * 256;
 
-      if ( (field->bdt & getTerrainBitType(cbfestland)).none() && eht->height <= chfahrend && eht->height >= chschwimmend && (field->bdt & getTerrainBitType(cbharbour)).none() && (field->bdt & getTerrainBitType(cbwater0)).none())
+      if ((field->bdt & getTerrainBitType(cbfestland)).none() && eht->height <= chfahrend &&
+          eht->height >= chschwimmend && (field->bdt & getTerrainBitType(cbharbour)).none() &&
+          (field->bdt & getTerrainBitType(cbwater0)).none())
          return eht->typ->maxwindspeedonwater * maxwindspeed;
    }
    return maxint;
 }
-
 
 /*
 
@@ -390,198 +354,172 @@ void EllipseOnScreen :: write ( tnstream& stream )
 
 */
 
-int getheightdelta ( const ContainerBase* c1, const ContainerBase* c2 )
-{
-   return getheightdelta( getFirstBit(c1->getHeight()), getFirstBit(c2->getHeight() ));
+int getheightdelta(const ContainerBase* c1, const ContainerBase* c2) {
+   return getheightdelta(getFirstBit(c1->getHeight()), getFirstBit(c2->getHeight()));
 }
 
-
-bool fieldvisiblenow( const MapField* pe, Vehicle* veh, int player )
-{
+bool fieldvisiblenow(const MapField* pe, Vehicle* veh, int player) {
    GameMap* gamemap = pe->getMap();
-   if ( player == -1 )
+   if (player == -1)
       return true;
 
-   if ( player < -1 )
+   if (player < -1)
       return false;
 
-   if ( !gamemap )
+   if (!gamemap)
       return false;
-  
-   if ( pe ) {
-      int c = (pe->visible >> ( player * 2)) & 3;
 
-      if ( c < gamemap->getInitialMapVisibility( player ) )
-         c = gamemap->getInitialMapVisibility( player );
+   if (pe) {
+      int c = (pe->visible >> (player * 2)) & 3;
+
+      if (c < gamemap->getInitialMapVisibility(player))
+         c = gamemap->getInitialMapVisibility(player);
 
       if (c > visible_ago) {
-         if ( !veh )
+         if (!veh)
             veh = pe->vehicle;
-         
-         if ( veh ) {
-            if ((c == visible_all) || (veh->color / 8 == player ) || ((veh->height >= chschwimmend) && (veh->height <= chhochfliegend)))
+
+         if (veh) {
+            if ((c == visible_all) || (veh->color / 8 == player) ||
+                ((veh->height >= chschwimmend) && (veh->height <= chhochfliegend)))
                return true;
-         }
-         else
-            if (pe->building != NULL) {
-            if ((c == visible_all) || (pe->building->typ->height >= chschwimmend) || (pe->building->color == player*8))
+         } else if (pe->building != NULL) {
+            if ((c == visible_all) || (pe->building->typ->height >= chschwimmend) ||
+                (pe->building->color == player * 8))
                return true;
-            }
-            else
-               return true;
+         } else
+            return true;
       }
    }
    return false;
 }
 
-
-
-
-VisibilityStates fieldVisibility( const MapField* pe )
-{
-   return fieldVisibility( pe, pe->getMap()->actplayer );
+VisibilityStates fieldVisibility(const MapField* pe) {
+   return fieldVisibility(pe, pe->getMap()->actplayer);
 }
 
-VisibilityStates fieldVisibility( const MapField* pe, int player )
-{
-   if ( player < 0 )
+VisibilityStates fieldVisibility(const MapField* pe, int player) {
+   if (player < 0)
       return visible_all;
 
-   if ( pe ) {
+   if (pe) {
       GameMap* gamemap = pe->getMap();
-      VisibilityStates c = VisibilityStates((pe->visible >> ( player * 2)) & 3);
-      if ( c < gamemap->getInitialMapVisibility( player ) )
-         c = gamemap->getInitialMapVisibility( player );
+      VisibilityStates c = VisibilityStates((pe->visible >> (player * 2)) & 3);
+      if (c < gamemap->getInitialMapVisibility(player))
+         c = gamemap->getInitialMapVisibility(player);
 
       return c;
    } else
-     return visible_not;
-}
-      
-
-void  calculateobject( const MapCoordinate& pos, 
-                             bool mof,
-                             const ObjectType* obj,
-                             GameMap* gamemap  )
-{
-   calculateobject( pos.x, pos.y, mof, obj, gamemap );
+      return visible_not;
 }
 
+void calculateobject(const MapCoordinate& pos, bool mof, const ObjectType* obj, GameMap* gamemap) {
+   calculateobject(pos.x, pos.y, mof, obj, gamemap);
+}
 
-void         calculateobject( int       x,
-                              int       y,
-                              bool      mof,
-                              const ObjectType* obj,
-                              GameMap* actmap )
-{
-   if ( obj->netBehaviour & ObjectType::KeepOrientation ) 
+void calculateobject(int x, int y, bool mof, const ObjectType* obj, GameMap* actmap) {
+   if (obj->netBehaviour & ObjectType::KeepOrientation)
       return;
-   
-   if ( obj->netBehaviour & ObjectType::SpecialForest ) {
+
+   if (obj->netBehaviour & ObjectType::SpecialForest) {
       // ForestCalculation::calculateforest( actmap, obj );
       return;
    }
 
-   MapField* fld = actmap->getField(x,y) ;
-   Object* oi2 = fld-> checkForObject (  obj  );
+   MapField* fld = actmap->getField(x, y);
+   Object* oi2 = fld->checkForObject(obj);
 
    int c = 0;
-   for ( int dir = 0; dir < sidenum; dir++) {
-      int a = x + getnextdx( dir, y );
-      int b = y + getnextdy( dir);
-      MapField* fld2 = actmap->getField(a,b);
+   for (int dir = 0; dir < sidenum; dir++) {
+      int a = x + getnextdx(dir, y);
+      int b = y + getnextdy(dir);
+      MapField* fld2 = actmap->getField(a, b);
 
-      if ( fld2 ) {
-         if ( obj->netBehaviour & ObjectType::NetToSelf )
-            if ( fld2->checkForObject ( obj )) {
-               c |=  1 << dir ;
-               if ( mof )
-                  calculateobject ( a, b, false, obj, actmap );
+      if (fld2) {
+         if (obj->netBehaviour & ObjectType::NetToSelf)
+            if (fld2->checkForObject(obj)) {
+               c |= 1 << dir;
+               if (mof)
+                  calculateobject(a, b, false, obj, actmap);
             }
 
-
-         for ( int oj = 0; oj < int(obj->linkableObjects.size()); oj++ ) {
-            for ( int id = obj->linkableObjects[oj].from; id <= obj->linkableObjects[oj].to; ++id ) {
-               Object* oi = fld2->checkForObject ( actmap->getobjecttype_byid ( id ) );
-               if ( oi ) {
-                  c |=  1 << dir ;
-                  if ( mof )
-                     calculateobject ( a, b, false, oi->typ, actmap );
+         for (int oj = 0; oj < int(obj->linkableObjects.size()); oj++) {
+            for (int id = obj->linkableObjects[oj].from; id <= obj->linkableObjects[oj].to; ++id) {
+               Object* oi = fld2->checkForObject(actmap->getobjecttype_byid(id));
+               if (oi) {
+                  c |= 1 << dir;
+                  if (mof)
+                     calculateobject(a, b, false, oi->typ, actmap);
                }
             }
          }
 
-         for ( unsigned int t = 0; t < obj->linkableTerrain.size(); t++ )
-            for ( int id = obj->linkableTerrain[t].from; id <= obj->linkableTerrain[t].to; ++id ) 
-               if ( fld2->typ->terraintype->id == id )
-                  c |=  1 << dir ;
+         for (unsigned int t = 0; t < obj->linkableTerrain.size(); t++)
+            for (int id = obj->linkableTerrain[t].from; id <= obj->linkableTerrain[t].to; ++id)
+               if (fld2->typ->terraintype->id == id)
+                  c |= 1 << dir;
 
-         if ( fld2->building && !fld2->building->typ->hasFunction( ContainerBaseType::NoObjectChaining  ) ) {
-            if ( (obj->netBehaviour & ObjectType::NetToBuildingEntry)  &&  (fld2->bdt & getTerrainBitType(cbbuildingentry) ).any() )
+         if (fld2->building &&
+             !fld2->building->typ->hasFunction(ContainerBaseType::NoObjectChaining)) {
+            if ((obj->netBehaviour & ObjectType::NetToBuildingEntry) &&
+                (fld2->bdt & getTerrainBitType(cbbuildingentry)).any())
                c |= 1 << dir;
 
-            if ( obj->netBehaviour & ObjectType::NetToBuildings )
+            if (obj->netBehaviour & ObjectType::NetToBuildings)
                c |= 1 << dir;
          }
 
-      }
-      else {
-         if ( obj->netBehaviour & ObjectType::NetToBorder )
+      } else {
+         if (obj->netBehaviour & ObjectType::NetToBorder)
             c |= 1 << dir;
       }
    }
 
-   if ( obj->netBehaviour & ObjectType::AutoBorder ) {
+   if (obj->netBehaviour & ObjectType::AutoBorder) {
       int autoborder = 0;
       int count = 0;
-      for ( int dir = 0; dir < sidenum; dir++) {
-         int a = x + getnextdx( dir, y );
-         int b = y + getnextdy( dir);
-         MapField* fld2 = actmap->getField(a,b);
-         if ( !fld2 ) {
-            // if the field opposite of the border field is connected to, make a straight line out of the map.
-            if ( c & (1 << ((dir+sidenum/2) % sidenum ))) {
+      for (int dir = 0; dir < sidenum; dir++) {
+         int a = x + getnextdx(dir, y);
+         int b = y + getnextdy(dir);
+         MapField* fld2 = actmap->getField(a, b);
+         if (!fld2) {
+            // if the field opposite of the border field is connected to, make a straight line out
+            // of the map.
+            if (c & (1 << ((dir + sidenum / 2) % sidenum))) {
                autoborder |= 1 << dir;
                count++;
             }
          }
       }
-      if ( count == 1 )
+      if (count == 1)
          c |= autoborder;
    }
 
-   if ( oi2 ) {
-     oi2->setDir ( c );
+   if (oi2) {
+      oi2->setDir(c);
    }
-
 }
 
-
-
-
-void         calculateallobjects( GameMap* actmap )
-{
+void calculateallobjects(GameMap* actmap) {
    // vector<ObjectType*> forestObjects;
-   for ( int y = 0; y < actmap->ysize ; y++)
-      for ( int x = 0; x < actmap->xsize ; x++) {
-         MapField* fld = actmap->getField(x,y);
+   for (int y = 0; y < actmap->ysize; y++)
+      for (int x = 0; x < actmap->xsize; x++) {
+         MapField* fld = actmap->getField(x, y);
 
-         for ( MapField::ObjectContainer::iterator i = fld->objects.begin(); i != fld->objects.end(); i++ )
-             // if ( !(i->typ->netBehaviour & ObjectType::SpecialForest) )
-                calculateobject( x, y, false, i->typ, actmap );
-                #if 0
+         for (MapField::ObjectContainer::iterator i = fld->objects.begin(); i != fld->objects.end();
+              i++)
+            // if ( !(i->typ->netBehaviour & ObjectType::SpecialForest) )
+            calculateobject(x, y, false, i->typ, actmap);
+#if 0
              else
                 if ( find ( forestObjects.begin(), forestObjects.end(), i->typ ) == forestObjects.end())
                    forestObjects.push_back ( i->typ );
-                   #endif
+#endif
 
          fld->setparams();
       }
 #if 0
    for ( vector<ObjectType*>::iterator i = forestObjects.begin(); i != forestObjects.end(); i++ )
       ForestCalculation::calculateforest( actmap, *i );
-#endif      
+#endif
 }
-
-
-

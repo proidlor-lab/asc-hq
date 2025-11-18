@@ -13,8 +13,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -22,25 +22,25 @@
 // are being included in basestrm.cpp
 
 #ifndef fileio_h_included
- #define fileio_h_included
+#define fileio_h_included
 
- #include <vector>
- #include "../../ASCString.h"
+#include <vector>
+#include "../../ASCString.h"
 
- #include <direct.h>
- #include <dirent.h>
- #define ASC_direct dirent
+#include <direct.h>
+#include <dirent.h>
+#define ASC_direct dirent
 
- extern const char* filereadmode;
- extern const char* filewritemode;
- extern const char* filereadmodetext;
- extern const char* filewritemodetext;
- extern const char pathdelimitter;
- extern const char* pathdelimitterstring;
- extern const char  foreignPathDelimitter;
- extern const char* foreignPathDelimitterString;
+extern const char* filereadmode;
+extern const char* filewritemode;
+extern const char* filereadmodetext;
+extern const char* filewritemodetext;
+extern const char pathdelimitter;
+extern const char* pathdelimitterstring;
+extern const char foreignPathDelimitter;
+extern const char* foreignPathDelimitterString;
 
- extern const int maxfilenamelength;
- extern const char* asc_configurationfile;
+extern const int maxfilenamelength;
+extern const char* asc_configurationfile;
 
 #endif

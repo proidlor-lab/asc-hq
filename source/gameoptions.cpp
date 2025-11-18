@@ -7,7 +7,7 @@
                              -------------------
     begin                : Thu Jun 29 2000
     copyright            : (C) 2000 by frank landgraf
-    email                : 
+    email                :
  ***************************************************************************/
 
 /***************************************************************************
@@ -22,21 +22,14 @@
 #include "gameoptions.h"
 #include "basestrm.h"
 
+CGameOptions* pStaticGameOptions = NULL;
 
-CGameOptions* pStaticGameOptions=NULL;
+class Destroyer {
+  public:
+   ~Destroyer() { delete pStaticGameOptions; };
+} destroyer;
 
-class Destroyer
-{
-   public:
-      ~Destroyer()
-      {
-         delete pStaticGameOptions;
-      };
-}
-destroyer;
-
-CGameOptions* CGameOptions::Instance()
-{
+CGameOptions* CGameOptions::Instance() {
    if (!pStaticGameOptions)
       pStaticGameOptions = new CGameOptions;
    return pStaticGameOptions;
@@ -58,44 +51,30 @@ CGameOptions::CGameOptions(void)
 */
 
 const int mouseButtonNum = 6;
-const char* mouseButtons[mouseButtonNum] =
-   { "none",
-     "left",
-     "center",
-     "right",
-     "4",
-     "5" };
+const char* mouseButtons[mouseButtonNum] = {"none", "left", "center", "right", "4", "5"};
 
+void CGameOptions::load(const ASCString& filename) {
+   tnfilestream s(filename, tnstream::reading);
 
-     
-void CGameOptions::load( const ASCString& filename )
-{
-   tnfilestream s ( filename, tnstream::reading );
+   TextFormatParser tfp(&s);
+   std::unique_ptr<TextPropertyGroup> tpg(tfp.run());
 
-   TextFormatParser tfp ( &s );
-   auto_ptr<TextPropertyGroup> tpg ( tfp.run());
-   
-   PropertyReadingContainer pc ( "config", tpg.get() );
- 
-   runTextIO( pc );
-}   
+   PropertyReadingContainer pc("config", tpg.get());
 
-void CGameOptions::save( const ASCString& filename )
-{
-   tn_file_buf_stream s ( filename, tnstream::writing );
-   PropertyWritingContainer pc ( "config", s );
-   runTextIO( pc );
-}   
-   
-  
+   runTextIO(pc);
+}
 
-void CGameOptions::runTextIO ( PropertyContainer& pc )
-{
-   
+void CGameOptions::save(const ASCString& filename) {
+   tn_file_buf_stream s(filename, tnstream::writing);
+   PropertyWritingContainer pc("config", s);
+   runTextIO(pc);
+}
+
+void CGameOptions::runTextIO(PropertyContainer& pc) {
    pc.addInteger("XResolution", xresolution, xresolution);
    pc.addInteger("YResolution", yresolution, yresolution);
-   pc.addString("GraphicsDriver", graphicsDriver, graphicsDriver );
-   pc.addBool("HardwareSurface", hardwareSurface, hardwareSurface );
+   pc.addString("GraphicsDriver", graphicsDriver, graphicsDriver);
+   pc.addBool("HardwareSurface", hardwareSurface, hardwareSurface);
 
    pc.addInteger("MapEditor_XResolution", mapeditor_xresolution, mapeditor_xresolution);
    pc.addInteger("MapEditor_YResolution", mapeditor_yresolution, mapeditor_yresolution);
@@ -104,76 +83,82 @@ void CGameOptions::runTextIO ( PropertyContainer& pc )
    pc.addBool("MuteEffects", sound.muteEffects, sound.muteEffects);
    pc.addBool("MuteMusic", sound.muteMusic, sound.muteMusic);
    pc.addBool("Sound.Off", sound.off, sound.off);
-   pc.addInteger("EffectsVolume", sound.soundVolume, sound.soundVolume );
-   pc.addInteger("MusicVolume", sound.musicVolume, sound.musicVolume );
+   pc.addInteger("EffectsVolume", sound.soundVolume, sound.soundVolume);
+   pc.addInteger("MusicVolume", sound.musicVolume, sound.musicVolume);
    pc.closeBracket();
 
    pc.addBool("FastMove", fastmove, fastmove);
-   pc.addInteger("MovementSpeed", movespeed, movespeed );
-   pc.addInteger("ReplayMoveSpeedFactor", replayMoveSpeedFactor, replayMoveSpeedFactor );
-   pc.addBool("EndTurnPrompt", endturnquestion, endturnquestion );
-   pc.addBool("UnitsGrayAfterMove", units_gray_after_move, units_gray_after_move );
-   pc.addInteger( "MapZoom", mapzoom, mapzoom);
-   pc.addInteger( "MapZoomEditor", mapzoomeditor, mapzoomeditor );
-   pc.addInteger( "AttackSpeed1", attackspeed1, 30 );
-   pc.addInteger( "AttackSpeed2", attackspeed2, 50 );
-   pc.addInteger( "AttackSpeed3", attackspeed3, 30 );
+   pc.addInteger("MovementSpeed", movespeed, movespeed);
+   pc.addInteger("ReplayMoveSpeedFactor", replayMoveSpeedFactor, replayMoveSpeedFactor);
+   pc.addBool("EndTurnPrompt", endturnquestion, endturnquestion);
+   pc.addBool("UnitsGrayAfterMove", units_gray_after_move, units_gray_after_move);
+   pc.addInteger("MapZoom", mapzoom, mapzoom);
+   pc.addInteger("MapZoomEditor", mapzoomeditor, mapzoomeditor);
+   pc.addInteger("AttackSpeed1", attackspeed1, 30);
+   pc.addInteger("AttackSpeed2", attackspeed2, 50);
+   pc.addInteger("AttackSpeed3", attackspeed3, 30);
 
-   pc.addBool( "ForceWindowedMode", forceWindowedMode, forceWindowedMode );
-   pc.addBool( "MapeditWindowedMode", mapeditWindowedMode, mapeditWindowedMode );
-   pc.addBool( "MapeditModalSelectionWindow", maped_modalSelectionWindow, maped_modalSelectionWindow );
-   pc.addBool( "AutomaticTraining", automaticTraining, automaticTraining );
+   pc.addBool("ForceWindowedMode", forceWindowedMode, forceWindowedMode);
+   pc.addBool("MapeditWindowedMode", mapeditWindowedMode, mapeditWindowedMode);
+   pc.addBool("MapeditModalSelectionWindow", maped_modalSelectionWindow,
+              maped_modalSelectionWindow);
+   pc.addBool("AutomaticTraining", automaticTraining, automaticTraining);
 
    pc.openBracket("Mouse");
    // add(new IntProperty("Mouse.ScrollButton"					,&_pOptions->mouse.scrollbutton));
-   pc.addNamedInteger("SelectFieldButton", mouse.fieldmarkbutton, mouseButtonNum, mouseButtons, mouse.fieldmarkbutton );
+   pc.addNamedInteger("SelectFieldButton", mouse.fieldmarkbutton, mouseButtonNum, mouseButtons,
+                      mouse.fieldmarkbutton);
    // add(new IntProperty("Mouse.SmallGuiIconButton"			,&_pOptions->mouse.smallguibutton));
    // add(new IntProperty("Mouse.LargeGuiIconButton"			,&_pOptions->mouse.largeguibutton));
-   // add(new IntProperty("Mouse.SmallGuiIconUnderMouse"		,&_pOptions->mouse.smalliconundermouse ));
-   pc.addNamedInteger("MapCenterButton", mouse.centerbutton, mouseButtonNum, mouseButtons, mouse.centerbutton );
-   pc.addNamedInteger("DragNdrop", mouse.dragndropbutton, mouseButtonNum, mouseButtons, mouse.dragndropbutton );
-   pc.addNamedInteger("ZoomOut", mouse.zoomoutbutton, mouseButtonNum, mouseButtons, mouse.zoomoutbutton );
-   pc.addNamedInteger("ZoomIn", mouse.zoominbutton, mouseButtonNum, mouseButtons, mouse.zoominbutton );
+   // add(new IntProperty("Mouse.SmallGuiIconUnderMouse"		,&_pOptions->mouse.smalliconundermouse
+   // ));
+   pc.addNamedInteger("MapCenterButton", mouse.centerbutton, mouseButtonNum, mouseButtons,
+                      mouse.centerbutton);
+   pc.addNamedInteger("DragNdrop", mouse.dragndropbutton, mouseButtonNum, mouseButtons,
+                      mouse.dragndropbutton);
+   pc.addNamedInteger("ZoomOut", mouse.zoomoutbutton, mouseButtonNum, mouseButtons,
+                      mouse.zoomoutbutton);
+   pc.addNamedInteger("ZoomIn", mouse.zoominbutton, mouseButtonNum, mouseButtons,
+                      mouse.zoominbutton);
    // add(new IntProperty("Mouse.UnitWeaponInfoButton"		,&_pOptions->mouse.unitweaponinfo));
-   pc.addBool("SingleClickAction", mouse.singleClickAction, false );
+   pc.addBool("SingleClickAction", mouse.singleClickAction, false);
    // add(new IntProperty("Mouse.dragndropmovement"		,&_pOptions->mouse.dragndropmovement));
-   pc.addBool("HideOnScreenUpdates",hideMouseOnScreenUpdates, hideMouseOnScreenUpdates );
+   pc.addBool("HideOnScreenUpdates", hideMouseOnScreenUpdates, hideMouseOnScreenUpdates);
    pc.closeBracket();
 
-   pc.addBool("AmmoProductionOnRefuelling", autoproduceammunition, autoproduceammunition );
+   pc.addBool("AmmoProductionOnRefuelling", autoproduceammunition, autoproduceammunition);
    // pc.addInteger("FillUnitsAutomatically", container.filleverything, container.filleverything );
 
    // pc.addInteger("ToolTipHelpDelay", onlinehelptime, onlinehelptime );
    // add(new IntProperty("SmallGuiIconOpensAfterMove"	,	&_pOptions->smallguiiconopenaftermove));
-   pc.addString("DefaultPassword", defaultPassword, defaultPassword );
-   pc.addString("DefaultSupervisorPassword", defaultSuperVisorPassword, defaultSuperVisorPassword );
-   pc.addInteger("ReplayDelay", replayspeed, replayspeed );
+   pc.addString("DefaultPassword", defaultPassword, defaultPassword);
+   pc.addString("DefaultSupervisorPassword", defaultSuperVisorPassword, defaultSuperVisorPassword);
+   pc.addInteger("ReplayDelay", replayspeed, replayspeed);
    // add(new IntProperty("ShowUnitOwner"                ,  &_pOptions->showUnitOwner));
-   pc.addString("StartupMap", startupMap, startupMap );
-   pc.addBool("DebugReplay", debugReplay, debugReplay );
-   pc.addBool("RecordCampaignMaps", recordCampaignMaps, recordCampaignMaps );
+   pc.addString("StartupMap", startupMap, startupMap);
+   pc.addBool("DebugReplay", debugReplay, debugReplay);
+   pc.addBool("RecordCampaignMaps", recordCampaignMaps, recordCampaignMaps);
 
-   pc.addString("BI3.path", BI3directory, BI3directory );
+   pc.addString("BI3.path", BI3directory, BI3directory);
 
    pc.openBracket("UnitProduction");
-   pc.addBool("fillResources", unitProduction.fillResources, true );
-   pc.addBool("fillAmmo", unitProduction.fillAmmo, true );
+   pc.addBool("fillResources", unitProduction.fillResources, true);
+   pc.addBool("fillAmmo", unitProduction.fillAmmo, true);
    pc.closeBracket();
-   
+
    pc.openBracket("replayVideo");
-   pc.addInteger("FrameRate", video.framerate, video.framerate );
-   pc.addInteger("ASCFrameRateLimit", video.ascframeratelimit, video.ascframeratelimit );
+   pc.addInteger("FrameRate", video.framerate, video.framerate);
+   pc.addInteger("ASCFrameRateLimit", video.ascframeratelimit, video.ascframeratelimit);
    pc.addInteger("Quality", video.quality, video.quality);
    pc.closeBracket();
-   
-   if ( !pc.isReading() || pc.find("VisibleMapLayer" ))
-      pc.addStringArray("VisibleMapLayer", visibleMapLayer );
 
+   if (!pc.isReading() || pc.find("VisibleMapLayer"))
+      pc.addStringArray("VisibleMapLayer", visibleMapLayer);
 
    pc.openBracket("PBEMServer");
-   pc.addString("hostname", pbemServer.hostname, pbemServer.hostname );
-   pc.addString("username", pbemServer.username, pbemServer.username );
-   pc.addInteger("port", pbemServer.port, pbemServer.port );
+   pc.addString("hostname", pbemServer.hostname, pbemServer.hostname);
+   pc.addString("username", pbemServer.username, pbemServer.username);
+   pc.addInteger("port", pbemServer.port, pbemServer.port);
    pc.closeBracket();
 
    /*
@@ -185,130 +170,125 @@ void CGameOptions::runTextIO ( PropertyContainer& pc )
 
    int spn = 0;
 
-   if ( pc.isReading() ) 
-      pc.addInteger("SearchPathNum", spn, 0 );
+   if (pc.isReading())
+      pc.addInteger("SearchPathNum", spn, 0);
    else {
-      pc.addInteger("SearchPathNum", searchPathNum, 0 );
+      pc.addInteger("SearchPathNum", searchPathNum, 0);
       spn = searchPathNum;
-   }   
-   
-         
-   for ( int i = 0; i < min(spn, 30); ++i )
-      pc.addString(ASCString("SearchPath") + strrr(i), searchPath[i] );
-      
-   searchPathNum = spn;   
-
-
-   pc.addBool( "cacheASCGUI", cacheASCGUI, cacheASCGUI );
-
-
-   vector<ASCString> panels;
-   if ( pc.isReading() ) {
-      if ( pc.find( "Panels"))
-         pc.addStringArray( "Panels", panels );
-   } else {
-      for ( PanelDataContainer::iterator i = panelData.begin(); i != panelData.end(); ++i )
-         panels.push_back( i->first );
-      pc.addStringArray( "Panels", panels );
    }
 
-   for ( vector<ASCString>::iterator i = panels.begin(); i != panels.end(); ++i ){
+   for (int i = 0; i < min(spn, 30); ++i)
+      pc.addString(ASCString("SearchPath") + strrr(i), searchPath[i]);
+
+   searchPathNum = spn;
+
+   pc.addBool("cacheASCGUI", cacheASCGUI, cacheASCGUI);
+
+   vector<ASCString> panels;
+   if (pc.isReading()) {
+      if (pc.find("Panels"))
+         pc.addStringArray("Panels", panels);
+   } else {
+      for (PanelDataContainer::iterator i = panelData.begin(); i != panelData.end(); ++i)
+         panels.push_back(i->first);
+      pc.addStringArray("Panels", panels);
+   }
+
+   for (vector<ASCString>::iterator i = panels.begin(); i != panels.end(); ++i) {
       PanelData& pd = panelData[*i];
-      pc.openBracket( *i );
-      pc.addInteger( "x", pd.x );
-      pc.addInteger( "y", pd.y );
-      pc.addBool( "active", pd.visible );
+      pc.openBracket(*i);
+      pc.addInteger("x", pd.x);
+      pc.addInteger("y", pd.y);
+      pc.addBool("active", pd.visible);
       pc.closeBracket();
    }
 
-
    pc.openBracket("DialogMemory");
    vector<ASCString> dialogMemory;
-   if ( pc.isReading() ) {
-      if ( pc.find( "dialogs"))
-         pc.addStringArray( "dialogs", dialogMemory );
+   if (pc.isReading()) {
+      if (pc.find("dialogs"))
+         pc.addStringArray("dialogs", dialogMemory);
    } else {
-      for ( DialogAnswers::iterator i = dialogAnswers.begin(); i != dialogAnswers.end(); ++i )
-         dialogMemory.push_back( i->first );
-      pc.addStringArray( "dialogs", dialogMemory );
+      for (DialogAnswers::iterator i = dialogAnswers.begin(); i != dialogAnswers.end(); ++i)
+         dialogMemory.push_back(i->first);
+      pc.addStringArray("dialogs", dialogMemory);
    }
 
-   for ( vector<ASCString>::iterator i = dialogMemory.begin(); i != dialogMemory.end(); ++i ) {
+   for (vector<ASCString>::iterator i = dialogMemory.begin(); i != dialogMemory.end(); ++i) {
       int& value = dialogAnswers[*i];
-      pc.addInteger( *i, value );
+      pc.addInteger(*i, value);
    }
 
    pc.closeBracket();
 
-   pc.addInteger( "PanelColumns", panelColumns, 2 );
-     
+   pc.addInteger("PanelColumns", panelColumns, 2);
+
    pc.addString("mailProgram", mailProgram, "");
-     
-   pc.addInteger( "AircraftCrashWarnTime", aircraftCrashWarningTime, 1 );
-   
-   pc.addBool("SaveEventMessagesExternal", saveEventMessagesExternal, false );
-   pc.addString("LanguageOverride", languageOverride, "" );
-   
-   pc.addBool("LogKillsToConsole", logKillsToConsole, false );
+
+   pc.addInteger("AircraftCrashWarnTime", aircraftCrashWarningTime, 1);
+
+   pc.addBool("SaveEventMessagesExternal", saveEventMessagesExternal, false);
+   pc.addString("LanguageOverride", languageOverride, "");
+
+   pc.addBool("LogKillsToConsole", logKillsToConsole, false);
 }
 
-CGameOptions::CGameOptions()
-{
+CGameOptions::CGameOptions() {
    setDefaults();
-}   
+}
 
-
-void CGameOptions::setDefaults ( void )
-{
+void CGameOptions::setDefaults(void) {
    hideMouseOnScreenUpdates = true;
    forceWindowedMode = false;
    mapeditWindowedMode = true;
    maped_modalSelectionWindow = true;
    fastmove = true;
-   movespeed=15;
-   endturnquestion=false;
+   movespeed = 15;
+   endturnquestion = false;
    // smallmapactive=1;
-   units_gray_after_move=false;
-   mapzoom=100;
-   mapzoomeditor=60;
+   units_gray_after_move = false;
+   mapzoom = 100;
+   mapzoomeditor = 60;
    // startupcount=0;
    // dontMarkFieldsNotAccessible_movement=0;
-   
-   attackspeed1=30;
-   attackspeed2=50;
-   attackspeed3=30;
-   
-   sound.off=false;
-   sound.muteEffects=false;
-   sound.muteMusic=false;
-   sound.soundVolume=100;
-   sound.musicVolume=100;
+
+   attackspeed1 = 30;
+   attackspeed2 = 50;
+   attackspeed3 = 30;
+
+   sound.off = false;
+   sound.muteEffects = false;
+   sound.muteMusic = false;
+   sound.soundVolume = 100;
+   sound.musicVolume = 100;
 
    // mouse.scrollbutton=0;
-   mouse.fieldmarkbutton=1;
+   mouse.fieldmarkbutton = 1;
    // mouse.smallguibutton=1;
    // mouse.largeguibutton=0;
-   //mouse.smalliconundermouse=2;  // 0: nie=0;  1: immer=0; 2: nur wenn vehicle, gebude, oder temp unter MAUS
-   mouse.centerbutton=2;    // Maustaste zum zentrieren des fielder, ?ber dem sich die Maus befindet=0;
+   // mouse.smalliconundermouse=2;  // 0: nie=0;  1: immer=0; 2: nur wenn vehicle, gebude, oder temp
+   // unter MAUS
+   mouse.centerbutton =
+      2;  // Maustaste zum zentrieren des fielder, ?ber dem sich die Maus befindet=0;
    mouse.dragndropbutton = 3;
    mouse.zoomoutbutton = 4;
    mouse.zoominbutton = 5;
    mouse.singleClickAction = false;
 
-   replayspeed=0;
+   replayspeed = 0;
    debugReplay = 0;
 
    autoproduceammunition = true;
-/*
-   bi3.dir.setName( NULL );
-   bi3.interpolate.terrain=0;
-   bi3.interpolate.units=0;
-   bi3.interpolate.objects=0;
-   bi3.interpolate.buildings=0;
-   */
+   /*
+      bi3.dir.setName( NULL );
+      bi3.interpolate.terrain=0;
+      bi3.interpolate.units=0;
+      bi3.interpolate.objects=0;
+      bi3.interpolate.buildings=0;
+      */
 
    // defaultSuperVisorPassword.setName ( "" );
-   startupMap =  "asc001.map";
+   startupMap = "asc001.map";
 
    cacheASCGUI = true;
 
@@ -333,109 +313,92 @@ void CGameOptions::setDefaults ( void )
    video.quality = 100;
    video.framerate = 15;
    video.ascframeratelimit = 30;
-   
+
    panelColumns = 2;
 
-   pbemServer.username="";
+   pbemServer.username = "";
    pbemServer.port = 8080;
-   pbemServer.hostname="terdon.asc-hq.org";
+   pbemServer.hostname = "terdon.asc-hq.org";
 
    aircraftCrashWarningTime = 1;
    recordCampaignMaps = false;
-   
+
    saveEventMessagesExternal = false;
-   
-   replayMoveSpeedFactor= 150;
-   
+
+   replayMoveSpeedFactor = 150;
+
    logKillsToConsole = false;
-   
+
    setChanged();
 }
 
-
-void CGameOptions::setDefaultDirectories()
-{
+void CGameOptions::setDefaultDirectories() {
 #if USE_HOME_DIRECTORY == 0
 
    searchPathNum = 1;
-   searchPath[0] =  ".\\" ;
+   searchPath[0] = ".\\";
 #else
 
    searchPathNum = 6;
-   
-   searchPath[0] =  "~/.asc/" ;
-   searchPath[1] = GAME_DATADIR ;
-   searchPath[2] = "/var/local/games/asc/" ;
-   searchPath[3] = "/var/games/asc/" ;
-   searchPath[4] = "/usr/local/share/games/asc/" ;
-   searchPath[5] =  "/usr/share/games/asc/" ;
-#endif
 
+   searchPath[0] = "~/.asc/";
+   searchPath[1] = GAME_DATADIR;
+   searchPath[2] = "/var/local/games/asc/";
+   searchPath[3] = "/var/games/asc/";
+   searchPath[4] = "/usr/local/share/games/asc/";
+   searchPath[5] = "/usr/share/games/asc/";
+#endif
 }
 
-ASCString CGameOptions::Mouse::getButtonName(int button)
-{
-   static const char* my_mouseButtonNames[] = { "None", "Left", "Center", "Right", "4", "5", NULL };
-   if ( button <= 3 ) 
+ASCString CGameOptions::Mouse::getButtonName(int button) {
+   static const char* my_mouseButtonNames[] = {"None", "Left", "Center", "Right", "4", "5", NULL};
+   if (button <= 3)
       return my_mouseButtonNames[button];
    else
-      return ASCString::toString( button );
+      return ASCString::toString(button);
 }
 
-
-int CGameOptions :: getSearchPathNum ( void )
-{
+int CGameOptions ::getSearchPathNum(void) {
    return searchPathNum;
 }
 
-void  CGameOptions ::  setSearchPath ( int i, const ASCString& path )
-{
+void CGameOptions ::setSearchPath(int i, const ASCString& path) {
    searchPath[i] = path;
 }
 
-void  CGameOptions ::  addSearchPath ( const ASCString& path )
-{
-   setSearchPath( searchPathNum++, path );
+void CGameOptions ::addSearchPath(const ASCString& path) {
+   setSearchPath(searchPathNum++, path);
 }
 
-ASCString CGameOptions :: getSearchPath( int i)
-{
+ASCString CGameOptions ::getSearchPath(int i) {
    return searchPath[i];
-}   
+}
 
-
-
-Password CGameOptions :: getDefaultPassword ( )
-{
+Password CGameOptions ::getDefaultPassword() {
    Password pwd;
-   if ( !defaultPassword.empty() )
-      pwd.setEncoded ( defaultPassword );
+   if (!defaultPassword.empty())
+      pwd.setEncoded(defaultPassword);
 
    return pwd;
 }
 
-
-Password CGameOptions :: getDefaultSupervisorPassword ( )
-{
+Password CGameOptions ::getDefaultSupervisorPassword() {
    Password pwd;
-   if ( !defaultSuperVisorPassword.empty() )
-      pwd.setEncoded ( defaultSuperVisorPassword );
+   if (!defaultSuperVisorPassword.empty())
+      pwd.setEncoded(defaultSuperVisorPassword);
 
    return pwd;
 }
 
-void CGameOptions :: updatePanelData( const ASCString& name, PanelData data )
-{
+void CGameOptions ::updatePanelData(const ASCString& name, PanelData data) {
    panelData[name] = data;
    setChanged();
 }
 
-bool CGameOptions :: getPanelData( const ASCString& name, PanelData& data )
-{
-   if ( panelData.find( name ) != panelData.end() ) {
+bool CGameOptions ::getPanelData(const ASCString& name, PanelData& data) {
+   if (panelData.find(name) != panelData.end()) {
       data = panelData[name];
       return true;
    } else
       return false;
 }
-

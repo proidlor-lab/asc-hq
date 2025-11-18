@@ -44,8 +44,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -56,27 +56,22 @@
 #include "../tpascal.inc"
 #include "../palette.h"
 
-
-
 //*********** Initialization ************
 
-extern int                    vesaerrorrecovery;
+extern int vesaerrorrecovery;
 extern int reinitgraphics(int modenum);
-extern int initgraphics ( int x, int y, int depth );
-             // returns > 0  modenum to reestablish this mode
-             //         < 0 : error
+extern int initgraphics(int x, int y, int depth);
+// returns > 0  modenum to reestablish this mode
+//         < 0 : error
 
-extern void showavailablemodes( void );
+extern void showavailablemodes(void);
 
-extern void  closegraphics ( void );
-
-
+extern void closegraphics(void);
 
 //*********** Misc ************
 
-
-extern int copy2screen( void );
-extern int copy2screen( int x1, int y1, int x2, int y2 );
+extern int copy2screen(void);
+extern int copy2screen(int x1, int y1, int x2, int y2);
 
 #ifdef _NOASM_
 extern int dpmscapabilities;
@@ -89,51 +84,49 @@ extern "C" int actdpmsmode;
 
 #endif
 
-
 #ifdef _NOASM_
 
- extern void setdisplaystart( int x, int y);
+extern void setdisplaystart(int x, int y);
 /*
  extern int setscanlinelength( int length );
  extern int getscanlinelength();
 */
- extern void set_vgapalette256 ( dacpalette256 pal );
+extern void set_vgapalette256(dacpalette256 pal);
 
 #else
 
- extern "C" void setdisplaystart( int x, int y);
- #pragma aux setdisplaystart parm [ ecx ][ edx ]  modify [eax ebx];
- 
+extern "C" void setdisplaystart(int x, int y);
+#pragma aux setdisplaystart parm[ecx][edx] modify[eax ebx];
+
 /*
  extern "C" int setscanlinelength( int length );
  #pragma aux setscanlinelength parm [ ecx ] modify [ ebx edx ];
- 
+
  extern "C" int getscanlinelength();
  #pragma aux getscanlinelength modify [ ebx ecx edx ];
 */
 
- extern "C" void set_vgapalette256 ( dacpalette256 pal );
- #pragma aux set_vgapalette256 parm [ eax ] modify [ ebx ecx edx esi ]
+extern "C" void set_vgapalette256(dacpalette256 pal);
+#pragma aux set_vgapalette256 parm[eax] modify[ebx ecx edx esi]
 
- /*
- extern "C" void waitretrace ( void );
- #pragma aux waitretrace modify [ al dx ]
- 
- extern "C" void getdpmscapabilities ( void );
- #pragma aux getdpmscapabilities modify [ eax ebx ecx edx edi es ]
- 
- extern "C" void controldpms ( char mode );
- #pragma aux controldpms parm [ bh ] modify [ eax ebx ecx edx ]
- */
- 
- extern "C" void setvirtualpagepos ( int page );
- #pragma aux setvirtualpagepos parm [ eax ]
+/*
+extern "C" void waitretrace ( void );
+#pragma aux waitretrace modify [ al dx ]
 
+extern "C" void getdpmscapabilities ( void );
+#pragma aux getdpmscapabilities modify [ eax ebx ecx edx edi es ]
+
+extern "C" void controldpms ( char mode );
+#pragma aux controldpms parm [ bh ] modify [ eax ebx ecx edx ]
+*/
+
+extern "C" void setvirtualpagepos(int page);
+#pragma aux setvirtualpagepos parm[eax]
 
 #endif
 
 extern int dont_use_linear_framebuffer;
 extern int graphicinitialized;
-extern int isfullscreen ( void );
+extern int isfullscreen(void);
 
 #endif

@@ -10,7 +10,6 @@
     \brief The base class for buildings and vehicles
 */
 
-
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -21,14 +20,13 @@
  ***************************************************************************/
 
 #ifndef containerbaseH
- #define containerbaseH
+#define containerbaseH
 
- #include <sigc++/sigc++.h>
+#include <sigc++/sigc++.h>
 
- #include "typen.h"
- #include "containerbasetype.h"
- #include "graphics/surface.h"
- 
+#include "typen.h"
+#include "containerbasetype.h"
+#include "graphics/surface.h"
 
 class Vehicle;
 class Player;
@@ -38,352 +36,364 @@ class Player;
     was a container
 */
 class ContainerBase {
-      friend class ConvertContainer; 
-      friend class ChangeContainerProperty;
-   protected:
+   friend class ConvertContainer;
+   friend class ChangeContainerProperty;
 
-     /** the percantage that this container has already been repaired this turn. 
-        Currently only used for Buildings - and only buildings serialize this property to disk!
-        The maximum percentage may be limited by a gameparameter
-      */
-      int           repairedThisTurn;
+  protected:
+   /** the percantage that this container has already been repaired this turn.
+      Currently only used for Buildings - and only buildings serialize this property to disk!
+      The maximum percentage may be limited by a gameparameter
+    */
+   int repairedThisTurn;
 
-	  //! the map that this container is placed on
-      GameMap* gamemap;
-	  
-	  /** if this container is transported inside a carrier, this is carrier
-	      \note Only vehicles can be transported, building can't */
-      ContainerBase* cargoParent;
-	  
+   //! the map that this container is placed on
+   GameMap* gamemap;
 
-	  /** displays an image of this container on the surface. The different shaders 
-	      (like semi-transparency for submerged stuff) is processed here 
-		  \param src  The source surface, which is an image of the ContainerBase
-		  \param dest The destination surface, onto which the src image is painted
-		  \param pos  The position within dest at which src is painted
-		  \param dir  Rotation of the image. Valid range is 0..5, resuling in 0�, 60� 120�, etc
-		  \param shaded If true then the image will not be displayed in color, but in greyscale
-		  \param shadowDist The offset of the shadow of the unit in pixels. 
-                            Shadowdist will be added to the x and y coordinates if the position,
-                            resulting in the shadow being in the lower right of the image  							
-							0 = no shadow will be drawn
-							If -1, the shadowDist will be calculated depending on the container's 
-							    current height */
-      void paintField ( const Surface& src, Surface& dest, SPoint pos, int dir, bool shaded, int shadowDist = -1 ) const;
-      
-      ContainerBase ( const ContainerBaseType* bt, GameMap* map, int player );
-   public:
+   /** if this container is transported inside a carrier, this is carrier
+       \note Only vehicles can be transported, building can't */
+   ContainerBase* cargoParent;
 
-      virtual bool isBuilding() const = 0;
+   /** displays an image of this container on the surface. The different shaders
+       (like semi-transparency for submerged stuff) is processed here
+      \param src  The source surface, which is an image of the ContainerBase
+      \param dest The destination surface, onto which the src image is painted
+      \param pos  The position within dest at which src is painted
+      \param dir  Rotation of the image. Valid range is 0..5, resuling in 0�, 60� 120�, etc
+      \param shaded If true then the image will not be displayed in color, but in greyscale
+      \param shadowDist The offset of the shadow of the unit in pixels.
+                          Shadowdist will be added to the x and y coordinates if the position,
+                          resulting in the shadow being in the lower right of the image
+                   0 = no shadow will be drawn
+                   If -1, the shadowDist will be calculated depending on the container's
+                       current height */
+   void paintField(const Surface& src, Surface& dest, SPoint pos, int dir, bool shaded,
+                   int shadowDist = -1) const;
 
-	  //! the type descriping all non-instance specific properties of the container
-      const ContainerBaseType*  baseType;
+   ContainerBase(const ContainerBaseType* bt, GameMap* map, int player);
 
-	  /** returns an image for the Container. 
-          \note Buildings have a size of several fields. The image returned here is therefore not suited
-                to be painted on the map, as map-painting is done on a per-field basis */		  
-      virtual Surface getImage() const = 0;
+  public:
+   virtual bool isBuilding() const = 0;
 
-      typedef vector<const VehicleType*> Production;
+   //! the type descriping all non-instance specific properties of the container
+   const ContainerBaseType* baseType;
 
-      const Production& getProduction() const;
-      Resources getProductionCost( const VehicleType* unit ) const;
-      void deleteProductionLine( const VehicleType* type );
-      void deleteAllProductionLines();
-      void addProductionLine( const VehicleType* type  );
-      bool hasProductionLine( const VehicleType* type );
-      void setProductionLines( const Production& production  );
-   private:
-      mutable Production productionCache;
-   protected:
-      Production internalUnitProduction;
-   public:
-      
+   /** returns an image for the Container.
+        \note Buildings have a size of several fields. The image returned here is therefore not
+      suited to be painted on the map, as map-painting is done on a per-field basis */
+   virtual Surface getImage() const = 0;
 
-    //! @name Cargo related functions
-    //@{
+   typedef vector<const VehicleType*> Production;
 
-      typedef vector<Vehicle*> Cargo;
-   protected:  
-      Cargo cargo;
+   const Production& getProduction() const;
+   Resources getProductionCost(const VehicleType* unit) const;
+   void deleteProductionLine(const VehicleType* type);
+   void deleteAllProductionLines();
+   void addProductionLine(const VehicleType* type);
+   bool hasProductionLine(const VehicleType* type);
+   void setProductionLines(const Production& production);
 
-   private:
-       //! removes all holes ( = NULL-Pointers) from the vector)
-       void compactCargo();
+  private:
+   mutable Production productionCache;
 
-   public:
-      const Cargo& getCargo() const { return cargo; };
+  protected:
+   Production internalUnitProduction;
 
-      int getCargoCount() const { return cargo.size(); };
-      
-      /** returns the cargo slot with index i
-          Warning: the cargo may contain NULL items. This was done deliberately, to allow easier navigation
-                   when the user moves items successivly out of a carrier
-      */
-      Vehicle* getCargo( int i );
-      
-      //! removes ALL units from cargo
-      void clearCargo();
+  public:
+   //! @name Cargo related functions
+   //@{
 
-      sigc::signal<void> cargoChanged;
+   typedef vector<Vehicle*> Cargo;
 
-      
-      //! a name given by the user or the map creator
-      ASCString    name;
-      
-      //! a name given by the user which is only visible to him and his allies. 
-      ASCString    privateName;
-      
-      /** adds the unit to the cargo
-         \param veh the unit to add 
-         \param position specifies a specific cargo slot. 
-                         -1 assigns slot automatically. The automatic mode should be used in almost all cases */
-      void addToCargo( Vehicle* veh, int position = -1 );
-      
-      /** adds the unit to the cargo, and removes its from its current position */
-      void moveToCargo( Vehicle* veh );
+  protected:
+   Cargo cargo;
 
-      //! removes the given unit from the container. \return true if the unit was found, false otherwise
-      bool removeUnitFromCargo( Vehicle* veh, bool recursive = false );
-      bool removeUnitFromCargo( int nwid, bool recursive = false );
-      
-      
-      //! returns the number of loaded units
-      int vehiclesLoaded ( void ) const;
-      
-      //! if this is a unit and it is inside a building or transport, returns the transport. NULL otherwise.
-      ContainerBase* getCarrier() const;
+  private:
+   //! removes all holes ( = NULL-Pointers) from the vector)
+   void compactCargo();
 
-      //! searches for a the unit in carrier and optionally all inner carriers
-      Vehicle* findUnit ( int nwid, bool recursive = true ) const;
-      
-      /** can the vehicle be loaded. If uheight is passed, it is assumed that vehicle is at
-      the height 'uheight' and not the actual level of height
-       */
-      bool vehicleLoadable ( const Vehicle* vehicle, int uheight = -1, const bool* attacked = NULL ) const;
+  public:
+   const Cargo& getCargo() const { return cargo; };
 
-      /** checks the unloading of a unit type
-          \param vehicleType the vehicletype for which the unloading is checked
-          \param carrierHeight assume the carrier ( = this) was on this height (numerical: 0 - 7). If -1, use current height
-          \return the levels of height on which this unit can be unloaded; or 0 if no unloading is possible
-      */
-      int  vehicleUnloadable ( const VehicleType* vehicleType, int carrierHeight = -1 ) const;
+   int getCargoCount() const { return cargo.size(); };
 
-      //! returns the unloading system
-      const ContainerBaseType::TransportationIO* vehicleUnloadSystem ( const VehicleType* vehicle, int height );
+   /** returns the cargo slot with index i
+       Warning: the cargo may contain NULL items. This was done deliberately, to allow easier
+      navigation when the user moves items successivly out of a carrier
+   */
+   Vehicle* getCargo(int i);
 
-      //! returns the levels of height on which this unit can be transfered by docking; or 0 if no unloading is possible
-      int  vehicleDocking ( const Vehicle* vehicle, bool out  ) const;
+   //! removes ALL units from cargo
+   void clearCargo();
 
-      //! returns the docking system to transfer a vehicle to another one receiving on receipientHeight
-      const ContainerBaseType::TransportationIO*  getDockingSystem ( const Vehicle* vehicle, int receipientHeight ) const;
+   sigc::signal<void> cargoChanged;
 
+   //! a name given by the user or the map creator
+   ASCString name;
 
-      /** Does the vehicle fit into the container? This does not include checking if it can reach the entry
-       */
-      bool doesVehicleFit ( const Vehicle* vehicle ) const;
+   //! a name given by the user which is only visible to him and his allies.
+   ASCString privateName;
 
-      //! weight of all loaded units
-      int cargoWeight() const;
+   /** adds the unit to the cargo
+      \param veh the unit to add
+      \param position specifies a specific cargo slot.
+                      -1 assigns slot automatically. The automatic mode should be used in almost all
+      cases */
+   void addToCargo(Vehicle* veh, int position = -1);
 
-      //! returns the nesting depth of the cargo. The unit standing on the field is 0, its cargo is 1, the cargo's cargo 2 ...
-      int cargoNestingDepth();
+   /** adds the unit to the cargo, and removes its from its current position */
+   void moveToCargo(Vehicle* veh);
 
-   private:
-      //! checks if this vehicle can carry this additional weight and recursively checks all outer vehicle (in case of nested carriers)
-      bool canCarryWeight( int additionalWeight, const Vehicle* vehicle ) const;
-    //@}
+   //! removes the given unit from the container. \return true if the unit was found, false
+   //! otherwise
+   bool removeUnitFromCargo(Vehicle* veh, bool recursive = false);
+   bool removeUnitFromCargo(int nwid, bool recursive = false);
 
-   public:
-      
-      virtual int  getArmor() const = 0;
-      
-     
-	  //! Damage. 0 is no damage, when damage reaches 100 the container is destroyed
-      int damage;
-      
-	  /** The owner of the container. For historical reasons, this is actually 8 times the player numer
-	      Use getOwner() instead of directly accesing this variable */
-      int color;
-	  
-      //! returns the number of the player this vehicle/building belongs to
-      int getOwner() const { return color >> 3; };
-      
-      //! returns the player this vehicle/building belongs to
-      Player& getOwningPlayer() const;
-      
-      //! this is a low level functions that changes the registration in the map. It's called by convert(int,bool)
-      virtual void registerForNewOwner( int player ) = 0;
-      
+   //! returns the number of loaded units
+   int vehiclesLoaded(void) const;
 
+   //! if this is a unit and it is inside a building or transport, returns the transport. NULL
+   //! otherwise.
+   ContainerBase* getCarrier() const;
 
-      virtual void write ( tnstream& stream, bool includeLoadedUnits = true ) const = 0;
-      virtual void read ( tnstream& stream ) = 0;
+   //! searches for a the unit in carrier and optionally all inner carriers
+   Vehicle* findUnit(int nwid, bool recursive = true) const;
 
-	  //! registers the containers view (=radar) on the map
-      virtual void addview ( void ) = 0;
-	  
-	  //! removes the containers view (=radar) on the map
-      virtual void removeview ( void ) = 0;
+   /** can the vehicle be loaded. If uheight is passed, it is assumed that vehicle is at
+   the height 'uheight' and not the actual level of height
+    */
+   bool vehicleLoadable(const Vehicle* vehicle, int uheight = -1,
+                        const bool* attacked = NULL) const;
 
-      
+   /** checks the unloading of a unit type
+       \param vehicleType the vehicletype for which the unloading is checked
+       \param carrierHeight assume the carrier ( = this) was on this height (numerical: 0 - 7). If
+      -1, use current height \return the levels of height on which this unit can be unloaded; or 0
+      if no unloading is possible
+   */
+   int vehicleUnloadable(const VehicleType* vehicleType, int carrierHeight = -1) const;
 
-    //! @name Resource related functions
-    //@{
+   //! returns the unloading system
+   const ContainerBaseType::TransportationIO* vehicleUnloadSystem(const VehicleType* vehicle,
+                                                                  int height);
 
-      /** scope: 0 = local
-                 1 = resource network
-                 2 = global in all buildings
-                 3 = map wide pool( used only internally! )
-      */
-      virtual int putResource ( int amount, int resourcetype, bool queryonly, int scope = 1, int player = -1 ) = 0;
-      virtual int getResource ( int amount, int resourcetype, bool queryonly, int scope = 1, int player = -1 ) = 0;
-      virtual int getAvailableResource ( int amount, int resourcetype, int scope = 1 ) const = 0;
+   //! returns the levels of height on which this unit can be transfered by docking; or 0 if no
+   //! unloading is possible
+   int vehicleDocking(const Vehicle* vehicle, bool out) const;
 
-      Resources putResource ( const Resources& res, bool queryonly, int scope = 1, int player = -1 );
-      Resources getResource ( const Resources& res, bool queryonly, int scope = 1, int player = -1 );
-      Resources getResource ( const Resources& res ) const;
+   //! returns the docking system to transfer a vehicle to another one receiving on receipientHeight
+   const ContainerBaseType::TransportationIO* getDockingSystem(const Vehicle* vehicle,
+                                                               int receipientHeight) const;
 
-    //! returns the resource that the building consumes for its operation.
-      Resources getResourceUsage ( );
+   /** Does the vehicle fit into the container? This does not include checking if it can reach the
+    * entry
+    */
+   bool doesVehicleFit(const Vehicle* vehicle) const;
 
-      Resources getResourcePlus ( );
-      
-      //! returns the local storage capacity for the given resource, which depends on the resource mode of the map. \see GameMap::_resourcemode
-      Resources getStorageCapacity() const;
-      
-    //! returns the amount of resources that the net which the building is connected to produces each turn
-      Resources netResourcePlus( ) const;
+   //! weight of all loaded units
+   int cargoWeight() const;
 
-      //! The ResourcePlus is used for different purposes by different building or vehicle functions, or not at all
-      void setInternalResourcePlus( const Resources& res );
-      //! The ResourceMaxPlus is used for different purposes by different building or vehicle functions, or not at all
-      void setInternalResourceMaxPlus( const Resources& res );
-      
-      //! The ResourcePlus is used for different purposes by different building or vehicle functions, or not at all
-      Resources getInternalResourcePlus() const;
-      //! The ResourceMaxPlus is used for different purposes by different building or vehicle functions, or not at all
-      Resources getInternalResourceMaxPlus() const;
-      
-    //! the Resources that are produced each turn
-      Resources   plus;
+   //! returns the nesting depth of the cargo. The unit standing on the field is 0, its cargo is 1,
+   //! the cargo's cargo 2 ...
+   int cargoNestingDepth();
 
-    //! the maximum amount of Resources that the building can produce each turn in the ASC resource mode ; see also #bi_resourceplus
-      Resources   maxplus;
+  private:
+   //! checks if this vehicle can carry this additional weight and recursively checks all outer
+   //! vehicle (in case of nested carriers)
+   bool canCarryWeight(int additionalWeight, const Vehicle* vehicle) const;
+   //@}
 
-    //! the maximum amount of Resources that the building can produce each turn in the BI resource mode ; see also #maxplus
-      Resources    bi_resourceplus;
-      
-    //@}
-      
+  public:
+   virtual int getArmor() const = 0;
 
+   //! Damage. 0 is no damage, when damage reaches 100 the container is destroyed
+   int damage;
 
-    //! @name Repairing related functions
-    //@{
-      
-	  /** when a ContainerBase is repair by this ContainerBase, the default cost
-          can be customized with this matrix. 
-          \note This effects both reparing another ContainerBase as well as self-repsir */		  
-      virtual const ResourceMatrix& getRepairEfficiency() const = 0;
+   /** The owner of the container. For historical reasons, this is actually 8 times the player numer
+       Use getOwner() instead of directly accesing this variable */
+   int color;
 
-      //! is called after a repair is performed. Vehicles use this to reduce their experience.
-      virtual void postRepair ( int oldDamage, bool autoRepair ) = 0;
-      
-      //! checks whether the item can be repaired provided that it is in range
-      virtual bool canRepair( const ContainerBase* item ) const = 0;
+   //! returns the number of the player this vehicle/building belongs to
+   int getOwner() const { return color >> 3; };
 
-	  /** returns the maximum amount of damage that the given item can be repaired
-	      \return a value in the range 0 .. item->damage */
-      int getMaxRepair ( const ContainerBase* item ) const;
-      int getMaxRepair ( const ContainerBase* item, int newDamage, Resources& cost, bool ignoreCost = false  ) const;
-      int repairItem   ( ContainerBase* item, int newDamage = 0, bool autoRepair = false );
-      
-      //! returns the amount of damage that can still be repaired this turn
-      virtual int repairableDamage() const = 0;
+   //! returns the player this vehicle/building belongs to
+   Player& getOwningPlayer() const;
 
-    //@}
+   //! this is a low level functions that changes the registration in the map. It's called by
+   //! convert(int,bool)
+   virtual void registerForNewOwner(int player) = 0;
 
-      GameMap* getMap ( ) const { return gamemap; };
-      
-      virtual int getIdentification() const = 0;
+   virtual void write(tnstream& stream, bool includeLoadedUnits = true) const = 0;
+   virtual void read(tnstream& stream) = 0;
 
-      //! returns the bitmapped level of height. Only one bit will be set, of course
-      virtual int getHeight() const = 0;
+   //! registers the containers view (=radar) on the map
+   virtual void addview(void) = 0;
 
-      virtual ASCString getName ( ) const = 0;
-      ASCString getPrivateName ( ) const;
-      virtual void setName ( const ASCString& name );
+   //! removes the containers view (=radar) on the map
+   virtual void removeview(void) = 0;
 
-      virtual int getAmmo( int type, int num, bool queryOnly )  = 0;
-      virtual int getAmmo( int type, int num ) const  = 0;
-      virtual int putAmmo( int type, int num, bool queryOnly )  = 0;
-      virtual int maxAmmo( int type ) const = 0 ;
+   //! @name Resource related functions
+   //@{
 
+   /** scope: 0 = local
+              1 = resource network
+              2 = global in all buildings
+              3 = map wide pool( used only internally! )
+   */
+   virtual int putResource(int amount, int resourcetype, bool queryonly, int scope = 1,
+                           int player = -1) = 0;
+   virtual int getResource(int amount, int resourcetype, bool queryonly, int scope = 1,
+                           int player = -1) = 0;
+   virtual int getAvailableResource(int amount, int resourcetype, int scope = 1) const = 0;
 
-      sigc::signal<void> conquered;
-      sigc::signal<void> destroyed;
-      static sigc::signal<void,ContainerBase*> anyContainerDestroyed;
-      static sigc::signal<void,ContainerBase*> anyContainerConquered;
+   Resources putResource(const Resources& res, bool queryonly, int scope = 1, int player = -1);
+   Resources getResource(const Resources& res, bool queryonly, int scope = 1, int player = -1);
+   Resources getResource(const Resources& res) const;
 
-      static int calcShadowDist( int binaryHeight );
+   //! returns the resource that the building consumes for its operation.
+   Resources getResourceUsage();
 
+   Resources getResourcePlus();
 
-    //! the current amount of research that the building conducts every turn
-      int         researchpoints;
+   //! returns the local storage capacity for the given resource, which depends on the resource mode
+   //! of the map. \see GameMap::_resourcemode
+   Resources getStorageCapacity() const;
 
-      int         maxresearchpoints;
+   //! returns the amount of resources that the net which the building is connected to produces each
+   //! turn
+   Resources netResourcePlus() const;
 
-    //! hook that is called when a player ends his turn
-      virtual void endOwnTurn( void );
+   //! The ResourcePlus is used for different purposes by different building or vehicle functions,
+   //! or not at all
+   void setInternalResourcePlus(const Resources& res);
+   //! The ResourceMaxPlus is used for different purposes by different building or vehicle
+   //! functions, or not at all
+   void setInternalResourceMaxPlus(const Resources& res);
 
-    //! hook that is called when any player (including owner) ends turn
-      virtual void endAnyTurn( void );
+   //! The ResourcePlus is used for different purposes by different building or vehicle functions,
+   //! or not at all
+   Resources getInternalResourcePlus() const;
+   //! The ResourceMaxPlus is used for different purposes by different building or vehicle
+   //! functions, or not at all
+   Resources getInternalResourceMaxPlus() const;
 
-    //! hook that is called the next round begins ( active player switching from player8 to player1 )
-      virtual void endRound ( void );
-      
-      int view;
+   //! the Resources that are produced each turn
+   Resources plus;
 
-      class Work {
-         public:
-            virtual bool finished() = 0;
-            virtual bool run() = 0;
-            virtual Resources getPlus() = 0;
-            virtual Resources getUsage() = 0;
-            virtual ~Work() {};
-      };
+   //! the maximum amount of Resources that the building can produce each turn in the ASC resource
+   //! mode ; see also #bi_resourceplus
+   Resources maxplus;
 
-      class WorkClassFactory {
-         public:
-            virtual bool available( const ContainerBase* cnt ) = 0;
-            virtual Work* produce( ContainerBase* cnt, bool queryOnly ) = 0;
-            virtual ~WorkClassFactory() {};
-      };
+   //! the maximum amount of Resources that the building can produce each turn in the BI resource
+   //! mode ; see also #maxplus
+   Resources bi_resourceplus;
 
-      static bool registerWorkClassFactory( WorkClassFactory* wcf, bool ASCmode = true );
-   private:
-      typedef list<WorkClassFactory*> WorkerClassList;
-      static WorkerClassList* workClassFactoriesASC;
-      static WorkerClassList* workClassFactoriesBI;
-   public:
-      
-      Work* spawnWorkClasses( bool justQuery );
+   //@}
 
-      
-      virtual MapCoordinate3D getPosition ( ) const = 0;
-      virtual ~ContainerBase();
+   //! @name Repairing related functions
+   //@{
 
-      virtual vector<MapCoordinate> getCoveredFields() = 0;
-};
+   /** when a ContainerBase is repair by this ContainerBase, the default cost
+        can be customized with this matrix.
+        \note This effects both reparing another ContainerBase as well as self-repsir */
+   virtual const ResourceMatrix& getRepairEfficiency() const = 0;
 
-class TemporaryContainerStorage  {
-        ContainerBase* cb;
-        MemoryStreamStorage buf;
-        bool _storeCargo;
+   //! is called after a repair is performed. Vehicles use this to reduce their experience.
+   virtual void postRepair(int oldDamage, bool autoRepair) = 0;
+
+   //! checks whether the item can be repaired provided that it is in range
+   virtual bool canRepair(const ContainerBase* item) const = 0;
+
+   /** returns the maximum amount of damage that the given item can be repaired
+       \return a value in the range 0 .. item->damage */
+   int getMaxRepair(const ContainerBase* item) const;
+   int getMaxRepair(const ContainerBase* item, int newDamage, Resources& cost,
+                    bool ignoreCost = false) const;
+   int repairItem(ContainerBase* item, int newDamage = 0, bool autoRepair = false);
+
+   //! returns the amount of damage that can still be repaired this turn
+   virtual int repairableDamage() const = 0;
+
+   //@}
+
+   GameMap* getMap() const { return gamemap; };
+
+   virtual int getIdentification() const = 0;
+
+   //! returns the bitmapped level of height. Only one bit will be set, of course
+   virtual int getHeight() const = 0;
+
+   virtual ASCString getName() const = 0;
+   ASCString getPrivateName() const;
+   virtual void setName(const ASCString& name);
+
+   virtual int getAmmo(int type, int num, bool queryOnly) = 0;
+   virtual int getAmmo(int type, int num) const = 0;
+   virtual int putAmmo(int type, int num, bool queryOnly) = 0;
+   virtual int maxAmmo(int type) const = 0;
+
+   sigc::signal<void> conquered;
+   sigc::signal<void> destroyed;
+   static sigc::signal<void, ContainerBase*> anyContainerDestroyed;
+   static sigc::signal<void, ContainerBase*> anyContainerConquered;
+
+   static int calcShadowDist(int binaryHeight);
+
+   //! the current amount of research that the building conducts every turn
+   int researchpoints;
+
+   int maxresearchpoints;
+
+   //! hook that is called when a player ends his turn
+   virtual void endOwnTurn(void);
+
+   //! hook that is called when any player (including owner) ends turn
+   virtual void endAnyTurn(void);
+
+   //! hook that is called the next round begins ( active player switching from player8 to player1 )
+   virtual void endRound(void);
+
+   int view;
+
+   class Work {
      public:
-        TemporaryContainerStorage ( ContainerBase* _cb, bool storeCargo = false );
-        void restore();
+      virtual bool finished() = 0;
+      virtual bool run() = 0;
+      virtual Resources getPlus() = 0;
+      virtual Resources getUsage() = 0;
+      virtual ~Work(){};
+   };
+
+   class WorkClassFactory {
+     public:
+      virtual bool available(const ContainerBase* cnt) = 0;
+      virtual Work* produce(ContainerBase* cnt, bool queryOnly) = 0;
+      virtual ~WorkClassFactory(){};
+   };
+
+   static bool registerWorkClassFactory(WorkClassFactory* wcf, bool ASCmode = true);
+
+  private:
+   typedef list<WorkClassFactory*> WorkerClassList;
+   static WorkerClassList* workClassFactoriesASC;
+   static WorkerClassList* workClassFactoriesBI;
+
+  public:
+   Work* spawnWorkClasses(bool justQuery);
+
+   virtual MapCoordinate3D getPosition() const = 0;
+   virtual ~ContainerBase();
+
+   virtual vector<MapCoordinate> getCoveredFields() = 0;
 };
 
+class TemporaryContainerStorage {
+   ContainerBase* cb;
+   MemoryStreamStorage buf;
+   bool _storeCargo;
+
+  public:
+   TemporaryContainerStorage(ContainerBase* _cb, bool storeCargo = false);
+   void restore();
+};
 
 #endif

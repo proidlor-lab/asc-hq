@@ -22,9 +22,8 @@
     Boston, MA  02111-1307  USA
 */
 
-
 #ifndef mapedmainscreenH
- #define mapedmainscreenH 
+#define mapedmainscreenH
 
 #include "paradialog.h"
 #include "edselfnt.h"
@@ -38,104 +37,104 @@ class MapDisplayPG;
 class UnitWeaponRangeLayer;
 
 class SelectionItemWidget : public PG_Widget {
-      const Placeable* it;
-      static const int labelHeight = 15;
-   public:
-      SelectionItemWidget( PG_Widget* parent, const PG_Rect& pos ) : PG_Widget( parent, pos, true ), it(NULL)
-      {
-      }
-           
-      void set( const Placeable* item) { it = item; Redraw(true); };
-   protected:
-      void eventDraw (SDL_Surface *surface, const PG_Rect &rect) 
-      {
-         Surface s = Surface::Wrap( surface );
-         s.Fill( s.GetPixelFormat().MapRGB( DI_Color( 0x73b16a ) ));
-         
-         if ( it ) {
-            const MapComponent* mc = dynamic_cast<const MapComponent*>(it);
-            if ( mc ) {
-               SPoint pos ( (Width() - mc->displayWidth()) / 2, (Height() - mc->displayHeight())/2 );
-               mc->display( s, pos );
-            }
-        }    
-      };
+   const Placeable* it;
+   static const int labelHeight = 15;
 
+  public:
+   SelectionItemWidget(PG_Widget* parent, const PG_Rect& pos)
+      : PG_Widget(parent, pos, true), it(NULL) {}
+
+   void set(const Placeable* item) {
+      it = item;
+      Redraw(true);
+   };
+
+  protected:
+   void eventDraw(SDL_Surface* surface, const PG_Rect& rect) {
+      Surface s = Surface::Wrap(surface);
+      s.Fill(s.GetPixelFormat().MapRGB(DI_Color(0x73b16a)));
+
+      if (it) {
+         const MapComponent* mc = dynamic_cast<const MapComponent*>(it);
+         if (mc) {
+            SPoint pos((Width() - mc->displayWidth()) / 2, (Height() - mc->displayHeight()) / 2);
+            mc->display(s, pos);
+         }
+      }
+   };
 };
 
+class ContextAction {
+  public:
+   virtual bool available(const MapCoordinate& pos) = 0;
+   virtual ASCString getText(const MapCoordinate& pos) = 0;
+   virtual int getActionID() = 0;
+   virtual ~ContextAction(){};
+};
 
-   class ContextAction {
-      public:
-         virtual bool available( const MapCoordinate& pos ) = 0;
-         virtual ASCString getText( const MapCoordinate& pos ) = 0;
-         virtual int getActionID() = 0;
-         virtual ~ContextAction() {};
-   };
-      
 class Maped_MainScreenWidget : public MainScreenWidget {
-    PG_Window* vehicleSelector;
-    PG_Window* buildingSelector;
-    PG_Window* objectSelector;
-    PG_Window* terrainSelector;
-    PG_Window* mineSelector;
-    DropDownSelector* weatherSelector;
-    DropDownSelector* playerSelector;
-    DropDownSelector* brushSelector;
-    PG_Label* selectionName;
-    PG_Label* selectionName2;
-    PG_Label* coordinateDisplay;
-    SelectionItemWidget* currentSelectionWidget;
-    deallocating_vector<ContextAction*> contextActions;
-    PG_PopupMenu* contextMenu;
-public:
-    Maped_MainScreenWidget( PG_Application& application );
+   PG_Window* vehicleSelector;
+   PG_Window* buildingSelector;
+   PG_Window* objectSelector;
+   PG_Window* terrainSelector;
+   PG_Window* mineSelector;
+   DropDownSelector* weatherSelector;
+   DropDownSelector* playerSelector;
+   DropDownSelector* brushSelector;
+   PG_Label* selectionName;
+   PG_Label* selectionName2;
+   PG_Label* coordinateDisplay;
+   SelectionItemWidget* currentSelectionWidget;
+   deallocating_vector<ContextAction*> contextActions;
+   PG_PopupMenu* contextMenu;
 
-    bool clearSelection();
-    bool selectVehicle();
-    bool selectBuilding();
-    bool selectObject();
-    bool selectObjectList();
-    bool selectTerrain();
-    bool selectTerrainList();
-    bool selectMine();
-    bool selectLuaBrush();
-    void updateStatusBar();
+  public:
+   Maped_MainScreenWidget(PG_Application& application);
 
-    void addContextAction( ContextAction* contextAction );
-   
-    
-    void showWeaponRange( GameMap* gamemap, const MapCoordinate& pos );
-    
-protected:
+   bool clearSelection();
+   bool selectVehicle();
+   bool selectBuilding();
+   bool selectObject();
+   bool selectObjectList();
+   bool selectTerrain();
+   bool selectTerrainList();
+   bool selectMine();
+   bool selectLuaBrush();
+   void updateStatusBar();
 
-    bool clickOnMap( const MapCoordinate& field, const SPoint& pos, bool changed, int button, int prio);
-   
-    NewGuiHost* guiHost;
-    Menu* menu;
-    
-    void brushChanged( int i );
-    void selectionChanged( const Placeable* item ); 
-    bool eventKeyUp(const PG_MessageObject* o, const SDL_KeyboardEvent* key);
-    bool eventKeyDown(const PG_MessageObject* o, const SDL_KeyboardEvent* key);
-    void setupStatusBar();
-    
-    void playerChanged( int player );
+   void addContextAction(ContextAction* contextAction);
 
-    ASCString getBackgroundImageFilename() { return "mapeditor-background.png"; };
-    
-    bool eventMouseButtonDown (const SDL_MouseButtonEvent *button);
+   void showWeaponRange(GameMap* gamemap, const MapCoordinate& pos);
 
-    ~Maped_MainScreenWidget() { };
-   private:
-      bool runContextAction  (PG_PopupMenu::MenuItem* menuItem );
-      UnitWeaponRangeLayer* weaponRangeLayer;
-      
+  protected:
+   bool clickOnMap(const MapCoordinate& field, const SPoint& pos, bool changed, int button,
+                   int prio);
+
+   NewGuiHost* guiHost;
+   Menu* menu;
+
+   void brushChanged(int i);
+   void selectionChanged(const Placeable* item);
+   bool eventKeyUp(const PG_MessageObject* o, const SDL_KeyboardEvent* key);
+   bool eventKeyDown(const PG_MessageObject* o, const SDL_KeyboardEvent* key);
+   void setupStatusBar();
+
+   void playerChanged(int player);
+
+   ASCString getBackgroundImageFilename() { return "mapeditor-background.png"; };
+
+   bool eventMouseButtonDown(const SDL_MouseButtonEvent* button);
+
+   ~Maped_MainScreenWidget(){};
+
+  private:
+   bool runContextAction(PG_PopupMenu::MenuItem* menuItem);
+   UnitWeaponRangeLayer* weaponRangeLayer;
 };
 
 //! displays a message in the status line of ASC
-extern void displaymessage2( const char* formatstring, ... );
+extern void displaymessage2(const char* formatstring, ...);
 
-extern Maped_MainScreenWidget*  mainScreenWidget ;
+extern Maped_MainScreenWidget* mainScreenWidget;
 
 #endif
-

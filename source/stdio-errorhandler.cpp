@@ -8,38 +8,33 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include <iostream>
 
 #include "stdio-errorhandler.h"
 #include "util/messaginghub.h"
 
-void StdIoErrorHandler::printStdout( const ASCString& msg )
-{
+void StdIoErrorHandler::printStdout(const ASCString& msg) {
    std::cout << msg << "\n";
 }
-void StdIoErrorHandler::printStderr( const ASCString& msg )
-{
+void StdIoErrorHandler::printStderr(const ASCString& msg) {
    std::cerr << msg << "\n";
 }
 
-void StdIoErrorHandler::messageLogger( const ASCString& msg, int level )
-{
+void StdIoErrorHandler::messageLogger(const ASCString& msg, int level) {
    // std::cout << "L" << level << ": " << msg << "\n";
    std::cout << msg << std::flush;
 }
 
-StdIoErrorHandler::StdIoErrorHandler( bool quitOnFatalError )
-{
-   MessagingHub::Instance().warning.connect( sigc::mem_fun( *this, &StdIoErrorHandler::printStderr ));
-   MessagingHub::Instance().error.connect( sigc::mem_fun( *this, &StdIoErrorHandler::printStderr ));
-   MessagingHub::Instance().fatalError.connect( sigc::mem_fun( *this, &StdIoErrorHandler::printStderr ));
-   MessagingHub::Instance().infoMessage.connect( sigc::mem_fun( *this, &StdIoErrorHandler::printStdout ));
-   MessagingHub::Instance().logMessage.connect( sigc::mem_fun( *this, &StdIoErrorHandler::messageLogger ));
+StdIoErrorHandler::StdIoErrorHandler(bool quitOnFatalError) {
+   MessagingHub::Instance().warning.connect(sigc::mem_fun(*this, &StdIoErrorHandler::printStderr));
+   MessagingHub::Instance().error.connect(sigc::mem_fun(*this, &StdIoErrorHandler::printStderr));
+   MessagingHub::Instance().fatalError.connect(
+      sigc::mem_fun(*this, &StdIoErrorHandler::printStderr));
+   MessagingHub::Instance().infoMessage.connect(
+      sigc::mem_fun(*this, &StdIoErrorHandler::printStdout));
+   MessagingHub::Instance().logMessage.connect(
+      sigc::mem_fun(*this, &StdIoErrorHandler::messageLogger));
 
-   if ( quitOnFatalError )
-      MessagingHub::Instance().exitHandler.connect( sigc::bind( &exit , -1 ));
-
+   if (quitOnFatalError)
+      MessagingHub::Instance().exitHandler.connect(sigc::bind(&exit, -1));
 }
-
-

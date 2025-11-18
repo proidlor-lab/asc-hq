@@ -21,16 +21,20 @@
 #include <pgdropdown.h>
 #include "../ascstring.h"
 
-class DropDownSelector: public PG_DropDown {
-        bool first;
-   protected:
-      bool itemSelected( ); // PG_ListBoxBaseItem* i, void* p );
-   public:
-      DropDownSelector( PG_Widget *parent, const PG_Rect &r=PG_Rect::null, int id=-1, const std::string &style="DropDown");
-      DropDownSelector( PG_Widget *parent, const PG_Rect &r, int itemnum, const char** items, const std::string &style="DropDown" );
-      DropDownSelector( PG_Widget *parent, const PG_Rect &r, const std::vector<ASCString>& names,  const std::string &style="DropDown" );
-      void AddItem (const std::string &text, void *userdata=NULL, Uint16 height=0);
-      sigc::signal<void, int> selectionSignal;
+class DropDownSelector : public PG_DropDown {
+   bool first;
+
+  protected:
+   bool itemSelected();  // PG_ListBoxBaseItem* i, void* p );
+  public:
+   DropDownSelector(PG_Widget* parent, const PG_Rect& r = PG_Rect::null, int id = -1,
+                    const std::string& style = "DropDown");
+   DropDownSelector(PG_Widget* parent, const PG_Rect& r, int itemnum, const char** items,
+                    const std::string& style = "DropDown");
+   DropDownSelector(PG_Widget* parent, const PG_Rect& r, const std::vector<ASCString>& names,
+                    const std::string& style = "DropDown");
+   void AddItem(const std::string& text, void* userdata = NULL, Uint16 height = 0);
+   sigc::signal<void, int> selectionSignal;
 };
 
 #endif

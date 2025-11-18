@@ -15,15 +15,14 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
 #if defined(karteneditor) && !defined(pbpeditor)
 #error the mapeditor is not supposed the gui icons  !
 #endif
-
 
 #ifndef guifunctionsinterfaceH
 #define guifunctionsinterfaceH
@@ -35,38 +34,36 @@ class AStar3D;
 namespace GuiFunctions {
 
 class MovementBase : public GuiFunction {
-   protected:
-      virtual void parametrizePathFinder( AStar3D& pathFinder ) {};
-      virtual int getVerticalDirection() = 0;
-   public:
-      void execute( const MapCoordinate& pos, ContainerBase* subject, int num );
-      bool available( const MapCoordinate& pos, ContainerBase* subject, int num );
-};
-   
-class Movement : public MovementBase 
-{
-   protected:
-      virtual void parametrizePathFinder( AStar3D& pathFinder );
-   public:
-      bool checkForKey( const SDL_KeyboardEvent* key, int modifier, int num );
-      Surface& getImage( const MapCoordinate& pos, ContainerBase* subject, int num );
-      ASCString getName( const MapCoordinate& pos, ContainerBase* subject, int num );
-      int getVerticalDirection() { return 0; };
-      bool available( const MapCoordinate& pos, ContainerBase* subject, int num );
+  protected:
+   virtual void parametrizePathFinder(AStar3D& pathFinder) {};
+   virtual int getVerticalDirection() = 0;
+
+  public:
+   void execute(const MapCoordinate& pos, ContainerBase* subject, int num);
+   bool available(const MapCoordinate& pos, ContainerBase* subject, int num);
 };
 
+class Movement : public MovementBase {
+  protected:
+   virtual void parametrizePathFinder(AStar3D& pathFinder);
 
-class Cancel : public GuiFunction
-{
-   public:
-      bool available( const MapCoordinate& pos, ContainerBase* subject, int num );
-      void execute( const MapCoordinate& pos, ContainerBase* subject, int num );
-      bool checkForKey( const SDL_KeyboardEvent* key, int modifier, int num );
-      Surface& getImage( const MapCoordinate& po, ContainerBase* subject, int nums );
-      ASCString getName( const MapCoordinate& pos, ContainerBase* subject, int num );
+  public:
+   bool checkForKey(const SDL_KeyboardEvent* key, int modifier, int num);
+   Surface& getImage(const MapCoordinate& pos, ContainerBase* subject, int num);
+   ASCString getName(const MapCoordinate& pos, ContainerBase* subject, int num);
+   int getVerticalDirection() { return 0; };
+   bool available(const MapCoordinate& pos, ContainerBase* subject, int num);
 };
 
-}
+class Cancel : public GuiFunction {
+  public:
+   bool available(const MapCoordinate& pos, ContainerBase* subject, int num);
+   void execute(const MapCoordinate& pos, ContainerBase* subject, int num);
+   bool checkForKey(const SDL_KeyboardEvent* key, int modifier, int num);
+   Surface& getImage(const MapCoordinate& po, ContainerBase* subject, int nums);
+   ASCString getName(const MapCoordinate& pos, ContainerBase* subject, int num);
+};
+
+}  // namespace GuiFunctions
 
 #endif
-

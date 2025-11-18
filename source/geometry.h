@@ -6,7 +6,6 @@
     email                : bickel@asc-hq.org
  ***************************************************************************/
 
-
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,13 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-  
-
 
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
-
-
 #endif
-

@@ -17,8 +17,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -32,19 +32,15 @@ tpixelxlattable light;
 
 dacpalette256 pal;
 
-ppixelxlattable xlatpictgraytable;  
+ppixelxlattable xlatpictgraytable;
 
 txlattables xlattables;
-tmixbuf *colormixbuf;
+tmixbuf* colormixbuf;
 Uint8* colormixbufchar;
 // tpixelxlattable bi2asc_color_translation_table;
 
 bool asc_paletteloaded = 0;
 
-const char* borland_c_sucks ( void )
-{
+const char* borland_c_sucks(void) {
    return "just some code";
 }
-
-
-

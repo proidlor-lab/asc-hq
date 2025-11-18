@@ -35,8 +35,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -48,95 +48,81 @@
 #include <stdlib.h>
 
 #define timerintr 0x08
-#define pit_freq 0x1234DD  
+#define pit_freq 0x1234DD
 
-    void         (__interrupt __far *biostimerhandler)();
-    void         (__interrupt __far *tickerpointer)()=NULL;
-    volatile long         ticker,clock_ticks, counter,tticker;
-    char         init=0;
+void(__interrupt __far* biostimerhandler)();
+void(__interrupt __far* tickerpointer)() = NULL;
+volatile long ticker, clock_ticks, counter, tticker;
+char init = 0;
 
-
-
-void starttimer(void)
-{
+void starttimer(void) {
    tticker = ticker;
 }
 
-char time_elapsed(int time)
-{
-   if (tticker + time <= ticker) return 1;
-   else return 0;
+char time_elapsed(int time) {
+   if (tticker + time <= ticker)
+      return 1;
+   else
+      return 0;
 }
 
-void ndelay(int time)
-{ 
-  long l;
+void ndelay(int time) {
+   long l;
 
-   l = ticker; 
-   do { 
-   }  while ((ticker - l > time));
-} 
+   l = ticker;
+   do { } while ((ticker - l > time)); }
 
+void __interrupt __far thandler() {
+   ticker++;
+   /*
+   if ( ticker % 100 == 0 )
+     if ( _heapchk() != _HEAPOK )
+        exit(0);
+   */
 
+   if (tickerpointer != NULL)
+      _chain_intr(tickerpointer);
 
-void  __interrupt __far thandler()
-{ 
-    ticker++;
-    /*
-    if ( ticker % 100 == 0 )
-      if ( _heapchk() != _HEAPOK ) 
-         exit(0);
-    */
+   clock_ticks += counter;
+   if (clock_ticks >= 0x10000) {
+      clock_ticks = clock_ticks - 0x10000;
+      _chain_intr(biostimerhandler);
+   } else
+      outp(0x20, 0x20);
+}
 
-    if (tickerpointer != NULL) _chain_intr(tickerpointer);
-
-    clock_ticks += counter;
-    if (clock_ticks >= 0x10000)
-      { 
-         clock_ticks = clock_ticks - 0x10000; 
-         _chain_intr(biostimerhandler);
-      } 
-   else 
-      outp(0x20,0x20);
-} 
-
-
-void settimer(int freq)
-{ 
+void settimer(int freq) {
    biostimerhandler = _dos_getvect(timerintr);
-   _dos_setvect(timerintr,thandler);
-   clock_ticks = 0; 
+   _dos_setvect(timerintr, thandler);
+   clock_ticks = 0;
    counter = 0x1234DD / freq;
-   outp(0x43,0x34);
-   outp(0x40,counter % 256);
-   outp(0x40,counter / 256);
-} 
-
-
-void inittimer(int frequence)
-{ 
-   if (init != 0) return;
-   settimer(frequence);
-   init = 1; 
-} 
-
-
-void closetimer(void)
-{ 
-   if (init == 0) return;
-   outp(0x43,0x34);
-   outp(0x40,0);
-   outp(0x40,0);
-   _dos_setvect(timerintr,biostimerhandler);
+   outp(0x43, 0x34);
+   outp(0x40, counter % 256);
+   outp(0x40, counter / 256);
 }
 
-int  releasetimeslice( void )
-{
-/*    union REGS inregs, outregs;
-    inregs.w.ax = 0x1680;
-    int386 (0x2f, &inregs, &outregs);
-    return outregs.w.ax == 0; */
-return 0;
+void inittimer(int frequence) {
+   if (init != 0)
+      return;
+   settimer(frequence);
+   init = 1;
+}
+
+void closetimer(void) {
+   if (init == 0)
+      return;
+   outp(0x43, 0x34);
+   outp(0x40, 0);
+   outp(0x40, 0);
+   _dos_setvect(timerintr, biostimerhandler);
+}
+
+int releasetimeslice(void) {
+   /*    union REGS inregs, outregs;
+       inregs.w.ax = 0x1680;
+       int386 (0x2f, &inregs, &outregs);
+       return outregs.w.ax == 0; */
+   return 0;
 }
 
 #endif

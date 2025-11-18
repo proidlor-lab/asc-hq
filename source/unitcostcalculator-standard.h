@@ -7,16 +7,15 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef unitcostcalculatorstandardH
 #define unitcostcalculatorstandardH
 
 #include "unitcostcalculator.h"
 
 class StandardUnitCostCalculator : public UnitCostCalculator {
-   public:
-      Resources productionCost( const VehicleType* vehicle );
-      ASCString getCalculatorName();
+  public:
+   Resources productionCost(const VehicleType* vehicle);
+   ASCString getCalculatorName();
 };
 
 #endif

@@ -13,8 +13,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -26,22 +26,19 @@
 
 #include "graphics/surface.h"
 
-
-
 class IconRepository {
-        class Repository: public map<ASCString,Surface*> {
-            public:
-               ~Repository();
-        };
-        static Repository repository;
+   class Repository : public map<ASCString, Surface*> {
      public:
-        static Surface& getIcon( const ASCString& name );
-        static void clear() { repository.clear(); };
-        static bool exists( const ASCString& name );
-        static void insert( const ASCString& name, Surface* s );
-        static int getMemoryFootprint();
+      ~Repository();
+   };
+   static Repository repository;
+
+  public:
+   static Surface& getIcon(const ASCString& name);
+   static void clear() { repository.clear(); };
+   static bool exists(const ASCString& name);
+   static void insert(const ASCString& name, Surface* s);
+   static int getMemoryFootprint();
 };
 
-
 #endif
-

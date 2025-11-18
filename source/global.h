@@ -1,14 +1,14 @@
 /***************************************************************************
                           global.h  -  description
                              -------------------
-    begin                : 
+    begin                :
     copyright            : (C) 2001 by Martin Bickel
     email                : bickel@asc-hq.org
  ***************************************************************************/
 
 /*! \file global.h
      \brief Global platform dependant definitions.
-     This file just branches to the platform specific files in their 
+     This file just branches to the platform specific files in their
      respective subdirectories.
 */
 
@@ -22,22 +22,22 @@
  ***************************************************************************/
 
 #ifndef global_h
- #define global_h
+#define global_h
 
- #ifdef _WIN32_
-  #include "win32/global_os.h"
- #else
-  #ifdef _DOS_
-   #include "dos/global_os.h"
-  #else
-   #ifdef _UNIX_
-    #include "unix/global_os.h"
-   #else
-    #error "No system specified"
-   #endif
-  #endif
- #endif
+#ifdef _WIN32_
+#include "win32/global_os.h"
+#else
+#ifdef _DOS_
+#include "dos/global_os.h"
+#else
+#ifdef _UNIX_
+#include "unix/global_os.h"
+#else
+#error "No system specified"
+#endif
+#endif
+#endif
 
-#define ParserLoadImages 
+#define ParserLoadImages
 
 #endif

@@ -8,9 +8,8 @@
  ***************************************************************************/
 
 #ifndef aimove1H
- #define aimove1H
+#define aimove1H
 
- extern void testAiMovement();
-
+extern void testAiMovement();
 
 #endif

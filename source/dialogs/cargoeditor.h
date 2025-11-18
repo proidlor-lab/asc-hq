@@ -15,13 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef cargoeditorH
- #define cargoeditorH
+#define cargoeditorH
 
- class ContainerBase;
- 
- void cargoEditor( ContainerBase* container );
+class ContainerBase;
+
+void cargoEditor(ContainerBase* container);
 
 #endif
-

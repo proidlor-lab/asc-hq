@@ -20,54 +20,52 @@
  ***************************************************************************/
 
 #ifndef errors_h_included
- #define errors_h_included
+#define errors_h_included
 
- #include "ascstring.h"
- #include "global.h"
- #include "misc.h"
-
+#include "ascstring.h"
+#include "global.h"
+#include "misc.h"
 
 // #ifdef HAVE_EXCEPTION
 //  #include <exception>
 //  class ASCexception : public exception { };
- //#else
-  class ASCexception {};
- // #endif
+// #else
+class ASCexception {};
+// #endif
 
-  class ASCmsgException : public ASCexception {
-      protected:
-         ASCString message;
-      public:
-         ASCmsgException ( const ASCString& msg ) : message ( msg ) {};
-         const ASCString& getMessage ( void ) const { return message; };
-         virtual ~ASCmsgException() {};
-  };
+class ASCmsgException : public ASCexception {
+  protected:
+   ASCString message;
 
-  class InvalidID : public ASCmsgException {
-               public:
-                 InvalidID ( string msg, int id ) : ASCmsgException ( "Could not find a " + msg )
-                 {
-                    message += " with an ID of ";
-                    message += ASCString::toString( id );
-                    message += "\nThis is usually caused when the file you are trying to load uses objects "
-                               "from optional data packages that you don't have installed." ;
+  public:
+   ASCmsgException(const ASCString& msg) : message(msg){};
+   const ASCString& getMessage(void) const { return message; };
+   virtual ~ASCmsgException(){};
+};
 
-                 };
-              };
+class InvalidID : public ASCmsgException {
+  public:
+   InvalidID(string msg, int id) : ASCmsgException("Could not find a " + msg) {
+      message += " with an ID of ";
+      message += ASCString::toString(id);
+      message +=
+         "\nThis is usually caused when the file you are trying to load uses objects "
+         "from optional data packages that you don't have installed.";
+   };
+};
 
+class NoMapLoaded : public ASCexception {};
+class ShutDownMap : public ASCexception {};
+class OutOfRange : public ASCexception {};
 
-  class NoMapLoaded : public ASCexception {};
-  class ShutDownMap : public ASCexception {};
-  class OutOfRange  : public ASCexception {};
+class AssertionException : public ASCmsgException {
+  public:
+   AssertionException(const ASCString& check, const ASCString& file, int line)
+      : ASCmsgException(ASCString("Assertion failed: ") + check + " at " + file + ":" +
+                        ASCString::toString(line)){};
+};
 
-  
-  class AssertionException : public ASCmsgException {
-     public:
-        AssertionException ( const ASCString& check, const ASCString& file, int line ) : ASCmsgException ( ASCString("Assertion failed: ") + check + " at " + file + ":" + ASCString::toString(line)  ) {};
-  };
-
-#define assertOrThrow(expr)  (static_cast<void> ( (expr) ? 0 : (throw AssertionException (#expr, __FILE__, __LINE__))))
-  
-  
+#define assertOrThrow(expr) \
+   (static_cast<void>((expr) ? 0 : (throw AssertionException(#expr, __FILE__, __LINE__))))
 
 #endif

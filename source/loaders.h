@@ -1,7 +1,8 @@
 /*! \file loaders.h
     \brief procedure for loading and writing savegames, maps etc.
 
-    IO for basic types like vehicletype, buildingtype etc which are also used by the small editors are found in sgstream
+    IO for basic types like vehicletype, buildingtype etc which are also used by the small editors
+   are found in sgstream
 
 */
 
@@ -37,124 +38,109 @@
 #include "messages.h"
 #include "graphics/blitter.h"
 
-
-
 extern const int fileterminator;
 
 extern const char* savegameextension;
 extern const char* mapextension;
 extern const char* tournamentextension;
 
-
-
 //! saves the map located in #actmap to the map file name
-extern void  savemap( const ASCString& name, GameMap* gamemap );
+extern void savemap(const ASCString& name, GameMap* gamemap);
 
 //! saves the game located in #actmap to the savegame file name
-extern void  savegame( const ASCString& name, GameMap* gamemap);
+extern void savegame(const ASCString& name, GameMap* gamemap);
 
+typedef Loki::Functor<GameMap*, LOKI_TYPELIST_1(const ASCString&)> MapLoadingFunction;
+extern GameMap* mapLoadingExceptionChecker(const ASCString& filename, MapLoadingFunction loader);
 
-typedef Loki::Functor<GameMap*, LOKI_TYPELIST_1(const ASCString&) > MapLoadingFunction;
-extern GameMap* mapLoadingExceptionChecker( const ASCString& filename, MapLoadingFunction loader );
-
-
-
-extern GameMap*  loadreplay( MemoryStreamStorage* streambuf );
+extern GameMap* loadreplay(MemoryStreamStorage* streambuf);
 
 //! writes all replay relevant map information of player num to the replay variable of #actmap
-extern void  savereplay( GameMap* gamemap, int num );
+extern void savereplay(GameMap* gamemap, int num);
 
+class tspfldloaders {
+  public:
+   tnstream* stream;
+   GameMap* spfld;
 
-class  tspfldloaders {
-       public:
-           tnstream*        stream;
-           GameMap*     spfld;
+   static sigc::signal<void, GameMap*> mapLoaded;
 
-           static sigc::signal<void,GameMap*> mapLoaded; 
+   void readoldevents(void);
 
-           void            readoldevents     ( void );
+   void writedissections(void);
+   void readdissections(void);
 
+   void readLegacyNetwork(void);
 
-           void            writedissections ( void );
-           void            readdissections ( void );
+   virtual void initmap(void) = 0;
 
-           void            readLegacyNetwork  ( void );
+   void writemap(void);
+   void readmap(void);
 
-           virtual void    initmap ( void ) = 0;
+   void writefields(void);
+   void readfields(void);
 
-           void            writemap ( void );
-           void            readmap  ( void );
+   void writemessages(void);
+   void writemessagelist(MessagePntrContainer& lst);
+   void readmessages(void);
+   void readmessagelist(MessagePntrContainer& lst);
 
-           void            writefields ( void );
-           void            readfields  ( void );
-
-           void            writemessages ( void );
-           void            writemessagelist( MessagePntrContainer& lst );
-           void            readmessages ( void );
-           void            readmessagelist( MessagePntrContainer& lst );
-
-           void            chainitems ( GameMap* actmap );
-           void            setplayerexistencies ( void );
-           virtual ~tspfldloaders();
-           tspfldloaders ( void );
+   void chainitems(GameMap* actmap);
+   void setplayerexistencies(void);
+   virtual ~tspfldloaders();
+   tspfldloaders(void);
 };
 
+class tmaploaders : public tspfldloaders {
+   void initmap(void);
+   GameMap* _loadmap(const ASCString& name);
 
+  public:
+   static GameMap* loadmap(const ASCString& name);
 
-class  tmaploaders : public tspfldloaders {
-           void            initmap ( void );
-           GameMap*           _loadmap ( const ASCString& name );
-         public:
-           static GameMap* loadmap ( const ASCString& name );
-           
-           
-           int             savemap ( const ASCString& name, GameMap* gamemap );
-           tmaploaders (void ) {};
+   int savemap(const ASCString& name, GameMap* gamemap);
+   tmaploaders(void){};
 };
 
-
-
-class  tgameloaders : public tspfldloaders {
-        protected:
-           void            initmap ( void );
-           void            readAI( );
-           void            writeAI( );
+class tgameloaders : public tspfldloaders {
+  protected:
+   void initmap(void);
+   void readAI();
+   void writeAI();
 };
 
 class tnetworkloaders : public tgameloaders {
-        public:
-           GameMap*           loadnwgame ( tnstream* strm );
-           int             savenwgame ( tnstream* strm, const GameMap* gamemap );
+  public:
+   GameMap* loadnwgame(tnstream* strm);
+   int savenwgame(tnstream* strm, const GameMap* gamemap);
 };
 
 class GameFileInformation {
-   public:
-      GameFileInformation() : turn(0) {};
-      ASCString maptitle;
-      ASCString playername;
-      int turn;
-      Surface image;
+  public:
+   GameFileInformation() : turn(0){};
+   ASCString maptitle;
+   ASCString playername;
+   int turn;
+   Surface image;
 };
 
 class tsavegameloaders : public tgameloaders {
-        public:
-           GameMap* loadgame ( tnstream* strm );
-           static GameMap*  loadGameFromFile ( const ASCString& name );
-           GameFileInformation  loadMapimageFromFile( const ASCString& filename );
-           void  savegame ( tnstream* strm, GameMap* gamemap, bool writeReplays = true );
-           void  savegame ( GameMap* gamemap, const ASCString& name );
+  public:
+   GameMap* loadgame(tnstream* strm);
+   static GameMap* loadGameFromFile(const ASCString& name);
+   GameFileInformation loadMapimageFromFile(const ASCString& filename);
+   void savegame(tnstream* strm, GameMap* gamemap, bool writeReplays = true);
+   void savegame(GameMap* gamemap, const ASCString& name);
 };
 
-
 //! checks, whether filename is a valid map file
-extern bool validatemapfile ( const ASCString& filename );
+extern bool validatemapfile(const ASCString& filename);
 
 //! checks, whether filename is a valid savegame
-extern bool validatesavfile ( const ASCString& filename );
+extern bool validatesavfile(const ASCString& filename);
 
 //! checks, whether filename is a valid email game
-extern bool validateemlfile ( const ASCString& filename );
-
+extern bool validateemlfile(const ASCString& filename);
 
 struct MapConinuationInfo {
    ASCString title;
@@ -162,13 +148,13 @@ struct MapConinuationInfo {
    ASCString filename;
 };
 
-extern MapConinuationInfo findNextCampaignMap( int id = -1 );
+extern MapConinuationInfo findNextCampaignMap(int id = -1);
 
 extern bool suppressMapTriggerExecution;
 
 /** used by setLocalizedEventMessage to get the map being loaded
-    It's not nice having a global variable for that, but we need to persist the data for the Lua callbacks */
+    It's not nice having a global variable for that, but we need to persist the data for the Lua
+   callbacks */
 extern GameMap* eventLocalizationMap;
-
 
 #endif

@@ -28,50 +28,49 @@
 **
 **--------------------------------------------------------------------------*/
 
-class Cmdline
-{
-private:
-  /* parameters */
-  string _c;
-  int _r;
-  bool _legend;
-  bool _wide;
-  bool _orgpal;
-  bool _nousage;
-  bool _doublen;
-  bool _doublei;
-  int _id;
-  bool _h;
-  bool _v;
+class Cmdline {
+  private:
+   /* parameters */
+   string _c;
+   int _r;
+   bool _legend;
+   bool _wide;
+   bool _orgpal;
+   bool _nousage;
+   bool _doublen;
+   bool _doublei;
+   int _id;
+   bool _h;
+   bool _v;
 
-  /* other stuff to keep track of */
-  string _executable;
-  int _optind;
+   /* other stuff to keep track of */
+   string _executable;
+   int _optind;
 
-public:
-  /* constructor and destructor */
-  Cmdline(int, char **) throw(string);
-  ~Cmdline(){}
+  public:
+   /* constructor and destructor */
+   Cmdline(int, char**) throw(string);
+   ~Cmdline() {}
 
-  /* usage function */
-  void usage();
+   /* usage function */
+   void usage();
 
-  /* return next (non-option) parameter */
-  int next_param() { return _optind; }
+   /* return next (non-option) parameter */
+   int next_param() { return _optind; }
 
-  /* callback functions */
+   /* callback functions */
 
-  string c() { return _c; }
-  int r() { return _r; }
-  bool legend() { return _legend; }
-  bool wide() { return _wide; }
-  bool orgpal() { return _orgpal; }
-  bool nousage() { return _nousage; }
-  bool doublen() { return _doublen; }
-  bool doublei() { return _doublei; }
-  int id() { return _id; }
-  bool h() { return _h; }
-  bool v() { return _v; }
+   string c() { return _c; }
+   int r() { return _r; }
+   bool legend() { return _legend; }
+   bool wide() { return _wide; }
+   bool orgpal() { return _orgpal; }
+   bool nousage() { return _nousage; }
+   bool doublen() { return _doublen; }
+   bool doublei() { return _doublei; }
+   int id() { return _id; }
+   bool h() { return _h; }
+   bool v() { return _v; }
 };
 
 #endif

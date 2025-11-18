@@ -49,3 +49,46 @@ unittester/unittest-data/asc2.cache
 unittester/unittest-data/asc2_dlg.zip
 asc-full-*.zip
 source/unix/asc/.deps/
+analysis-reports/
+compile_commands.json
+
+# Build directories (out-of-tree builds)
+/build/
+/build-*/
+/cmake-build-*/
+
+# CMake generated files (if accidentally generated in source)
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestTestfile.cmake
+Makefile  # Note: This conflicts with Autotools Makefile, both are gitignored
+
+# Test executables (should be in build/ directory)
+source/ai/mcts/snapshot_test
+source/ai/mcts/action_executor_test
+source/ai/mcts/evaluator_test
+
+# Google Test executables and artifacts in tests/
+tests/example_test
+tests/mcts_snapshot_test
+tests/mcts_action_executor_test
+tests/mcts_evaluator_test
+tests/*.log
+tests/*.trs
+tests/test-suite.log
+
+# Google Test build artifacts
+tests/.libs/
+tests/.deps/
+tests/*.o
+tests/gtest-all.o
+tests/gtest_main.o
+
+# IDE files
+.idea/
+
+# Editor backup files
+*~
+*.swp
+*.swo

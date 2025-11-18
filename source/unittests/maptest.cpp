@@ -18,20 +18,16 @@
 #include "../lua/luastate.h"
 #include "../spfst-legacy.h"
 
-
-void runScript( const ASCString& script ) 
-{
+void runScript(const ASCString& script) {
    LuaState state;
-   LuaRunner runner( state );
-   runner.runFile( script );
-   assertOrThrow( runner.getErrors().empty() );
+   LuaRunner runner(state);
+   runner.runFile(script);
+   assertOrThrow(runner.getErrors().empty());
 }
 
-void testMaps() 
-{
-   auto_ptr<GameMap> game ( startMap("kam005.map"));
+void testMaps() {
+   std::unique_ptr<GameMap> game(startMap("kam005.map"));
    actmap = game.get();
-   runScript( "kam005.lua" );
+   runScript("kam005.lua");
    actmap = NULL;
 }
-

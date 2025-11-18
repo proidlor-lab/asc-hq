@@ -17,8 +17,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -54,62 +54,59 @@
 #include <pgpropertyfield_checkbox.h>
 
 #ifdef karteneditor
-# include "edmisc.h"
-# include "edselfnt.h"
-# include "maped-mainscreen.h"
- extern int  selectfield(int * cx ,int  * cy);
+#include "edmisc.h"
+#include "edselfnt.h"
+#include "maped-mainscreen.h"
+extern int selectfield(int* cx, int* cy);
 
 #else
-int  selectfield(int * cx ,int  * cy)
-{
-  return 0;
+int selectfield(int* cx, int* cy) {
+   return 0;
 }
-void editpolygon (Poly_gon& poly) {};
-Vehicle* selectUnitFromMap() { return NULL; };
+void editpolygon(Poly_gon& poly) {};
+Vehicle* selectUnitFromMap() {
+   return NULL;
+};
 #endif
 
 // �S GetXYSel
 
-bool chooseWeather( int& weather )
-{
+bool chooseWeather(int& weather) {
 #ifdef karteneditor
    vector<ASCString> entries;
 
-   for ( int w = 0; w < cwettertypennum; ++w )
-      entries.push_back ( cwettertypen[ w ] );
+   for (int w = 0; w < cwettertypennum; ++w)
+      entries.push_back(cwettertypen[w]);
 
-   int value = chooseString ( "choose operation target", entries, weather );
-   if ( value < 0 )
+   int value = chooseString("choose operation target", entries, weather);
+   if (value < 0)
       return false;
    else
       weather = value;
 
 #endif
-  return true;
+   return true;
 }
 
-bool chooseTerrain( int& terrainID )
-{
+bool chooseTerrain(int& terrainID) {
 #ifdef karteneditor
-   selectItemID( terrainID, terrainTypeRepository );
+   selectItemID(terrainID, terrainTypeRepository);
 #endif
-  return true;
+   return true;
 }
 
-bool chooseObject( int& objectID )
-{
+bool chooseObject(int& objectID) {
 #ifdef karteneditor
-   selectItemID( objectID, objectTypeRepository );
+   selectItemID(objectID, objectTypeRepository);
 #endif
-  return true;
+   return true;
 }
 
-bool chooseVehicleType( int& vehicleTypeID )
-{
+bool chooseVehicleType(int& vehicleTypeID) {
 #ifdef karteneditor
-   selectItemID( vehicleTypeID, vehicleTypeRepository );
+   selectItemID(vehicleTypeID, vehicleTypeRepository);
 #endif
-  return true;
+   return true;
 }
 
 #if 0
@@ -312,22 +309,19 @@ void         getxy_building(int *x,int *y)
    *x = gb.x;
    *y = gb.y;
    gb.done();
-} 
-
+}
 
 #endif
 
-
-void         getxy_building(int *x,int *y)
-{
+void getxy_building(int* x, int* y) {
    SelectBuildingFromMap::CoordinateList list;
-   list.push_back ( MapCoordinate( *x, *y ));
-   
-   SelectBuildingFromMap sbfm( list, actmap );
+   list.push_back(MapCoordinate(*x, *y));
+
+   SelectBuildingFromMap sbfm(list, actmap);
    sbfm.Show();
    sbfm.RunModal();
 
-   if ( list.empty() ) {
+   if (list.empty()) {
       *x = -1;
       *y = -1;
    } else {
@@ -336,137 +330,118 @@ void         getxy_building(int *x,int *y)
    }
 }
 
-void selectFields( FieldAddressing::Fields& fields )
-{
-   SelectFromMap sbfm( fields, actmap );
+void selectFields(FieldAddressing::Fields& fields) {
+   SelectFromMap sbfm(fields, actmap);
    sbfm.Show();
    sbfm.RunModal();
 }
 
-class UnitListFactory: public SelectionItemFactory, public sigc::trackable  {
-   public:
-      typedef list<const VehicleType*> UnitList;
-   private:
-      const UnitList& unitList;
-   protected:
-      UnitList::const_iterator it;
-      void itemSelected( const SelectionWidget* widget, bool mouse ) 
-      {
-      };
-   public:
-      UnitListFactory( const UnitList& units )  : unitList( units )
-      {
-         restart();
-      };
-      
-      void restart()
-      {
-         it = unitList.begin();
-      }
-      
-      SelectionWidget* spawnNextItem( PG_Widget* parent, const PG_Point& pos )
-      {
-         if ( it != unitList.end() ) {
-            const VehicleType* v = *(it++);
-            return new VehicleTypeBaseWidget( parent, pos, parent->Width() - 15, v, actmap->getCurrentPlayer() );
-         } else
-            return NULL;
-      };
+class UnitListFactory : public SelectionItemFactory, public sigc::trackable {
+  public:
+   typedef list<const VehicleType*> UnitList;
+
+  private:
+   const UnitList& unitList;
+
+  protected:
+   UnitList::const_iterator it;
+   void itemSelected(const SelectionWidget* widget, bool mouse) {};
+
+  public:
+   UnitListFactory(const UnitList& units) : unitList(units) { restart(); };
+
+   void restart() { it = unitList.begin(); }
+
+   SelectionWidget* spawnNextItem(PG_Widget* parent, const PG_Point& pos) {
+      if (it != unitList.end()) {
+         const VehicleType* v = *(it++);
+         return new VehicleTypeBaseWidget(parent, pos, parent->Width() - 15, v,
+                                          actmap->getCurrentPlayer());
+      } else
+         return NULL;
+   };
 };
 
-
-
 class UnitAvailabilityWindow : public ItemSelectorWindow {
-   private:
-      bool eventKeyDown(const SDL_KeyboardEvent* key)
-      {
-         if ( key->keysym.sym == SDLK_RETURN ) {
-            QuitModal();
-            return true;
-         }
-         return ItemSelectorWindow::eventKeyDown( key );
-      };
+  private:
+   bool eventKeyDown(const SDL_KeyboardEvent* key) {
+      if (key->keysym.sym == SDLK_RETURN) {
+         QuitModal();
+         return true;
+      }
+      return ItemSelectorWindow::eventKeyDown(key);
+   };
 
-   public:
-      UnitAvailabilityWindow ( PG_Widget *parent, const PG_Rect &r , const ASCString& title, UnitListFactory* itemFactory ) 
-   : ItemSelectorWindow( parent, r, title, itemFactory ) 
-      {
-      };
-};      
+  public:
+   UnitAvailabilityWindow(PG_Widget* parent, const PG_Rect& r, const ASCString& title,
+                          UnitListFactory* itemFactory)
+      : ItemSelectorWindow(parent, r, title, itemFactory){};
+};
 
-
-
-void ShowNewTechnology::showTechnology( const Technology* tech, const TechnologyPresenter::Gadgets& newGadgetsAvailable )
-{
-   if ( tech ) {
+void ShowNewTechnology::showTechnology(const Technology* tech,
+                                       const TechnologyPresenter::Gadgets& newGadgetsAvailable) {
+   if (tech) {
       ASCString text = "#fontsize=18#Research completed#fontsize=12#\n\n";
 
       text = "Our scientists have mastered a new technology:\n\n#fontsize=18#";
 
       text += tech->name + "#fontsize=12#\n\n";
 
-      if ( tech->relatedUnitID > 0 )
+      if (tech->relatedUnitID > 0)
          text += "#vehicletype=" + ASCString::toString(tech->relatedUnitID) + "#\n\n";
 
       text += tech->infotext;
 
-      if ( newGadgetsAvailable.units.size() ) {
+      if (newGadgetsAvailable.units.size()) {
          text += "\n#fontsize=15#\nNew units available for production:#fontsize=12#\n";
-         
-         for ( std::list<const VehicleType*>::const_iterator i = newGadgetsAvailable.units.begin(); i != newGadgetsAvailable.units.end(); ++i )
+
+         for (std::list<const VehicleType*>::const_iterator i = newGadgetsAvailable.units.begin();
+              i != newGadgetsAvailable.units.end(); ++i)
             text += "#vehicletype=" + ASCString::toString((*i)->id) + "#\n";
       }
-      
-      ViewFormattedText tr ("Research", text, PG_Rect(-1,-1, 400,250) );
+
+      ViewFormattedText tr("Research", text, PG_Rect(-1, -1, 400, 250));
       tr.Show();
       tr.RunModal();
    }
 }
 
+int selectunit(int unitnetworkid) {
+   SelectUnitFromMap::CoordinateList list;
 
+   Vehicle* v = actmap->getUnit(unitnetworkid);
+   if (v)
+      list.push_back(v->getPosition());
 
-int selectunit ( int unitnetworkid )
-{
-  SelectUnitFromMap::CoordinateList list;
+   SelectUnitFromMap sufm(list, actmap);
+   sufm.Show();
+   sufm.RunModal();
 
-  Vehicle* v = actmap->getUnit ( unitnetworkid );
-  if ( v )
-      list.push_back ( v->getPosition() );
+   if (list.empty())
+      return 0;
 
-  SelectUnitFromMap sufm ( list, actmap );
-  sufm.Show();
-  sufm.RunModal();
-
-  if ( list.empty() )
-     return 0;
-  
-  MapField* fld = actmap->getField( *list.begin() );
-  if ( fld && fld->vehicle )
-     return fld->vehicle->networkid;
-  else
-     return 0;
+   MapField* fld = actmap->getField(*list.begin());
+   if (fld && fld->vehicle)
+      return fld->vehicle->networkid;
+   else
+      return 0;
 }
 
+class tplayerselall : public tdialogbox {
+  public:
+   int action;
+   int bkgcolor;
+   int playerbit;
+   void init(void);
+   virtual void run(void);
+   virtual void buttonpressed(int id);
+   void anzeige(void);
+};
 
-class  tplayerselall : public tdialogbox {
-          public :
-              int action;
-              int bkgcolor;
-              int playerbit;
-              void init(void);
-              virtual void run(void);
-              virtual void buttonpressed(int id);
-              void anzeige(void);
-              };
+void tplayerselall::init(void) {
+   char* s1;
 
-
-
-
-void         tplayerselall::init(void)
-{
-   char *s1;
-
-   tdialogbox::init(); 
+   tdialogbox::init();
    title = "Player Select";
    x1 = 50;
    xsize = 370;
@@ -478,62 +453,56 @@ void         tplayerselall::init(void)
    windowstyle = windowstyle ^ dlg_in3d;
 
    int i;
-   for (i=0;i<8 ;i++ ) {
-      s1 = new(char[12]);
-      strcpy(s1,"Player ~");
-      strcat(s1,strrr(i+1));
-      strcat(s1,"~");
-      addbutton(s1,20,55+i*30,150,75+i*30,0,1,6+i,true);
-      addkey(1,ct_1+i);
+   for (i = 0; i < 8; i++) {
+      s1 = new (char[12]);
+      strcpy(s1, "Player ~");
+      strcat(s1, strrr(i + 1));
+      strcat(s1, "~");
+      addbutton(s1, 20, 55 + i * 30, 150, 75 + i * 30, 0, 1, 6 + i, true);
+      addkey(1, ct_1 + i);
    }
 
-//   addbutton("~A~ll not allied",20,ysize - 40,170,ysize - 20,0,1,1,true);
-//   addkey(1,ct_enter);
-   addbutton("~O~K",200,ysize - 40,350,ysize - 20,0,1,2,true);
+   //   addbutton("~A~ll not allied",20,ysize - 40,170,ysize - 20,0,1,1,true);
+   //   addkey(1,ct_enter);
+   addbutton("~O~K", 200, ysize - 40, 350, ysize - 20, 0, 1, 2, true);
 
    buildgraphics();
 
-   for ( i=0; i<8 ;i++ )
-      bar(x1 + 170,y1 + 60 + i*30 ,x1 + 190 ,y1 + 70 + i * 30,20 + ( i << 3 ));
+   for (i = 0; i < 8; i++)
+      bar(x1 + 170, y1 + 60 + i * 30, x1 + 190, y1 + 70 + i * 30, 20 + (i << 3));
 
    anzeige();
 
    mousevisible(true);
 }
 
-void         tplayerselall::anzeige(void)
-{
+void tplayerselall::anzeige(void) {
    mousevisible(false);
-   for (int i=0;i<8 ;i++ ) {
-      if ( playerbit & ( 1 << i ) ) 
-         rectangle (x1 + 16,y1+51+i*30,x1+154,y1+79+i*30, 20 );
+   for (int i = 0; i < 8; i++) {
+      if (playerbit & (1 << i))
+         rectangle(x1 + 16, y1 + 51 + i * 30, x1 + 154, y1 + 79 + i * 30, 20);
       else
-         rectangle (x1 + 16,y1+51+i*30,x1+154,y1+79+i*30, bkgcolor );
+         rectangle(x1 + 16, y1 + 51 + i * 30, x1 + 154, y1 + 79 + i * 30, bkgcolor);
    }
    mousevisible(true);
 }
 
-
-void         tplayerselall::run(void)
-{
-
+void tplayerselall::run(void) {
    do {
       tdialogbox::run();
       // if (taste == ct_f1) help ( 1060 );
-   }  while (!((taste == ct_esc) || ((action == 1) || (action ==2))));
+   } while (!((taste == ct_esc) || ((action == 1) || (action == 2))));
    if ((action == 1) || (taste == ct_esc))
       playerbit = 1;
 }
 
-
-void         tplayerselall::buttonpressed(int         id)
-{
+void tplayerselall::buttonpressed(int id) {
    tdialogbox::buttonpressed(id);
    switch (id) {
-
       case 1:
-      case 2:   action = id;
-        break;
+      case 2:
+         action = id;
+         break;
       case 6:
       case 7:
       case 8:
@@ -542,16 +511,14 @@ void         tplayerselall::buttonpressed(int         id)
       case 11:
       case 12:
       case 13: {
-            playerbit ^=  1 << ( id-6 ) ;
+         playerbit ^= 1 << (id - 6);
          anzeige();
-      }
-   break; 
-   } 
-} 
+      } break;
+   }
+}
 
-
-void playerselall( int *playerbitmap)
-{ tplayerselall       sc;
+void playerselall(int* playerbitmap) {
+   tplayerselall sc;
 
    sc.playerbit = *playerbitmap;
    sc.init();
@@ -560,89 +527,80 @@ void playerselall( int *playerbitmap)
    *playerbitmap = sc.playerbit;
 }
 
-
-
-bool ReinforcementSelector::mark()
-{
+bool ReinforcementSelector::mark() {
    MapCoordinate pos = actmap->getCursor();
-   if  ( !accept(pos))
+   if (!accept(pos))
       return false;
 
-   CoordinateList::iterator i = find( coordinateList.begin(), coordinateList.end(), pos );
-   if ( i == coordinateList.end() )
-      coordinateList.push_back ( pos );
+   CoordinateList::iterator i = find(coordinateList.begin(), coordinateList.end(), pos);
+   if (i == coordinateList.end())
+      coordinateList.push_back(pos);
 
-   cut( pos );
+   cut(pos);
 
-   showFieldMarking( coordinateList );
+   showFieldMarking(coordinateList);
 
    updateList();
    return true;
 }
 
-void ReinforcementSelector::cut( const MapCoordinate& pos )
-{
-   MapField* fld = actmap->getField( pos );
-   if (!fld )
+void ReinforcementSelector::cut(const MapCoordinate& pos) {
+   MapField* fld = actmap->getField(pos);
+   if (!fld)
       return;
 
-   cutPositions.push_back( pos );
-   
-   if ( fld->vehicle ) {
-      MemoryStream stream ( &buf, tnstream::appending );
-      stream.writeInt( Reinforcements::ReinfVehicle );
-      fld->vehicle->write ( stream );
+   cutPositions.push_back(pos);
+
+   if (fld->vehicle) {
+      MemoryStream stream(&buf, tnstream::appending);
+      stream.writeInt(Reinforcements::ReinfVehicle);
+      fld->vehicle->write(stream);
       objectNum++;
       delete fld->vehicle;
       fld->vehicle = NULL;
-   } else
-      if ( fld->building ) {
-         MemoryStream stream ( &buf, tnstream::appending );
-         stream.writeInt( Reinforcements::ReinfBuilding );
-         fld->building->write ( stream );
-         objectNum++;
-         delete fld->building;
-         fld->building = NULL;
-      }
+   } else if (fld->building) {
+      MemoryStream stream(&buf, tnstream::appending);
+      stream.writeInt(Reinforcements::ReinfBuilding);
+      fld->building->write(stream);
+      objectNum++;
+      delete fld->building;
+      fld->building = NULL;
+   }
 }
 
-
-bool ReinforcementSelector::isOk()
-{
-   for ( CoordinateList::const_iterator i = coordinateList.begin(); i !=  coordinateList.end(); ++i  ) 
-      if ( find( cutPositions.begin(), cutPositions.end(), *i ) == cutPositions.end() )
-         cut( *i );
-   return true;  
+bool ReinforcementSelector::isOk() {
+   for (CoordinateList::const_iterator i = coordinateList.begin(); i != coordinateList.end(); ++i)
+      if (find(cutPositions.begin(), cutPositions.end(), *i) == cutPositions.end())
+         cut(*i);
+   return true;
 }
 
-
-bool BitMapEditor::ok()
-{
+bool BitMapEditor::ok() {
    reference = 0;
    propertyEditor->Apply();
-   for ( int i = 0; i < bitCount; ++i ) 
-      if ( values[i] )
+   for (int i = 0; i < bitCount; ++i)
+      if (values[i])
          reference |= 1 << i;
 
    QuitModal();
    return true;
 }
 
-BitMapEditor::BitMapEditor( BitType& value, const ASCString& title, const vector<ASCString>& names ) : ASC_PG_Dialog(NULL, PG_Rect(-1,-1,300,500), title ), reference(value)
-{
-   propertyEditor = new ASC_PropertyEditor( this, PG_Rect( 10, GetTitlebarHeight(), Width() - 20, Height() - GetTitlebarHeight() - 50 ), "PropertyEditor", 70 );
-
+BitMapEditor::BitMapEditor(BitType& value, const ASCString& title, const vector<ASCString>& names)
+   : ASC_PG_Dialog(NULL, PG_Rect(-1, -1, 300, 500), title), reference(value) {
+   propertyEditor = new ASC_PropertyEditor(
+      this, PG_Rect(10, GetTitlebarHeight(), Width() - 20, Height() - GetTitlebarHeight() - 50),
+      "PropertyEditor", 70);
 
    bitCount = names.size();
    int counter = 0;
-   for ( vector<ASCString>::const_iterator i = names.begin(); i != names.end(); ++i ) {
-      bool v = value & (1 << counter );
+   for (vector<ASCString>::const_iterator i = names.begin(); i != names.end(); ++i) {
+      bool v = value & (1 << counter);
       values[counter] = v;
-      new PG_PropertyField_Checkbox<bool>( propertyEditor, *i, &(values[counter]) );
+      new PG_PropertyField_Checkbox<bool>(propertyEditor, *i, &(values[counter]));
       ++counter;
    }
 
-   PG_Button* ok = new PG_Button( this, PG_Rect( Width() - 100, Height() - 40, 90, 30), "OK" );
-   ok->sigClick.connect( sigc::hide( sigc::mem_fun( *this, &BitMapEditor::ok )));
+   PG_Button* ok = new PG_Button(this, PG_Rect(Width() - 100, Height() - 40, 90, 30), "OK");
+   ok->sigClick.connect(sigc::hide(sigc::mem_fun(*this, &BitMapEditor::ok)));
 }
-

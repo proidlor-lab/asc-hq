@@ -28,58 +28,57 @@
 **
 **--------------------------------------------------------------------------*/
 
-class Cmdline
-{
-private:
-  /* parameters */
-  string _c;
-  int _r;
-  string _d;
-  string _l;
-  int _s;
-  bool _i;
-  int _z;
-  string _f;
-  string _t;
-  string _m;
-  bool _b;
-  string _roottech;
-  bool _writeall;
-  bool _h;
-  bool _v;
+class Cmdline {
+  private:
+   /* parameters */
+   string _c;
+   int _r;
+   string _d;
+   string _l;
+   int _s;
+   bool _i;
+   int _z;
+   string _f;
+   string _t;
+   string _m;
+   bool _b;
+   string _roottech;
+   bool _writeall;
+   bool _h;
+   bool _v;
 
-  /* other stuff to keep track of */
-  string _executable;
-  int _optind;
+   /* other stuff to keep track of */
+   string _executable;
+   int _optind;
 
-public:
-  /* constructor and destructor */
-  Cmdline(int, char **);
-  ~Cmdline(){}
+  public:
+   /* constructor and destructor */
+   Cmdline(int, char**);
+   ~Cmdline() {}
 
-  /* usage function */
-  void usage();
+   /* usage function */
+   void usage();
 
-  /* return next (non-option) parameter */
-  int next_param() { return _optind; }
+   /* return next (non-option) parameter */
+   int next_param() { return _optind; }
 
-  /* callback functions */
+   /* callback functions */
 
-  string c() { return _c; }
-  int r() { return _r; }
-  string d() { return _d; }
-  string l() { return _l; }
-  int s() { return _s; }
-  bool i() { return _i; }
-  int z() { return _z; }
-  string f() { return _f; }
-  string t() { return _t; }
-  string m() { return _m; }
-  bool b() { return _b; }
-  string roottech() { return _roottech; }
-  bool writeall() { return _writeall; }
-  bool h() { return _h; }
-  bool v() { return _v; }
+   string c() { return _c; }
+   int r() { return _r; }
+   string d() { return _d; }
+   string l() { return _l; }
+   int s() { return _s; }
+   bool i() { return _i; }
+   int z() { return _z; }
+   string f() { return _f; }
+   string t() { return _t; }
+   string m() { return _m; }
+   bool b() { return _b; }
+   string roottech() { return _roottech; }
+   bool writeall() { return _writeall; }
+   bool h() { return _h; }
+   bool v() { return _v; }
 };
 
 #endif

@@ -1937,7 +1937,7 @@ void PG_Widget::activateHotkey( int keymodifier )
 
    // I don't like the way keypresses are NOT propagated to child in non-modal operation mode,
    // but changing that would be a major change to Paraguis event handling
-   // So as a workaround we just register at the global signal 
+   // So as a workaround we just at the global signal 
    PG_Application::GetApp()->sigKeyDown.connect(  sigc::mem_fun( *this, &PG_Widget::propagateKeyDown ));
 }
 

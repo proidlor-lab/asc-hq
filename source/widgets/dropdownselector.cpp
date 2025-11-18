@@ -16,52 +16,42 @@
 
 #include "dropdownselector.h"
 
-
-DropDownSelector::DropDownSelector( PG_Widget *parent, const PG_Rect &r, int itemnum, const char** items, const std::string &style )
-   : PG_DropDown( parent, r, -1, style ), first(true)
-{
+DropDownSelector::DropDownSelector(PG_Widget* parent, const PG_Rect& r, int itemnum,
+                                   const char** items, const std::string& style)
+   : PG_DropDown(parent, r, -1, style), first(true) {
    SetEditable(false);
-   sigSelectItem.connect( sigc::hide( sigc::mem_fun( *this, &DropDownSelector::itemSelected )));
+   sigSelectItem.connect(sigc::hide(sigc::mem_fun(*this, &DropDownSelector::itemSelected)));
 
-   for ( int i = 0; i < itemnum; ++i )
-      AddItem( items[i] );
-      
+   for (int i = 0; i < itemnum; ++i)
+      AddItem(items[i]);
 }
 
-
-DropDownSelector::DropDownSelector( PG_Widget *parent, const PG_Rect &r, const std::vector<ASCString>& names, const std::string &style )
-   : PG_DropDown( parent, r, -1, style ), first(true)
-{
+DropDownSelector::DropDownSelector(PG_Widget* parent, const PG_Rect& r,
+                                   const std::vector<ASCString>& names, const std::string& style)
+   : PG_DropDown(parent, r, -1, style), first(true) {
    SetEditable(false);
-   sigSelectItem.connect( sigc::hide( sigc::mem_fun( *this, &DropDownSelector::itemSelected )));
+   sigSelectItem.connect(sigc::hide(sigc::mem_fun(*this, &DropDownSelector::itemSelected)));
 
-   for ( std::vector<ASCString>::const_iterator i = names.begin(); i != names.end(); ++i )
-      AddItem( *i );
+   for (std::vector<ASCString>::const_iterator i = names.begin(); i != names.end(); ++i)
+      AddItem(*i);
 }
 
-
-
-DropDownSelector::DropDownSelector( PG_Widget *parent, const PG_Rect &r, int id, const std::string &style) 
-   : PG_DropDown( parent, r, id, style ), first(true)
-{
+DropDownSelector::DropDownSelector(PG_Widget* parent, const PG_Rect& r, int id,
+                                   const std::string& style)
+   : PG_DropDown(parent, r, id, style), first(true) {
    SetEditable(false);
-   sigSelectItem.connect( sigc::hide( sigc::mem_fun( *this, &DropDownSelector::itemSelected )));
+   sigSelectItem.connect(sigc::hide(sigc::mem_fun(*this, &DropDownSelector::itemSelected)));
 }
 
-bool DropDownSelector::itemSelected(  )
-{
-   selectionSignal( GetSelectedItemIndex ());
+bool DropDownSelector::itemSelected() {
+   selectionSignal(GetSelectedItemIndex());
    return true;
 }
 
-
-void DropDownSelector::AddItem (const std::string &text, void *userdata, Uint16 height)
-{
-   PG_DropDown::AddItem( text, userdata, height );
-   if ( first ) {
+void DropDownSelector::AddItem(const std::string& text, void* userdata, Uint16 height) {
+   PG_DropDown::AddItem(text, userdata, height);
+   if (first) {
       first = false;
       SelectFirstItem();
    }
 }
-
-

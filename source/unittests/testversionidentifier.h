@@ -10,7 +10,6 @@
 #ifndef versionidentifiertestH
 #define versionidentifiertestH
 
- extern void testVersionIdentifier();
-
+extern void testVersionIdentifier();
 
 #endif

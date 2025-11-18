@@ -13,28 +13,23 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
-
-
 #include "networkinterface.h"
 
-GameTransferMechanism* GameTransferMechanism :: read ( tnstream& stream )
-{
+GameTransferMechanism* GameTransferMechanism ::read(tnstream& stream) {
    stream.readInt();
    ASCString id = stream.readString();
-   GameTransferMechanism* m = networkTransferMechanismFactory::Instance().createObject( id );
-   m->readChildData( stream );
+   GameTransferMechanism* m = networkTransferMechanismFactory::Instance().createObject(id);
+   m->readChildData(stream);
    return m;
 }
 
-void GameTransferMechanism :: write ( tnstream& stream ) const
-{
-   stream.writeInt( 1 ); // version
-   stream.writeString( getMechanismID() );
-   writeChildData( stream );
+void GameTransferMechanism ::write(tnstream& stream) const {
+   stream.writeInt(1);  // version
+   stream.writeString(getMechanismID());
+   writeChildData(stream);
 }
-

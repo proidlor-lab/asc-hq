@@ -492,7 +492,7 @@ namespace Loki
         /** Non-throwing single-object delete is only called when nothrow
          new operator is used, and the constructor throws an exception.
          */
-        static void operator delete ( void * p, const std::nothrow_t & ) throw()
+        static void operator delete ( void * p, const std::nothrow_t & ) noexcept
         {
             typename MyThreadingModel::Lock lock;
             (void)lock; // get rid of warning
@@ -548,7 +548,7 @@ namespace Loki
          new operator is used, and the constructor throws an exception.
          */
         static void operator delete [] ( void * p,
-            const std::nothrow_t & ) throw()
+            const std::nothrow_t & ) noexcept
         {
             typename MyThreadingModel::Lock lock;
             (void)lock; // get rid of warning

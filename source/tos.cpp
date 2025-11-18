@@ -18,20 +18,18 @@
     Boston, MA  02111-1307  USA
 */
 
-
 #include "tos.h"
 
 namespace toString {
 
-   ASCString tos( int i ) {
-      return ASCString::toString(i);
-   };
-
-   ASCString tos( const MapCoordinate& pos )
-   {
-      ASCString s;
-      s.format("(%d/%d)", pos.x, pos.y);
-      return s;
-   }
-
+ASCString tos(int i) {
+   return ASCString::toString(i);
 };
+
+ASCString tos(const MapCoordinate& pos) {
+   ASCString s;
+   s.format("(%d/%d)", pos.x, pos.y);
+   return s;
+}
+
+};  // namespace toString

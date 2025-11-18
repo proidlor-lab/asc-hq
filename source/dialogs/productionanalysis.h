@@ -20,7 +20,6 @@
 
 class GameMap;
 
-extern void unitProductionAnalysis( GameMap* gamemap, bool checkResearch = true );
-
+extern void unitProductionAnalysis(GameMap* gamemap, bool checkResearch = true);
 
 #endif

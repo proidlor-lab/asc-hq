@@ -38,29 +38,29 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
 #ifndef _NOASM_
 
-extern "C" int  luftlinie8 ( int x1, int y1, int x2, int y2 );
-#pragma aux luftlinie8 parm [ eax ] [ ebx ] [ ecx ] [ edx ]
+extern "C" int luftlinie8(int x1, int y1, int x2, int y2);
+#pragma aux luftlinie8 parm[eax][ebx][ecx][edx]
 
-extern "C" int  rol ( int valuetorol, int rolwidth );
-#pragma aux rol parm [ eax ] [ ecx ]
+extern "C" int rol(int valuetorol, int rolwidth);
+#pragma aux rol parm[eax][ecx]
 
-extern "C" void setvisibility ( word* visi, int valtoset, int actplayer );
-#pragma aux setvisibility parm [ eax ] [ ebx ] [ ecx ] modify [ edx ]
+extern "C" void setvisibility(word* visi, int valtoset, int actplayer);
+#pragma aux setvisibility parm[eax][ebx][ecx] modify[edx]
 
-extern "C" void dispspielfeld ( int* a, int* b );
-#pragma aux dispspielfeld parm [ eax ] [ ebx ] modify [ edi esi ecx edx ]
+extern "C" void dispspielfeld(int* a, int* b);
+#pragma aux dispspielfeld parm[eax][ebx] modify[edi esi ecx edx]
 
-extern "C" void copyvfb2displaymemory ( int* buf );
-#pragma aux copyvfb2displaymemory parm [ ebx ] modify [ eax ecx edx esi edi ]
+extern "C" void copyvfb2displaymemory(int* buf);
+#pragma aux copyvfb2displaymemory parm[ebx] modify[eax ecx edx esi edi]
 
-extern "C" void copyvfb2displaymemory_zoom ( void* parmbuf );
-#pragma aux copyvfb2displaymemory_zoom parm [ ebx ] modify [ eax ecx edx esi edi ]
+extern "C" void copyvfb2displaymemory_zoom(void* parmbuf);
+#pragma aux copyvfb2displaymemory_zoom parm[ebx] modify[eax ecx edx esi edi]
 
 #endif

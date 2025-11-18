@@ -1,6 +1,6 @@
 /*! \file network.cpp
     \brief Code for moving a multiplayer game data from one computer to another.
- 
+
     The only method that is currently implemented is writing the data to a file
     and telling the user to send this file by email :-)
     But the interface for real networking is there...
@@ -20,8 +20,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -40,116 +40,107 @@
 #include "../gameoptions.h"
 #include "../basestrm.h"
 
-void FileTransfer::readChildData ( tnstream& stream )
-{
+void FileTransfer::readChildData(tnstream& stream) {
    stream.readInt();
    filename = stream.readString();
 }
 
-void FileTransfer::writeChildData ( tnstream& stream ) const
-{
-   stream.writeInt( 1 );
-   stream.writeString( filename );
+void FileTransfer::writeChildData(tnstream& stream) const {
+   stream.writeInt(1);
+   stream.writeString(filename);
 }
 
-void FileTransfer::setup()
-{
+void FileTransfer::setup() {
    enterfilename();
 }
 
-
-void FileTransfer::setup( const ASCString& filename )
-{
+void FileTransfer::setup(const ASCString& filename) {
    this->filename = filename;
 }
 
-bool FileTransfer::enterfilename()
-{
-   filename = editString( "Enter Filename", filename );
+bool FileTransfer::enterfilename() {
+   filename = editString("Enter Filename", filename);
    return true;
 }
 
-
-void FileTransfer::send( const GameMap* map, int lastPlayer, int lastturn )
-{
-   while ( filename.empty() ) {
-      if( !enterfilename() )
+void FileTransfer::send(const GameMap* map, int lastPlayer, int lastturn) {
+   while (filename.empty()) {
+      if (!enterfilename())
          return;
    }
 
-   try {      
-      ASCString fname = constructFileName( map, lastPlayer, lastturn );
+   try {
+      ASCString fname = constructFileName(map, lastPlayer, lastturn);
 
-      tfindfile ff( fname );
+      tfindfile ff(fname);
       tfindfile::FileInfo fi;
-      if ( ff.getnextname( fi ) && fi.directoryLevel == 0 )
+      if (ff.getnextname(fi) && fi.directoryLevel == 0)
          do {
-            if (choice_dlg("overwrite " + fname,"~y~es","~n~o") == 2) 
-               fname = selectFile( ASCString("*") + tournamentextension, false );
+            if (choice_dlg("overwrite " + fname, "~y~es", "~n~o") == 2)
+               fname = selectFile(ASCString("*") + tournamentextension, false);
          } while (fname.empty());
 
       {
-         tnfilestream gamefile ( fname, tnstream::writing );
+         tnfilestream gamefile(fname, tnstream::writing);
          tnetworkloaders nwl;
-         nwl.savenwgame( &gamefile, map );
+         nwl.savenwgame(&gamefile, map);
       }
 
       int nextPlayer = map->actplayer;
-      if ( nextPlayer < 0 )
+      if (nextPlayer < 0)
          nextPlayer = 0;
-      
+
       bool mail = !CGameOptions::Instance()->mailProgram.empty();
 
-
-      if ( mail )
-         if (choiceDialog("Invoke the mail program to send the file?","~m~ail","~j~ust save", "sendpbem") == 2)
+      if (mail)
+         if (choiceDialog("Invoke the mail program to send the file?", "~m~ail", "~j~ust save",
+                          "sendpbem") == 2)
             mail = false;
 
-
-      if ( !mail ) {
-         
-         ASCString msg = "Data written!\nPlease send " + fname + " to \n" + map->player[nextPlayer].getName();
-         if ( !map->player[nextPlayer].email.empty() )
+      if (!mail) {
+         ASCString msg =
+            "Data written!\nPlease send " + fname + " to \n" + map->player[nextPlayer].getName();
+         if (!map->player[nextPlayer].email.empty())
             msg += " (" + map->player[nextPlayer].email + ")";
-         infoMessage( msg );
+         infoMessage(msg);
       } else {
-         
          ASCString fullFile = ::constructFileName(0, "", fname);
-         
+
          ASCString command = CGameOptions::Instance()->mailProgram;
-         command.replaceAll_ci( "$(fullfile)", fullFile);
-         command.replaceAll_ci( "$(file)", fname );
-         
+         command.replaceAll_ci("$(fullfile)", fullFile);
+         command.replaceAll_ci("$(file)", fname);
+
          ASCString url = fullFile;
-         if ( pathdelimitterstring != ASCString("/"))
+         if (pathdelimitterstring != ASCString("/"))
             url.replaceAll(pathdelimitterstring, "/");
-         
-         if ( url.find('/') == 0 )
+
+         if (url.find('/') == 0)
             url = "file://" + url;
          else
             url = "file:///" + url;
 
-         command.replaceAll_ci( "$(url)", url );
-         
-         if ( map->player[nextPlayer].email.empty() )
-            command.replaceAll_ci( "$(to)", "unknown");
+         command.replaceAll_ci("$(url)", url);
+
+         if (map->player[nextPlayer].email.empty())
+            command.replaceAll_ci("$(to)", "unknown");
          else
-            command.replaceAll_ci( "$(to)", map->player[nextPlayer].email );
-         
+            command.replaceAll_ci("$(to)", map->player[nextPlayer].email);
+
          int sv = -1;
-         for ( int i = 0; i < map->getPlayerCount(); ++i)
-            if ( map->getPlayer(i).stat == Player::supervisor ) {
+         for (int i = 0; i < map->getPlayerCount(); ++i)
+            if (map->getPlayer(i).stat == Player::supervisor) {
                sv = i;
                break;
             }
-           
-         if ( sv != -1 && sv != nextPlayer )
-            command.replaceAll_ci( "$(sv)", map->player[sv].email );
+
+         if (sv != -1 && sv != nextPlayer)
+            command.replaceAll_ci("$(sv)", map->player[sv].email);
          else
-            command.replaceAll_ci( "$(sv)", "" );
-         
-         StatusMessageWindowHolder smw = MessagingHub::Instance().infoMessageWindow( "Executing external mailer:\n" + command );
-         
+            command.replaceAll_ci("$(sv)", "");
+
+         StatusMessageWindowHolder smw =
+            MessagingHub::Instance().infoMessageWindow("Executing external mailer:\n" + command);
+
 #ifdef _WIN32_
          // Windows sucks!
          ASCString realCommand = "\"" + command + "\"";
@@ -158,69 +149,64 @@ void FileTransfer::send( const GameMap* map, int lastPlayer, int lastturn )
 #endif
 
          int res = system(realCommand.c_str());
-         if (res != 0 ) {
+         if (res != 0) {
             smw.close();
-            errorMessage("Program failed with exit code " + ASCString::toString(res) + "\nCommand was:\n" + command);
+            errorMessage("Program failed with exit code " + ASCString::toString(res) +
+                         "\nCommand was:\n" + command);
          } else {
             smw.close();
-            infoMessage( "Mail submitted successfully" );
+            infoMessage("Mail submitted successfully");
          }
       }
-   } catch ( tfileerror ) {
-      errorMessage ( "error writing file " + filename );
+   } catch (tfileerror) {
+      errorMessage("error writing file " + filename);
    }
 }
 
+GameMap* FileTransfer::receive() {
+   return loadPBEMFile(filename);
+}
 
-GameMap* FileTransfer::receive()
-{
-   return loadPBEMFile( filename );
-}   
-
-GameMap* FileTransfer::loadPBEMFile( const ASCString& filename )
-{
+GameMap* FileTransfer::loadPBEMFile(const ASCString& filename) {
    GameMap* map = NULL;
-   try {      
-      tnfilestream gamefile ( filename, tnstream::reading );
+   try {
+      tnfilestream gamefile(filename, tnstream::reading);
       tnetworkloaders nwl;
-      map = nwl.loadnwgame( &gamefile );
-      if ( map->actplayer < 0 )
+      map = nwl.loadnwgame(&gamefile);
+      if (map->actplayer < 0)
          throw ASCmsgException("this map has not been properly started");
-   } 
-   catch ( tinvalidversion iv ) {
+   } catch (tinvalidversion iv) {
       throw iv;
-   }
-   catch ( tfileerror ) {
-      errorMessage ( filename + " is not a legal email game" );
+   } catch (tfileerror) {
+      errorMessage(filename + " is not a legal email game");
       return NULL;
    }
    return map;
 }
 
-ASCString FileTransfer::constructFileName( const GameMap* actmap, int lastPlayer, int lastturn ) const
-{
+ASCString FileTransfer::constructFileName(const GameMap* actmap, int lastPlayer,
+                                          int lastturn) const {
    ASCString s = filename;
-   while ( s.find( "$p") != ASCString::npos ) {
-      if ( lastPlayer >= 0 )
-         s.replace( s.find( "$p"), 2, 1, 'A' + lastPlayer );
+   while (s.find("$p") != ASCString::npos) {
+      if (lastPlayer >= 0)
+         s.replace(s.find("$p"), 2, 1, 'A' + lastPlayer);
       else
-         s.replace( s.find( "$p"), 2, "SV" );
+         s.replace(s.find("$p"), 2, "SV");
    }
 
-   while ( s.find( "$t") != ASCString::npos ) {
-      if ( lastturn >= 0 )
-         s.replace( s.find( "$t"), 2, ASCString::toString( lastturn ) );
+   while (s.find("$t") != ASCString::npos) {
+      if (lastturn >= 0)
+         s.replace(s.find("$t"), 2, ASCString::toString(lastturn));
       else
-         s.replace( s.find( "$t"), 2, ASCString::toString ( actmap->time.turn() ) );
+         s.replace(s.find("$t"), 2, ASCString::toString(actmap->time.turn()));
    }
 
-   if ( !s.endswith(tournamentextension ))
+   if (!s.endswith(tournamentextension))
       s += tournamentextension;
    return s;
 }
 
-
 namespace {
-   const bool r1 = networkTransferMechanismFactory::Instance().registerClass( FileTransfer::mechanismID(), ObjectCreator<GameTransferMechanism, FileTransfer> );
+const bool r1 = networkTransferMechanismFactory::Instance().registerClass(
+   FileTransfer::mechanismID(), ObjectCreator<GameTransferMechanism, FileTransfer>);
 }
-

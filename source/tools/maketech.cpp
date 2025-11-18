@@ -13,8 +13,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -33,52 +33,44 @@
 #include "..\events.h"
 #include "..\sgstream.h"
 
-
-
 /*
 
 um alle technologien einzulesen und bei techrequired deren namen anzuzeigen, kopier dir aus
- loaders.cpp den ersten teil von 
+ loaders.cpp den ersten teil von
 loadalltechnologies raus. hinten das pointereinrichten brauchst du nicht.
 nimm fÅr das icon die routine aus pcx2raw
 
 zu den streams:
 tnfilestream zum laden ( der lÑdt auch komprimierte dateien und auch aus der main.dta )
-tn_file_buf_stream zum speichern, der komprimiert nÑmlich im gegensatz zu tnfilestream nicht ( damit mein main.dta montierer 
-   die beste Methode raussuchen kann.
+tn_file_buf_stream zum speichern, der komprimiert nÑmlich im gegensatz zu tnfilestream nicht ( damit
+mein main.dta montierer die beste Methode raussuchen kann.
 
-den stream in einem eigen block definieren, damit beim verlassen des blockes der destructor aufgerufen wird. wie unten.
+den stream in einem eigen block definieren, damit beim verlassen des blockes der destructor
+aufgerufen wird. wie unten.
 
 
 */
 
-char     mode50 = 1;
+char mode50 = 1;
 
+void* loadpcx2(char* filestring);
+void selecttechnology(int num, int& id);
+void loadicon(char* filename, void** icon);
 
-
-
-
-void *       loadpcx2(char *       filestring);
-void  selecttechnology(int num, int &id);
-void  loadicon (char *filename, void **icon);
-
-
-
-void readtextfile ( char* name, pchar &buf, int allocated )
-{
-   int size = filesize ( name );
+void readtextfile(char* name, pchar& buf, int allocated) {
+   int size = filesize(name);
    if (!allocated)
-     buf = (char*) malloc ( size+1 );
+      buf = (char*) malloc(size + 1);
 
    char *p1, p2;
    p1 = buf;
 
-   tnfilestream stream ( name , tnstream::reading );
-   for (int i = 0; i < size ; i++ ) {
-      stream.readdata ( &p2, 1);
+   tnfilestream stream(name, tnstream::reading);
+   for (int i = 0; i < size; i++) {
+      stream.readdata(&p2, 1);
       if (p2 == 0x0D) {
-        stream.readdata ( &p2, 1);
-        i++;
+         stream.readdata(&p2, 1);
+         i++;
       }
       *p1 = p2;
       p1++;
@@ -86,308 +78,276 @@ void readtextfile ( char* name, pchar &buf, int allocated )
    *p1 = 0;
 }
 
-  
-void fexisterror (char *name)
-{
-   sound (800);
-   clearscreen(); 
-   _settextcolor (15);
-   _setbkcolor (red);
-   _settextposition (4, 5);
+void fexisterror(char* name) {
+   sound(800);
+   clearscreen();
+   _settextcolor(15);
+   _setbkcolor(red);
+   _settextposition(4, 5);
    char s[100];
-   sprintf ( s, " !! Attention :  Filename <%s> already exists !! \n", name );
-   _outtext ( s );
-   _wait ();
-   nosound ();
-   closegraphics ( );
-   exit (0);
+   sprintf(s, " !! Attention :  Filename <%s> already exists !! \n", name);
+   _outtext(s);
+   _wait();
+   nosound();
+   closegraphics();
+   exit(0);
 };
 
-
-
-
-main (int argc, char *argv[] )
-{ 
+main(int argc, char* argv[]) {
    t_carefor_containerstream cfcst;
 
-   ptechnology    tech;
-   tfile          datfile;
+   ptechnology tech;
+   tfile datfile;
    char i;
- 
-   tech = (ptechnology) calloc (sizeof (ttechnology), 1) ;
 
-   if (mode50) settxt50mode ();
-   _settextcolor (7);
-   _setbkcolor (0);
-   clearscreen ();
+   tech = (ptechnology) calloc(sizeof(ttechnology), 1);
 
-   printf ("\n    create new technology or edit an existing technology ? :\n");
+   if (mode50)
+      settxt50mode();
+   _settextcolor(7);
+   _setbkcolor(0);
+   clearscreen();
+
+   printf("\n    create new technology or edit an existing technology ? :\n");
    char maketech = 0;
-   yn_switch (" Create ", " Edit ", 0, 1, maketech);
-   
+   yn_switch(" Create ", " Edit ", 0, 1, maketech);
 
-   clearscreen ();
+   clearscreen();
    if (maketech) {
-      fileselect ("*.tec", _A_NORMAL, datfile);
-      tech = loadtechnology ( datfile.name );
+      fileselect("*.tec", _A_NORMAL, datfile);
+      tech = loadtechnology(datfile.name);
    } else {
-      printf ("\n    enter filename for new technology (without extension) :\n");
-      strcpy (datfile.name, "");
-      stredit2 (datfile.name, 9, 255,255);
-      strcat (datfile.name, ".tec");
-      if (exist(datfile.name)) fexisterror (datfile.name);
-      tech->id=0;
-      tech->icon=NULL;
-      tech->infotext=NULL;
-      tech->name=NULL;
-      tech->techlevelget=1024000000;
-      for (i=0; i<waffenanzahl; i++) tech->unitimprovement.weapons[i]=1024;
-      tech->unitimprovement.armor=1024;
-      tech->requiretechnologyid[0]=0;
-   };   
+      printf("\n    enter filename for new technology (without extension) :\n");
+      strcpy(datfile.name, "");
+      stredit2(datfile.name, 9, 255, 255);
+      strcat(datfile.name, ".tec");
+      if (exist(datfile.name))
+         fexisterror(datfile.name);
+      tech->id = 0;
+      tech->icon = NULL;
+      tech->infotext = NULL;
+      tech->name = NULL;
+      tech->techlevelget = 1024000000;
+      for (i = 0; i < waffenanzahl; i++)
+         tech->unitimprovement.weapons[i] = 1024;
+      tech->unitimprovement.armor = 1024;
+      tech->requiretechnologyid[0] = 0;
+   };
 
+   printf("\n    enter technology-id  : \n");
+   num_ed(tech->id, 0, 65534);
 
-   printf ("\n    enter technology-id  : \n");
-   num_ed ( tech->id , 0, 65534);
-
-
-   printf ("\n  change infotext ? : \n");
-   i=0;
-   yn_switch ("no", "yes", 0, 1, i);
+   printf("\n  change infotext ? : \n");
+   i = 0;
+   yn_switch("no", "yes", 0, 1, i);
    if (i) {
       char del = 0;
-      if ( tech->infotext ){
-         printf ("\n  delete infotext or include a new one ? : \n");
-         i=1;
-         yn_switch ("new", "delete", 0, 1, del);
+      if (tech->infotext) {
+         printf("\n  delete infotext or include a new one ? : \n");
+         i = 1;
+         yn_switch("new", "delete", 0, 1, del);
       }
 
-      if ( del ) {
-         free (tech->infotext);
-         tech->infotext=NULL;
+      if (del) {
+         free(tech->infotext);
+         tech->infotext = NULL;
       } else {
-         free (tech->infotext);
-         tech->infotext=NULL;
+         free(tech->infotext);
+         tech->infotext = NULL;
 
          tfile infotextfile;
          fileselect("*.txt", _A_NORMAL, infotextfile);
-         readtextfile (infotextfile.name, tech->infotext, 0);
+         readtextfile(infotextfile.name, tech->infotext, 0);
       }
    }
-      
 
-   printf ("\n  change full screen picture ? : \n");
+   printf("\n  change full screen picture ? : \n");
    printf("only the filename of the picture will be stored, not the picture itself\n");
-   i=0;
-   yn_switch ("no", "yes", 0, 1, i);
+   i = 0;
+   yn_switch("no", "yes", 0, 1, i);
    if (i) {
       char del = 0;
-      if ( tech->pictfilename ){
-         printf ("\n  delete picture or include a reference to a new one ? : \n");
-         yn_switch ("new", "delete", 0, 1, del);
+      if (tech->pictfilename) {
+         printf("\n  delete picture or include a reference to a new one ? : \n");
+         yn_switch("new", "delete", 0, 1, del);
       }
 
-      if ( del ) {
-         free (tech->pictfilename);
-         tech->pictfilename =NULL;
+      if (del) {
+         free(tech->pictfilename);
+         tech->pictfilename = NULL;
       } else {
-         free (tech->pictfilename);
-         tech->pictfilename =NULL;
+         free(tech->pictfilename);
+         tech->pictfilename = NULL;
 
          tfile pictfile;
          fileselect("*.pcx", _A_NORMAL, pictfile);
-         tech->pictfilename = strdup ( pictfile.name );
+         tech->pictfilename = strdup(pictfile.name);
       }
    }
 
-
-   printf ("\n  change ""small""picture ? : \n");
-   i=0;
-   yn_switch ("no", "yes", 0, 1, i);
+   printf(
+      "\n  change "
+      "small"
+      "picture ? : \n");
+   i = 0;
+   yn_switch("no", "yes", 0, 1, i);
    if (i) {
       char del = 0;
-      if ( tech->icon ) {
-         printf ("\n  delete picture or include a new one ? : \n");
-         yn_switch ("new", "delete", 0, 1, del);
+      if (tech->icon) {
+         printf("\n  delete picture or include a new one ? : \n");
+         yn_switch("new", "delete", 0, 1, del);
       }
-      if ( del ) {
-         free (tech->icon);
-         tech->icon=NULL;
+      if (del) {
+         free(tech->icon);
+         tech->icon = NULL;
       } else {
-         free (tech->icon);
-         tech->icon=NULL;
+         free(tech->icon);
+         tech->icon = NULL;
 
          tfile iconfile;
          fileselect("*.pcx", _A_NORMAL, iconfile);
-         loadicon (iconfile.name, &tech->icon);
+         loadicon(iconfile.name, &tech->icon);
       }
    }
-      
-      
-   
-   printf ("\n    enter researchpoints  : \n");
-   num_ed (tech->researchpoints, 0 , 1024000000);
 
+   printf("\n    enter researchpoints  : \n");
+   num_ed(tech->researchpoints, 0, 1024000000);
 
-   printf ("\n    enter name  of technology: \n");
-   stredit (tech->name, 25, 255, 255);
+   printf("\n    enter name  of technology: \n");
+   stredit(tech->name, 25, 255, 255);
 
+   printf(
+      "\n    enter techlevelGET \n ( the technology will be automatically available when a "
+      "level\nis started with a techlevel equal or greater than this)  : \n");
+   num_ed(tech->techlevelget, 1, 1024000000);
 
-   printf ("\n    enter techlevelGET \n ( the technology will be automatically available when a level\nis started with a techlevel equal or greater than this)  : \n");
-   num_ed (tech->techlevelget, 1 , 1024000000);
+   printf(
+      "\n    enter techlevelSET \n ( the techlevel will be raised to this level after the "
+      "technology has been researched\nShould be much smaller then TechlevelGET\ncheck out "
+      "doc/maketec.htm for further infos)  : \n");
+   num_ed(tech->techlevelset, 1, 1024000000);
 
-   printf ("\n    enter techlevelSET \n ( the techlevel will be raised to this level after the technology has been researched\nShould be much smaller then TechlevelGET\ncheck out doc/maketec.htm for further infos)  : \n");
-   num_ed (tech->techlevelset, 1 , 1024000000);
-
-
-   for (i=0; i<waffenanzahl; i++) {
-      printf ("\n    enter weaponimprovement (basis 1024)  : %s \n", cwaffentypen[i]);
-      num_ed (tech->unitimprovement.weapons[i], 0 , 65000);
+   for (i = 0; i < waffenanzahl; i++) {
+      printf("\n    enter weaponimprovement (basis 1024)  : %s \n", cwaffentypen[i]);
+      num_ed(tech->unitimprovement.weapons[i], 0, 65000);
    };
 
-   
-   printf ("\n    enter armorimprovement (basis 1024)  : \n");
-   num_ed (tech->unitimprovement.armor, 0 , 65000);
+   printf("\n    enter armorimprovement (basis 1024)  : \n");
+   num_ed(tech->unitimprovement.armor, 0, 65000);
 
+   //   boolean      requireevent;
 
-//   boolean      requireevent; 
- 
-   printf ("\n    enter up to 6 technologies, which are required for researching %s   (0=no technologies) :\n", tech->name);
+   printf(
+      "\n    enter up to 6 technologies, which are required for researching %s   (0=no "
+      "technologies) :\n",
+      tech->name);
    _wait();
-   for (i=0; i<=5 ; i++) {
-      selecttechnology (i+1, tech->requiretechnologyid[i]);
-      if (tech->requiretechnologyid[i]==0) {
-         for ( int j = i+1; j<=5; j++) tech->requiretechnologyid[j]=0;
+   for (i = 0; i <= 5; i++) {
+      selecttechnology(i + 1, tech->requiretechnologyid[i]);
+      if (tech->requiretechnologyid[i] == 0) {
+         for (int j = i + 1; j <= 5; j++)
+            tech->requiretechnologyid[j] = 0;
          break;
-      }   
+      }
    };
-
 
    {
-      tn_file_buf_stream stream ( datfile.name, tnstream::writing );
-      writetechnology ( tech, &stream );
+      tn_file_buf_stream stream(datfile.name, tnstream::writing);
+      writetechnology(tech, &stream);
    }
 
-   clearscreen(); 
+   clearscreen();
 
-   if (mode50) _setvideomode (_TEXTC80);
+   if (mode50)
+      _setvideomode(_TEXTC80);
    return 0;
 }
 
+void* loadpcx2(char* filestring) {
+   void* p = NULL;
+   int b;
 
-
-void *       loadpcx2(char *       filestring)
-{      
-  void         *p = NULL;
-  int b; 
-
-
-   initgraphics (640, 480, 8);
-   b = loadpcxxy(filestring, 1, 0,0); 
-   if (b == 0) { 
-      p = malloc( 1800 ); 
-      getimage(0,0,30,30,p); 
-      _wait(); 
-   } 
-   return p; 
-
-} 
-
-
-
-
-
-
-
-
-
-
-void  selecttechnology(int num, int &id)
-{ 
-   clearscreen ();
-   printf ("select technology  %i : \n", num); 
-
-   int tanzahl=0;
-   ptechnology  technology; 
-
-   tfindfile ff ( "*.tec" );
-   string c = ff.getnextname();
-
-   while ( !c.empty() ) {
-      tanzahl++;
-      technology = loadtechnology( c.c_str() );
-      printf("%3i %28s |    ", technology->id, technology->name);
-      if (tanzahl % 2 ==0) printf("\n");
-      c = ff.getnextname();
-   } 
-   printf (" enter id of technology  : ");
-   num_ed (id,0,10000);
+   initgraphics(640, 480, 8);
+   b = loadpcxxy(filestring, 1, 0, 0);
+   if (b == 0) {
+      p = malloc(1800);
+      getimage(0, 0, 30, 30, p);
+      _wait();
+   }
+   return p;
 }
 
+void selecttechnology(int num, int& id) {
+   clearscreen();
+   printf("select technology  %i : \n", num);
 
+   int tanzahl = 0;
+   ptechnology technology;
 
+   tfindfile ff("*.tec");
+   string c = ff.getnextname();
 
+   while (!c.empty()) {
+      tanzahl++;
+      technology = loadtechnology(c.c_str());
+      printf("%3i %28s |    ", technology->id, technology->name);
+      if (tanzahl % 2 == 0)
+         printf("\n");
+      c = ff.getnextname();
+   }
+   printf(" enter id of technology  : ");
+   num_ed(id, 0, 10000);
+}
 
-
-
-
-
-
-void     loadicon (char *filename, void **icon)
-{
-   initgraphics (800, 600, 8);
-   bar( 0, 0, 799, 599, 255 );
-   loadpcxxy( filename, 1, 20, 20 );
+void loadicon(char* filename, void** icon) {
+   initgraphics(800, 600, 8);
+   bar(0, 0, 799, 599, 255);
+   loadpcxxy(filename, 1, 20, 20);
 
    void* pnter;
-      {
-         int w;
-         tnfilestream stream ("mausi.raw",tnstream::reading);
-         stream.readrlepict(   &pnter, false, &w );
-      }
+   {
+      int w;
+      tnfilestream stream("mausi.raw", tnstream::reading);
+      stream.readrlepict(&pnter, false, &w);
+   }
 
-   *icon = malloc ( 100000 );
-   initmousehandler( pnter );
-   mousevisible( true );
+   *icon = malloc(100000);
+   initmousehandler(pnter);
+   mousevisible(true);
 
    do {
+      if (mouseparams.taste == 1) {
+         mousevisible(false);
+         int x = mouseparams.x;
+         int y = mouseparams.y;
+         int x1 = x;
+         while (getpixel(x1 - 1, y) != 255)
+            x1--;
 
-      if ( mouseparams.taste == 1 ) {
-        mousevisible(false);
-        int x = mouseparams.x;
-        int y = mouseparams.y;
-        int x1 = x;
-        while ( getpixel ( x1-1, y ) != 255 )
-           x1--;
+         int x2 = x;
+         while (getpixel(x2 + 1, y) != 255)
+            x2++;
 
-        int x2 = x;
-        while ( getpixel ( x2+1, y ) != 255 )
-           x2++;
+         int y1 = y;
+         while (getpixel(x, y1 - 1) != 255)
+            y1--;
 
-        int y1 = y;
-        while ( getpixel ( x, y1-1 ) != 255 )
-           y1--;
+         int y2 = y;
+         while (getpixel(x, y2 + 1) != 255)
+            y2++;
 
-        int y2 = y;
-        while ( getpixel ( x, y2+1 ) != 255 )
-           y2++;
-        
-        getimage( x1,y1,x2,y2, *icon );
+         getimage(x1, y1, x2, y2, *icon);
 
+         rectangle(x1, y1, x2, y2, 14);
 
-        rectangle( x1,y1,x2,y2, 14 );
+         while (mouseparams.taste)
+            ;
 
-        while ( mouseparams.taste );
-
-        mousevisible(true);
-
+         mousevisible(true);
       }
 
-   } while ( !kbhit() ); /* enddo */
+   } while (!kbhit()); /* enddo */
 
-   getch ();
-   settxt50mode (); 
+   getch();
+   settxt50mode();
 };
-
-
-

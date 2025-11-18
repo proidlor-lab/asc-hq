@@ -31,164 +31,158 @@
 #include "objects.h"
 #include "package.h"
 
-/*!  TextFileDataLoader is the abstract interface that has to be implemented for every 
+/*!  TextFileDataLoader is the abstract interface that has to be implemented for every
      Class that is to be stored in the ASC cache.
 
 */
 class TextFileDataLoader {
-   public:
-      virtual void readTextFiles( PropertyReadingContainer& prc, const ASCString& fileName, const ASCString& location ) = 0;
-      virtual void read ( tnstream& stream ) = 0;
-      virtual void write ( tnstream& stream ) = 0;
-      virtual ASCString getTypeName() = 0;
-      virtual void postChecks() {};
-      virtual ~TextFileDataLoader() {};
+  public:
+   virtual void readTextFiles(PropertyReadingContainer& prc, const ASCString& fileName,
+                              const ASCString& location) = 0;
+   virtual void read(tnstream& stream) = 0;
+   virtual void write(tnstream& stream) = 0;
+   virtual ASCString getTypeName() = 0;
+   virtual void postChecks() {};
+   virtual ~TextFileDataLoader(){};
 };
 
-
-//! registers a dataLoader . The object is delete after use, so use: registerDataLoader( new MyDataLoader() )
-extern void registerDataLoader( TextFileDataLoader* dataLoader );
+//! registers a dataLoader . The object is delete after use, so use: registerDataLoader( new
+//! MyDataLoader() )
+extern void registerDataLoader(TextFileDataLoader* dataLoader);
 
 //! registers a dataLoader .
-extern void registerDataLoader( TextFileDataLoader& dataLoader );
+extern void registerDataLoader(TextFileDataLoader& dataLoader);
 
+template <class T>
+class ItemRepository {
+  protected:
+   ASCString typeName;
 
-template<class T>
-class ItemRepository  {
-   protected:
-      ASCString typeName;
-      
-      typedef vector<T*> ItemContainerType;
-      ItemContainerType   container;
-      typedef map<int,T*>  ObjectMap;
-      ObjectMap hash;
+   typedef vector<T*> ItemContainerType;
+   ItemContainerType container;
+   typedef map<int, T*> ObjectMap;
+   ObjectMap hash;
 
-      void add( T* obj );
+   void add(T* obj);
 
-      map<int,int> idTranslation;
+   map<int, int> idTranslation;
 
-      class RegisterID {
-            ItemRepository<T>& repository;
-            T* object;
-         public:
-            RegisterID( ItemRepository<T>& parent, T* obj  ) : repository ( parent ), object(obj) {};
-            void operator() (int id);
-      };
+   class RegisterID {
+      ItemRepository<T>& repository;
+      T* object;
 
-      friend class RegisterID;
+     public:
+      RegisterID(ItemRepository<T>& parent, T* obj) : repository(parent), object(obj){};
+      void operator()(int id);
+   };
 
+   friend class RegisterID;
 
-   public:
-      ItemRepository( const ASCString& typeName_ ) : typeName( typeName_ ) {};
-      
-      T* getObject_byPos( int pos ) const { return container[pos]; };
+  public:
+   ItemRepository(const ASCString& typeName_) : typeName(typeName_){};
 
-      T* getObject_byID( int id ) { 
-         typename ObjectMap::iterator i = hash.find( id );
-         if ( i != hash.end() )
-            return i->second;
+   T* getObject_byPos(int pos) const { return container[pos]; };
 
-         map<int,int>::iterator j = idTranslation.find( id );
-         if ( j != idTranslation.end())
-            return getObject_byID( j->second );
+   T* getObject_byID(int id) {
+      typename ObjectMap::iterator i = hash.find(id);
+      if (i != hash.end())
+         return i->second;
 
-         return NULL;
-      };
+      map<int, int>::iterator j = idTranslation.find(id);
+      if (j != idTranslation.end())
+         return getObject_byID(j->second);
 
-      size_t getNum() const { return container.size(); };
+      return NULL;
+   };
 
-      vector<T*>& getVector() { return container; };
-      virtual ~ItemRepository() {    
-         for ( typename ItemContainerType::iterator i = container.begin(); i != container.end(); ++i )
-            delete *i;
-      };
+   size_t getNum() const { return container.size(); };
 
+   vector<T*>& getVector() { return container; };
+   virtual ~ItemRepository() {
+      for (typename ItemContainerType::iterator i = container.begin(); i != container.end(); ++i)
+         delete *i;
+   };
 
-      void addIdTranslation( int from, int to );
-      ASCString getTypeName() { return typeName; };
+   void addIdTranslation(int from, int to);
+   ASCString getTypeName() { return typeName; };
 };
 
-template<class T>
-class ItemRepositoryLoader: public ItemRepository<T>, public TextFileDataLoader {
-
-   public:
-      ItemRepositoryLoader( const ASCString& typeName_ ) : ItemRepository<T>( typeName_ ) {};
-      void readTextFiles( PropertyReadingContainer& prc, const ASCString& fileName, const ASCString& location );
-      void read( tnstream& stream );
-      void write( tnstream& stream );
-      ASCString getTypeName() { return ItemRepository<T>::getTypeName(); };
+template <class T>
+class ItemRepositoryLoader : public ItemRepository<T>, public TextFileDataLoader {
+  public:
+   ItemRepositoryLoader(const ASCString& typeName_) : ItemRepository<T>(typeName_){};
+   void readTextFiles(PropertyReadingContainer& prc, const ASCString& fileName,
+                      const ASCString& location);
+   void read(tnstream& stream);
+   void write(tnstream& stream);
+   ASCString getTypeName() { return ItemRepository<T>::getTypeName(); };
 };
 
-
-
-class MineTypeRepository : public ItemRepository<MineType>  {
-   public:
-      MineTypeRepository();
+class MineTypeRepository : public ItemRepository<MineType> {
+  public:
+   MineTypeRepository();
 };
 
 extern MineTypeRepository mineTypeRepository;
 
-
 extern sigc::signal<void> dataLoaderTicker;
 
-
-extern ItemRepositoryLoader<VehicleType>  vehicleTypeRepository;
-extern ItemRepositoryLoader<TerrainType>  terrainTypeRepository;
-extern ItemRepositoryLoader<ObjectType>   objectTypeRepository;
+extern ItemRepositoryLoader<VehicleType> vehicleTypeRepository;
+extern ItemRepositoryLoader<TerrainType> terrainTypeRepository;
+extern ItemRepositoryLoader<ObjectType> objectTypeRepository;
 extern ItemRepositoryLoader<BuildingType> buildingTypeRepository;
-extern ItemRepositoryLoader<Technology>   technologyRepository;
+extern ItemRepositoryLoader<Technology> technologyRepository;
 
-extern void  loadAllData( bool useCache = true );
+extern void loadAllData(bool useCache = true);
 
-typedef  deallocating_vector<TechAdapter*> TechAdapterContainer;
+typedef deallocating_vector<TechAdapter*> TechAdapterContainer;
 extern TechAdapterContainer techAdapterContainer;
 
-
-
 class ItemFiltrationSystem {
-      public:
-         typedef enum { Building, Vehicle, Object, Terrain, Technology } Category;
+  public:
+   typedef enum { Building, Vehicle, Object, Terrain, Technology } Category;
 
-         class ItemFilter {
-               public:
-                 typedef vector<IntRange> IntRangeArray;
-               private:
-                 IntRangeArray buildings;
-                 IntRangeArray objects;
-                 IntRangeArray units;
-                 IntRangeArray terrain;
-                 IntRangeArray technologies;
-                 bool isContained (IntRangeArray& arr, int id );
-                 bool active;
-               public:
-                 ItemFilter() { active = false; };
-                 ItemFilter( const ASCString& _name, const IntRangeArray& unitsetIDs, bool _active );
-                 ASCString name;
-                 bool isActive() { return active; };
-                 void setActive( bool _active ) { active = _active; };
-                 void runTextIO ( PropertyContainer& pc );
-                 void read ( tnstream& stream ) ;
-                 void write ( tnstream& stream ) ;
-                 bool isContained ( ItemFiltrationSystem::Category cat, int id );
-         };
-         static deallocating_vector<ItemFilter*> itemFilters;
+   class ItemFilter {
+     public:
+      typedef vector<IntRange> IntRangeArray;
 
-         class DataLoader : public TextFileDataLoader {
-            public:
-               void readTextFiles( PropertyReadingContainer& prc, const ASCString& fileName, const ASCString& location );
-               void read ( tnstream& stream ) ;
-               void write ( tnstream& stream ) ;
-               ASCString getTypeName() { return "itemfilter"; };
-         };
+     private:
+      IntRangeArray buildings;
+      IntRangeArray objects;
+      IntRangeArray units;
+      IntRangeArray terrain;
+      IntRangeArray technologies;
+      bool isContained(IntRangeArray& arr, int id);
+      bool active;
 
+     public:
+      ItemFilter() { active = false; };
+      ItemFilter(const ASCString& _name, const IntRangeArray& unitsetIDs, bool _active);
+      ASCString name;
+      bool isActive() { return active; };
+      void setActive(bool _active) { active = _active; };
+      void runTextIO(PropertyContainer& pc);
+      void read(tnstream& stream);
+      void write(tnstream& stream);
+      bool isContained(ItemFiltrationSystem::Category cat, int id);
+   };
+   static deallocating_vector<ItemFilter*> itemFilters;
 
-         static bool isFiltered ( Category cat, int id );
-         static bool isFiltered( const VehicleType* item );
-         static bool isFiltered( const BuildingType* item );
-         static bool isFiltered( const ObjectType* item );
-         static bool isFiltered( const TerrainType* item );
-         static bool isFiltered( const MineType* item );
-       
+   class DataLoader : public TextFileDataLoader {
+     public:
+      void readTextFiles(PropertyReadingContainer& prc, const ASCString& fileName,
+                         const ASCString& location);
+      void read(tnstream& stream);
+      void write(tnstream& stream);
+      ASCString getTypeName() { return "itemfilter"; };
+   };
+
+   static bool isFiltered(Category cat, int id);
+   static bool isFiltered(const VehicleType* item);
+   static bool isFiltered(const BuildingType* item);
+   static bool isFiltered(const ObjectType* item);
+   static bool isFiltered(const TerrainType* item);
+   static bool isFiltered(const MineType* item);
 };
 
 #endif

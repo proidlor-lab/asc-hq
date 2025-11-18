@@ -7,7 +7,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef unitcostcalculationH
 #define unitcostcalculationH
 
@@ -16,10 +15,10 @@ class Resources;
 class ASCString;
 
 class UnitCostCalculator {
-   public:
-      virtual Resources productionCost( const VehicleType* vehicle ) = 0;
-      virtual ASCString getCalculatorName() = 0;
-      virtual ~UnitCostCalculator() {};
+  public:
+   virtual Resources productionCost(const VehicleType* vehicle) = 0;
+   virtual ASCString getCalculatorName() = 0;
+   virtual ~UnitCostCalculator(){};
 };
 
 #endif

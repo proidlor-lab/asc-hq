@@ -8,21 +8,19 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef stdioerrorhandlerH
 #define stdioerrorhandlerH
 
 #include <sigc++/sigc++.h>
 #include "ascstring.h"
 
+class StdIoErrorHandler : public sigc::trackable {
+   void printStdout(const ASCString& msg);
+   void printStderr(const ASCString& msg);
+   void messageLogger(const ASCString& msg, int level);
 
- class StdIoErrorHandler : public sigc::trackable {
-       void printStdout( const ASCString& msg );
-       void printStderr( const ASCString& msg );
-       void messageLogger( const ASCString& msg, int level );
-    public:
-       StdIoErrorHandler( bool quitOnFatalError = true );
- };
-
+  public:
+   StdIoErrorHandler(bool quitOnFatalError = true);
+};
 
 #endif

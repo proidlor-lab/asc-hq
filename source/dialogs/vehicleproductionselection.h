@@ -15,102 +15,100 @@
 #include "vehicletypeselector.h"
 #include "../actions/constructunitcommand.h"
 
-class VehicleProduction_SelectionItemFactory: public VehicleTypeSelectionItemFactory
-{
-      bool fillResources;
-      bool fillAmmo;
-      const ContainerBase* plant;
+class VehicleProduction_SelectionItemFactory : public VehicleTypeSelectionItemFactory {
+   bool fillResources;
+   bool fillAmmo;
+   const ContainerBase* plant;
 
-      const ConstructUnitCommand::Producables& produceables;
+   const ConstructUnitCommand::Producables& produceables;
 
-      Container* items; // will be initialized by the constructor's call to convertArrays
-      
-      static const Container& convertAndCreateArrays( const ConstructUnitCommand::Producables& from, Container** items );
-      static const Container& convertArrays( const ConstructUnitCommand::Producables& from, Container& items );
-      
-   protected:
-      void vehicleTypeSelected( const VehicleType* type, bool mouse );
-      void itemMarked( const SelectionWidget* widget, bool mouse );
+   Container* items;  // will be initialized by the constructor's call to convertArrays
 
-   public:
-      VehicleProduction_SelectionItemFactory( Resources plantResources, const ContainerBase* productionplant, const ConstructUnitCommand::Producables& produceableUnits  );
+   static const Container& convertAndCreateArrays(const ConstructUnitCommand::Producables& from,
+                                                  Container** items);
+   static const Container& convertArrays(const ConstructUnitCommand::Producables& from,
+                                         Container& items);
 
-      bool getAmmoFilling();
+  protected:
+   void vehicleTypeSelected(const VehicleType* type, bool mouse);
+   void itemMarked(const SelectionWidget* widget, bool mouse);
 
-      bool setAmmoFilling( bool value );
+  public:
+   VehicleProduction_SelectionItemFactory(
+      Resources plantResources, const ContainerBase* productionplant,
+      const ConstructUnitCommand::Producables& produceableUnits);
 
-      bool getResourceFilling();
+   bool getAmmoFilling();
 
-      bool setResourceFilling( bool value );
+   bool setAmmoFilling(bool value);
 
-      Resources getCost( const VehicleType* type );
+   bool getResourceFilling();
 
-      sigc::signal<void,const VehicleType*, bool > sigVehicleTypeSelected;
-      sigc::signal<void,const VehicleType* > sigVehicleTypeMarked;
-      
-      void updateProducables();
-      
-      
-      ~VehicleProduction_SelectionItemFactory()
-      {
-         delete items;
-      }
+   bool setResourceFilling(bool value);
+
+   Resources getCost(const VehicleType* type);
+
+   sigc::signal<void, const VehicleType*, bool> sigVehicleTypeSelected;
+   sigc::signal<void, const VehicleType*> sigVehicleTypeMarked;
+
+   void updateProducables();
+
+   ~VehicleProduction_SelectionItemFactory() { delete items; }
 };
 
+class AddProductionLine_SelectionItemFactory : public VehicleTypeSelectionItemFactory {
+   ContainerBase* plant;
 
-class AddProductionLine_SelectionItemFactory: public VehicleTypeSelectionItemFactory
-{
-      ContainerBase* plant;
-   public:
-      AddProductionLine_SelectionItemFactory( ContainerBase* my_plant, const Container& types );
+  public:
+   AddProductionLine_SelectionItemFactory(ContainerBase* my_plant, const Container& types);
 
-      void vehicleTypeSelected( const VehicleType* type, bool mouse );
+   void vehicleTypeSelected(const VehicleType* type, bool mouse);
 
-      Resources getCost( const VehicleType* type );
+   Resources getCost(const VehicleType* type);
 };
 
+class VehicleProduction_SelectionWindow : public ASC_PG_Dialog {
+   const VehicleType* selected;
+   const VehicleType* finallySelected;
+   ItemSelectorWidget* isw;
+   VehicleProduction_SelectionItemFactory* factory;
+   ContainerBase* my_plant;
 
-class VehicleProduction_SelectionWindow : public ASC_PG_Dialog
-{
-      const VehicleType* selected;
-      const VehicleType* finallySelected;
-      ItemSelectorWidget* isw;
-      VehicleProduction_SelectionItemFactory* factory;
-      ContainerBase* my_plant;
-      
-      const ConstructUnitCommand::Producables& produceables;
-   protected:
-      void vtMarked( const VehicleType* vt );
+   const ConstructUnitCommand::Producables& produceables;
 
-      void vtSelected( const VehicleType* vt, bool mouse );
+  protected:
+   void vtMarked(const VehicleType* vt);
 
-      bool produce();
+   void vtSelected(const VehicleType* vt, bool mouse);
 
-      bool closeWindow();
+   bool produce();
 
-      bool quitSignalled();
+   bool closeWindow();
 
-      void reLoadAndUpdate();
+   bool quitSignalled();
 
-      bool eventKeyDown(const SDL_KeyboardEvent* key);
+   void reLoadAndUpdate();
 
-   public:
-      VehicleProduction_SelectionWindow( PG_Widget *parent, const PG_Rect &r, ContainerBase* plant, const ConstructUnitCommand::Producables& produceableUnits, bool internally );
-      
-      void updateProducables();
-      
-      sigc::signal<void> reloadProducebles;
-      
-      bool addProductionLine();
+   bool eventKeyDown(const SDL_KeyboardEvent* key);
 
-      bool removeProductionLine();
+  public:
+   VehicleProduction_SelectionWindow(PG_Widget* parent, const PG_Rect& r, ContainerBase* plant,
+                                     const ConstructUnitCommand::Producables& produceableUnits,
+                                     bool internally);
 
-      bool fillWithAmmo();
+   void updateProducables();
 
-      bool fillWithResources();
+   sigc::signal<void> reloadProducebles;
 
-      const VehicleType* getVehicletype() { return finallySelected; };
+   bool addProductionLine();
+
+   bool removeProductionLine();
+
+   bool fillWithAmmo();
+
+   bool fillWithResources();
+
+   const VehicleType* getVehicletype() { return finallySelected; };
 };
-
 
 #endif

@@ -1,6 +1,6 @@
 /*
      This file is part of Advanced Strategic Command; http://www.asc-hq.de
-     Copyright (C) 1994-2010  Martin Bickel  
+     Copyright (C) 1994-2010  Martin Bickel
 
      This program is free software; you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by
@@ -28,42 +28,53 @@ class Vehicle;
 
 #include "../actions/actionresult.h"
 
-extern GameMap* loadGameLua( const char* filename );
+extern GameMap* loadGameLua(const char* filename);
 
-extern ActionResult unitAttack( GameMap* actmap, int veh, const MapCoordinate& target, int weapon = -1 );
-extern ActionResult unitMovement( GameMap* actmap, int unitID, const MapCoordinate& destination, int destinationHeigth );
-extern ActionResult unitMovement( GameMap* actmap, int unitID, const MapCoordinate& destination );
-extern ActionResult putMineFunc( GameMap* actmap, int veh, const MapCoordinate& destination, int mineType );
-extern ActionResult removeMineFunc( GameMap* actmap, int veh, const MapCoordinate& destination );
-extern ActionResult unitPutObject( GameMap* actmap, int veh, const MapCoordinate& destination, int objectID );
-extern ActionResult unitRemoveObject( GameMap* actmap, int veh, const MapCoordinate& destination, int objectID );
-extern ActionResult unitDestructBuilding( GameMap* actmap, int veh, const MapCoordinate& destination );
-extern ActionResult transferControl( GameMap* actmap, int containerID, int newOwner );
-extern ActionResult trainUnit( GameMap* actmap, int containerID, int unitID );
-extern ActionResult constructUnit( GameMap* actmap, int containerID, const MapCoordinate& position, int unitID );
-extern ActionResult constructBuilding( GameMap* actmap, int unitID, const MapCoordinate& position, int buildingTypeID );
-extern ActionResult serviceCommand( GameMap* actmap, int providingContainerID, int receivingContainerID, int type, int amount );
-extern ActionResult repairUnit( GameMap* actmap, int repairerID, int damagedUnitID );
-extern ActionResult unitReactionFireEnable( GameMap* actmap, int unitID, bool enabled );
-extern ActionResult unitPowerGenerationEnable( GameMap* actmap, int unitID, int enabled );
-extern ActionResult unitJump( GameMap* actmap, int veh, const MapCoordinate& destination );
-extern ActionResult selfDestruct( GameMap* actmap, int containerID );
-extern ActionResult recycleUnit( GameMap* actmap, int containerID, int unitID );
-extern ActionResult buildProductionLine( GameMap* actmap, int containerID, int vehicleTypeID );
-extern ActionResult removeProductionLine( GameMap* actmap, int containerID, int vehicleTypeID );
-extern ActionResult repairBuilding( GameMap* actmap, int buildingID );
-extern ActionResult setResourceProcessingRate( GameMap* actmap, int containerID, int amount );
-extern ActionResult cargoUnitMove( GameMap* actmap, int unitID, int targetContainerID );
-extern ActionResult setDiplomacy( GameMap* actmap, int actingPlayer, int towardsPlayer, bool sneak, int newState );
-extern ActionResult cancelResearch( GameMap* actmap, int actingPlayer );
-extern ActionResult setResearchGoal( GameMap* actmap, int actingPlayer, int techID );
-extern ActionResult renameContainer( GameMap* actmap, int unitID, const ASCString& publicName, const ASCString& privateName );
-      
+extern ActionResult unitAttack(GameMap* actmap, int veh, const MapCoordinate& target,
+                               int weapon = -1);
+extern ActionResult unitMovement(GameMap* actmap, int unitID, const MapCoordinate& destination,
+                                 int destinationHeigth);
+extern ActionResult unitMovement(GameMap* actmap, int unitID, const MapCoordinate& destination);
+extern ActionResult putMineFunc(GameMap* actmap, int veh, const MapCoordinate& destination,
+                                int mineType);
+extern ActionResult removeMineFunc(GameMap* actmap, int veh, const MapCoordinate& destination);
+extern ActionResult unitPutObject(GameMap* actmap, int veh, const MapCoordinate& destination,
+                                  int objectID);
+extern ActionResult unitRemoveObject(GameMap* actmap, int veh, const MapCoordinate& destination,
+                                     int objectID);
+extern ActionResult unitDestructBuilding(GameMap* actmap, int veh,
+                                         const MapCoordinate& destination);
+extern ActionResult transferControl(GameMap* actmap, int containerID, int newOwner);
+extern ActionResult trainUnit(GameMap* actmap, int containerID, int unitID);
+extern ActionResult constructUnit(GameMap* actmap, int containerID, const MapCoordinate& position,
+                                  int unitID);
+extern ActionResult constructBuilding(GameMap* actmap, int unitID, const MapCoordinate& position,
+                                      int buildingTypeID);
+extern ActionResult serviceCommand(GameMap* actmap, int providingContainerID,
+                                   int receivingContainerID, int type, int amount);
+extern ActionResult repairUnit(GameMap* actmap, int repairerID, int damagedUnitID);
+extern ActionResult unitReactionFireEnable(GameMap* actmap, int unitID, bool enabled);
+extern ActionResult unitPowerGenerationEnable(GameMap* actmap, int unitID, int enabled);
+extern ActionResult unitJump(GameMap* actmap, int veh, const MapCoordinate& destination);
+extern ActionResult selfDestruct(GameMap* actmap, int containerID);
+extern ActionResult recycleUnit(GameMap* actmap, int containerID, int unitID);
+extern ActionResult buildProductionLine(GameMap* actmap, int containerID, int vehicleTypeID);
+extern ActionResult removeProductionLine(GameMap* actmap, int containerID, int vehicleTypeID);
+extern ActionResult repairBuilding(GameMap* actmap, int buildingID);
+extern ActionResult setResourceProcessingRate(GameMap* actmap, int containerID, int amount);
+extern ActionResult cargoUnitMove(GameMap* actmap, int unitID, int targetContainerID);
+extern ActionResult setDiplomacy(GameMap* actmap, int actingPlayer, int towardsPlayer, bool sneak,
+                                 int newState);
+extern ActionResult cancelResearch(GameMap* actmap, int actingPlayer);
+extern ActionResult setResearchGoal(GameMap* actmap, int actingPlayer, int techID);
+extern ActionResult renameContainer(GameMap* actmap, int unitID, const ASCString& publicName,
+                                    const ASCString& privateName);
+
 extern void endTurn();
 
 //! ends a turn. All user interaction is avoided. Intended for unit tests and other automated tasks
 extern void endTurn_headLess(GameMap* gamemap);
 
-extern Vehicle* getSelectedUnit( GameMap* map );
+extern Vehicle* getSelectedUnit(GameMap* map);
 
 #endif

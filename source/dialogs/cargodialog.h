@@ -15,13 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef cargodialogH
- #define cargodialogH
+#define cargodialogH
 
- class ContainerBase;
- 
- extern void cargoDialog( ContainerBase* cb );
+class ContainerBase;
+
+extern void cargoDialog(ContainerBase* cb);
 
 #endif
-

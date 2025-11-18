@@ -111,7 +111,7 @@
 	#define PG_CATCH_ALL catch(...)
 	#define PG_THROW(_ex_) throw _ex_
 	#define PG_RETHROW throw
-	#define PG_NOTHROW throw()
+	#define PG_NOTHROW noexcept
 	#define PG_UNWIND(action) catch(...) {action; throw;}
 	#define PG_CATCH(_ex_, _name_) catch(_ex_& _name_)
 #else

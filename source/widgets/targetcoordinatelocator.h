@@ -23,15 +23,16 @@
 #include "pgimage.h"
 #include "../dialogs/fieldmarker.h"
 
-class TargetCoordinateLocator : public PG_Image  {
-      static SDL_Surface* getImage();
-      SelectFromMap::CoordinateList positions;
-   protected:
-      bool 	eventMouseButtonDown (const SDL_MouseButtonEvent *button);
+class TargetCoordinateLocator : public PG_Image {
+   static SDL_Surface* getImage();
+   SelectFromMap::CoordinateList positions;
 
-   public:
-      TargetCoordinateLocator(PG_Widget* parent, const PG_Point& pos, const SelectFromMap::CoordinateList& coordinates );
+  protected:
+   bool eventMouseButtonDown(const SDL_MouseButtonEvent* button);
 
+  public:
+   TargetCoordinateLocator(PG_Widget* parent, const PG_Point& pos,
+                           const SelectFromMap::CoordinateList& coordinates);
 };
 
 #endif

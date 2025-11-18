@@ -26,78 +26,77 @@
 #include "errors.h"
 #include "basestreaminterface.h"
 
-class tnbufstream  : public tnstream {
-           int datalen;
+class tnbufstream : public tnstream {
+   int datalen;
 
-       protected:
-           Uint8* zeiger;
-           IOMode  _mode;
-           int   actmempos;
-           int   memsize;
-           int   datasize;
+  protected:
+   Uint8* zeiger;
+   IOMode _mode;
+   int actmempos;
+   int memsize;
+   int datasize;
 
-           virtual void readbuffer( void ) = 0;
-           virtual void writebuffer( void ) = 0;
-           virtual void close( void ) {};
-       public:
-           tnbufstream ( );
-           virtual void writedata ( const void* buf, int size );
-           virtual int  readdata  ( void* buf, int size, bool excpt = true  );
+   virtual void readbuffer(void) = 0;
+   virtual void writebuffer(void) = 0;
+   virtual void close(void) {};
 
-           virtual ~tnbufstream ( );
+  public:
+   tnbufstream();
+   virtual void writedata(const void* buf, int size);
+   virtual int readdata(void* buf, int size, bool excpt = true);
 
-      };
+   virtual ~tnbufstream();
+};
 
 class tn_file_buf_stream : public tnbufstream {
-            FILE* fp;
-            int actfilepos;
+   FILE* fp;
+   int actfilepos;
 
-            bool sizeCached;
-            int sizeValue;
-            bool timeCached;
-            int timeValue;
+   bool sizeCached;
+   int sizeValue;
+   bool timeCached;
+   int timeValue;
 
+  protected:
+   void readbuffer(void);
+   void writebuffer(void);
 
-        protected:
-            void readbuffer( void );
-            void writebuffer( void );
-
-
-        public:
-            tn_file_buf_stream ( const ASCString& _fileName, IOMode mode );
-            virtual void seek ( int newpos );
-            virtual int getstreamsize ( void );
-            virtual int getSize ( void ) { return getstreamsize(); };
-            virtual time_t get_time ( void );
-            virtual ~tn_file_buf_stream( );
-  };
-
+  public:
+   tn_file_buf_stream(const ASCString& _fileName, IOMode mode);
+   virtual void seek(int newpos);
+   virtual int getstreamsize(void);
+   virtual int getSize(void) { return getstreamsize(); };
+   virtual time_t get_time(void);
+   virtual ~tn_file_buf_stream();
+};
 
 class tfileerror : public ASCexception {
    ASCString _filename;
+
   public:
-   tfileerror ( const ASCString& fileName ) ;
+   tfileerror(const ASCString& fileName);
    const ASCString& getFileName() const { return _filename; };
-   tfileerror ( void ) {};
+   tfileerror(void){};
 };
 
 class tinvalidmode : public tfileerror {
   public:
    int orgmode, requestmode;
-   tinvalidmode ( const ASCString& fileName, tnstream::IOMode org_mode, tnstream::IOMode requested_mode ) ;
+   tinvalidmode(const ASCString& fileName, tnstream::IOMode org_mode,
+                tnstream::IOMode requested_mode);
 };
 
 class treadafterend : public tfileerror {
   public:
-   treadafterend ( const ASCString& fileName );
+   treadafterend(const ASCString& fileName);
 };
 
-class tinternalerror: public ASCexception {
+class tinternalerror : public ASCexception {
    int linenum;
    const char* sourcefilename;
-  public:
-   tinternalerror ( const char* filename, int l );
-};
 
+  public:
+   tinternalerror(const char* filename, int l);
+};
 
 #endif

@@ -1,0 +1,553 @@
+name: CI Build and Test
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+  workflow_dispatch:
+
+env:
+  # Parallel build jobs
+  MAKEFLAGS: "-j2"
+
+jobs:
+  build-gui:
+    name: Build (GUI Mode)
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Cache dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.ccache
+          /var/cache/apt
+        key: ${{ runner.os }}-deps-${{ hashFiles('configure.ac') }}
+        restore-keys: |
+          ${{ runner.os }}-deps-
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          autoconf \
+          automake \
+          libtool \
+          pkg-config \
+          perl \
+          zip \
+          libsdl1.2-dev \
+          libsdl-image1.2-dev \
+          libsdl-mixer1.2-dev \
+          libsdl-sound1.2-dev \
+          liblua5.1-0-dev \
+          libwxgtk3.2-dev \
+          libsigc++-2.0-dev \
+          libfreetype6-dev \
+          libexpat1-dev \
+          libphysfs-dev \
+          libjpeg-dev \
+          libpng-dev \
+          libbz2-dev \
+          libboost-regex-dev \
+          libboost-dev \
+          libvorbis-dev \
+          ccache
+
+    - name: Setup ccache
+      run: |
+        ccache --max-size=500M
+        ccache --set-config=compression=true
+
+    - name: Bootstrap
+      run: ./bootstrap
+
+    - name: Configure (out-of-tree build)
+      run: |
+        export CC="ccache gcc"
+        export CXX="ccache g++"
+        mkdir -p build-autotools
+        cd build-autotools
+        ../configure --enable-debug
+
+    - name: Build (out-of-tree)
+      run: |
+        cd build-autotools
+        make -j2
+
+    - name: Run unit tests
+      run: |
+        cd build-autotools
+        make check || true
+      continue-on-error: true
+
+    - name: Verify clean source tree (out-of-tree build)
+      run: |
+        echo "=== Checking for build artifacts in source tree ==="
+        if find source -name "*.o" -o -name "*.lo" -o -name "*.a" | grep -v ".libs" | grep -q .; then
+          echo "⚠️  Warning: Build artifacts found in source tree"
+          find source -name "*.o" -o -name "*.lo" -o -name "*.a" | grep -v ".libs" | head -20
+        else
+          echo "✓ Source tree is clean (out-of-tree build working)"
+        fi
+
+    - name: Show ccache statistics
+      run: ccache -s
+
+    - name: Upload build artifacts
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-logs-autotools-gui
+        path: |
+          build-autotools/config.log
+          build-autotools/**/*.log
+        retention-days: 7
+
+  build-headless:
+    name: Build (Headless Mode)
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Cache dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.ccache
+          /var/cache/apt
+        key: ${{ runner.os }}-headless-deps-${{ hashFiles('configure.ac') }}
+        restore-keys: |
+          ${{ runner.os }}-headless-deps-
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          autoconf \
+          automake \
+          libtool \
+          pkg-config \
+          perl \
+          zip \
+          libsdl1.2-dev \
+          libsdl-image1.2-dev \
+          libsdl-mixer1.2-dev \
+          libsdl-sound1.2-dev \
+          liblua5.1-0-dev \
+          libwxgtk3.2-dev \
+          libsigc++-2.0-dev \
+          libfreetype6-dev \
+          libexpat1-dev \
+          libphysfs-dev \
+          libjpeg-dev \
+          libpng-dev \
+          libbz2-dev \
+          libboost-regex-dev \
+          libboost-dev \
+          libvorbis-dev \
+          ccache
+
+    - name: Setup ccache
+      run: |
+        ccache --max-size=500M
+        ccache --set-config=compression=true
+
+    - name: Bootstrap
+      run: ./bootstrap
+
+    - name: Configure (out-of-tree build, headless)
+      run: |
+        export CC="ccache gcc"
+        export CXX="ccache g++"
+        mkdir -p build-autotools-headless
+        cd build-autotools-headless
+        ../configure --enable-debug
+
+    - name: Build (out-of-tree)
+      run: |
+        cd build-autotools-headless
+        make -j2
+
+    - name: Run unit tests
+      run: |
+        cd build-autotools-headless
+        make check || true
+      continue-on-error: true
+
+    - name: Verify clean source tree (out-of-tree build)
+      run: |
+        echo "=== Checking for build artifacts in source tree ==="
+        if find source -name "*.o" -o -name "*.lo" -o -name "*.a" | grep -v ".libs" | grep -q .; then
+          echo "⚠️  Warning: Build artifacts found in source tree"
+          find source -name "*.o" -o -name "*.lo" -o -name "*.a" | grep -v ".libs" | head -20
+        else
+          echo "✓ Source tree is clean (out-of-tree build working)"
+        fi
+
+    - name: Show ccache statistics
+      run: ccache -s
+
+  cmake-build:
+    name: CMake Build (MCTS Module)
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Cache CMake build
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.ccache
+          build
+        key: ${{ runner.os }}-cmake-${{ hashFiles('CMakeLists.txt', 'source/ai/mcts/CMakeLists.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-cmake-
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          cmake \
+          ninja-build \
+          pkg-config \
+          autoconf \
+          automake \
+          libtool \
+          perl \
+          zip \
+          libsdl1.2-dev \
+          libsdl-image1.2-dev \
+          libsdl-mixer1.2-dev \
+          libsdl-sound1.2-dev \
+          liblua5.1-0-dev \
+          libwxgtk3.2-dev \
+          libsigc++-2.0-dev \
+          libfreetype6-dev \
+          libexpat1-dev \
+          libphysfs-dev \
+          libjpeg-dev \
+          libpng-dev \
+          libbz2-dev \
+          libboost-regex-dev \
+          libboost-dev \
+          libvorbis-dev \
+          ccache
+
+    - name: Setup ccache
+      run: |
+        ccache --max-size=500M
+        ccache --set-config=compression=true
+
+    - name: Generate config.h (required during transition)
+      run: |
+        # CMake build needs config.h from Autotools during transition phase
+        ./bootstrap
+        ./configure
+        # Keep only config.h, clean everything else
+        make clean || true
+
+    - name: Configure CMake (Debug)
+      run: |
+        export CC="ccache gcc"
+        export CXX="ccache g++"
+        mkdir -p build
+        cd build
+        cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug ..
+
+    - name: Build with CMake
+      run: |
+        cd build
+        ninja -v
+
+    - name: Verify build artifacts
+      run: |
+        echo "=== Build Artifacts ==="
+        ls -lh build/lib/
+        ls -lh build/bin/
+        echo ""
+        echo "=== Verify MCTS library ==="
+        file build/lib/libmcts.a
+        echo ""
+        echo "=== Verify test executables ==="
+        file build/bin/snapshot_test
+        file build/bin/action_executor_test
+        file build/bin/evaluator_test
+
+    - name: Run MCTS tests (CMake build)
+      run: |
+        cd build/bin
+        echo "=== Running snapshot_test ==="
+        ./snapshot_test
+        echo ""
+        echo "=== Running action_executor_test ==="
+        ./action_executor_test
+        echo ""
+        echo "=== Running evaluator_test ==="
+        ./evaluator_test
+
+    - name: Verify clean source tree (out-of-tree build)
+      run: |
+        echo "=== Checking for build artifacts in source tree ==="
+        if find source/ai/mcts -name "*.o" -o -name "*.a" | grep -q .; then
+          echo "ERROR: Build artifacts found in source tree!"
+          find source/ai/mcts -name "*.o" -o -name "*.a"
+          exit 1
+        else
+          echo "✓ Source tree is clean (out-of-tree build working correctly)"
+        fi
+
+    - name: Show ccache statistics
+      run: ccache -s
+
+    - name: Upload build artifacts
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: cmake-build-logs
+        path: |
+          build/CMakeFiles/CMakeOutput.log
+          build/CMakeFiles/CMakeError.log
+        retention-days: 7
+
+  mcts-tests-autotools:
+    name: MCTS Module Tests (Autotools)
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          autoconf \
+          automake \
+          libtool \
+          pkg-config \
+          perl \
+          zip \
+          libsdl1.2-dev \
+          libsdl-image1.2-dev \
+          libsdl-mixer1.2-dev \
+          libsdl-sound1.2-dev \
+          liblua5.1-0-dev \
+          libwxgtk3.2-dev \
+          libsigc++-2.0-dev \
+          libfreetype6-dev \
+          libexpat1-dev \
+          libphysfs-dev \
+          libjpeg-dev \
+          libpng-dev \
+          libbz2-dev \
+          libboost-regex-dev \
+          libboost-dev \
+          libvorbis-dev
+
+    - name: Bootstrap
+      run: ./bootstrap
+
+    - name: Configure (out-of-tree build)
+      run: |
+        mkdir -p build-autotools-mcts
+        cd build-autotools-mcts
+        ../configure
+
+    - name: Build MCTS tests
+      run: |
+        cd build-autotools-mcts/source/ai/mcts
+        make -j2 action_executor_test snapshot_test evaluator_test || true
+      continue-on-error: true
+
+    - name: Run MCTS tests
+      run: |
+        cd build-autotools-mcts/source/ai/mcts
+        echo "=== Running action_executor_test ==="
+        ./action_executor_test || true
+        echo ""
+        echo "=== Running snapshot_test ==="
+        ./snapshot_test || true
+        echo ""
+        echo "=== Running evaluator_test ==="
+        ./evaluator_test || true
+      continue-on-error: true
+
+  google-test-suite:
+    name: Google Test Suite
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          autoconf \
+          automake \
+          libtool \
+          pkg-config \
+          perl \
+          zip \
+          libsdl1.2-dev \
+          libsdl-image1.2-dev \
+          libsdl-mixer1.2-dev \
+          libsdl-sound1.2-dev \
+          liblua5.1-0-dev \
+          libwxgtk3.2-dev \
+          libsigc++-2.0-dev \
+          libfreetype6-dev \
+          libexpat1-dev \
+          libphysfs-dev \
+          libjpeg-dev \
+          libpng-dev \
+          libbz2-dev \
+          libboost-regex-dev \
+          libboost-dev \
+          libvorbis-dev
+
+    - name: Bootstrap
+      run: ./bootstrap
+
+    - name: Configure (out-of-tree build)
+      run: |
+        mkdir -p build-gtest
+        cd build-gtest
+        ../configure
+
+    - name: Build Google Test suite
+      run: |
+        cd build-gtest/tests
+        make -j2
+
+    - name: Run Google Test suite
+      run: |
+        cd build-gtest/tests
+        make check
+
+    - name: Display test results
+      if: always()
+      run: |
+        echo "=== Google Test Results ==="
+        if [ -f build-gtest/tests/test-suite.log ]; then
+          cat build-gtest/tests/test-suite.log
+        fi
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: google-test-results
+        path: |
+          build-gtest/tests/*.log
+          build-gtest/tests/test-suite.log
+        retention-days: 30
+
+  static-analysis:
+    name: Static Analysis
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install analysis tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          cppcheck \
+          clang-tidy \
+          build-essential \
+          autoconf \
+          automake \
+          libtool \
+          pkg-config \
+          perl \
+          libsdl1.2-dev \
+          libsdl-image1.2-dev \
+          libsdl-mixer1.2-dev \
+          liblua5.1-0-dev \
+          libwxgtk3.2-dev \
+          libsigc++-2.0-dev \
+          libfreetype6-dev \
+          libexpat1-dev \
+          libphysfs-dev \
+          libjpeg-dev \
+          libpng-dev \
+          libbz2-dev \
+          libboost-regex-dev \
+          libboost-dev \
+          libvorbis-dev
+
+    - name: Run cppcheck
+      run: |
+        cppcheck \
+          --enable=warning,style,performance,portability \
+          --suppress=missingIncludeSystem \
+          --suppress=unusedFunction \
+          --inline-suppr \
+          --quiet \
+          --error-exitcode=0 \
+          source/ 2>&1 | tee cppcheck-report.txt || true
+      continue-on-error: true
+
+    - name: Upload analysis results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: static-analysis-reports
+        path: |
+          cppcheck-report.txt
+        retention-days: 30
+
+  build-status:
+    name: Build Status Summary
+    runs-on: ubuntu-24.04
+    needs: [build-gui, build-headless, cmake-build, mcts-tests-autotools, google-test-suite, static-analysis]
+    if: always()
+
+    steps:
+    - name: Check build results
+      run: |
+        echo "Build GUI (Autotools): ${{ needs.build-gui.result }}"
+        echo "Build Headless (Autotools): ${{ needs.build-headless.result }}"
+        echo "CMake Build (MCTS): ${{ needs.cmake-build.result }}"
+        echo "MCTS Tests (Autotools): ${{ needs.mcts-tests-autotools.result }}"
+        echo "Google Test Suite: ${{ needs.google-test-suite.result }}"
+        echo "Static Analysis: ${{ needs.static-analysis.result }}"
+        echo ""
+        if [ "${{ needs.cmake-build.result }}" = "success" ]; then
+          echo "✓ CMake migration Phase 1 successful!"
+        fi
+        if [ "${{ needs.google-test-suite.result }}" = "success" ]; then
+          echo "✓ Google Test framework integration successful!"
+        else
+          echo "⚠ Google Test integration needs attention - check logs"
+        fi

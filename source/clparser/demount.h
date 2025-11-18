@@ -28,34 +28,33 @@
 **
 **--------------------------------------------------------------------------*/
 
-class Cmdline
-{
-private:
-  /* parameters */
-  bool _q;
-  bool _h;
-  bool _v;
+class Cmdline {
+  private:
+   /* parameters */
+   bool _q;
+   bool _h;
+   bool _v;
 
-  /* other stuff to keep track of */
-  string _executable;
-  int _optind;
+   /* other stuff to keep track of */
+   string _executable;
+   int _optind;
 
-public:
-  /* constructor and destructor */
-  Cmdline(int, char **);
-  ~Cmdline(){}
+  public:
+   /* constructor and destructor */
+   Cmdline(int, char**);
+   ~Cmdline() {}
 
-  /* usage function */
-  void usage();
+   /* usage function */
+   void usage();
 
-  /* return next (non-option) parameter */
-  int next_param() { return _optind; }
+   /* return next (non-option) parameter */
+   int next_param() { return _optind; }
 
-  /* callback functions */
+   /* callback functions */
 
-  bool q() { return _q; }
-  bool h() { return _h; }
-  bool v() { return _v; }
+   bool q() { return _q; }
+   bool h() { return _h; }
+   bool v() { return _v; }
 };
 
 #endif

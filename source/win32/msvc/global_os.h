@@ -13,38 +13,36 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
-
 #ifndef global_os_h_included
- #define global_os_h_included
+#define global_os_h_included
 
-  // #define sdlheader "SDL.h"
-  // #define sdlmixerheader "SDL_mixer.h"
+// #define sdlheader "SDL.h"
+// #define sdlmixerheader "SDL_mixer.h"
 
-  typedef unsigned int PointerSizedInt;
+typedef unsigned int PointerSizedInt;
 
-  #ifdef __cplusplus 
-    #include <string>
-    using namespace std;
-  #endif
-  #define HAVE_STRICMP 
+#ifdef __cplusplus
+#include <string>
+using namespace std;
+#endif
+#define HAVE_STRICMP
 
-  #ifndef HAVE_ITOA
-  # define HAVE_ITOA 1
-  #endif
+#ifndef HAVE_ITOA
+#define HAVE_ITOA 1
+#endif
 
-  #define HAVE_DIRENT_H 
-  #define HAVE_LIMITS
+#define HAVE_DIRENT_H
+#define HAVE_LIMITS
 //  #define SIZE_T_not_identical_to_INT 1
 
-  #define StaticClassVariable
+#define StaticClassVariable
 
-  #define CASE_SENSITIVE_FILE_NAMES 0
-  #define USE_HOME_DIRECTORY 0
-
+#define CASE_SENSITIVE_FILE_NAMES 0
+#define USE_HOME_DIRECTORY 0
 
 #endif

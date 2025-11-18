@@ -13,8 +13,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -24,33 +24,28 @@
 #include "../palette.h"
 #include "../basegfx.h"
 
-
-
-int main(int argc, char *argv[], char *envp[])
-{
-   if ( argc <= 1 ) {
+int main(int argc, char* argv[], char* envp[]) {
+   if (argc <= 1) {
       printf("\nmissing parameter. filename expected.\n");
       return 1;
    }
-      
 
-   initFileIO( "" );
+   initFileIO("");
    loadpalette();
 
-   int w,h;
+   int w, h;
    void* pic;
    {
-      tnfilestream s ( argv[1], tnstream::reading );
-      s.readrlepict ( &pic, false, &w);
+      tnfilestream s(argv[1], tnstream::reading);
+      s.readrlepict(&pic, false, &w);
    }
 
-   getpicsize( pic, w, h );
-   
-   tvirtualdisplay vd ( w+20, h+20,  255 );
-   putimage ( 10, 10, pic );
-   
-   writepcx ( ASCString(argv[1])+".pcx", 10, 10, w+10, h+10, pal );
-   
-   return 0;
+   getpicsize(pic, w, h);
 
+   tvirtualdisplay vd(w + 20, h + 20, 255);
+   putimage(10, 10, pic);
+
+   writepcx(ASCString(argv[1]) + ".pcx", 10, 10, w + 10, h + 10, pal);
+
+   return 0;
 }

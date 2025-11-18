@@ -1046,7 +1046,7 @@ static void XMLStartDoc(void *userData, const char *name, const char **atts) {
 			}
 		}
 
-		// register section popupmenu
+		// section popupmenu
 		XMLParser->Section = XML_SECTION_POPUPMENU | XML_SECTION_BODY | XML_SECTION_COMWIDPARAMS;
 
 		XMLParser->ParentObject = Widget;

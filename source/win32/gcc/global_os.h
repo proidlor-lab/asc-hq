@@ -29,32 +29,31 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
 #ifndef global_os_h_included
- #define global_os_h_included
+#define global_os_h_included
 
-  typedef unsigned int PointerSizedInt;
+typedef unsigned int PointerSizedInt;
 
-  #ifndef minimalIO
-   // #define sdlheader "SDL.h"
-   // #define sdlmixerheader "SDL_mixer.h"
-   // #include sdlheader
-  #endif
+#ifndef minimalIO
+// #define sdlheader "SDL.h"
+// #define sdlmixerheader "SDL_mixer.h"
+// #include sdlheader
+#endif
 //   #include <string>  // some Standard library include file to define the namespace std
-  using namespace std;
-  #define HAVE_STRICMP
-  #define HAVE_ITOA
-  #define HAVE_DIRENT_H
-  #define HAVE_STDIO_H
-  #define StaticClassVariable
-  #define NoStdio
+using namespace std;
+#define HAVE_STRICMP
+#define HAVE_ITOA
+#define HAVE_DIRENT_H
+#define HAVE_STDIO_H
+#define StaticClassVariable
+#define NoStdio
 
- #define CASE_SENSITIVE_FILE_NAMES 0
- #define USE_HOME_DIRECTORY 0
-
+#define CASE_SENSITIVE_FILE_NAMES 0
+#define USE_HOME_DIRECTORY 0
 
 #endif

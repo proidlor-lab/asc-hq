@@ -1,7 +1,7 @@
 /*! \file controls.h
    Controlling units (which is graudally moved to vehicletype.cpp and unitctrl.cpp );
    Resource networks
-   Things that are run when starting and ending someones turn   
+   Things that are run when starting and ending someones turn
 */
 
 /*
@@ -19,33 +19,27 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
-#if defined(karteneditor) 
- #error the mapeditor should not need to use controls.h !
+#if defined(karteneditor)
+#error the mapeditor should not need to use controls.h !
 #endif
-
 
 #ifndef controlsH
 #define controlsH
 #include "typen.h"
 #include "astar2.h"
 
-
 /*! calculates the movement cost for moving vehicle from start to dest.
     \returns : first: movement ; second: fuel consumption
 */
-extern pair<int,int> calcMoveMalus( const MapCoordinate3D& start,
-                                    const MapCoordinate3D& dest,
-                                    const Vehicle*     vehicle,
-                                    WindMovement* wm = NULL,
-                                    bool*  inhibitAttack = NULL,
-                                    bool container2container  = false );
+extern pair<int, int> calcMoveMalus(const MapCoordinate3D& start, const MapCoordinate3D& dest,
+                                    const Vehicle* vehicle, WindMovement* wm = NULL,
+                                    bool* inhibitAttack = NULL, bool container2container = false);
 
-extern bool checkUnitsForCrash( Player& player, ASCString& text );
-
+extern bool checkUnitsForCrash(Player& player, ASCString& text);
 
 #endif

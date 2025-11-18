@@ -23,50 +23,48 @@
 */
 
 #ifndef clipboardH
- #define clipboardH
+#define clipboardH
 
- #include <map>
+#include <map>
 
- #include "loki/Singleton.h"
- #include "basestrm.h"
- #include "vehicletype.h"
- #include "buildingtype.h"
- #include "typen.h"
- #include "textfile_evaluation.h"
+#include "loki/Singleton.h"
+#include "basestrm.h"
+#include "vehicletype.h"
+#include "buildingtype.h"
+#include "typen.h"
+#include "textfile_evaluation.h"
 
 class ClipBoardBase {
-      map<ASCString,ASCString> properties;
-   
-      MemoryStreamStorage buf;
-      enum Type { ClipVehicle, ClipBuilding };
-      int objectNum;
+   map<ASCString, ASCString> properties;
 
-      friend struct Loki::CreateUsingNew<ClipBoardBase>;
-      ClipBoardBase();
-      ~ClipBoardBase() {};
-      
-      void setProperties( const ContainerBase* unit );
-      
-   public:
-      void clear();
-      void addUnit ( const Vehicle* unit );
-      void addBuilding ( const Building* bld );
-      Vehicle* pasteUnit();
-      Vehicle* pasteUnit( tnstream& stream);
-      void place ( const MapCoordinate& pos );
+   MemoryStreamStorage buf;
+   enum Type { ClipVehicle, ClipBuilding };
+   int objectNum;
 
-      void writeProperties( PropertyContainer& pc ) const;
-      void readProperties( PropertyContainer& pc );
-      
-      void write( tnstream& stream );
-      void read( tnstream& stream );
+   friend struct Loki::CreateUsingNew<ClipBoardBase>;
+   ClipBoardBase();
+   ~ClipBoardBase(){};
+
+   void setProperties(const ContainerBase* unit);
+
+  public:
+   void clear();
+   void addUnit(const Vehicle* unit);
+   void addBuilding(const Building* bld);
+   Vehicle* pasteUnit();
+   Vehicle* pasteUnit(tnstream& stream);
+   void place(const MapCoordinate& pos);
+
+   void writeProperties(PropertyContainer& pc) const;
+   void readProperties(PropertyContainer& pc);
+
+   void write(tnstream& stream);
+   void read(tnstream& stream);
 };
 
-typedef Loki::SingletonHolder< ClipBoardBase > ClipBoard;
+typedef Loki::SingletonHolder<ClipBoardBase> ClipBoard;
 
 extern const char* clipboardFileExtension;
 extern const char* oldClipboardFileExtension;
 
-
 #endif
-

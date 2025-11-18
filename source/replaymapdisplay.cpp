@@ -7,7 +7,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "replaymapdisplay.h"
 #include "spfst.h"
 #include "viewcalculation.h"
@@ -15,9 +14,8 @@
 #include "gameoptions.h"
 #include "spfst-legacy.h"
 
-int ReplayMapDisplay :: checkMapPosition ( int x, int y )
-{
-   mapDisplay->displayPosition(x,y);
+int ReplayMapDisplay ::checkMapPosition(int x, int y) {
+   mapDisplay->displayPosition(x, y);
    /*
 
    if ( x >= actmap->xsize )
@@ -58,43 +56,48 @@ int ReplayMapDisplay :: checkMapPosition ( int x, int y )
    else
       return 0;
       */
-      return 0;
+   return 0;
 }
 
-
-int ReplayMapDisplay :: displayMovingUnit ( const MapCoordinate3D& start, const MapCoordinate3D& dest, Vehicle* vehicle, int fieldnum, int totalmove, SoundStartCallback startSound, int duration )
-{
-   if ( actmap->getPlayerView() < 0 )
+int ReplayMapDisplay ::displayMovingUnit(const MapCoordinate3D& start, const MapCoordinate3D& dest,
+                                         Vehicle* vehicle, int fieldnum, int totalmove,
+                                         SoundStartCallback startSound, int duration) {
+   if (actmap->getPlayerView() < 0)
       return 0;
 
-   
-   bool view1 = fieldvisiblenow ( getfield ( start.x, start.y ), actmap->getPlayerView() );
-   
+   bool view1 = fieldvisiblenow(getfield(start.x, start.y), actmap->getPlayerView());
+
    int view2;
-   MapField* fld2 = actmap->getField ( dest );
-   
-   if ( actmap->player[actmap->getPlayerView()].diplomacy.sharesView( vehicle->getOwner() )) 
-      view2 = fieldVisibility ( fld2, actmap->getPlayerView() );
+   MapField* fld2 = actmap->getField(dest);
+
+   if (actmap->player[actmap->getPlayerView()].diplomacy.sharesView(vehicle->getOwner()))
+      view2 = fieldVisibility(fld2, actmap->getPlayerView());
    else {
-      // This is a workaround to estimate if the target field will be visible or not once the units is there 
-      view2 = calcvisibilityfield ( actmap, fld2, actmap->getPlayerView(), -1, actmap->getgameparameter ( cgp_initialMapVisibility ), vehicle->typ->jamming );
+      // This is a workaround to estimate if the target field will be visible or not once the units
+      // is there
+      view2 = calcvisibilityfield(actmap, fld2, actmap->getPlayerView(), -1,
+                                  actmap->getgameparameter(cgp_initialMapVisibility),
+                                  vehicle->typ->jamming);
    }
 
    /*
    if ( vehicle->height >= chschwimmend && vehicle->height <= chhochfliegend ) {
-      visibility = fieldvisiblenow ( getfield ( start.x, start.y ), actmap->playerView) || fieldvisiblenow ( getfield ( dest.x, dest.y ), actmap->playerView);
-   } else {
-      // visibility = (fieldVisibility ( getfield ( start.x, start.y ), actmap->playerView) >= visible_all) && (fieldVisibility ( getfield ( dest.x, dest.y ), actmap->playerView) >= visible_now);
-      visibility = fieldvisiblenow ( getfield ( start.x, start.y ), actmap->playerView) || fieldvisiblenow ( getfield ( dest.x, dest.y ), actmap->playerView);
+      visibility = fieldvisiblenow ( getfield ( start.x, start.y ), actmap->playerView) ||
+   fieldvisiblenow ( getfield ( dest.x, dest.y ), actmap->playerView); } else {
+      // visibility = (fieldVisibility ( getfield ( start.x, start.y ), actmap->playerView) >=
+   visible_all) && (fieldVisibility ( getfield ( dest.x, dest.y ), actmap->playerView) >=
+   visible_now); visibility = fieldvisiblenow ( getfield ( start.x, start.y ), actmap->playerView)
+   || fieldvisiblenow ( getfield ( dest.x, dest.y ), actmap->playerView);
    }
    */
-   
-   if ( view1 || (view2 >= visible_now ) ) {
-      if ( checkMapPosition  ( start.x, start.y ))
+
+   if (view1 || (view2 >= visible_now)) {
+      if (checkMapPosition(start.x, start.y))
          displayMap();
 
-      int fc = mapDisplay->displayMovingUnit ( start, dest, vehicle, fieldnum, totalmove, startSound, duration );
-      if ( fc == 1 ) {
+      int fc = mapDisplay->displayMovingUnit(start, dest, vehicle, fieldnum, totalmove, startSound,
+                                             duration);
+      if (fc == 1) {
          mapDisplay->resetMovement();
          mapDisplay->displayMap();
       }
@@ -104,63 +107,54 @@ int ReplayMapDisplay :: displayMovingUnit ( const MapCoordinate3D& start, const 
       return 0;
 }
 
-void ReplayMapDisplay :: displayPosition ( int x, int y )
-{
-   if ( fieldvisiblenow ( getfield ( x, y ), actmap->getPlayerView() )) {
-      checkMapPosition  ( x, y );
-      mapDisplay->displayPosition ( x, y );
+void ReplayMapDisplay ::displayPosition(int x, int y) {
+   if (fieldvisiblenow(getfield(x, y), actmap->getPlayerView())) {
+      checkMapPosition(x, y);
+      mapDisplay->displayPosition(x, y);
    }
 }
 
-void ReplayMapDisplay :: removeActionCursor ( void )
-{
+void ReplayMapDisplay ::removeActionCursor(void) {
    mapDisplay->removeActionCursor();
- 
 }
 
-void ReplayMapDisplay :: displayActionCursor ( int x1, int y1, int x2, int y2, int secondWait )
-{
-   if ( x1 >= 0 && y1 >= 0 ) {
-      int i = fieldvisiblenow ( getfield ( x1, y1 ), actmap->getPlayerView() );
-      if( i ) {
-         cursor_goto( MapCoordinate( x1, y1 ));
-         
-         if ( x2 >= 0 && y2 >= 0 )
-            wait( 30 );
+void ReplayMapDisplay ::displayActionCursor(int x1, int y1, int x2, int y2, int secondWait) {
+   if (x1 >= 0 && y1 >= 0) {
+      int i = fieldvisiblenow(getfield(x1, y1), actmap->getPlayerView());
+      if (i) {
+         cursor_goto(MapCoordinate(x1, y1));
+
+         if (x2 >= 0 && y2 >= 0)
+            wait(30);
          else
             wait();
       }
    }
 
-   if ( x2 >= 0 && y2 >= 0 ) {
-      int i = fieldvisiblenow ( getfield ( x2, y2 ), actmap->getPlayerView() );
-      if( i ) {
-         cursor_goto( MapCoordinate( x2, y2 ));
-         if ( secondWait )
+   if (x2 >= 0 && y2 >= 0) {
+      int i = fieldvisiblenow(getfield(x2, y2), actmap->getPlayerView());
+      if (i) {
+         cursor_goto(MapCoordinate(x2, y2));
+         if (secondWait)
             wait();
       }
    }
 }
 
-void ReplayMapDisplay :: wait ( int minTime )
-{
+void ReplayMapDisplay ::wait(int minTime) {
    int t = ticker;
-   while ( ticker < t + max ( cursorDelay, minTime ) )
+   while (ticker < t + max(cursorDelay, minTime))
       releasetimeslice();
 }
 
-void ReplayMapDisplay :: playPositionalSound( const MapCoordinate& pos, Sound* snd )
-{
-   if ( fieldvisiblenow ( actmap->getField ( pos ), actmap->getPlayerView() )) {
-      mapDisplay->playPositionalSound( pos, snd );
+void ReplayMapDisplay ::playPositionalSound(const MapCoordinate& pos, Sound* snd) {
+   if (fieldvisiblenow(actmap->getField(pos), actmap->getPlayerView())) {
+      mapDisplay->playPositionalSound(pos, snd);
    }
 }
 
-
-int ReplayMapDisplay :: getUnitMovementDuration() const 
-{ 
+int ReplayMapDisplay ::getUnitMovementDuration() const {
    int speed = CGameOptions::Instance()->movespeed;
-   int factor = max( 10, CGameOptions::Instance()->replayMoveSpeedFactor );
+   int factor = max(10, CGameOptions::Instance()->replayMoveSpeedFactor);
    return speed * 100 / factor;
 }
-

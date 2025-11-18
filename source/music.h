@@ -13,55 +13,53 @@
 #include "textfile_evaluation.h"
 #include "itemrepository.h"
 
-
 /** A List containing several tracks of music.
-*/
+ */
 class MusicPlayList {
-       ASCString name;
-       typedef vector<ASCString> TrackList;
+   ASCString name;
+   typedef vector<ASCString> TrackList;
 
-       //! carries the resolved filenames
-       TrackList fileNameList;
+   //! carries the resolved filenames
+   TrackList fileNameList;
 
-       //! may contain wildcards like *.ogg referencing several files
-       TrackList fileGroups;
+   //! may contain wildcards like *.ogg referencing several files
+   TrackList fileGroups;
 
-       TrackList::iterator iter;
-   public:
-      const ASCString& getName ( ) { return name; };
+   TrackList::iterator iter;
 
-      ASCString filename,location;
+  public:
+   const ASCString& getName() { return name; };
 
-      //! loads a PlayList from a .ASCTXT file
-      void runTextIO ( PropertyContainer& pc );
+   ASCString filename, location;
 
-      //! resets the internal track iterator
-      void reset();
+   //! loads a PlayList from a .ASCTXT file
+   void runTextIO(PropertyContainer& pc);
 
-      //! returns the filename of the next music track
-      const ASCString& getNextTrack();
+   //! resets the internal track iterator
+   void reset();
 
-      void read ( tnstream& stream );
-      void write ( tnstream& stream ) const;
+   //! returns the filename of the next music track
+   const ASCString& getNextTrack();
 
-      ASCString getDiagnosticText();
+   void read(tnstream& stream);
+   void write(tnstream& stream) const;
+
+   ASCString getDiagnosticText();
 };
 
 class PlayListLoader : public TextFileDataLoader {
-    public:
-      virtual void readTextFiles(PropertyReadingContainer& prc, const ASCString& fileName, const ASCString& location);
-      virtual void read ( tnstream& stream );
-      virtual void write ( tnstream& stream );
-      virtual ASCString getTypeName() { return "playlist"; };
+  public:
+   virtual void readTextFiles(PropertyReadingContainer& prc, const ASCString& fileName,
+                              const ASCString& location);
+   virtual void read(tnstream& stream);
+   virtual void write(tnstream& stream);
+   virtual ASCString getTypeName() { return "playlist"; };
 };
 
 //! start playing the first playlist
-extern void startMusic ();
-
-
-
+extern void startMusic();
 
 //! opens a dialog to select a playlist
-extern void selectPlayList( );
+extern void selectPlayList();
 
 #endif

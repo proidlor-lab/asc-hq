@@ -1,8 +1,5 @@
 // The main program for running the unit tests
 
-
-
-
 #include "ai/ai.h"
 #include "loaders.h"
 #include "dlg_box.h"
@@ -30,7 +27,7 @@
 #include "viewtest.h"
 #include "ai-service1.h"
 #include "transfercontroltest.h"
-#include "recyclingtest.h"                
+#include "recyclingtest.h"
 #include "researchtest.h"
 #include "applicationstarter.h"
 #include "diplomacytest.h"
@@ -44,43 +41,36 @@
 #include "maptest.h"
 #include "repairtest.h"
 
-
-void viewcomp( Player& player )
-{
-   computeview( player.getParentMap() );
+void viewcomp(Player& player) {
+   computeview(player.getParentMap());
 }
 
-void hookGuiToMap( GameMap* map )
-{
-   if ( !map->getGuiHooked() ) {
+void hookGuiToMap(GameMap* map) {
+   if (!map->getGuiHooked()) {
+      map->sigPlayerUserInteractionBegins.connect(sigc::ptr_fun(&viewcomp));
+      map->sigPlayerUserInteractionBegins.connect(sigc::hide(repaintMap.make_slot()));
 
-      map->sigPlayerUserInteractionBegins.connect( sigc::ptr_fun( &viewcomp ) );
-      map->sigPlayerUserInteractionBegins.connect( sigc::hide( repaintMap.make_slot() ));
-      
-      map->sigPlayerUserInteractionBegins.connect( sigc::hide( sigc::ptr_fun( &checkforreplay )));
-      map->sigPlayerUserInteractionBegins.connect( sigc::ptr_fun( &viewunreadmessages ));
-      map->sigPlayerUserInteractionBegins.connect( sigc::ptr_fun( &checkJournal ));
-      map->sigPlayerUserInteractionBegins.connect( sigc::ptr_fun( &checkUsedASCVersions ));
-      map->sigPlayerUserInteractionBegins.connect( sigc::hide( updateFieldInfo.make_slot() ));
+      map->sigPlayerUserInteractionBegins.connect(sigc::hide(sigc::ptr_fun(&checkforreplay)));
+      map->sigPlayerUserInteractionBegins.connect(sigc::ptr_fun(&viewunreadmessages));
+      map->sigPlayerUserInteractionBegins.connect(sigc::ptr_fun(&checkJournal));
+      map->sigPlayerUserInteractionBegins.connect(sigc::ptr_fun(&checkUsedASCVersions));
+      map->sigPlayerUserInteractionBegins.connect(sigc::hide(updateFieldInfo.make_slot()));
 
-      map->sigPlayerTurnHasEnded.connect( sigc::ptr_fun( &viewOwnReplay));
+      map->sigPlayerTurnHasEnded.connect(sigc::ptr_fun(&viewOwnReplay));
       map->guiHooked();
    }
 }
 
-bool loadGameFromFile( const ASCString& filename )
-{
+bool loadGameFromFile(const ASCString& filename) {
    return false;
 }
 
-
-void runUnitTests()
-{
+void runUnitTests() {
    testView();
    // testMaps();
    testAttack();
    testObjectConstruction();
-   testMovement();   
+   testMovement();
    testStreamEncoding();
    testVersionIdentifier();
    testJumpdrive();
@@ -93,142 +83,121 @@ void runUnitTests()
    testAiService();
    testAiMovement();
    testUnitRepair();
-}     
-      
-
-void checkGameEvents( GameMap* map,const Command& command )
-{
-   checktimedevents( map, NULL );
-   checkevents( map, NULL );
 }
 
+void checkGameEvents(GameMap* map, const Command& command) {
+   checktimedevents(map, NULL);
+   checkevents(map, NULL);
+}
 
-int runTester ( )
-{
+int runTester() {
    loadpalette();
 
    virtualscreenbuf.init();
 
    try {
       loaddata();
-   }
-   catch ( ParsingError& err ) {
-      errorMessage ( "Error parsing text file " + err.getMessage() );
+   } catch (ParsingError& err) {
+      errorMessage("Error parsing text file " + err.getMessage());
       return -1;
-   }
-   catch ( tfileerror& err ) {
-      errorMessage ( "Error loading file " + err.getFileName() );
+   } catch (tfileerror& err) {
+      errorMessage("Error loading file " + err.getFileName());
       return -1;
-   }
-   catch ( ASCexception& ) {
-      errorMessage ( "loading of game failed" );
+   } catch (ASCexception&) {
+      errorMessage("loading of game failed");
       return -1;
-   }
-   catch ( ThreadExitException& ) {
+   } catch (ThreadExitException&) {
       displayLogMessage(0, "caught thread exiting exception, shutting down");
       return -1;
    }
-
 #ifndef _WIN32_
-   // Windows/MSVC will catch access violations with this, which we don't want to, because it makes our dump files useless.
-   catch ( ... ) {
-      fatalError ( "caught undefined exception" );
+   // Windows/MSVC will catch access violations with this, which we don't want to, because it makes
+   // our dump files useless.
+   catch (...) {
+      fatalError("caught undefined exception");
       return -1;
    }
 #endif
 
-   GameMap::sigPlayerTurnEndsStatic.connect( sigc::ptr_fun( &automaticTrainig ));
-   //ActionContainer::postActionExecution.connect( SigC::slot( &checkGameEvents ));
+   GameMap::sigPlayerTurnEndsStatic.connect(sigc::ptr_fun(&automaticTrainig));
+   // ActionContainer::postActionExecution.connect( SigC::slot( &checkGameEvents ));
 
    suppressMapTriggerExecution = false;
 
    runUnitTests();
-   
+
    return 0;
 }
 
-
-
-static void __runResearch( Player& player ){
-   runResearch( player, NULL, NULL );  
+static void __runResearch(Player& player) {
+   runResearch(player, NULL, NULL);
 }
 
-void deployMapPlayingHooks ( GameMap* map )
-{
-   map->sigPlayerTurnBegins.connect( sigc::ptr_fun( &initReplayLogging ));
-   map->sigPlayerTurnBegins.connect( sigc::ptr_fun( &transfer_all_outstanding_tribute ));
-   map->sigPlayerTurnBegins.connect( sigc::ptr_fun( &__runResearch ));
+void deployMapPlayingHooks(GameMap* map) {
+   map->sigPlayerTurnBegins.connect(sigc::ptr_fun(&initReplayLogging));
+   map->sigPlayerTurnBegins.connect(sigc::ptr_fun(&transfer_all_outstanding_tribute));
+   map->sigPlayerTurnBegins.connect(sigc::ptr_fun(&__runResearch));
 }
-
-
-
 
 // including the command line parser, which is generated by genparse
 #include "clparser/asc.cpp"
 
+void executeUserAction(tuseractions action) {};
+void execUserAction_ev(tuseractions action) {};
 
-void executeUserAction ( tuseractions action ) {};
-void execUserAction_ev ( tuseractions action ) {};
-
-
-int main(int argc, char *argv[] )
-{
-   assert ( sizeof(PointerSizedInt) == sizeof(int*));
+int main(int argc, char* argv[]) {
+   assert(sizeof(PointerSizedInt) == sizeof(int*));
 
    // we should think about replacing clparser with libpopt
    Cmdline* cl = NULL;
    try {
-      cl = new Cmdline ( argc, argv );
-   } catch ( const string& s ) {
+      cl = new Cmdline(argc, argv);
+   } catch (const string& s) {
       cerr << s;
       exit(1);
    }
-   auto_ptr<Cmdline> apcl ( cl );
+   std::unique_ptr<Cmdline> apcl(cl);
 
-   if ( cl->v() ) {
+   if (cl->v()) {
       ASCString msg = getstartupmessage();
-      printf( "%s", msg.c_str() );
+      printf("%s", msg.c_str());
       exit(0);
    }
 
-   MessagingHub::Instance().setVerbosity( cl->r() );
+   MessagingHub::Instance().setVerbosity(cl->r());
    StdIoErrorHandler stdIoErrorHandler(false);
-   MessagingHub::Instance().exitHandler.connect( sigc::bind( &exit_asc, -1 ));
+   MessagingHub::Instance().exitHandler.connect(sigc::bind(&exit_asc, -1));
 
 #ifdef WIN32
    Win32IoErrorHandler* win32ErrorDialogGenerator = new Win32IoErrorHandler;
 #endif
 
-   ConfigurationFileLocator::Instance().setExecutableLocation( argv[0] );
-   initFileIO( cl->c() );  // passing the filename from the command line options
+   ConfigurationFileLocator::Instance().setExecutableLocation(argv[0]);
+   initFileIO(cl->c());  // passing the filename from the command line options
 
-   SoundSystem soundSystem ( true, true, true );
+   SoundSystem soundSystem(true, true, true);
 
-   tspfldloaders::mapLoaded.connect( sigc::ptr_fun( &deployMapPlayingHooks ));
+   tspfldloaders::mapLoaded.connect(sigc::ptr_fun(&deployMapPlayingHooks));
    TaskContainer::registerHooks();
-   
-   PG_FileArchive archive( argv[0] );
+
+   PG_FileArchive archive(argv[0]);
 
    try {
       int result = runTester();
-      if ( result != 0 )
+      if (result != 0)
          return result;
-   }
-   catch ( bad_alloc& ) {
-      fatalError ("Out of memory");
+   } catch (bad_alloc&) {
+      fatalError("Out of memory");
       return 1;
-   }
-   catch ( ASCmsgException& e ) {
+   } catch (ASCmsgException& e) {
       cerr << e.getMessage() << "\n";
       return 2;
-   }
-   catch ( ActionResult& ar ) {
+   } catch (ActionResult& ar) {
       cerr << "ActionResult failed:" << ar.getCode() << " : " << ar.getMessage() << "\n";
       return 2;
-   }
-   catch ( ... ) {
+   } catch (...) {
       cerr << "caught exception\n";
-      return 2;  
+      return 2;
    }
 
    cout << "unittests completed successfully \n";

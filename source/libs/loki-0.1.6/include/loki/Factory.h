@@ -92,7 +92,7 @@ namespace Loki
     {
         struct Exception : public std::exception
         {
-            const char* what() const throw() { return "Unknown Type"; }
+            const char* what() const noexcept { return "Unknown Type"; }
         };
 
         static AbstractProduct* OnUnknownType(IdentifierType)

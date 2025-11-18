@@ -1,7 +1,7 @@
 //
 // C++ Interface: infopopup
 //
-// Description: 
+// Description:
 //
 //
 // Author: Kevin Hirschmann <hirsch@dhcppc0>, (C) 2005
@@ -16,16 +16,14 @@
 /**
 @author Kevin Hirschmann
 */
-class InfoPopUp: public PG_PopupMenu{
-public:
-    InfoPopUp(PG_Widget* parent);
+class InfoPopUp : public PG_PopupMenu {
+  public:
+   InfoPopUp(PG_Widget* parent);
 
-    ~InfoPopUp();
+   ~InfoPopUp();
 
-    private:
-    PG_PopupMenu::MenuItem* ut;
-    
-    
+  private:
+   PG_PopupMenu::MenuItem* ut;
 };
 extern bool showUnitInfo(PG_PopupMenu::MenuItem* item, PG_Pointer clientdata);
 extern bool showUnitWeight(PG_PopupMenu::MenuItem* item, PG_Pointer clientdata);
@@ -33,4 +31,3 @@ extern bool showWeaponRange(PG_PopupMenu::MenuItem* item, PG_Pointer clientdata)
 extern bool showMovementRange(PG_PopupMenu::MenuItem* item, PG_Pointer clientdata);
 extern bool showTerrainInfo(PG_PopupMenu::MenuItem* item, PG_Pointer clientdata);
 #endif
-

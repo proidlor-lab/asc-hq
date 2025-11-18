@@ -13,8 +13,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -35,469 +35,444 @@
 #include "../graphicset.h"
 #include "../graphicselector.h"
 
-
-char     mode50 = 1;
-#define  la   80
+char mode50 = 1;
+#define la 80
 
 int offset = 1560;
 
 pfont fnt;
 
+const char* bildnr[8] = {" 0   ( object facing up ) ",    " 1   ( object facing up and right ) ",
+                         " 2   ( object facing right ) ", " 3   ( object facing right and down ) ",
+                         " 4   ( object facing down ) ",  " 5   ( object facing down and left ) ",
+                         " 6   ( object facing left ) ",  " 7   ( object facing left and up ) "};
 
-const char* bildnr[8] = { " 0   ( object facing up ) ",
-                          " 1   ( object facing up and right ) ",
-                          " 2   ( object facing right ) ",
-                          " 3   ( object facing right and down ) ",
-                          " 4   ( object facing down ) ",
-                          " 5   ( object facing down and left ) ",
-                          " 6   ( object facing left ) ",
-                          " 7   ( object facing left and up ) " };
+void* loadpcx2(char* filestring);
 
+char bip[24] = {0,  1,  2,  3,  5,  7,  9,  11, 15, 18, 19, 20,
+                21, 22, 23, 27, 28, 29, 30, 31, 54, 55, 63, 6};
 
-
-void *       loadpcx2(char *       filestring);
-
-
-
-char bip[24] = { 0,1,2,3,5,7,9,11,15,18,19,20,21,22,23,27,28,29,30,31,54,55,63,6};
-
-main (int argc, char *argv[] )
-{ 
+main(int argc, char* argv[]) {
    t_carefor_containerstream cfcst;
 
    try {
-
       {
-         tnfilestream stream ( "USABLACK.FNT", tnstream::reading );
-         fnt = loadfont  ( &stream );
+         tnfilestream stream("USABLACK.FNT", tnstream::reading);
+         fnt = loadfont(&stream);
       }
-      if ( !fnt ) {
-         printf("error loading file USABLACK.FNT \n" );
+      if (!fnt) {
+         printf("error loading file USABLACK.FNT \n");
          return 1;
       }
 
-      Object*type ft;
-      tfile          datfile;
-      char           pict = YES;       // Bilder einlesen
-      char           dif = 1;          // Anzahl der Bilder
-   
-      char           mehrfielderschuetze = 0;
-      char           maxmovement = 0;
-    
+      Object* type ft;
+      tfile datfile;
+      char pict = YES;  // Bilder einlesen
+      char dif = 1;     // Anzahl der Bilder
+
+      char mehrfielderschuetze = 0;
+      char maxmovement = 0;
+
       ft = new tobjecttype;
-      memset ( ft, 0, sizeof (tobjecttype) ) ;
-   
-      strcpy (datfile.name, "");
-   
+      memset(ft, 0, sizeof(tobjecttype));
+
+      strcpy(datfile.name, "");
+
       loadpalette();
       loadbi3graphics();
-   
-      activefontsettings.font = fnt; 
-      activefontsettings.color = black; 
-      activefontsettings.background = white; 
+
+      activefontsettings.font = fnt;
+      activefontsettings.color = black;
+      activefontsettings.background = white;
       activefontsettings.length = 600;
-      activefontsettings.justify = lefttext; 
-   
-      if (mode50) settxt50mode ();
-      _settextcolor (7);
-      _setbkcolor (0);
-      clearscreen ();
-      char   creat_edit ;
-      if ( argc < 2 ) {
-         printf ("\n    create a new object or edit an existent one ? \n");
+      activefontsettings.justify = lefttext;
+
+      if (mode50)
+         settxt50mode();
+      _settextcolor(7);
+      _setbkcolor(0);
+      clearscreen();
+      char creat_edit;
+      if (argc < 2) {
+         printf("\n    create a new object or edit an existent one ? \n");
          creat_edit = 0;
-         yn_switch (" create ", " edit ", 0, 1, creat_edit);
+         yn_switch(" create ", " edit ", 0, 1, creat_edit);
       } else
          creat_edit = 1;
-   
-      if (creat_edit==0) {                                            // creat new object
-         clearscreen ();
-         printf ("\n    enter filename (without extension)\n");
-         stredit2 (datfile.name, 9, 255,255);
-         strcat (datfile.name, ".obl");
-   
+
+      if (creat_edit == 0) {  // creat new object
+         clearscreen();
+         printf("\n    enter filename (without extension)\n");
+         stredit2(datfile.name, 9, 255, 255);
+         strcat(datfile.name, ".obl");
+
          ft->terrain_and = -1;
          ft->pictnum = 1;
-   
+
          if (exist(datfile.name)) {
-            sound (800);
-            clearscreen(); 
-            _settextcolor (15);
-            _setbkcolor (red);
-            _settextposition (4, 5);
+            sound(800);
+            clearscreen();
+            _settextcolor(15);
+            _setbkcolor(red);
+            _settextposition(4, 5);
             char s[100];
-            sprintf ( s, " Filename <%s> already exists !! \n", datfile.name );
-            _outtext ( s );
-            wait ();
-            nosound ();
-            closegraphics ();
-            exit (0);
-         } 
-   
-      } 
-      else {                                                         // edit existing obl
-   
-         clearscreen ();
-         if ( argc < 2 ) 
+            sprintf(s, " Filename <%s> already exists !! \n", datfile.name);
+            _outtext(s);
+            wait();
+            nosound();
+            closegraphics();
+            exit(0);
+         }
+
+      } else {  // edit existing obl
+
+         clearscreen();
+         if (argc < 2)
             fileselect("*.obl", _A_NORMAL, datfile);
          else
-            strcpy ( datfile.name, argv[1] );
-   
-         clearscreen ();
+            strcpy(datfile.name, argv[1]);
+
+         clearscreen();
          ft = loadobjecttype(datfile.name);
-   
-         printf ("\n    change picture ? \n");
-         yn_switch ("", "", YES, NO, pict);
-         
-      } 
-   
+
+         printf("\n    change picture ? \n");
+         yn_switch("", "", YES, NO, pict);
+      }
+
       if (pict) {
          ft->pictnum = 0;
-   
+
          char contin = 1;
          char graph = 1;
          ft->dirlistnum = 0;
-            
-   
-         printf ("\n    for which weather should the object have different pics \n");
-         bitselect (ft->weather, cwettertypen, cwettertypennum);
-   
+
+         printf("\n    for which weather should the object have different pics \n");
+         bitselect(ft->weather, cwettertypen, cwettertypennum);
+
          int first = 1;
-   
-         for ( int ww = 0; ww < cwettertypennum; ww++ )
-            if ( ft->weather & ( 1 << ww)) {
-   
-              printf(" \n use which graphics ? \n");
-              yn_switch (" BI3 ", " own ", 1, 0, graph );
 
-              char chnow = YES;
-              printf ("\n    change pictures for %s ? \n", cwettertypen[ww]);
-              yn_switch ("", "", YES, NO, chnow);
+         for (int ww = 0; ww < cwettertypennum; ww++)
+            if (ft->weather & (1 << ww)) {
+               printf(" \n use which graphics ? \n");
+               yn_switch(" BI3 ", " own ", 1, 0, graph);
 
-              if ( chnow == YES ) {
+               char chnow = YES;
+               printf("\n    change pictures for %s ? \n", cwettertypen[ww]);
+               yn_switch("", "", YES, NO, chnow);
 
+               if (chnow == YES) {
                   ft->picture[ww] = new thexpic[100];
-      
-                  if ( first ) {
+
+                  if (first) {
                      do {
-                        if ( graph == 1 ) {
-                           initgraphics ( 640, 480, 8);
-                            
+                        if (graph == 1) {
+                           initgraphics(640, 480, 8);
+
                            loadpalette();
-                           setvgapalette256 ( pal );
-                  
-                           getbi3pict_double ( &ft->picture[ww][ft->pictnum].bi3pic, &ft->picture[ww][ft->pictnum].picture );
+                           setvgapalette256(pal);
+
+                           getbi3pict_double(&ft->picture[ww][ft->pictnum].bi3pic,
+                                             &ft->picture[ww][ft->pictnum].picture);
                            ft->picture[ww][ft->pictnum].flip = 0;
                         } else {
-                           tfile    pictfile;
-                          
-                           fileselect ("*.PCX", _A_NORMAL, pictfile);
-                                                     
-                           initgraphics ( 640, 480, 8);
+                           tfile pictfile;
+
+                           fileselect("*.PCX", _A_NORMAL, pictfile);
+
+                           initgraphics(640, 480, 8);
                            ft->picture[ww][ft->pictnum].picture = loadpcx2(pictfile.name);
                            ft->picture[ww][ft->pictnum].bi3pic = -1;
                            ft->picture[ww][ft->pictnum].flip = 0;
                         }
                         ft->pictnum++;
-                                          
+
                         closegraphics();
                         settxt50mode();
-               
-                       /*
-                        if ( dirlist ) {
-                           printf ("\n    dir : \n");
-                           int d = 0;
-                           num_ed ( ft->dirlist[ ft->dirlistnum ] , 0, maxint);
-                           ft->dirlistnum++;
-                        }
-                       */
-               
+
+                        /*
+                         if ( dirlist ) {
+                            printf ("\n    dir : \n");
+                            int d = 0;
+                            num_ed ( ft->dirlist[ ft->dirlistnum ] , 0, maxint);
+                            ft->dirlistnum++;
+                         }
+                        */
+
                         printf(" \n include more pictures ? \n\n");
-                        yn_switch (" YES ", " NO ", 1, 0, contin );
-                  
-                     } while ( contin ); /* enddo */
+                        yn_switch(" YES ", " NO ", 1, 0, contin);
+
+                     } while (contin); /* enddo */
                      first = 0;
                   } else {
-                     printf("now the pictures for %s", cwettertypen[ww] );
+                     printf("now the pictures for %s", cwettertypen[ww]);
                      _wait();
-      
-                     if ( graph == 1 ) {
-                        initgraphics ( 640, 480, 8);
-                        tnfilestream mainstream ( "palette.pal" , tnstream::reading);
-                        mainstream.readdata( (char*) pal, sizeof(pal)); 
-                        setvgapalette256 ( pal );
-   
-                        for ( int m = 0; m < ft->pictnum; m++ ) 
-                           getbi3pict_double ( &ft->picture[ww][m].bi3pic, &ft->picture[ww][m].picture );
+
+                     if (graph == 1) {
+                        initgraphics(640, 480, 8);
+                        tnfilestream mainstream("palette.pal", tnstream::reading);
+                        mainstream.readdata((char*) pal, sizeof(pal));
+                        setvgapalette256(pal);
+
+                        for (int m = 0; m < ft->pictnum; m++)
+                           getbi3pict_double(&ft->picture[ww][m].bi3pic,
+                                             &ft->picture[ww][m].picture);
                         closegraphics();
                         settxt50mode();
                      } else {
-                        for ( int m = 0; m < ft->pictnum; m++ ) {
-                           tfile    pictfile;
-                          
-                           fileselect ("*.PCX", _A_NORMAL, pictfile);
-                                                     
-                           initgraphics ( 640, 480, 8);
+                        for (int m = 0; m < ft->pictnum; m++) {
+                           tfile pictfile;
+
+                           fileselect("*.PCX", _A_NORMAL, pictfile);
+
+                           initgraphics(640, 480, 8);
                            ft->picture[ww][m].picture = loadpcx2(pictfile.name);
                            ft->picture[ww][m].bi3pic = -1;
                            ft->picture[ww][m].flip = 0;
                            closegraphics();
                            settxt50mode();
-                        } 
+                        }
                      }
                   }
-               }                                         
+               }
             }
-   
-      } else { 
-         initgraphics ( 800, 600, 8);
-   
-         for ( int i = 0; i < ft->pictnum; i++ )
-            putspriteimage( 10 + i%8 * 50, 10 + i/8 * 50, ft->picture[0][i].picture ); 
-   
+
+      } else {
+         initgraphics(800, 600, 8);
+
+         for (int i = 0; i < ft->pictnum; i++)
+            putspriteimage(10 + i % 8 * 50, 10 + i / 8 * 50, ft->picture[0][i].picture);
+
          {
-            tnfilestream mainstream ( "palette.pal" , tnstream::reading);
-            mainstream.readdata( (char*) pal, sizeof(pal)); 
+            tnfilestream mainstream("palette.pal", tnstream::reading);
+            mainstream.readdata((char*) pal, sizeof(pal));
          }
          setvgapalette256(pal);
-   
+
          int ch = getch();
-         if ( ch == 's' ) {
-            char* nm = getnextfilenumname ( "object", "pcx", 0 );
-            writepcx ( nm, 0, 0, 799, 599 , pal );
+         if (ch == 's') {
+            char* nm = getnextfilenumname("object", "pcx", 0);
+            writepcx(nm, 0, 0, 799, 599, pal);
          }
 
          closegraphics();
-      } 
-     
+      }
+
       settxt50mode();
-   
-      printf ("\n    ID : \n");
-      num_ed ( ft->id , 0, maxint);
-   
-      printf ("\n    name of object \n");
-      stredit (ft->name, 40, 255,255);
-   
-      printf ("\n    terrain AND : \n");
-      bitselect ( ft->terrain_and, cbodenarten, cbodenartennum);
-   
-      printf ("\n    terrain OR : \n");
-      bitselect ( ft->terrain_or , cbodenarten, cbodenartennum);
-   
-      printf ("\n    attackbonus_plus : \n");
-      num_ed ( ft->attackbonus_plus , minint, maxint);
-   
-      printf ("\n    attackbonus_abs ( -1 is ignore ): \n");
-      num_ed ( ft->attackbonus_abs , minint, maxint);
-   
-      printf ("\n    defensebonus_plus : \n");
-      num_ed ( ft->defensebonus_plus , minint, maxint);
-   
-      printf ("\n    defensebonus_abs ( -1 is ignore ): \n");
-      num_ed ( ft->defensebonus_abs , minint, maxint);
-   
-      printf ("\n    basicjamming_plus : \n");
-      num_ed ( ft->basicjamming_plus , minint, maxint);
-   
-      printf ("\n    basicjamming_abs : \n");
-      num_ed ( ft->basicjamming_abs , minint, maxint);
-   
-      printf ("\n    armor : \n");
-      num_ed ( ft->armor , 0, maxint);
-   
-      printf ("\n    height : \n");
-      num_ed ( ft->height , 0, maxint);
-   
-      printf ("\n    production cost material : \n");
-      num_ed ( ft->buildcost.material , 0, maxint);
-   
-      printf ("\n    production cost fuel : \n");
-      num_ed ( ft->buildcost.fuel, 0, maxint);
-   
-      printf ("\n    production cost movement : \n");
-      num_ed ( ft->build_movecost, 0, maxint);
-   
-      printf ("\n    removal cost material : \n");
-      num_ed ( ft->removecost.material , 0, maxint);
-   
-      printf ("\n    removal cost  fuel : \n");
-      num_ed ( ft->removecost.fuel, 0, maxint);
-   
-      printf ("\n    removal cost  movement : \n");
-      num_ed ( ft->remove_movecost, 0, maxint);
-   
+
+      printf("\n    ID : \n");
+      num_ed(ft->id, 0, maxint);
+
+      printf("\n    name of object \n");
+      stredit(ft->name, 40, 255, 255);
+
+      printf("\n    terrain AND : \n");
+      bitselect(ft->terrain_and, cbodenarten, cbodenartennum);
+
+      printf("\n    terrain OR : \n");
+      bitselect(ft->terrain_or, cbodenarten, cbodenartennum);
+
+      printf("\n    attackbonus_plus : \n");
+      num_ed(ft->attackbonus_plus, minint, maxint);
+
+      printf("\n    attackbonus_abs ( -1 is ignore ): \n");
+      num_ed(ft->attackbonus_abs, minint, maxint);
+
+      printf("\n    defensebonus_plus : \n");
+      num_ed(ft->defensebonus_plus, minint, maxint);
+
+      printf("\n    defensebonus_abs ( -1 is ignore ): \n");
+      num_ed(ft->defensebonus_abs, minint, maxint);
+
+      printf("\n    basicjamming_plus : \n");
+      num_ed(ft->basicjamming_plus, minint, maxint);
+
+      printf("\n    basicjamming_abs : \n");
+      num_ed(ft->basicjamming_abs, minint, maxint);
+
+      printf("\n    armor : \n");
+      num_ed(ft->armor, 0, maxint);
+
+      printf("\n    height : \n");
+      num_ed(ft->height, 0, maxint);
+
+      printf("\n    production cost material : \n");
+      num_ed(ft->buildcost.material, 0, maxint);
+
+      printf("\n    production cost fuel : \n");
+      num_ed(ft->buildcost.fuel, 0, maxint);
+
+      printf("\n    production cost movement : \n");
+      num_ed(ft->build_movecost, 0, maxint);
+
+      printf("\n    removal cost material : \n");
+      num_ed(ft->removecost.material, 0, maxint);
+
+      printf("\n    removal cost  fuel : \n");
+      num_ed(ft->removecost.fuel, 0, maxint);
+
+      printf("\n    removal cost  movement : \n");
+      num_ed(ft->remove_movecost, 0, maxint);
+
       char va = ft->visibleago;
-      printf ("\n    should the object still be displayed if the field is not visible any more ?\n");
-      yn_switch ("YES","NO", 1,0,  va );
+      printf("\n    should the object still be displayed if the field is not visible any more ?\n");
+      yn_switch("YES", "NO", 1, 0, va);
       ft->visibleago = va;
 
+      terrainaccess_ed(&ft->terrainaccess, "object");
 
-      terrainaccess_ed ( &ft->terrainaccess, "object" );
-      
       {
-         printf ("\n    link automatically with neighbouring fields? \n");
+         printf("\n    link automatically with neighbouring fields? \n");
          char c = ft->no_autonet;
-         yn_switch (" yes ", " no ", 0, 1, c );
+         yn_switch(" yes ", " no ", 0, 1, c);
          ft->no_autonet = c;
-         if ( !ft->no_autonet ) {
-         
-               dynamic_array<Object*type> obj;
-               dynamic_array<pchar> name;
-         
-               int objectlayernum = 0; 
-             
-               tfindfile ff ( "*.obl" );
-         
-               string c = ff.getnextname();
-             
-               while ( !c.empty() ) {
-                   obj[objectlayernum] = loadobjecttype( c.c_str() ); 
-                   name[objectlayernum] = strdup ( c.c_str() );
-                   objectlayernum++;
-                   c = ff.getnextname();
-                }
-             
-                printf("\n\n\n    the object links to the following other objects : \n\n");
-                int* pi = new int[100];
-                memset ( pi, 0, 400 );
-                for ( int i = 0; i < ft->objectslinkablenum; i++ ) {
-                   for ( int j = 0; j < objectlayernum; j++ )
-                      if ( obj[j]->id == ft->objectslinkableid[i] )
-                         printf("           %s\n", name[j] );
-         
-                   pi[i] = ft->objectslinkableid[i];
-                }
-                pi[i] = 0;
-         
-                ft->objectslinkableid = pi;
-         
-         
-                char m = 0;
-                printf("     Change ?\n");
-         
-                yn_switch ("no", "yes", 0, 1, m);
-                if ( m ) {
-                   int num = 0;
-                   do {
-                     printf("\n\n\n\n");
-                     for ( int j = 0; j < objectlayernum; j++ ) {
-                        printf("%3i %28s |    ", obj[j]->id, name[j]);
-                        if (j % 2 ==0) printf("\n");
-                     }
-         
-                     printf (" enter id of object  ( 0 to continue ): ");
-                     num_ed (ft->objectslinkableid[num],0,10000);
-                     num++;
-                   } while ( ft->objectslinkableid[num-1] ); /* enddo */
-                   ft->objectslinkablenum = num-1;
-         
-                }
-         
-            
+         if (!ft->no_autonet) {
+            dynamic_array<Object * type> obj;
+            dynamic_array<pchar> name;
+
+            int objectlayernum = 0;
+
+            tfindfile ff("*.obl");
+
+            string c = ff.getnextname();
+
+            while (!c.empty()) {
+               obj[objectlayernum] = loadobjecttype(c.c_str());
+               name[objectlayernum] = strdup(c.c_str());
+               objectlayernum++;
+               c = ff.getnextname();
+            }
+
+            printf("\n\n\n    the object links to the following other objects : \n\n");
+            int* pi = new int[100];
+            memset(pi, 0, 400);
+            for (int i = 0; i < ft->objectslinkablenum; i++) {
+               for (int j = 0; j < objectlayernum; j++)
+                  if (obj[j]->id == ft->objectslinkableid[i])
+                     printf("           %s\n", name[j]);
+
+               pi[i] = ft->objectslinkableid[i];
+            }
+            pi[i] = 0;
+
+            ft->objectslinkableid = pi;
+
+            char m = 0;
+            printf("     Change ?\n");
+
+            yn_switch("no", "yes", 0, 1, m);
+            if (m) {
+               int num = 0;
+               do {
+                  printf("\n\n\n\n");
+                  for (int j = 0; j < objectlayernum; j++) {
+                     printf("%3i %28s |    ", obj[j]->id, name[j]);
+                     if (j % 2 == 0)
+                        printf("\n");
+                  }
+
+                  printf(" enter id of object  ( 0 to continue ): ");
+                  num_ed(ft->objectslinkableid[num], 0, 10000);
+                  num++;
+               } while (ft->objectslinkableid[num - 1]); /* enddo */
+               ft->objectslinkablenum = num - 1;
+            }
          }
       }
-   
+
       ft->buildcost.energy = 0;
       ft->removecost.energy = 0;
-   
-     {
-                for (int j=0; j< cmovemalitypenum; j ++)
-                   printf(" %i : %s \n", j, cmovemalitypes[j] );
-   
-                printf ("\n  movemalus_plus_count" );
-                num_ed (ft->movemalus_plus_count, 0, cmovemalitypenum );
-   
-                ft->movemalus_plus = (char*) realloc ( ft->movemalus_plus, ft->movemalus_plus_count );
-   
-                printf ( " 0 for default \n");
-                for (j=0; j< ft->movemalus_plus_count; j++) {
-                   printf(" %i : %s \n", j, cmovemalitypes[j] );
-                   
-                   num_ed ( ft->movemalus_plus[j], 0, 255 );
-                } /* endfor */
-   
-     }{
-                for (int j=0; j< cmovemalitypenum; j ++)
-                   printf(" %i : %s \n", j, cmovemalitypes[j] );
-   
-                printf ("\n  movemalus_abs_count  " );
-                num_ed (ft->movemalus_abs_count, 0, cmovemalitypenum );
-   
-                ft->movemalus_abs = (char*) realloc ( ft->movemalus_abs, ft->movemalus_abs_count );
-   
-                printf ( " 0 for default \n");
-                for (j=0; j< ft->movemalus_abs_count; j++) {
-                   printf(" %i : %s \n", j, cmovemalitypes[j] );
-                   
-                   num_ed ( ft->movemalus_abs[j], 0, 255 );
-                } /* endfor */
-      }
-   
+
       {
-          tn_file_buf_stream mainstream (datfile.name, tnstream::writing );
-          writeobject  ( ft, &mainstream, 0 );
+         for (int j = 0; j < cmovemalitypenum; j++)
+            printf(" %i : %s \n", j, cmovemalitypes[j]);
+
+         printf("\n  movemalus_plus_count");
+         num_ed(ft->movemalus_plus_count, 0, cmovemalitypenum);
+
+         ft->movemalus_plus = (char*) realloc(ft->movemalus_plus, ft->movemalus_plus_count);
+
+         printf(" 0 for default \n");
+         for (j = 0; j < ft->movemalus_plus_count; j++) {
+            printf(" %i : %s \n", j, cmovemalitypes[j]);
+
+            num_ed(ft->movemalus_plus[j], 0, 255);
+         } /* endfor */
+      }
+      {
+         for (int j = 0; j < cmovemalitypenum; j++)
+            printf(" %i : %s \n", j, cmovemalitypes[j]);
+
+         printf("\n  movemalus_abs_count  ");
+         num_ed(ft->movemalus_abs_count, 0, cmovemalitypenum);
+
+         ft->movemalus_abs = (char*) realloc(ft->movemalus_abs, ft->movemalus_abs_count);
+
+         printf(" 0 for default \n");
+         for (j = 0; j < ft->movemalus_abs_count; j++) {
+            printf(" %i : %s \n", j, cmovemalitypes[j]);
+
+            num_ed(ft->movemalus_abs[j], 0, 255);
+         } /* endfor */
+      }
+
+      {
+         tn_file_buf_stream mainstream(datfile.name, tnstream::writing);
+         writeobject(ft, &mainstream, 0);
       }
    } /* endtry */
-   catch ( tfileerror err ) {
-      printf("\nfatal error accessing file %s \n", err.getFileName().c_str() );
+   catch (tfileerror err) {
+      printf("\nfatal error accessing file %s \n", err.getFileName().c_str());
       return 1;
    } /* endcatch */
-   catch ( ASCexception ) {
-      printf("\na fatal exception occured\n" );
+   catch (ASCexception) {
+      printf("\na fatal exception occured\n");
       return 2;
    } /* endcatch */
 
-   clearscreen(); 
+   clearscreen();
 
-   if (mode50) _setvideomode (_TEXTC80);
+   if (mode50)
+      _setvideomode(_TEXTC80);
    return 0;
 }
 
+void* loadpcx2(char* filestring) {
+   void* p = NULL;
+   int b;
 
-
-void *       loadpcx2(char *       filestring)
-{      
-  void         *p = NULL;
-  int b; 
-
-   activefontsettings.font = fnt; 
-   activefontsettings.color = black; 
-   activefontsettings.background = white; 
+   activefontsettings.font = fnt;
+   activefontsettings.color = black;
+   activefontsettings.background = white;
    activefontsettings.length = 600;
-   activefontsettings.justify = lefttext; 
+   activefontsettings.justify = lefttext;
 
+   initgraphics(640, 480, 8);
+   b = loadpcxxy(filestring, 1, 0, 0);
+   if (b == 0) {
+      p = malloc(10000);
+      getimage(0, 0, fieldsizex - 1, fieldsizey - 1, p);
 
-   initgraphics ( 640, 480, 8);
-   b = loadpcxxy(filestring, 1, 0,0); 
-   if (b == 0) { 
-      p = malloc( 10000 ); 
-      getimage(0,0, fieldsizex-1, fieldsizey-1, p); 
-
-      showtext2 ( "press x and y to flip the picture", 30, 400 );
-      showtext2 ( "enter to continue", 30, 440 );
+      showtext2("press x and y to flip the picture", 30, 400);
+      showtext2("enter to continue", 30, 440);
 
       int ch;
       do {
          ch = getch();
-         if ( ch == 'x' ) {
-            void* buf = asc_malloc ( imagesize ( 0, 0, fieldxsize, fieldysize ) );
-            flippict ( p, buf , 1 );
+         if (ch == 'x') {
+            void* buf = asc_malloc(imagesize(0, 0, fieldxsize, fieldysize));
+            flippict(p, buf, 1);
             p = buf;
          }
-      
-         if ( ch == 'y' ) {
-            void* buf = asc_malloc ( imagesize ( 0, 0, fieldxsize, fieldysize ) );
-            flippict ( p, buf , 2 );
+
+         if (ch == 'y') {
+            void* buf = asc_malloc(imagesize(0, 0, fieldxsize, fieldysize));
+            flippict(p, buf, 2);
             p = buf;
          }
-         bar ( 0, 0, 100, 100, 0 );
-         putspriteimage ( 0, 0, p );
+         bar(0, 0, 100, 100, 0);
+         putspriteimage(0, 0, p);
 
-      } while ( ch != 13 ); /* enddo */
-
-   } 
-   return p; 
-
-} 
-
-
+      } while (ch != 13); /* enddo */
+   }
+   return p;
+}

@@ -22,23 +22,26 @@
 #include "../global.h"
 
 class BarGraphWidget : public PG_ThemeWidget {
-      float fraction;
-      PG_Color color;
-   public:
-      typedef vector<pair<double,int> > Colors;
-      enum Direction { l2r, r2l, t2b, b2t };
-   private:
-      Direction dir;
-      Colors colors;
-   public:
-      BarGraphWidget (PG_Widget *parent, const PG_Rect &rect, Direction direction );
+   float fraction;
+   PG_Color color;
 
-      void setFraction( float f );
-      void setColor( int c ) { color = c; };
-      void setColor( PG_Color c ) { color = c; };
-      void setColor( Colors colors ) { this->colors = colors; };
+  public:
+   typedef vector<pair<double, int>> Colors;
+   enum Direction { l2r, r2l, t2b, b2t };
 
-      void eventBlit (SDL_Surface *surface, const PG_Rect &src, const PG_Rect &dst);
+  private:
+   Direction dir;
+   Colors colors;
+
+  public:
+   BarGraphWidget(PG_Widget* parent, const PG_Rect& rect, Direction direction);
+
+   void setFraction(float f);
+   void setColor(int c) { color = c; };
+   void setColor(PG_Color c) { color = c; };
+   void setColor(Colors colors) { this->colors = colors; };
+
+   void eventBlit(SDL_Surface* surface, const PG_Rect& src, const PG_Rect& dst);
 };
 
 #endif

@@ -15,16 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
+const char* filereadmode = "r";
+const char* filewritemode = "w";
+const char* filereadmodetext = "r";
+const char* filewritemodetext = "w";
+const char pathdelimitter = '/';
+const char* pathdelimitterstring = "/";
+const char foreignPathDelimitter = '\\';
+const char* foreignPathDelimitterString = "\\";
 
- const char* filereadmode = "r";
- const char* filewritemode = "w";
- const char* filereadmodetext = "r";
- const char* filewritemodetext = "w";
- const char pathdelimitter = '/';
- const char* pathdelimitterstring = "/";
- const char  foreignPathDelimitter = '\\';
- const char* foreignPathDelimitterString = "\\";
-
- const int maxfilenamelength = 255;
- const char* asc_configurationfile = "asc2rc";
- const bool has_drive_letters = false;
+const int maxfilenamelength = 255;
+const char* asc_configurationfile = "asc2rc";
+const bool has_drive_letters = false;

@@ -18,21 +18,20 @@
 #include <unistd.h>
 #include <sound.h>
 
-int main( int argc, char **argv ) {
-  initSound();
-  for( int i=1; i<argc; ++i ) {
-    printf( "Loading %s.\n", argv[i] );
-    Sound *s = new Sound(argv[i]);
-    printf( "Playing %s.\n", argv[i] );
-    s->play();
-//      printf( "Pausing 1 second." );
-//      sleep(1);
-    printf( " Press a key for next sound . " );
-    getchar();
-    
-    printf( "Freeing %s.\n", argv[i] );
-    delete s;
-  }
-  closeSound();
-}
+int main(int argc, char** argv) {
+   initSound();
+   for (int i = 1; i < argc; ++i) {
+      printf("Loading %s.\n", argv[i]);
+      Sound* s = new Sound(argv[i]);
+      printf("Playing %s.\n", argv[i]);
+      s->play();
+      //      printf( "Pausing 1 second." );
+      //      sleep(1);
+      printf(" Press a key for next sound . ");
+      getchar();
 
+      printf("Freeing %s.\n", argv[i]);
+      delete s;
+   }
+   closeSound();
+}

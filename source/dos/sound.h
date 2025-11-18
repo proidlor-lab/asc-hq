@@ -8,17 +8,17 @@
  *                                                                         *
  ***************************************************************************/
 class Sound {
-public:
-  /** Create a Sound from the .wav file specified by filename.
-   *  If it's not possible to use the wave file for some reason, the
-   *  sound is set to silence
-   */
-  Sound( const char *filename );
+  public:
+   /** Create a Sound from the .wav file specified by filename.
+    *  If it's not possible to use the wave file for some reason, the
+    *  sound is set to silence
+    */
+   Sound(const char* filename);
 
-  void play(void);
-  void playWait(void);
+   void play(void);
+   void playWait(void);
 
-  ~Sound(void);
+   ~Sound(void);
 };
 
 /** Initialise sound system.  If you don't call this, the first Sound

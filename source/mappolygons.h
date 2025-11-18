@@ -19,38 +19,35 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
+    along with this program; see the file COPYING. If not, write to the
     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
 #ifndef mappolygonsH
- #define mappolygonsH
-
+#define mappolygonsH
 
 #include "polygontriangulation.h"
 #include "typen.h"
 #include "terraintype.h"
 
 class Poly_gon {
-   public:
-      typedef MapCoordinate Point;
-      typedef vector<Point>::iterator VertexIterator;
-      vector<Point> vertex;
-      void read ( tnstream& stream );
-      void write ( tnstream& stream ) const;
+  public:
+   typedef MapCoordinate Point;
+   typedef vector<Point>::iterator VertexIterator;
+   vector<Point> vertex;
+   void read(tnstream& stream);
+   void write(tnstream& stream) const;
 };
 
+class PolygonPainterSquareCoordinate : protected PolygonPainter<Poly_gon> {
+  protected:
+   virtual void setpoint(int x, int y);
+   virtual void setpointabs(int x, int y) = 0;
 
+  public:
+   void setspecificpoint(int x, int y) { setpointabs(x, y); };
+   bool paintPolygon(const Poly_gon& poly);
+};
 
-class  PolygonPainterSquareCoordinate : protected PolygonPainter<Poly_gon> {
-        protected:
-             virtual void setpoint    ( int x,  int y  );
-             virtual void setpointabs ( int x,  int y  )=0;
-        public:
-             void setspecificpoint ( int x, int y ) { setpointabs ( x, y ); };
-             bool paintPolygon   (  const Poly_gon& poly );
-          };
-
-
-#endif //weather_h
+#endif  // weather_h

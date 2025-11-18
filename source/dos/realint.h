@@ -32,8 +32,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 #ifdef _DOS_
@@ -46,41 +46,42 @@
 #include "../tpascal.inc"
 
 class call_real_int {
-          short int memsize;
-          REGS reg;
-          unsigned short int infoselector;
-          SREGS segmentreg;
-       public :
-          call_real_int(short int msize);
-          ~call_real_int(void);
-          char real_call(char intnr);
-          void setuprmi(void);
-          unsigned short int realsegment; // Segment Adresse im Realmode
-          unsigned short int protectedsegment; // Segment Adresse im Protectedmode
+   short int memsize;
+   REGS reg;
+   unsigned short int infoselector;
+   SREGS segmentreg;
+
+  public:
+   call_real_int(short int msize);
+   ~call_real_int(void);
+   char real_call(char intnr);
+   void setuprmi(void);
+   unsigned short int realsegment;       // Segment Adresse im Realmode
+   unsigned short int protectedsegment;  // Segment Adresse im Protectedmode
 };
 
-// To call a real mode interrupt, first run setuprmi then fill the RMI-Registers with your Register-Values
-// and then call real_call( Interrupt - Number )
+// To call a real mode interrupt, first run setuprmi then fill the RMI-Registers with your
+// Register-Values and then call real_call( Interrupt - Number )
 
 struct rminfo {
-        long            edi;
-        long            esi;
-        long            ebp;
-        long            reserved_by_system;
-        union {
-            long            ebx;
-            char            bl,bh,ebl,ebh;
-            word           bx,hbx;
-        };
-        long            edx;
-        union {
-           long            ecx;
-           word           cx,hcx;
-        };
-        long            eax;
-        short           flags;
-        short           es, ds, fs, gs, ip, cs, sp, ss;
-     } ;
+   long edi;
+   long esi;
+   long ebp;
+   long reserved_by_system;
+   union {
+      long ebx;
+      char bl, bh, ebl, ebh;
+      word bx, hbx;
+   };
+   long edx;
+   union {
+      long ecx;
+      word cx, hcx;
+   };
+   long eax;
+   short flags;
+   short es, ds, fs, gs, ip, cs, sp, ss;
+};
 
 extern rminfo rmi;
 #endif

@@ -27,53 +27,49 @@
 #ifndef _NDIR_H
 #define _NDIR_H
 
-#include <sys/types.h>	/* ino_t definition */
+#include <sys/types.h> /* ino_t definition */
 
-#define	rewinddir(dirp)	seekdir(dirp, 0L)
+#define rewinddir(dirp) seekdir(dirp, 0L)
 
 /* 255 is said to be big enough for Windows NT.  The more elegant
    solution would be declaring d_name as one byte long and allocating
    it to the actual size needed.  */
-#define	MAXNAMLEN	255
+#define MAXNAMLEN 255
 
-struct direct
-{
-  ino_t d_ino;			/* a bit of a farce */
-  int d_reclen;			/* more farce */
-  int d_namlen;			/* length of d_name */
-  char d_name[MAXNAMLEN + 1];	/* garentee null termination */
+struct direct {
+   ino_t d_ino;                /* a bit of a farce */
+   int d_reclen;               /* more farce */
+   int d_namlen;               /* length of d_name */
+   char d_name[MAXNAMLEN + 1]; /* garentee null termination */
 };
 
-struct _dircontents
-{
-  char *_d_entry;
-  struct _dircontents *_d_next;
+struct _dircontents {
+   char* _d_entry;
+   struct _dircontents* _d_next;
 };
 
-typedef struct _dirdesc
-{
-  int dd_id;			/* uniquely identify each open directory */
-  long dd_loc;			/* where we are in directory entry is this */
-  struct _dircontents *dd_contents;	/* pointer to contents of dir */
-  struct _dircontents *dd_cp;	/* pointer to current position */
+typedef struct _dirdesc {
+   int dd_id;                        /* uniquely identify each open directory */
+   long dd_loc;                      /* where we are in directory entry is this */
+   struct _dircontents* dd_contents; /* pointer to contents of dir */
+   struct _dircontents* dd_cp;       /* pointer to current position */
 } DIR;
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-extern void seekdir (DIR *, long);
-extern long telldir (DIR *);
-extern DIR *opendir (const char *);
-extern void closedir (DIR *);
-extern struct direct *readdir (DIR *);
+extern void seekdir(DIR*, long);
+extern long telldir(DIR*);
+extern DIR* opendir(const char*);
+extern void closedir(DIR*);
+extern struct direct* readdir(DIR*);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-
-/* 
+/*
  * Local Variables:
  * mode:C
  * ChangeLog:ChangeLog

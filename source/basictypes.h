@@ -13,8 +13,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -25,27 +25,30 @@
 #include <list>
 #include <bitset>
 
-//! A vector that stores pointers, but deletes the objects (and not only the pointers) on destruction. The erase method does NOT delete the objects !
-template <class T> class PointerVector : public std::vector<T> {
-   public:
-     ~PointerVector() {
-        for ( typename std::vector<T>::iterator it = std::vector<T>::begin(); it!=std::vector<T>::end(); it++ )
-            delete *it;
-     };
+//! A vector that stores pointers, but deletes the objects (and not only the pointers) on
+//! destruction. The erase method does NOT delete the objects !
+template <class T>
+class PointerVector : public std::vector<T> {
+  public:
+   ~PointerVector() {
+      for (typename std::vector<T>::iterator it = std::vector<T>::begin();
+           it != std::vector<T>::end(); it++)
+         delete *it;
+   };
 };
 
-
-//! A list that stores pointers, but deletes the objects (and not only the pointers) on destruction. The erase method does NOT delete the objects !
-template <class T> class PointerList : public std::list<T> {
-   public:
-     ~PointerList() {
-        for ( typename std::list<T>::iterator it= std::list<T>::begin(); it!= std::list<T>::end(); it++ )
-            delete *it;
-     };
+//! A list that stores pointers, but deletes the objects (and not only the pointers) on destruction.
+//! The erase method does NOT delete the objects !
+template <class T>
+class PointerList : public std::list<T> {
+  public:
+   ~PointerList() {
+      for (typename std::list<T>::iterator it = std::list<T>::begin(); it != std::list<T>::end();
+           it++)
+         delete *it;
+   };
 };
-
 
 typedef std::bitset<64> BitSet;
-
 
 #endif

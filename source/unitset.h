@@ -14,11 +14,10 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
-
 
 #ifndef unitsetH
 #define unitsetH
@@ -28,48 +27,43 @@
 #include "typen.h"
 
 class SingleUnitSet {
-      public:
+  public:
+   enum Type { unit, building };
 
-         enum Type { unit, building };
+   class TranslationTable {
+     public:
+      std::vector<IntRange> translation;
+      std::string name;
+      void parseString(const char* s);
+   };
 
-         class TranslationTable {
-                  public:
-                     std::vector<IntRange> translation;
-                     std::string name;
-                     void parseString ( const char* s );
-               };
+   int active;
+   int ID;
+   ASCString name;
+   ASCString maintainer;
+   ASCString information;
 
+   std::vector<IntRange> unitIds;
+   std::vector<IntRange> buildingIds;
+   std::vector<TranslationTable*> transtab;
+   bool filterBuildings;
 
-         int active;
-         int ID;
-         ASCString name;
-         ASCString maintainer;
-         ASCString information;
-
-         std::vector<IntRange> unitIds;
-         std::vector<IntRange> buildingIds;
-         std::vector<TranslationTable*> transtab;
-         bool filterBuildings;
-
-         SingleUnitSet ( void ) : active ( 1 ), ID(0), filterBuildings ( true ) {};
-         bool isMember ( int id, Type type );
-         void read ( tnstream* stream );
-         std::vector<IntRange> parseIDs ( const char* s );
-
-     };
+   SingleUnitSet(void) : active(1), ID(0), filterBuildings(true){};
+   bool isMember(int id, Type type);
+   void read(tnstream* stream);
+   std::vector<IntRange> parseIDs(const char* s);
+};
 
 typedef deallocating_vector<SingleUnitSet*> UnitSets;
 extern UnitSets unitSets;
 
-extern void loadUnitSets ( void );
-
+extern void loadUnitSets(void);
 
 class VehicleType;
 class BuildingType;
-extern int getUnitSetID( const VehicleType* veh );
-extern int getUnitSetID( const BuildingType* bld );
+extern int getUnitSetID(const VehicleType* veh);
+extern int getUnitSetID(const BuildingType* bld);
 
-extern bool vehicleComp( const VehicleType* v1, const VehicleType* v2 );
-
+extern bool vehicleComp(const VehicleType* v1, const VehicleType* v2);
 
 #endif

@@ -35,18 +35,18 @@ SDLmm::ColorRGB lightenColor( const SDLmm::ColorRGB& color, float factor )
 Uint8 saturationTranslationTable[256][256];
 
 class TableGenerator {
-   public:
-      TableGenerator() {
-         for ( int i = 0; i < 256; ++i )
-            for ( int j = 0; j < 256; ++j ) {
-               int v = i * j / 16;
-               if ( v > 255 )
-                  v = 255;
-               if ( v < 0 )
-                  v = 0;
-               saturationTranslationTable[i][j] = v;
-            }
-      };
+  public:
+   TableGenerator() {
+      for (int i = 0; i < 256; ++i)
+         for (int j = 0; j < 256; ++j) {
+            int v = i * j / 16;
+            if (v > 255)
+               v = 255;
+            if (v < 0)
+               v = 0;
+            saturationTranslationTable[i][j] = v;
+         }
+   };
 } tableGenerator;
 
 #if 0
@@ -113,4 +113,3 @@ void PutPixel( Surface& s, const SPoint& pos, Uint32 src )
    }
 }
 #endif
-

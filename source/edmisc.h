@@ -13,8 +13,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -42,83 +42,86 @@
 #include "palette.h"
 #include "mapalgorithms.h"
 
+extern bool mousePressedOnField(const MapCoordinate& pos, const SPoint& mousePos,
+                                bool cursorChanged, int button, int prio);
+extern bool mouseDraggedToField(const MapCoordinate& pos, const SPoint& mousePos,
+                                bool cursorChanged, int prio);
 
-extern bool mousePressedOnField( const MapCoordinate& pos, const SPoint& mousePos, bool cursorChanged, int button, int prio );
-extern bool mouseDraggedToField( const MapCoordinate& pos, const SPoint& mousePos, bool cursorChanged, int prio );
+class tputresources : public SearchFields {
+   int resourcetype;
+   int maxresource;
+   int minresource;
+   int maxdst;
+   MapCoordinate centerPos;
 
-   class tputresources : public SearchFields {
-                              int resourcetype;
-                              int maxresource;
-                              int minresource;
-                              int maxdst;
-                              MapCoordinate centerPos;
-                           public:
-                               void            init ( int sx , int sy, int dst, int restype, int resmax, int resmin );
-                               virtual void    testfield ( const MapCoordinate& mc );
-                               tputresources ( GameMap* _gamemap ) : SearchFields ( _gamemap ) {};
-                            };
+  public:
+   void init(int sx, int sy, int dst, int restype, int resmax, int resmin);
+   virtual void testfield(const MapCoordinate& mc);
+   tputresources(GameMap* _gamemap) : SearchFields(_gamemap){};
+};
 
-   class tputresourcesdlg : public tdialogbox {
-               int resourcetype;
-               int restp2;
-               int maxresource;
-               int minresource;
-               int dist;
-               int status;
-            public:
-                void init ( void );
-                void run ( void );
-                void buttonpressed ( int id );
-    };
+class tputresourcesdlg : public tdialogbox {
+   int resourcetype;
+   int restp2;
+   int maxresource;
+   int minresource;
+   int dist;
+   int status;
 
+  public:
+   void init(void);
+   void run(void);
+   void buttonpressed(int id);
+};
 
+extern bool mapsaved;
 
-   extern bool mapsaved;
+extern void setstartvariables(void);
+extern void exchg(int* a1, int* a2);
+extern void k_savemap(bool saveas);
+extern void k_loadmap(void);
+extern void lines(int x1, int y, int x2, int y2);
 
-extern void         setstartvariables(void);
-extern void         exchg(int *a1,int *a2);
-extern void         k_savemap(bool saveas);
-extern void         k_loadmap(void);
-extern void         lines(int      x1,int      y,int      x2,int      y2);
-
-extern void         changeresource(void);
-extern void         changebuildingvalues( Building& b);
-extern void         changeminestrength(void);
-extern void         newmap(void);
-extern void         cargoEditor ( ContainerBase* container );
+extern void changeresource(void);
+extern void changebuildingvalues(Building& b);
+extern void changeminestrength(void);
+extern void newmap(void);
+extern void cargoEditor(ContainerBase* container);
 // extern int          selectfield(int * cx ,int  * cy);
-extern void 	     playerchange(void);
+extern void playerchange(void);
 
-//extern void         setpolytemps (int value, ppolygon poly1); //* setzt in diesem Polygon den Tempvalue auf value
-extern void         editpolygon (Poly_gon& poly);
+// extern void         setpolytemps (int value, ppolygon poly1); //* setzt in diesem Polygon den
+// Tempvalue auf value
+extern void editpolygon(Poly_gon& poly);
 // extern int        getpolygon(ppolygon *poly); //return Fehlerstatus
 
 extern MapField* getactfield();
 
-
-extern void selectunitsetfilter ( void );
+extern void selectunitsetfilter(void);
 extern void movebuilding();
-extern void unitsettransformation( void );
+extern void unitsettransformation(void);
 
-//! The class that manages the switching between the primary map (for editing) and the secondary map (for selecting objects and terrain)
+//! The class that manages the switching between the primary map (for editing) and the secondary map
+//! (for selecting objects and terrain)
 class MapSwitcher {
-        int active;
-        class Mappntr {
-           public:
-              GameMap* map;
-              bool changed;
-              MapCoordinate cursorpos;
-              MapCoordinate windowpos;
-              Mappntr ( ) : map ( NULL ), changed ( false ) {};
-        } maps[2];
+   int active;
+   class Mappntr {
      public:
-        enum Action { select, set };
+      GameMap* map;
+      bool changed;
+      MapCoordinate cursorpos;
+      MapCoordinate windowpos;
+      Mappntr() : map(NULL), changed(false){};
+   } maps[2];
 
-        Action getDefaultAction ( );
-        void toggle ();
-        string getName ();
-        void deleteMaps();
-        MapSwitcher ( ) : active ( 0 ) {};
+  public:
+   enum Action { select, set };
+
+   Action getDefaultAction();
+   void toggle();
+   string getName();
+   void deleteMaps();
+   MapSwitcher() : active(0){};
 };
 
 extern MapSwitcher mapSwitcher;
@@ -128,16 +131,15 @@ extern void transformMap();
 
 extern void editArchivalInformation();
 
-//! displays a textmessage comparing the resources of all players 
-extern void resourceComparison ( );
+//! displays a textmessage comparing the resources of all players
+extern void resourceComparison();
 
 //! the function to edit the vehicle type that are allowed to be build by units
 extern void unitProductionLimitation();
 
-
 extern void saveClipboard();
 extern void readClipboard();
-extern void setweatherall ( int weather  );
+extern void setweatherall(int weather);
 extern void editResearch();
 extern void editResearchPoints();
 extern void generateTechTree();
@@ -152,6 +154,6 @@ extern void copyArea();
 extern void pasteArea();
 extern void testDebugFunction();
 
-extern void selectAndRunLuaScript( const ASCString& filenamewildcard );
+extern void selectAndRunLuaScript(const ASCString& filenamewildcard);
 
 #endif

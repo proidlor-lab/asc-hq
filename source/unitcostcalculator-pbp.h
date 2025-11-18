@@ -7,16 +7,15 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef unitcostcalculatorPBPH
 #define unitcostcalculatorPBPH
 
 #include "unitcostcalculator.h"
 
 class PBPUnitCostCalculator : public UnitCostCalculator {
-   public:
-      Resources productionCost( const VehicleType* vehicle );
-      ASCString getCalculatorName();
+  public:
+   Resources productionCost(const VehicleType* vehicle);
+   ASCString getCalculatorName();
 };
 
 #endif

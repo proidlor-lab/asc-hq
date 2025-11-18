@@ -17,22 +17,17 @@
 #include <stdio.h>
 
 #ifndef bool
-typedef enum bool_t
-{
-  false = 0, true
-} bool;
+typedef enum bool_t { false = 0, true } bool;
 #endif
 
 /* customized structure for command line parameters */
-struct arg_t
-{
-  int v;
-  bool h;
-  int optind;
+struct arg_t {
+   int v;
+   bool h;
+   int optind;
 };
 
 /* function prototypes */
-struct arg_t * Cmdline(int, char **);
-void usage(char *);
-void free_args(struct arg_t *);
-
+struct arg_t* Cmdline(int, char**);
+void usage(char*);
+void free_args(struct arg_t*);

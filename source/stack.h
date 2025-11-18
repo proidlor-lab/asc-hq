@@ -41,23 +41,23 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
 #ifndef stack_h_included
- #define stack_h_included
- #include <SDL_stdinc.h>
+#define stack_h_included
+#include <SDL_stdinc.h>
 
- #define npush(a) pushdata( (Uint8*)&a, sizeof ( a ) )
- #define npop(a) popdata ( (Uint8*)&a, sizeof ( a ) )
+#define npush(a) pushdata((Uint8*) &a, sizeof(a))
+#define npop(a) popdata((Uint8*) &a, sizeof(a))
 
- extern void  pushdata(Uint8 *       daten, int          size);
+extern void pushdata(Uint8* daten, int size);
 
- extern void  popdata(Uint8 *       daten, int          size);
+extern void popdata(Uint8* daten, int size);
 
- extern int   stackfree(void);
+extern int stackfree(void);
 
- class fatalstackerror {};
+class fatalstackerror {};
 #endif

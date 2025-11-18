@@ -21,24 +21,20 @@
 
 #include "blitter.h"
 
- map<int,int*> RotationCache::cache;
- int RotationCache::xsize = -1;
- int RotationCache::ysize = -1;
+map<int, int*> RotationCache::cache;
+int RotationCache::xsize = -1;
+int RotationCache::ysize = -1;
 
- ZoomCache::ZoomMap ZoomCache::zoomCache;
-  
- NullParamType nullParam;
+ZoomCache::ZoomMap ZoomCache::zoomCache;
 
- 
- int foobar_func()
- {
-    return 0;
- }
+NullParamType nullParam;
 
- 
- // base 10:
- // const int ColorMerger_Alpha_XLAT_Table_shadings[8] = { 9, 8, 6, 4, 11, 12, 14, 17 };
+int foobar_func() {
+   return 0;
+}
 
- // base 16:
- const int ColorMerger_Alpha_XLAT_Table_shadings[8] = { 14, 12, 9, 6, 18, 20, 23, 28 };
+// base 10:
+// const int ColorMerger_Alpha_XLAT_Table_shadings[8] = { 9, 8, 6, 4, 11, 12, 14, 17 };
 
+// base 16:
+const int ColorMerger_Alpha_XLAT_Table_shadings[8] = {14, 12, 9, 6, 18, 20, 23, 28};

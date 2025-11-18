@@ -34,85 +34,67 @@
 #include "spfst.h"
 #include "gamemap.h"
 
-
-
-
-bool Mine :: attacksunit ( const Vehicle* veh ) const
-{
-   #ifndef converter
-   if  (!( ( veh->typ->hasFunction( ContainerBaseType::ImmuneToMines  ) ) ||
-              ( veh->height > chfahrend ) ||
-              ( veh->getMap()->getPlayer(player).diplomacy.getState(veh->getOwner()) >= PEACE ) ||
-              ( (veh->typ->movemalustyp ==  cmm_trooper) && (type != cmantipersonnelmine)) || 
-              ( veh->height <= chgetaucht && type != cmmooredmine ) || 
-              ( veh->height == chschwimmend && type != cmfloatmine ) ||
-              ( veh->height == chfahrend && type != cmantipersonnelmine  && type != cmantitankmine )
-            ))
-         return true;
+bool Mine ::attacksunit(const Vehicle* veh) const {
+#ifndef converter
+   if (!((veh->typ->hasFunction(ContainerBaseType::ImmuneToMines)) || (veh->height > chfahrend) ||
+         (veh->getMap()->getPlayer(player).diplomacy.getState(veh->getOwner()) >= PEACE) ||
+         ((veh->typ->movemalustyp == cmm_trooper) && (type != cmantipersonnelmine)) ||
+         (veh->height <= chgetaucht && type != cmmooredmine) ||
+         (veh->height == chschwimmend && type != cmfloatmine) ||
+         (veh->height == chfahrend && type != cmantipersonnelmine && type != cmantitankmine)))
+      return true;
 #endif
-     return false;
+   return false;
 }
 
-
-
-void Mine::paint( Surface& surf, SPoint pos ) const
-{
-   MineType::paint( type, player, surf, pos );   
+void Mine::paint(Surface& surf, SPoint pos) const {
+   MineType::paint(type, player, surf, pos);
 }
 
-
-
-Mine::Mine( MineTypes type, int strength, int player, GameMap* gamemap )
-{
+Mine::Mine(MineTypes type, int strength, int player, GameMap* gamemap) {
    this->type = type;
    this->strength = strength;
    this->player = player;
    this->identifier = gamemap->idManager.getNewNetworkID();
-   #ifndef converter
-   lifetimer = gamemap->getgameparameter( GameParameter(cgp_antipersonnelmine_lifetime + type - 1));
-   #endif
+#ifndef converter
+   lifetimer = gamemap->getgameparameter(GameParameter(cgp_antipersonnelmine_lifetime + type - 1));
+#endif
 }
 
-Mine::Mine( MineTypes type, int strength, int player, GameMap* gamemap, int identifier )
-{
+Mine::Mine(MineTypes type, int strength, int player, GameMap* gamemap, int identifier) {
    this->type = type;
    this->strength = strength;
    this->player = player;
    this->identifier = identifier;
-   #ifndef converter
-   lifetimer = gamemap->getgameparameter( GameParameter(cgp_antipersonnelmine_lifetime + type - 1));
-   #endif
+#ifndef converter
+   lifetimer = gamemap->getgameparameter(GameParameter(cgp_antipersonnelmine_lifetime + type - 1));
+#endif
 }
 
 const int mineVersion = 1;
-void Mine::read ( tnstream& stream )
-{
+void Mine::read(tnstream& stream) {
    int version = stream.readInt();
-   if ( version < 1 || version > mineVersion ) 
-      throw tinvalidversion ( "Mine", mineVersion, version );
-      
+   if (version < 1 || version > mineVersion)
+      throw tinvalidversion("Mine", mineVersion, version);
+
    identifier = stream.readInt();
-   type = MineTypes( stream.readInt() );
+   type = MineTypes(stream.readInt());
    strength = stream.readInt();
    player = stream.readInt();
 }
 
-void Mine::write ( tnstream& stream ) const
-{
-   stream.writeInt( mineVersion );
-   stream.writeInt( identifier );
-   stream.writeInt( type );
-   stream.writeInt( strength );
-   stream.writeInt( player );
+void Mine::write(tnstream& stream) const {
+   stream.writeInt(mineVersion);
+   stream.writeInt(identifier);
+   stream.writeInt(type);
+   stream.writeInt(strength);
+   stream.writeInt(player);
 }
 
-Mine::Mine()
-{
-}
+Mine::Mine() {}
 
-Mine Mine::newFromStream ( tnstream& stream )
-{
+Mine Mine::newFromStream(tnstream& stream) {
    Mine m;
-   m.read( stream );
-   return m;  
+   m.read(stream);
+   return m;
 }

@@ -10,7 +10,6 @@
     \brief The box displaying unit information
 */
 
-
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -20,10 +19,8 @@
  *                                                                         *
  ***************************************************************************/
 
-
-
 #ifndef dashboardH
- #define dashboardH
+#define dashboardH
 
 #include "paradialog.h"
 #include "windowing.h"
@@ -38,74 +35,77 @@ class GameMap;
 class MapField;
 
 class DashboardPanel : public LayoutablePanel {
-   private:
-      void containerDeleted( ContainerBase* c );
-   protected:
-       Vehicle* veh;
-       Building* bld;
-       
-      DashboardPanel ( PG_Widget *parent, const PG_Rect &r, const ASCString& panelName_, bool loadTheme );
+  private:
+   void containerDeleted(ContainerBase* c);
 
-      void painter ( const PG_Rect &src, const ASCString& name, const PG_Rect &dst);
-      void registerSpecialDisplay( const ASCString& name );
+  protected:
+   Vehicle* veh;
+   Building* bld;
 
-      void reset(GameMap& map);
+   DashboardPanel(PG_Widget* parent, const PG_Rect& r, const ASCString& panelName_, bool loadTheme);
 
-      bool containerRenamed( PG_LineEdit* lineEdit );
+   void painter(const PG_Rect& src, const ASCString& name, const PG_Rect& dst);
+   void registerSpecialDisplay(const ASCString& name);
 
-      bool viewExperienceOverview();
+   void reset(GameMap& map);
 
-   public:
-      void eval();
-      void showUnitData( Vehicle* veh, Building* bld, MapField* fld, bool redraw = false );
+   bool containerRenamed(PG_LineEdit* lineEdit);
 
+   bool viewExperienceOverview();
+
+  public:
+   void eval();
+   void showUnitData(Vehicle* veh, Building* bld, MapField* fld, bool redraw = false);
 };
 
 class WindInfoPanel : public DashboardPanel {
-        Surface windArrow;
-        int dir;
-     protected:
-        void painter ( const PG_Rect &src, const ASCString& name, const PG_Rect &dst);
-     public:
-        WindInfoPanel (PG_Widget *parent, const PG_Rect &r ) ;
+   Surface windArrow;
+   int dir;
+
+  protected:
+   void painter(const PG_Rect& src, const ASCString& name, const PG_Rect& dst);
+
+  public:
+   WindInfoPanel(PG_Widget* parent, const PG_Rect& r);
 };
 
 class UnitInfoPanel : public DashboardPanel {
-     protected:
-        bool onClick ( PG_MessageObject* obj, const SDL_MouseButtonEvent* event );
-        void showUnitInfo( const VehicleType* vt );
-        bool unitNaming();
-     public:
-        UnitInfoPanel (PG_Widget *parent, const PG_Rect &r ) ;
-};
+  protected:
+   bool onClick(PG_MessageObject* obj, const SDL_MouseButtonEvent* event);
+   void showUnitInfo(const VehicleType* vt);
+   bool unitNaming();
 
+  public:
+   UnitInfoPanel(PG_Widget* parent, const PG_Rect& r);
+};
 
 class MapDisplayPG;
 
 class MapInfoPanel : public DashboardPanel {
-        MapDisplayPG* mapDisplay;
-        PG_Slider* zoomSlider;
-        bool changeActive;
-        
-        void layerChanged( bool state, const ASCString& label );        
-        bool scrollTrack( long pos );
-        bool checkBox( bool state, const char* name );
-        void zoomChanged( int zoom );
+   MapDisplayPG* mapDisplay;
+   PG_Slider* zoomSlider;
+   bool changeActive;
 
-        bool showWeaponRange();
-        bool showMovementRange();
-   protected:
-        void painter ( const PG_Rect &src, const ASCString& name, const PG_Rect &dst);
-     public:
-        MapInfoPanel (PG_Widget *parent, const PG_Rect &r, MapDisplayPG* mapDisplay ) ;
+   void layerChanged(bool state, const ASCString& label);
+   bool scrollTrack(long pos);
+   bool checkBox(bool state, const char* name);
+   void zoomChanged(int zoom);
+
+   bool showWeaponRange();
+   bool showMovementRange();
+
+  protected:
+   void painter(const PG_Rect& src, const ASCString& name, const PG_Rect& dst);
+
+  public:
+   MapInfoPanel(PG_Widget* parent, const PG_Rect& r, MapDisplayPG* mapDisplay);
 };
 
-
 class ActionInfoPanel : public DashboardPanel {
-   public:
-      ActionInfoPanel (PG_Widget *parent, const PG_Rect &r ) ;
-      
-      void update( GameMap* map );
+  public:
+   ActionInfoPanel(PG_Widget* parent, const PG_Rect& r);
+
+   void update(GameMap* map);
 };
 
 #endif

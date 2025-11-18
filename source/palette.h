@@ -57,13 +57,13 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
 #ifndef palette_h_included
- #define palette_h_included
+#define palette_h_included
 
 #include <SDL_stdinc.h>
 
@@ -72,29 +72,28 @@
 typedef Uint8 tmixbuf[256][256];
 typedef tmixbuf* pmixbuf;
 typedef Uint8 tpixelxlattable[256];
-typedef tpixelxlattable* ppixelxlattable; 
+typedef tpixelxlattable* ppixelxlattable;
 typedef Uint8 dacpalette256[256][3];
 typedef Uint8 dacpalettefst[256][4];
 
+struct txlattables {
+   tpixelxlattable nochange;
+   union {
+      struct {
+         tpixelxlattable dark05;
+         tpixelxlattable dark1;
+         tpixelxlattable dark2;
+         tpixelxlattable dark3;
+         tpixelxlattable light;
+         tpixelxlattable light2;
+         tpixelxlattable light3;
+         tpixelxlattable light4;
+      } a;
+      tpixelxlattable xl[8];
+   };
+};
 
-   struct txlattables {
-             tpixelxlattable nochange;
-             union {
-                struct {
-                   tpixelxlattable dark05;
-                   tpixelxlattable dark1;
-                   tpixelxlattable dark2;
-                   tpixelxlattable dark3;
-                   tpixelxlattable light;
-                   tpixelxlattable light2;
-                   tpixelxlattable light3;
-                   tpixelxlattable light4;
-                }a;
-                tpixelxlattable xl[8];
-             };
-          };
-
-   extern txlattables xlattables;
+extern txlattables xlattables;
 
 /*
 extern tpixelxlattable nochange;
@@ -104,14 +103,13 @@ extern tpixelxlattable light;
 */
 
 // tables storing the color that results when two palette colors are mixed
-extern tmixbuf *colormixbuf;
+extern tmixbuf* colormixbuf;
 extern Uint8* colormixbufchar;
-
 
 extern dacpalette256 pal;
 
 extern bool asc_paletteloaded;
-extern ppixelxlattable xlatpictgraytable;  
+extern ppixelxlattable xlatpictgraytable;
 // extern tpixelxlattable bi2asc_color_translation_table;
 
 #pragma pack()

@@ -16,16 +16,19 @@
 class VehicleType;
 class Player;
 
-class VehicleTypeImage: public PG_Widget  {
-      const VehicleType* vt;
-      const Player& player;
-      static Surface clippingSurface;
-      Surface& getClippingSurface() { return clippingSurface; };
-   public:
-      VehicleTypeImage( PG_Widget* parent, const PG_Point& pos, const VehicleType* vehicletype, const Player& owningPlayer );
-      void eventBlit ( SDL_Surface * surface, const PG_Rect & src, const PG_Rect & dst );
-   protected:
-      void display( SDL_Surface * surface, const PG_Rect & src, const PG_Rect & dst );
+class VehicleTypeImage : public PG_Widget {
+   const VehicleType* vt;
+   const Player& player;
+   static Surface clippingSurface;
+   Surface& getClippingSurface() { return clippingSurface; };
+
+  public:
+   VehicleTypeImage(PG_Widget* parent, const PG_Point& pos, const VehicleType* vehicletype,
+                    const Player& owningPlayer);
+   void eventBlit(SDL_Surface* surface, const PG_Rect& src, const PG_Rect& dst);
+
+  protected:
+   void display(SDL_Surface* surface, const PG_Rect& src, const PG_Rect& dst);
 };
 
 #endif

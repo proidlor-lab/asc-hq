@@ -13,8 +13,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
 
@@ -31,86 +31,78 @@
 #include "vesa.h"
 #include "stack.h"
 
-
 dacpalette256 pal;
 
-   typedef struct totechnology* potechnology ;
+typedef struct totechnology* potechnology;
 
-   struct totechnology { 
-                   pointer      icon; 
-                   pchar        infotext; 
-                   word         id; 
-                   int      researchpoints; 
-                   char         name[31]; 
+struct totechnology {
+   pointer icon;
+   pchar infotext;
+   word id;
+   int researchpoints;
+   char name[31];
 
-                   tresearchdatachange unitimprovement; 
+   tresearchdatachange unitimprovement;
 
-                   boolean      requireevent; 
+   boolean requireevent;
 
-                   union { 
-                      ptechnology  requiretechnology[6]; 
-                      int      requiretechnologyid[6]; 
-                   };
+   union {
+      ptechnology requiretechnology[6];
+      int requiretechnologyid[6];
+   };
 
-                   /*
-                   int          techlevelget;  // sobald dieser technologylevel erreicht ist, ist die Technologie automatisch verfgbar
-                   int          settechlevel;  // sobald diese technology erforscht wird, ist dieser techlevel erreicht
-                   */
-                 };
+   /*
+   int          techlevelget;  // sobald dieser technologylevel erreicht ist, ist die Technologie
+   automatisch verfgbar int          settechlevel;  // sobald diese technology erforscht wird, ist
+   dieser techlevel erreicht
+   */
+};
 
+potechnology loadotechnology(char* name) {
+   potechnology pt;
+   int w;
 
-potechnology       loadotechnology(char *       name)
-{ 
-  potechnology  pt; 
-  int          w;
-
-
-   mainstream.openstream(name,1); 
+   mainstream.openstream(name, 1);
    if (mainstream.getstatus() != 0) {
       loaderror = 10;
-      return NULL;           
-   } 
-   pt =  new totechnology ;
-   mainstreamread(*pt, sizeof(*pt)); 
-   passtring2cstring ( pt->name );
-   if ( pt->icon != NULL )
-      mainstream.readrlepict( (char**) &pt->icon,false,&w);
+      return NULL;
+   }
+   pt = new totechnology;
+   mainstreamread(*pt, sizeof(*pt));
+   passtring2cstring(pt->name);
+   if (pt->icon != NULL)
+      mainstream.readrlepict((char**) &pt->icon, false, &w);
 
-   if ( pt->infotext != NULL )
+   if (pt->infotext != NULL)
       mainstream.readpchar(&pt->infotext);
-      
 
-
-   mainstream.closestream(); 
+   mainstream.closestream();
 
    loaderror = mainstream.getstatus();
-   return pt; 
-} 
+   return pt;
+}
 
+void main(void) {
+   find_t fileinfo;
+   unsigned rc; /* return code */
+   potechnology oldtech;
+   ttechnology tech;
+   int i;
 
+   mainstream.init();
 
-void main ( void ) {
+   rc = _dos_findfirst("*.tec", _A_NORMAL, &fileinfo);
+   while (rc == 0) {
+      oldtech = loadotechnology(fileinfo.name);
 
-  find_t  fileinfo;
-  unsigned rc;        /* return code */
-  potechnology oldtech;
-  ttechnology tech;
-  int i;
-
-  mainstream.init();
-
-  rc = _dos_findfirst( "*.tec", _A_NORMAL, &fileinfo );
-  while( rc == 0 ) { 
-      oldtech = loadotechnology ( fileinfo.name );
-
-      memset ( &tech, 0, sizeof(tech));                
+      memset(&tech, 0, sizeof(tech));
       tech.id = oldtech->id;
       tech.name = oldtech->name;
-      if ( strcmpi ( fileinfo.name, "ekranopl.tec" ) == 0 ) {
-         printf( "%s has a picture\n ",fileinfo.name );
+      if (strcmpi(fileinfo.name, "ekranopl.tec") == 0) {
+         printf("%s has a picture\n ", fileinfo.name);
          tech.icon = oldtech->icon;
       } else {
-         printf( "%s has NOT a picture\n ",fileinfo.name );
+         printf("%s has NOT a picture\n ", fileinfo.name);
          tech.icon = NULL;
       }
 
@@ -118,31 +110,30 @@ void main ( void ) {
       tech.researchpoints = oldtech->researchpoints;
       tech.unitimprovement = oldtech->unitimprovement;
       tech.requireevent = oldtech->requireevent;
-      for ( i = 0; i < 6; i++ )
+      for (i = 0; i < 6; i++)
          tech.requiretechnologyid[i] = oldtech->requiretechnologyid[i];
 
       tech.techlevelget = 256;
 
-      mainstream.openstream(fileinfo.name ,2);
-      if (mainstream.getstatus() != 0) { 
+      mainstream.openstream(fileinfo.name, 2);
+      if (mainstream.getstatus() != 0) {
          printf(" Error writing file !\n\n");
-         return ;
-      } 
-      mainstream.writedata ( (char*) &tech, sizeof ( tech ) );
-      if ( tech.name )
-         mainstream.writepchar( tech.name );
-      if ( tech.infotext )
-         mainstream.writepchar( tech.infotext );
-      if ( tech.icon )
-         mainstream.writerlepict ( tech.icon );
+         return;
+      }
+      mainstream.writedata((char*) &tech, sizeof(tech));
+      if (tech.name)
+         mainstream.writepchar(tech.name);
+      if (tech.infotext)
+         mainstream.writepchar(tech.infotext);
+      if (tech.icon)
+         mainstream.writerlepict(tech.icon);
 
       mainstream.closestream();
 
-      printf(" %s written \n",fileinfo.name);
+      printf(" %s written \n", fileinfo.name);
 
-      rc = _dos_findnext( &fileinfo );
+      rc = _dos_findnext(&fileinfo);
    }
 
-  mainstream.done();
-
+   mainstream.done();
 }

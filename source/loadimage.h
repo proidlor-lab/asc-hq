@@ -20,14 +20,12 @@
  ***************************************************************************/
 
 #ifndef loadimage_h_included
- #define loadimage_h_included
-
-
+#define loadimage_h_included
 
 enum FullscreenImageSettings { FIS_noTrueColor, FIS_oldModeNum };
 
-extern int loadFullscreenImage ( const char* filename );
-extern void closeFullscreenImage ( void );
-extern void setFullscreenSetting ( FullscreenImageSettings setting, int value );
+extern int loadFullscreenImage(const char* filename);
+extern void closeFullscreenImage(void);
+extern void setFullscreenSetting(FullscreenImageSettings setting, int value);
 
 #endif

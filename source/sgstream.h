@@ -1,6 +1,6 @@
 /*! \file sgstream.h
     \brief The IO for many basic classes and structurs of ACS
-  
+
 */
 
 /*
@@ -18,11 +18,10 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; see the file COPYING. If not, write to the 
-    Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+    along with this program; see the file COPYING. If not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330,
     Boston, MA  02111-1307  USA
 */
-
 
 #ifndef sgstreamH
 #define sgstreamH
@@ -34,44 +33,37 @@
 
 #include "loki/Singleton.h"
 
-
-
 class ConfigurationFileLocatorCore {
-      ASCString cmdline;
-      ASCString exePath;
-      int configFileType;
-   protected:
-      vector<ASCString> getDefaultDirectory();
+   ASCString cmdline;
+   ASCString exePath;
+   int configFileType;
 
+  protected:
+   vector<ASCString> getDefaultDirectory();
 
-   public:
-      ConfigurationFileLocatorCore();
-      void setCommandLineParam( const ASCString& path );
-      void setExecutableLocation( const ASCString& path );
-      ASCString getExecutableLocation();
-      ASCString getSpecialPath( int type );
+  public:
+   ConfigurationFileLocatorCore();
+   void setCommandLineParam(const ASCString& path);
+   void setExecutableLocation(const ASCString& path);
+   ASCString getExecutableLocation();
+   ASCString getSpecialPath(int type);
 
-      ASCString getConfigFileName();
-      ASCString getConfigForPrinting();
-      void writeDefaultPathsToOptions();
+   ASCString getConfigFileName();
+   ASCString getConfigForPrinting();
+   void writeDefaultPathsToOptions();
 };
 
+typedef Loki::SingletonHolder<ConfigurationFileLocatorCore> ConfigurationFileLocator;
 
-typedef Loki::SingletonHolder< ConfigurationFileLocatorCore > ConfigurationFileLocator;
+extern void generatedirecpict(void* orgpict, void* direcpict);
 
+extern void loadpalette();
+extern int readgameoptions(const ASCString& filename = "");
+extern bool writegameoptions(ASCString filename = "");
+extern ASCString getConfigFileName();
 
-extern void generatedirecpict ( void* orgpict, void* direcpict );
+extern void checkFileLoadability(const ASCString& filename);
 
-
-
-extern void loadpalette ( );
-extern int readgameoptions ( const ASCString& filename= "" );
-extern bool writegameoptions ( ASCString filename = "" );
-extern ASCString getConfigFileName ();
-
-extern void checkFileLoadability ( const ASCString& filename );
-
-extern void initFileIO ( const ASCString& configFileName, int skipChecks = 0 );
-
+extern void initFileIO(const ASCString& configFileName, int skipChecks = 0);
 
 #endif

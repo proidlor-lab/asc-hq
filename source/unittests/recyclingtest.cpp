@@ -14,20 +14,16 @@
 #include "unittestutil.h"
 #include "spfst.h"
 
+void testRecycling() {
+   std::unique_ptr<GameMap> game(startMap("unittest-recycle.map"));
 
+   Building* bld = game->getField(5, 8)->building;
+   Vehicle* veh = getFirstCargo(bld);
+   assertOrThrow(veh != NULL);
+   assertOrThrow(bld != NULL);
 
-void testRecycling() 
-{
-   auto_ptr<GameMap> game ( startMap("unittest-recycle.map"));
-   
-   Building* bld = game->getField(5,8)->building;
-   Vehicle* veh = getFirstCargo( bld );
-   assertOrThrow( veh != NULL );
-   assertOrThrow( bld != NULL );
-   
-   RecycleUnitCommand* ruc = new RecycleUnitCommand( bld );
-   ruc->setUnit( veh );
-   ActionResult res = ruc->execute( createTestingContext( game.get() ));
-   assertOrThrow( res.successful() );
-   
+   RecycleUnitCommand* ruc = new RecycleUnitCommand(bld);
+   ruc->setUnit(veh);
+   ActionResult res = ruc->execute(createTestingContext(game.get()));
+   assertOrThrow(res.successful());
 }

@@ -1,5 +1,6 @@
 /*! \file guiiconhandler.cpp
-    \brief All system for controlling the buttons of the user interface with which the unit actions are controlled.
+    \brief All system for controlling the buttons of the user interface with which the unit actions
+   are controlled.
 */
 
 /*
@@ -41,159 +42,132 @@ const int guiIconSizeY = 35;
 const int guiIconSpace = 5;
 const int guiIconColumnNum = 3;
 
-
 const int smallGuiIconSizeX = 49;
 const int smallGuiIconSizeY = 35;
 const int smallGuiIconSpace = 2;
 const float smallGuiIconSizeFactor = 1;
 
-
-
-GuiButton::GuiButton( PG_Widget *parent, const PG_Rect &r ) : PG_Button( parent, r, "", -1, "GuiButton"), func( NULL ), id(-1)
-{
-  sigClick.connect( sigc::hide( sigc::mem_fun( *this, &GuiButton::exec )));
-  SetBackground( PRESSED, IconRepository::getIcon("empty-pressed.png").getBaseSurface() );
-  SetBackground( HIGHLITED, IconRepository::getIcon("empty-high.png").getBaseSurface() );
-  SetBackground( UNPRESSED, IconRepository::getIcon("empty.png").getBaseSurface() );
-  SetBorderSize(0,0,0);
+GuiButton::GuiButton(PG_Widget* parent, const PG_Rect& r)
+   : PG_Button(parent, r, "", -1, "GuiButton"), func(NULL), id(-1) {
+   sigClick.connect(sigc::hide(sigc::mem_fun(*this, &GuiButton::exec)));
+   SetBackground(PRESSED, IconRepository::getIcon("empty-pressed.png").getBaseSurface());
+   SetBackground(HIGHLITED, IconRepository::getIcon("empty-high.png").getBaseSurface());
+   SetBackground(UNPRESSED, IconRepository::getIcon("empty.png").getBaseSurface());
+   SetBorderSize(0, 0, 0);
 }
 
-bool GuiButton::exec()
-{
-  if ( func ) {
-     callFunc( pos, subject, id );
-     return true;
-  }
-  return false;
+bool GuiButton::exec() {
+   if (func) {
+      callFunc(pos, subject, id);
+      return true;
+   }
+   return false;
 }
 
-
-void GuiButton::registerFunc( GuiFunction* f, const MapCoordinate& position, ContainerBase* subject, int id )
-{
+void GuiButton::registerFunc(GuiFunction* f, const MapCoordinate& position, ContainerBase* subject,
+                             int id) {
    this->id = id;
    this->subject = subject;
    func = f;
    pos = position;
-   SetIcon( f->getImage( position, subject, id).getBaseSurface());
+   SetIcon(f->getImage(position, subject, id).getBaseSurface());
 }
 
-void GuiButton::unregisterFunc()
-{
+void GuiButton::unregisterFunc() {
    func = NULL;
    id = 0;
    subject = NULL;
-   pos = MapCoordinate(-1,-1);
-   SetIcon ( (SDL_Surface*) NULL );
+   pos = MapCoordinate(-1, -1);
+   SetIcon((SDL_Surface*) NULL);
 }
 
-void GuiButton::eventMouseEnter()
-{
+void GuiButton::eventMouseEnter() {
    PG_Button::eventMouseEnter();
    showInfoText();
 }
 
-void GuiButton::eventMouseLeave()
-{
+void GuiButton::eventMouseLeave() {
    PG_Button::eventMouseLeave();
    MessagingHub::Instance().statusInformation("");
 }
 
-void GuiButton::callFunc( const MapCoordinate& pos, ContainerBase* subject, int num )
-{
+void GuiButton::callFunc(const MapCoordinate& pos, ContainerBase* subject, int num) {
    try {
-      func->execute( pos, subject, id );
-   } catch ( ActionResult res ) {
-      errorMessage( res.getMessage() );
+      func->execute(pos, subject, id);
+   } catch (ActionResult res) {
+      errorMessage(res.getMessage());
    }
 }
 
-
-bool GuiButton::checkForKey( const SDL_KeyboardEvent* key, int modifier )
-{
-   if ( func->available( pos, subject, id ))
-      if ( func->checkForKey( key, modifier, id)) {
-         callFunc( pos, subject, id );
+bool GuiButton::checkForKey(const SDL_KeyboardEvent* key, int modifier) {
+   if (func->available(pos, subject, id))
+      if (func->checkForKey(key, modifier, id)) {
+         callFunc(pos, subject, id);
          return true;
       }
    return false;
 }
 
-void GuiButton::showInfoText()
-{
-   if ( func )
-      MessagingHub::Instance().statusInformation( func->getName(pos, subject, id));
+void GuiButton::showInfoText() {
+   if (func)
+      MessagingHub::Instance().statusInformation(func->getName(pos, subject, id));
 }
 
+SmallGuiButton::SmallGuiButton(PG_Widget* parent, const PG_Rect& r, GuiButton* guiButton,
+                               NewGuiHost* host)
+   : PG_Button(parent, r, "", -1, "GuiButton"), referenceButton(guiButton) {
+   sigClick.connect(sigc::hide(sigc::mem_fun(*host, &NewGuiHost::clearSmallIcons)));
+   sigClick.connect(sigc::hide(sigc::mem_fun(*guiButton, &GuiButton::exec)));
 
+   SetBackground(PRESSED, IconRepository::getIcon("empty-pressed.png").getBaseSurface());
+   SetBackground(HIGHLITED, IconRepository::getIcon("empty-high.png").getBaseSurface());
+   SetBackground(UNPRESSED, IconRepository::getIcon("empty.png").getBaseSurface());
+   SetBorderSize(0, 0, 0);
+   SetDirtyUpdate(true);
 
-SmallGuiButton::SmallGuiButton( PG_Widget *parent, const PG_Rect &r, GuiButton* guiButton, NewGuiHost* host ) : PG_Button( parent, r, "", -1, "GuiButton"), referenceButton( guiButton )
-{
-  sigClick.connect( sigc::hide( sigc::mem_fun( *host, &NewGuiHost::clearSmallIcons )));
-  sigClick.connect( sigc::hide( sigc::mem_fun( *guiButton, &GuiButton::exec )));
+   SetBehaviour(SIGNALONRELEASE);
 
-  SetBackground( PRESSED, IconRepository::getIcon("empty-pressed.png").getBaseSurface() );
-  SetBackground( HIGHLITED, IconRepository::getIcon("empty-high.png").getBaseSurface() );
-  SetBackground( UNPRESSED, IconRepository::getIcon("empty.png").getBaseSurface() );
-  SetBorderSize(0,0,0);
-  SetDirtyUpdate(true);
-
-  SetBehaviour( SIGNALONRELEASE );
-
-  updateIcon();
+   updateIcon();
 }
 
-
-void SmallGuiButton::updateIcon()
-{
-   SDL_Surface* icn = referenceButton->GetIcon( UNPRESSED );
-   if ( icn ) {
-      smallIcon = PG_Draw::ScaleSurface( icn, smallGuiIconSizeFactor, smallGuiIconSizeFactor );
-      SetIcon( smallIcon, NULL, NULL, true );
+void SmallGuiButton::updateIcon() {
+   SDL_Surface* icn = referenceButton->GetIcon(UNPRESSED);
+   if (icn) {
+      smallIcon = PG_Draw::ScaleSurface(icn, smallGuiIconSizeFactor, smallGuiIconSizeFactor);
+      SetIcon(smallIcon, NULL, NULL, true);
    } else
       smallIcon = NULL;
 }
 
-
-
-void SmallGuiButton::press()
-{
+void SmallGuiButton::press() {
    SetPressed(true);
    Update();
-}   
-
-void SmallGuiButton::showInfoText()
-{
-   if ( referenceButton && referenceButton->func )
-      MessagingHub::Instance().statusInformation( referenceButton->func->getName(referenceButton->pos, referenceButton->subject, referenceButton->id));
 }
 
+void SmallGuiButton::showInfoText() {
+   if (referenceButton && referenceButton->func)
+      MessagingHub::Instance().statusInformation(referenceButton->func->getName(
+         referenceButton->pos, referenceButton->subject, referenceButton->id));
+}
 
-void SmallGuiButton::eventMouseEnter()
-{
+void SmallGuiButton::eventMouseEnter() {
    PG_Button::eventMouseEnter();
    showInfoText();
 }
 
-void SmallGuiButton::eventMouseLeave()
-{
+void SmallGuiButton::eventMouseLeave() {
    PG_Button::eventMouseLeave();
    MessagingHub::Instance().statusInformation("");
 }
 
+SmallGuiButton::~SmallGuiButton() {}
 
-SmallGuiButton::~SmallGuiButton()
-{
-}
-
-
-
-void GuiIconHandler::eval( const MapCoordinate& pos, ContainerBase* subject )
-{
+void GuiIconHandler::eval(const MapCoordinate& pos, ContainerBase* subject) {
    int num = 0;
-   for ( Functions::iterator i = functions.begin(); i != functions.end(); ++i ) {
-      if ( (*i)->available(pos, subject, 0 )) {
+   for (Functions::iterator i = functions.begin(); i != functions.end(); ++i) {
+      if ((*i)->available(pos, subject, 0)) {
          GuiButton* b = host->getButton(num);
-         b->registerFunc( *i, pos, subject, 0 );
+         b->registerFunc(*i, pos, subject, 0);
          b->Show();
          ++num;
       }
@@ -214,13 +188,12 @@ void GuiIconHandler::eval()
       return;
 
    ContainerBase* subject = actmap->getField(mc)->getContainer();
-   
+
    eval( mc, subject );
 }
 */
 
-bool GuiIconHandler::checkForKey( const SDL_KeyboardEvent* key, int modifier )
-{
+bool GuiIconHandler::checkForKey(const SDL_KeyboardEvent* key, int modifier) {
 #if 0
    if ( !actmap->getCursor().valid())
       return false;
@@ -233,162 +206,160 @@ bool GuiIconHandler::checkForKey( const SDL_KeyboardEvent* key, int modifier )
             (*i)->execute(actmap->getCursor(), subject, 0 );
             return true;
          }
-#endif         
+#endif
    return false;
 }
 
-
-void GuiIconHandler::registerUserFunction( GuiFunction* function )
-{
-   functions.push_back ( function );
+void GuiIconHandler::registerUserFunction(GuiFunction* function) {
+   functions.push_back(function);
 }
 
-
-GuiIconHandler::~GuiIconHandler()
-{
-   for ( Functions::iterator i = functions.begin(); i != functions.end(); ++i )
+GuiIconHandler::~GuiIconHandler() {
+   for (Functions::iterator i = functions.begin(); i != functions.end(); ++i)
       delete *i;
-
 }
-
-
-
-
 
 NewGuiHost* NewGuiHost::theGuiHost = NULL;
 
-NewGuiHost :: NewGuiHost (MainScreenWidget *parent, MapDisplayPG* mapDisplay, const PG_Rect &r )
-         : DashboardPanel( parent, r, "GuiIcons", false ) , handler(NULL), enterKeyPressed(false), keyPressedButton(-1)
-{
+NewGuiHost ::NewGuiHost(MainScreenWidget* parent, MapDisplayPG* mapDisplay, const PG_Rect& r)
+   : DashboardPanel(parent, r, "GuiIcons", false),
+     handler(NULL),
+     enterKeyPressed(false),
+     keyPressedButton(-1) {
    this->mapDisplay = mapDisplay;
-   mapDisplay->mouseButtonOnField.connect( sigc::mem_fun( *this, &NewGuiHost::mapIconProcessing ));
-   updateFieldInfo.connect ( sigc::mem_fun( *this, &NewGuiHost::evalCursor ));
+   mapDisplay->mouseButtonOnField.connect(sigc::mem_fun(*this, &NewGuiHost::mapIconProcessing));
+   updateFieldInfo.connect(sigc::mem_fun(*this, &NewGuiHost::evalCursor));
    theGuiHost = this;
 
-   cursorMoved.connect( sigc::hide_return( sigc::mem_fun( *this, &NewGuiHost::clearSmallIcons )) );
+   cursorMoved.connect(sigc::hide_return(sigc::mem_fun(*this, &NewGuiHost::clearSmallIcons)));
 
-   
-   PG_Application::GetApp()->sigKeyDown.connect( sigc::mem_fun( *this, &NewGuiHost::eventKeyDownSignal ));
-   PG_Application::GetApp()->sigKeyUp.connect( sigc::mem_fun( *this, &NewGuiHost::eventKeyUpSignal ));
+   PG_Application::GetApp()->sigKeyDown.connect(
+      sigc::mem_fun(*this, &NewGuiHost::eventKeyDownSignal));
+   PG_Application::GetApp()->sigKeyUp.connect(sigc::mem_fun(*this, &NewGuiHost::eventKeyUpSignal));
    SetTransparency(255);
-   
-   parent->lockOptionsChanged.connect( sigc::mem_fun( *this, &NewGuiHost::lockOptionsChanged ));
 
-   GameMap::sigMapDeletion.connect( sigc::mem_fun( *this, &NewGuiHost::mapDeleted ));
+   parent->lockOptionsChanged.connect(sigc::mem_fun(*this, &NewGuiHost::lockOptionsChanged));
+
+   GameMap::sigMapDeletion.connect(sigc::mem_fun(*this, &NewGuiHost::mapDeleted));
 }
 
-bool NewGuiHost::eventKeyDownSignal(const PG_MessageObject* o, const SDL_KeyboardEvent* key)
-{
-	return eventKeyDown(key);
+bool NewGuiHost::eventKeyDownSignal(const PG_MessageObject* o, const SDL_KeyboardEvent* key) {
+   return eventKeyDown(key);
 }
-bool NewGuiHost::eventKeyUpSignal(const PG_MessageObject* o, const SDL_KeyboardEvent* key)
-{
-	return eventKeyUp(key);
+bool NewGuiHost::eventKeyUpSignal(const PG_MessageObject* o, const SDL_KeyboardEvent* key) {
+   return eventKeyUp(key);
 }
 
-
-void NewGuiHost::lockOptionsChanged( int options )
-{
-   if ( options & MainScreenWidget::LockOptions::MapActions )  
+void NewGuiHost::lockOptionsChanged(int options) {
+   if (options & MainScreenWidget::LockOptions::MapActions)
       // EnableReceiver(false, true);
       Hide();
-   else  
+   else
       // EnableReceiver(true, true);
       Show();
 }
 
-
 class SmallButtonHolder : public SpecialInputWidget {
-      bool locked;
-   public:
-      void Lock() { SetCapture(); locked = true; };
-      void Unlock() { ReleaseCapture(); locked = false; };
+   bool locked;
 
-      SmallButtonHolder (PG_Widget *parent, const PG_Rect &rect ) : SpecialInputWidget( parent, rect ), locked(false) {};
-      bool eventMouseMotion (const SDL_MouseMotionEvent *motion) { return true; };
-      bool eventMouseButtonDown (const SDL_MouseButtonEvent *button) { return true; };
-      bool eventMouseButtonUp (const SDL_MouseButtonEvent *button) { Unlock(); return true; };
-      
-      bool ProcessEvent(const SDL_Event * event, bool bModal) { return SpecialInputWidget::ProcessEvent( event, bModal ); };
-      bool ProcessEvent ( const SDL_Event *   event  )
-      {
-         /*
-         PG_RectList* cl = GetChildList ();
-		   for(PG_Widget* i = cl->first(); i != NULL; i = i->next()) {
-			   if ( i->ProcessEvent( event, true ))
-               return true;
-		   }
-         */
-        
-         bool result = false;
-         
-         if ( locked ) 
-            ReleaseCapture();
-         
-         if ( SpecialInputWidget::ProcessEvent( event, true )) 
-            result = true;
-         
-         if ( locked )
-            SetCapture();
-             
-         if ( !result && event->type == SDL_MOUSEBUTTONUP )
-            Unlock();
-         
-         return result;
+  public:
+   void Lock() {
+      SetCapture();
+      locked = true;
+   };
+   void Unlock() {
+      ReleaseCapture();
+      locked = false;
+   };
+
+   SmallButtonHolder(PG_Widget* parent, const PG_Rect& rect)
+      : SpecialInputWidget(parent, rect), locked(false){};
+   bool eventMouseMotion(const SDL_MouseMotionEvent* motion) { return true; };
+   bool eventMouseButtonDown(const SDL_MouseButtonEvent* button) { return true; };
+   bool eventMouseButtonUp(const SDL_MouseButtonEvent* button) {
+      Unlock();
+      return true;
+   };
+
+   bool ProcessEvent(const SDL_Event* event, bool bModal) {
+      return SpecialInputWidget::ProcessEvent(event, bModal);
+   };
+   bool ProcessEvent(const SDL_Event* event) {
+      /*
+      PG_RectList* cl = GetChildList ();
+      for(PG_Widget* i = cl->first(); i != NULL; i = i->next()) {
+         if ( i->ProcessEvent( event, true ))
+            return true;
       }
+      */
 
+      bool result = false;
+
+      if (locked)
+         ReleaseCapture();
+
+      if (SpecialInputWidget::ProcessEvent(event, true))
+         result = true;
+
+      if (locked)
+         SetCapture();
+
+      if (!result && event->type == SDL_MOUSEBUTTONUP)
+         Unlock();
+
+      return result;
+   }
 };
 
-int NewGuiHost::gapSize(int num ) {
-   if ( num > 0 )
-      return (num-1)*smallGuiIconSpace;
+int NewGuiHost::gapSize(int num) {
+   if (num > 0)
+      return (num - 1) * smallGuiIconSpace;
    else
       return 0;
 }
 
-void NewGuiHost::reflowSmallIcons( const SPoint& pos, int count ) {
+void NewGuiHost::reflowSmallIcons(const SPoint& pos, int count) {
    int maxx = 0;
    int x = 0;
    int y = 0;
-   for ( int i = 0; i < count; ++i ) {
-      if ( pos.x + (x+1) * smallGuiIconSizeX + gapSize(x+1) > PG_Application::GetScreenWidth() ) {
-         x  = 0;
+   for (int i = 0; i < count; ++i) {
+      if (pos.x + (x + 1) * smallGuiIconSizeX + gapSize(x + 1) > PG_Application::GetScreenWidth()) {
+         x = 0;
          y += 1;
       }
-      getSmallButton(i)->MoveWidget(x*smallGuiIconSizeX + gapSize(x), y*smallGuiIconSizeY + gapSize(y), false );
+      getSmallButton(i)->MoveWidget(x * smallGuiIconSizeX + gapSize(x),
+                                    y * smallGuiIconSizeY + gapSize(y), false);
       x++;
-      if ( x > maxx)
+      if (x > maxx)
          maxx = x;
-
    }
-   smallButtonHolder->MoveWidget( PG_Rect( pos.x, pos.y, maxx * smallGuiIconSizeX + gapSize(maxx), (y+1) * smallGuiIconSizeY + gapSize(y+1) ), false );
+   smallButtonHolder->MoveWidget(PG_Rect(pos.x, pos.y, maxx * smallGuiIconSizeX + gapSize(maxx),
+                                         (y + 1) * smallGuiIconSizeY + gapSize(y + 1)),
+                                 false);
 }
 
+SmallButtonHolder* NewGuiHost ::smallButtonHolder = NULL;
 
-SmallButtonHolder* NewGuiHost :: smallButtonHolder = NULL;
+Command* NewGuiHost ::pendingCommand = NULL;
 
-Command* NewGuiHost :: pendingCommand = NULL;
-
-void NewGuiHost::evalCursor()
-{
-   if ( !actmap )
+void NewGuiHost::evalCursor() {
+   if (!actmap)
       return;
-   
+
    MapCoordinate mc = actmap->getCursor();
 
-   if ( !mc.valid() )
+   if (!mc.valid())
       return;
 
-   if ( mc.x >= actmap->xsize || mc.y >= actmap->ysize )
+   if (mc.x >= actmap->xsize || mc.y >= actmap->ysize)
       return;
 
    ContainerBase* subject = actmap->getField(mc)->getContainer();
-   
-   eval( mc, subject );
+
+   eval(mc, subject);
 }
 
-void NewGuiHost::mapDeleted( GameMap& map )
-{
+void NewGuiHost::mapDeleted(GameMap& map) {
    pendingCommand = NULL;
    /*
    while ( theGuiHost->iconHandlerStack.size() >= 1 )
@@ -396,89 +367,77 @@ void NewGuiHost::mapDeleted( GameMap& map )
       */
 }
 
-
-void NewGuiHost::eval( const MapCoordinate& pos, ContainerBase* subject )
-{
-   if ( handler ) {
+void NewGuiHost::eval(const MapCoordinate& pos, ContainerBase* subject) {
+   if (handler) {
       BulkGraphicUpdates bgu(this);
-      handler->eval( pos, subject );
+      handler->eval(pos, subject);
    }
 }
 
-
-void NewGuiHost::pushIconHandler( GuiIconHandler* iconHandler )
-{
-   if ( !theGuiHost )
+void NewGuiHost::pushIconHandler(GuiIconHandler* iconHandler) {
+   if (!theGuiHost)
       return;
 
-   if ( theGuiHost->handler )
-      theGuiHost->iconHandlerStack.push_back( theGuiHost->handler );
+   if (theGuiHost->handler)
+      theGuiHost->iconHandlerStack.push_back(theGuiHost->handler);
 
    theGuiHost->handler = iconHandler;
-   iconHandler->registerHost( theGuiHost );
+   iconHandler->registerHost(theGuiHost);
    updateFieldInfo();
 }
 
-GuiIconHandler* NewGuiHost::getIconHandler(  )
-{
-   if ( theGuiHost )
+GuiIconHandler* NewGuiHost::getIconHandler() {
+   if (theGuiHost)
       return theGuiHost->handler;
    else
       return NULL;
 }
 
-
-void NewGuiHost::popIconHandler( )
-{
-   if ( !theGuiHost )
+void NewGuiHost::popIconHandler() {
+   if (!theGuiHost)
       return;
 
    theGuiHost->clearSmallIcons();
 
-   assert( theGuiHost->handler );
+   assert(theGuiHost->handler);
 
-   theGuiHost->handler->registerHost( NULL );
+   theGuiHost->handler->registerHost(NULL);
 
    theGuiHost->handler = theGuiHost->iconHandlerStack.back();
    theGuiHost->iconHandlerStack.pop_back();
    updateFieldInfo();
 }
 
-
-GuiButton* NewGuiHost::getButton( int i )
-{
-   while ( i >= buttons.size() ) {
+GuiButton* NewGuiHost::getButton(int i) {
+   while (i >= buttons.size()) {
       int w = (Width() - 4 * guiIconSpace) / guiIconColumnNum;
-      GuiButton* b = new GuiButton ( this, PG_Rect( guiIconSpace + i%3 * (w + guiIconSpace), 10 + guiIconSpace + i/3 * (guiIconSpace + guiIconSizeY), guiIconSizeX, guiIconSizeY));
-      buttons.push_back ( b );
+      GuiButton* b =
+         new GuiButton(this, PG_Rect(guiIconSpace + i % 3 * (w + guiIconSpace),
+                                     10 + guiIconSpace + i / 3 * (guiIconSpace + guiIconSizeY),
+                                     guiIconSizeX, guiIconSizeY));
+      buttons.push_back(b);
       b->Hide();
-      if ( b->y - y + b->Height() > Height() )
-         SizeWidget( Width(), b->y - y + b->Height(), false );
+      if (b->y - y + b->Height() > Height())
+         SizeWidget(Width(), b->y - y + b->Height(), false);
    }
    return buttons[i];
 }
 
-
-void NewGuiHost::disableButtons( int i )
-{
-   for ( int j = i; j < buttons.size(); ++j) {
+void NewGuiHost::disableButtons(int i) {
+   for (int j = i; j < buttons.size(); ++j) {
       GuiButton* b = getButton(j);
       b->Hide();
       b->unregisterFunc();
    }
 }
 
-
-
-bool NewGuiHost::mapIconProcessing( const MapCoordinate& pos, const SPoint& mousePos, bool cursorChanged, int button, int prio )
-{
-   if ( prio > 1 )
-      return false;
-    
-   if ( button != CGameOptions::Instance()->mouse.fieldmarkbutton )
+bool NewGuiHost::mapIconProcessing(const MapCoordinate& pos, const SPoint& mousePos,
+                                   bool cursorChanged, int button, int prio) {
+   if (prio > 1)
       return false;
 
-   
+   if (button != CGameOptions::Instance()->mouse.fieldmarkbutton)
+      return false;
 
    // PG_Point p = mapDisplay->ScreenToClient( mousePos.x, mousePos.y );
    SPoint p = mousePos;
@@ -486,124 +445,115 @@ bool NewGuiHost::mapIconProcessing( const MapCoordinate& pos, const SPoint& mous
    MapField* fld = actmap->getField(pos);
 
    bool positionedUnderCursor = false;
-   if ( ( fld->vehicle || fld->building) && fieldvisiblenow(fld) )
+   if ((fld->vehicle || fld->building) && fieldvisiblenow(fld))
       positionedUnderCursor = true;
-   
-   if ( fld->getaTemp() ) {
+
+   if (fld->getaTemp()) {
       positionedUnderCursor = true;
       cursorChanged = false;
    }
 
-   if ( positionedUnderCursor ) {
-      p.x -= smallGuiIconSizeX/2;
-      p.y -= smallGuiIconSizeY/2;
+   if (positionedUnderCursor) {
+      p.x -= smallGuiIconSizeX / 2;
+      p.y -= smallGuiIconSizeY / 2;
    } else {
       p.x += 2;
       p.y += 2;
    }
 
-   showSmallIcons( mainScreenWidget, p, cursorChanged );
+   showSmallIcons(mainScreenWidget, p, cursorChanged);
    return true;
 }
 
-
-SmallGuiButton* NewGuiHost::getSmallButton( int i )
-{
+SmallGuiButton* NewGuiHost::getSmallButton(int i) {
    assert(smallButtonHolder);
-   while ( i >= smallButtons.size() ) {
-      PG_Rect r = PG_Rect( (smallGuiIconSizeX + smallGuiIconSpace) * smallButtons.size(), 0, smallGuiIconSizeX, smallGuiIconSizeY  );
-      SmallGuiButton* b = new SmallGuiButton ( smallButtonHolder, r, getButton(i), this);
-      smallButtons.push_back ( b );
+   while (i >= smallButtons.size()) {
+      PG_Rect r = PG_Rect((smallGuiIconSizeX + smallGuiIconSpace) * smallButtons.size(), 0,
+                          smallGuiIconSizeX, smallGuiIconSizeY);
+      SmallGuiButton* b = new SmallGuiButton(smallButtonHolder, r, getButton(i), this);
+      smallButtons.push_back(b);
       b->Hide();
    }
 
    return smallButtons[i];
 }
 
-
-bool   NewGuiHost::ProcessEvent (const SDL_Event *event, bool bModal)
-{
-   if ( smallButtonHolder && smallButtonHolder->ProcessEvent( event ))
+bool NewGuiHost::ProcessEvent(const SDL_Event* event, bool bModal) {
+   if (smallButtonHolder && smallButtonHolder->ProcessEvent(event))
       return true;
-   
-   if ( DashboardPanel::ProcessEvent( event, bModal ))
+
+   if (DashboardPanel::ProcessEvent(event, bModal))
       return true;
 
    return false;
 }
 
-
-
-bool NewGuiHost::showSmallIcons( PG_Widget* parent, const SPoint& pos, bool cursorChanged )
-{
+bool NewGuiHost::showSmallIcons(PG_Widget* parent, const SPoint& pos, bool cursorChanged) {
    clearSmallIcons();
 
    BulkGraphicUpdates bgu;
-  
+
    SmallGuiButton* firstSmallButton = NULL;
-   
+
    int count = 0;
-   if ( !cursorChanged || CGameOptions::Instance()->mouse.singleClickAction ) {
-      for ( int j = 0; j < buttons.size(); ++j)
-         if ( !getButton(j)->IsHidden() )
+   if (!cursorChanged || CGameOptions::Instance()->mouse.singleClickAction) {
+      for (int j = 0; j < buttons.size(); ++j)
+         if (!getButton(j)->IsHidden())
             ++count;
-      
-      if ( count ) {
-         if ( !smallButtonHolder ) 
-            smallButtonHolder = new SmallButtonHolder ( NULL, PG_Rect::null );
-         
 
-         reflowSmallIcons( pos, count );
+      if (count) {
+         if (!smallButtonHolder)
+            smallButtonHolder = new SmallButtonHolder(NULL, PG_Rect::null);
 
-         for ( int j = 0; j < buttons.size(); ++j) {
+         reflowSmallIcons(pos, count);
+
+         for (int j = 0; j < buttons.size(); ++j) {
             GuiButton* b = getButton(j);
-            if ( !b->IsHidden() ) {
-               SmallGuiButton* sgi = getSmallButton( j );
+            if (!b->IsHidden()) {
+               SmallGuiButton* sgi = getSmallButton(j);
                sgi->updateIcon();
                sgi->SetHidden(false);
-               if ( j == 0  && sgi->IsMouseInside() )
+               if (j == 0 && sgi->IsMouseInside())
                   firstSmallButton = sgi;
             } else
-               getSmallButton( j )->SetHidden(true);
+               getSmallButton(j)->SetHidden(true);
          }
       }
    }
 
    bgu.release();
-   if ( smallButtonHolder && count ) {
+   if (smallButtonHolder && count) {
       smallButtonHolder->BringToFront();
       smallButtonHolder->Show();
       smallButtonHolder->Lock();
 
-      if ( firstSmallButton ) {
+      if (firstSmallButton) {
          firstSmallButton->press();
          firstSmallButton->showInfoText();
       }
    }
-   
+
    return true;
 }
 
-
-bool NewGuiHost::setNewButtonPressed( int i )
-{
-   if ( keyPressedButton == i )
+bool NewGuiHost::setNewButtonPressed(int i) {
+   if (keyPressedButton == i)
       return false;
 
-   if ( keyPressedButton >= 0 ) {
-      GuiButton* button = getButton( keyPressedButton );
-      if ( button ) {
+   if (keyPressedButton >= 0) {
+      GuiButton* button = getButton(keyPressedButton);
+      if (button) {
          button->SetPressed(false);
          button->SetToggle(false);
       }
    }
 
-   if ( i < buttons.size() || i < 0 ) {
+   if (i < buttons.size() || i < 0) {
       keyPressedButton = i;
 
-      if ( keyPressedButton >= 0 ) {
-         GuiButton* button = getButton( keyPressedButton );
-         if ( button ) {
+      if (keyPressedButton >= 0) {
+         GuiButton* button = getButton(keyPressedButton);
+         if (button) {
             button->SetToggle(true);
             button->SetPressed(true);
             button->showInfoText();
@@ -614,80 +564,76 @@ bool NewGuiHost::setNewButtonPressed( int i )
    return false;
 }
 
-bool NewGuiHost::eventKeyDown(const SDL_KeyboardEvent* key)
-{
+bool NewGuiHost::eventKeyDown(const SDL_KeyboardEvent* key) {
    int mod = SDL_GetModState() & ~(KMOD_NUM | KMOD_CAPS | KMOD_MODE | SDLK_LSHIFT | SDLK_RSHIFT);
-   if ( mod )
+   if (mod)
       return false;
 
-   if ( !IsVisible() )
+   if (!IsVisible())
       return false;
 
-   if ( key->keysym.sym == SDLK_RETURN   ) {
-      if ( !enterKeyPressed ) {
-         mapDisplay->keyboadCursorMovement( false );
+   if (key->keysym.sym == SDLK_RETURN) {
+      if (!enterKeyPressed) {
+         mapDisplay->keyboadCursorMovement(false);
          enterKeyPressed = true;
-         setNewButtonPressed( 0 );
+         setNewButtonPressed(0);
       }
       return true;
    }
 
-   if ( enterKeyPressed ) {
-      if ( key->keysym.sym == SDLK_RIGHT  || key->keysym.sym == SDLK_KP6 )
-         return setNewButtonPressed( keyPressedButton + 1);
+   if (enterKeyPressed) {
+      if (key->keysym.sym == SDLK_RIGHT || key->keysym.sym == SDLK_KP6)
+         return setNewButtonPressed(keyPressedButton + 1);
 
-      if ( key->keysym.sym == SDLK_LEFT  || key->keysym.sym == SDLK_KP4 )
-         if  ( keyPressedButton > 0 )
-            return setNewButtonPressed( keyPressedButton - 1);
+      if (key->keysym.sym == SDLK_LEFT || key->keysym.sym == SDLK_KP4)
+         if (keyPressedButton > 0)
+            return setNewButtonPressed(keyPressedButton - 1);
 
-      if ( key->keysym.sym == SDLK_UP || key->keysym.sym == SDLK_KP8 )
-         if ( keyPressedButton >= guiIconColumnNum )
-            return setNewButtonPressed( keyPressedButton - guiIconColumnNum );
+      if (key->keysym.sym == SDLK_UP || key->keysym.sym == SDLK_KP8)
+         if (keyPressedButton >= guiIconColumnNum)
+            return setNewButtonPressed(keyPressedButton - guiIconColumnNum);
 
-      if ( key->keysym.sym == SDLK_DOWN || key->keysym.sym == SDLK_KP2 )
-         return setNewButtonPressed( keyPressedButton + guiIconColumnNum );
-         
-      if ( key->keysym.sym == SDLK_ESCAPE || key->keysym.sym == SDLK_END ) {
+      if (key->keysym.sym == SDLK_DOWN || key->keysym.sym == SDLK_KP2)
+         return setNewButtonPressed(keyPressedButton + guiIconColumnNum);
+
+      if (key->keysym.sym == SDLK_ESCAPE || key->keysym.sym == SDLK_END) {
          enterKeyPressed = false;
-         mapDisplay->keyboadCursorMovement( true );
-         
-         setNewButtonPressed( -1 );
+         mapDisplay->keyboadCursorMovement(true);
+
+         setNewButtonPressed(-1);
          return true;
       }
-         
+
    } else {
       int modifier = SDL_GetModState();
-      for ( int j = 0; j < buttons.size(); ++j)
-         if ( getButton(j)->ready() )
-            if ( getButton(j)->checkForKey( key, modifier ))
+      for (int j = 0; j < buttons.size(); ++j)
+         if (getButton(j)->ready())
+            if (getButton(j)->checkForKey(key, modifier))
                return true;
 
-      if ( handler )
-         if ( handler->checkForKey( key, modifier ))
+      if (handler)
+         if (handler->checkForKey(key, modifier))
             return true;
-
    }
 
    return false;
 }
 
-bool NewGuiHost::eventKeyUp(const SDL_KeyboardEvent* key)
-{
-   if ( key->keysym.sym == SDLK_RETURN  && enterKeyPressed ) {
+bool NewGuiHost::eventKeyUp(const SDL_KeyboardEvent* key) {
+   if (key->keysym.sym == SDLK_RETURN && enterKeyPressed) {
       enterKeyPressed = false;
-      mapDisplay->keyboadCursorMovement( true );
+      mapDisplay->keyboadCursorMovement(true);
 
-      GuiButton* button = getButton( keyPressedButton );
-      if ( button )
+      GuiButton* button = getButton(keyPressedButton);
+      if (button)
          button->exec();
 
-      setNewButtonPressed( -1 );
+      setNewButtonPressed(-1);
       return true;
    }
 
    return false;
 }
-
 
 #if 0
 
@@ -719,26 +665,21 @@ bool NewGuiHost::clearSmallIcons()
 
 #endif
 
-bool NewGuiHost::clearSmallIcons()
-{
-   if ( smallButtonHolder && smallButtonHolder->IsVisible() ) {
+bool NewGuiHost::clearSmallIcons() {
+   if (smallButtonHolder && smallButtonHolder->IsVisible()) {
       smallButtonHolder->Unlock();
       smallButtonHolder->Hide();
    }
    return true;
 }
 
-
-NewGuiHost::~NewGuiHost()
-{
-   if ( handler )
-      handler->registerHost( NULL );
-
+NewGuiHost::~NewGuiHost() {
+   if (handler)
+      handler->registerHost(NULL);
 }
 
-void resetActiveGuiAction( GameMap* map )
-{
-   if ( NewGuiHost::pendingCommand ) {
+void resetActiveGuiAction(GameMap* map) {
+   if (NewGuiHost::pendingCommand) {
       delete NewGuiHost::pendingCommand;
       NewGuiHost::pendingCommand = NULL;
       map->cleartemps();

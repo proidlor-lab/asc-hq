@@ -1,8 +1,7 @@
 
 #include "parser.h"
 
-int main()
-{
+int main() {
    Parser parser;
    return parser.parse();
 }

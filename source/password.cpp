@@ -10,7 +10,6 @@
     \brief A class for holding, encoding and comparing passwords
 */
 
-
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -23,101 +22,84 @@
 #include "password.h"
 #include "misc.h"
 
-
-void Password :: setUnencoded ( const string& s )
-{
-   password = encodedpassword2string ( encodepassword ( s.c_str() ) );
+void Password ::setUnencoded(const string& s) {
+   password = encodedpassword2string(encodepassword(s.c_str()));
 }
 
-void Password :: setEncoded   ( const string& s )
-{
-   if ( !s.empty () ) {
-      if ( s[0] == 'A' )
+void Password ::setEncoded(const string& s) {
+   if (!s.empty()) {
+      if (s[0] == 'A')
          password = s;
       else
-         password = encodedpassword2string ( atoi ( s.c_str() ));
+         password = encodedpassword2string(atoi(s.c_str()));
    } else
       password = s;
 }
 
-
-void Password :: setInt  ( int pwd )
-{
-   password = encodedpassword2string ( pwd );
+void Password ::setInt(int pwd) {
+   password = encodedpassword2string(pwd);
 }
 
-bool Password :: operator== ( const Password& p ) const
-{
+bool Password ::operator==(const Password& p) const {
    return p.password == password;
 }
 
-bool Password :: operator!= ( const Password& p ) const
-{
+bool Password ::operator!=(const Password& p) const {
    return p.password != password;
 }
 
-
-int Password :: encodepassword ( const char* pw ) const
-{
-   if ( !pw )
+int Password ::encodepassword(const char* pw) const {
+   if (!pw)
       return 0;
 
-   int len = strlen ( pw );
+   int len = strlen(pw);
 
-   if ( len )
-      return crc32buf( pw, len+1 );
+   if (len)
+      return crc32buf(pw, len + 1);
    else
       return 0;
 }
 
-string Password :: encodedpassword2string ( int pwd ) const
-{
+string Password ::encodedpassword2string(int pwd) const {
    string s;
-   if ( !pwd )
+   if (!pwd)
       return s;
 
    s = "A";
-   if ( pwd > 0 )
-      s+= "A";
+   if (pwd > 0)
+      s += "A";
    else
-      s+= "B";
-   s += strrr ( abs (pwd) );
+      s += "B";
+   s += strrr(abs(pwd));
    return s;
 }
 
-
-bool Password :: empty () const
-{
+bool Password ::empty() const {
    return password.empty();
 }
 
-string Password :: toString ( ) const
-{
+string Password ::toString() const {
    return password;
 }
 
-
-void Password::read ( tnstream& stream )
-{
+void Password::read(tnstream& stream) {
    int i = stream.readInt();
-   password = encodedpassword2string ( i );
+   password = encodedpassword2string(i);
 }
 
-void Password::write ( tnstream& stream ) const
-{
+void Password::write(tnstream& stream) const {
    int i;
-   if ( password[0] == 'A' ) {
-      if ( password[1] == 'A' )
-         i = atoi ( password.substr ( 2 ).c_str() );
+   if (password[0] == 'A') {
+      if (password[1] == 'A')
+         i = atoi(password.substr(2).c_str());
       else
-         i = -atoi ( password.substr ( 2 ).c_str() );
+         i = -atoi(password.substr(2).c_str());
 
-      stream.writeInt ( i );
+      stream.writeInt(i);
    } else
-      stream.writeInt ( 0 );
+      stream.writeInt(0);
 }
 
-void Password::reset()
-{
-  password = "";
+void Password::reset() {
+   password = "";
 }
