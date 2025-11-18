@@ -702,6 +702,29 @@ if test x$extradata = xyes ; then
 fi
 AC_SUBST(extradatadir)
 
+dnl *************************************************************************
+dnl Google Test Configuration (for modern test framework)
+dnl *************************************************************************
+AC_MSG_CHECKING(for Google Test framework)
+GTEST_DIR="third_party/googletest"
+if test -d "$srcdir/$GTEST_DIR/googletest" && test -d "$srcdir/$GTEST_DIR/googlemock"; then
+   AC_MSG_RESULT(yes)
+   have_gtest=yes
+   GTEST_CPPFLAGS="-I\${top_srcdir}/$GTEST_DIR/googletest/include -I\${top_srcdir}/$GTEST_DIR/googlemock/include"
+   GTEST_LIBS="\${top_builddir}/$GTEST_DIR/googletest/lib/libgtest.a \${top_builddir}/$GTEST_DIR/googletest/lib/libgtest_main.a"
+   GMOCK_LIBS="\${top_builddir}/$GTEST_DIR/googlemock/lib/libgmock.a \${top_builddir}/$GTEST_DIR/googlemock/lib/libgmock_main.a"
+else
+   AC_MSG_RESULT(no)
+   have_gtest=no
+   AC_MSG_WARN([Google Test not found - skipping modern test suite])
+   AC_MSG_WARN([To install: git submodule update --init --recursive])
+fi
+
+AM_CONDITIONAL([HAVE_GTEST], [test "x$have_gtest" = "xyes"])
+AC_SUBST(GTEST_CPPFLAGS)
+AC_SUBST(GTEST_LIBS)
+AC_SUBST(GMOCK_LIBS)
+
 AC_CONFIG_FILES( [ Makefile \
        asc.spec \
        asc.suse.spec \
@@ -728,6 +751,7 @@ AC_CONFIG_FILES( [ Makefile \
        source/lua/Makefile \
        source/unittests/Makefile \
        source/doc/Makefile \
+       tests/Makefile \
        source/libs/Makefile \
        source/libs/sdlmm/Makefile \
        source/libs/sdlmm/src/Makefile \

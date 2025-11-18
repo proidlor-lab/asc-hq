@@ -30,7 +30,8 @@ Transform this GPL repository into a **game server** that exposes game logic via
 3. **[CI_CD_SETUP.md](./CI_CD_SETUP.md)** - GitHub Actions CI/CD pipeline
 4. **[STATIC_ANALYSIS.md](./STATIC_ANALYSIS.md)** - Static analysis tools (cppcheck, clang-tidy)
 5. **[TEST_FRAMEWORK_MIGRATION.md](./TEST_FRAMEWORK_MIGRATION.md)** - Google Test migration plan
-6. **[BUILD_SYSTEM_MODERNIZATION.md](./BUILD_SYSTEM_MODERNIZATION.md)** - Build optimization strategies
+6. **[GOOGLE_TEST_QUICK_REFERENCE.md](./GOOGLE_TEST_QUICK_REFERENCE.md)** - Google Test quick reference
+7. **[BUILD_SYSTEM_MODERNIZATION.md](./BUILD_SYSTEM_MODERNIZATION.md)** - Build optimization strategies
 
 **Note**: Code formatting already applied (`.clang-format` config, enforced by CI)
 
@@ -45,7 +46,8 @@ Transform this GPL repository into a **game server** that exposes game logic via
 - ✅ CI/CD pipeline (GitHub Actions)
 - ✅ Code formatting applied (1,051+ files)
 - ✅ Static analysis baseline (1,650 issues identified)
-- ✅ Test framework migration planned
+- ✅ Test framework Phase 1 complete (Google Test integrated)
+- ✅ Automated testing on every commit
 
 **See [STATUS.md](./STATUS.md) for detailed progress and next actions.**
 
@@ -168,8 +170,50 @@ When in doubt: "How would this be done in MCTS?"
 
 - **Build**: GCC 13.3.0 (C++23), Autotools, ccache, CMake (MCTS module)
 - **Analysis**: cppcheck 2.13.0, clang-tidy (LLVM 18.1.3), Valgrind, AddressSanitizer
-- **Testing**: Google Test (target), custom framework (legacy)
-- **CI/CD**: GitHub Actions
+- **Testing**: Google Test (active), custom framework (legacy, parallel)
+- **CI/CD**: GitHub Actions (6 jobs including automated testing)
+
+---
+
+## Testing Infrastructure
+
+### Google Test Framework ✅ Active
+
+**Location**: `tests/` directory
+
+**Current Status**:
+- ✅ Google Test integrated (Phase 1 complete)
+- ✅ 13 tests running in CI/CD
+- ✅ Automated execution on every commit
+- ✅ Test results visible in GitHub Actions
+
+**Quick Start**:
+```bash
+# Build and run tests
+./configure
+cd tests/
+make check
+
+# Run specific tests
+./example_test --gtest_filter=StringTest.*
+
+# List all tests
+./example_test --gtest_list_tests
+```
+
+**CI/CD Integration**:
+- Job: `google-test-suite`
+- Triggers: Every push, every PR
+- Environment: Clean Ubuntu 24.04
+- Results: Visible in Actions tab
+
+**Documentation**:
+- [Google Test Quick Reference](./GOOGLE_TEST_QUICK_REFERENCE.md) - **Start here!**
+- [Test Framework Migration Plan](./TEST_FRAMEWORK_MIGRATION.md) - Complete migration guide
+- [Test Getting Started Guide](../../tests/README.md) - Developer guide
+- See MCTS module (`source/ai/mcts/`) for test examples
+
+**Next Phase**: Migrate MCTS tests to Google Test framework
 
 ---
 

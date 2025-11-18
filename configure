@@ -663,6 +663,11 @@ am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
+GMOCK_LIBS
+GTEST_LIBS
+GTEST_CPPFLAGS
+HAVE_GTEST_FALSE
+HAVE_GTEST_TRUE
 extradatadir
 revellibfile
 revellib
@@ -21703,7 +21708,39 @@ if test x$extradata = xyes ; then
 fi
 
 
-ac_config_files="$ac_config_files Makefile asc.spec asc.suse.spec asc.appdata.xml getmusic doc/Makefile doc/manpages/Makefile doc/unitguide/Makefile doc/unitguide/output/Makefile source/Makefile source/ai/Makefile source/ai/mcts/Makefile source/clparser/Makefile source/docs/Makefile source/docs/en/Makefile source/graphics/Makefile source/network/Makefile source/dialogs/Makefile source/util/Makefile source/widgets/Makefile source/actions/Makefile source/tasks/Makefile source/video/Makefile source/lua/Makefile source/unittests/Makefile source/doc/Makefile source/libs/Makefile source/libs/sdlmm/Makefile source/libs/sdlmm/src/Makefile source/libs/triangul/Makefile source/libs/loki-0.1.6/Makefile source/libs/sdl_sound/Makefile source/libs/revel/Makefile source/libs/paragui/Makefile source/libs/paragui/src/Makefile source/libs/paragui/src/widgets/Makefile source/libs/paragui/src/core/Makefile source/libs/paragui/src/draw/Makefile source/libs/paragui/src/font/Makefile source/libs/paragui/src/themes/Makefile source/libs/paragui/src/ystring/Makefile source/sdl/Makefile source/tools/Makefile source/tools/lib/Makefile source/tools/linux/Makefile source/unix/Makefile source/unix/mapeditor/Makefile source/unix/pbpedit/Makefile source/unix/asc/Makefile source/win32/Makefile source/win32/msvc/Makefile data/Makefile data/icons/Makefile data/sounds/Makefile data/dialog/Makefile data/music/Makefile extra-data/Makefile installer/Makefile installer/asc.nsi unittester/Makefile"
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for Google Test framework" >&5
+printf %s "checking for Google Test framework... " >&6; }
+GTEST_DIR="third_party/googletest"
+if test -d "$srcdir/$GTEST_DIR/googletest" && test -d "$srcdir/$GTEST_DIR/googlemock"; then
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+   have_gtest=yes
+   GTEST_CPPFLAGS="-I\${top_srcdir}/$GTEST_DIR/googletest/include -I\${top_srcdir}/$GTEST_DIR/googlemock/include"
+   GTEST_LIBS="\${top_builddir}/$GTEST_DIR/googletest/lib/libgtest.a \${top_builddir}/$GTEST_DIR/googletest/lib/libgtest_main.a"
+   GMOCK_LIBS="\${top_builddir}/$GTEST_DIR/googlemock/lib/libgmock.a \${top_builddir}/$GTEST_DIR/googlemock/lib/libgmock_main.a"
+else
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+   have_gtest=no
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: Google Test not found - skipping modern test suite" >&5
+printf "%s\n" "$as_me: WARNING: Google Test not found - skipping modern test suite" >&2;}
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: To install: git submodule update --init --recursive" >&5
+printf "%s\n" "$as_me: WARNING: To install: git submodule update --init --recursive" >&2;}
+fi
+
+ if test "x$have_gtest" = "xyes"; then
+  HAVE_GTEST_TRUE=
+  HAVE_GTEST_FALSE='#'
+else
+  HAVE_GTEST_TRUE='#'
+  HAVE_GTEST_FALSE=
+fi
+
+
+
+
+
+ac_config_files="$ac_config_files Makefile asc.spec asc.suse.spec asc.appdata.xml getmusic doc/Makefile doc/manpages/Makefile doc/unitguide/Makefile doc/unitguide/output/Makefile source/Makefile source/ai/Makefile source/ai/mcts/Makefile source/clparser/Makefile source/docs/Makefile source/docs/en/Makefile source/graphics/Makefile source/network/Makefile source/dialogs/Makefile source/util/Makefile source/widgets/Makefile source/actions/Makefile source/tasks/Makefile source/video/Makefile source/lua/Makefile source/unittests/Makefile source/doc/Makefile tests/Makefile source/libs/Makefile source/libs/sdlmm/Makefile source/libs/sdlmm/src/Makefile source/libs/triangul/Makefile source/libs/loki-0.1.6/Makefile source/libs/sdl_sound/Makefile source/libs/revel/Makefile source/libs/paragui/Makefile source/libs/paragui/src/Makefile source/libs/paragui/src/widgets/Makefile source/libs/paragui/src/core/Makefile source/libs/paragui/src/draw/Makefile source/libs/paragui/src/font/Makefile source/libs/paragui/src/themes/Makefile source/libs/paragui/src/ystring/Makefile source/sdl/Makefile source/tools/Makefile source/tools/lib/Makefile source/tools/linux/Makefile source/unix/Makefile source/unix/mapeditor/Makefile source/unix/pbpedit/Makefile source/unix/asc/Makefile source/win32/Makefile source/win32/msvc/Makefile data/Makefile data/icons/Makefile data/sounds/Makefile data/dialog/Makefile data/music/Makefile extra-data/Makefile installer/Makefile installer/asc.nsi unittester/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -21852,6 +21889,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${CURLCLIENT_TRUE}" && test -z "${CURLCLIENT_FALSE}"; then
   as_fn_error $? "conditional \"CURLCLIENT\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HAVE_GTEST_TRUE}" && test -z "${HAVE_GTEST_FALSE}"; then
+  as_fn_error $? "conditional \"HAVE_GTEST\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 
@@ -22853,6 +22894,7 @@ do
     "source/lua/Makefile") CONFIG_FILES="$CONFIG_FILES source/lua/Makefile" ;;
     "source/unittests/Makefile") CONFIG_FILES="$CONFIG_FILES source/unittests/Makefile" ;;
     "source/doc/Makefile") CONFIG_FILES="$CONFIG_FILES source/doc/Makefile" ;;
+    "tests/Makefile") CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
     "source/libs/Makefile") CONFIG_FILES="$CONFIG_FILES source/libs/Makefile" ;;
     "source/libs/sdlmm/Makefile") CONFIG_FILES="$CONFIG_FILES source/libs/sdlmm/Makefile" ;;
     "source/libs/sdlmm/src/Makefile") CONFIG_FILES="$CONFIG_FILES source/libs/sdlmm/src/Makefile" ;;
