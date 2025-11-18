@@ -94,7 +94,10 @@ host_triplet = @host@
 @HAVE_GTEST_TRUE@TESTS = example_test$(EXEEXT) \
 @HAVE_GTEST_TRUE@	mcts_snapshot_test$(EXEEXT) \
 @HAVE_GTEST_TRUE@	mcts_action_executor_test$(EXEEXT) \
-@HAVE_GTEST_TRUE@	mcts_evaluator_test$(EXEEXT)
+@HAVE_GTEST_TRUE@	mcts_evaluator_test$(EXEEXT) \
+@HAVE_GTEST_TRUE@	version_identifier_test$(EXEEXT) \
+@HAVE_GTEST_TRUE@	stream_encoding_test$(EXEEXT) \
+@HAVE_GTEST_TRUE@	game_events_test$(EXEEXT)
 @HAVE_GTEST_TRUE@check_PROGRAMS = $(am__EXEEXT_1)
 subdir = tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -112,7 +115,10 @@ CONFIG_CLEAN_VPATH_FILES =
 @HAVE_GTEST_TRUE@am__EXEEXT_1 = example_test$(EXEEXT) \
 @HAVE_GTEST_TRUE@	mcts_snapshot_test$(EXEEXT) \
 @HAVE_GTEST_TRUE@	mcts_action_executor_test$(EXEEXT) \
-@HAVE_GTEST_TRUE@	mcts_evaluator_test$(EXEEXT)
+@HAVE_GTEST_TRUE@	mcts_evaluator_test$(EXEEXT) \
+@HAVE_GTEST_TRUE@	version_identifier_test$(EXEEXT) \
+@HAVE_GTEST_TRUE@	stream_encoding_test$(EXEEXT) \
+@HAVE_GTEST_TRUE@	game_events_test$(EXEEXT)
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libgtest_la_LIBADD =
 am__libgtest_la_SOURCES_DIST = $(GTEST_DIR)/src/gtest-all.cc
@@ -144,6 +150,41 @@ example_test_OBJECTS = $(am_example_test_OBJECTS)
 example_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(example_test_LDFLAGS) $(LDFLAGS) -o $@
+am__game_events_test_SOURCES_DIST = unit/game_events_test.cpp
+@HAVE_GTEST_TRUE@am_game_events_test_OBJECTS =  \
+@HAVE_GTEST_TRUE@	game_events_test.$(OBJEXT)
+game_events_test_OBJECTS = $(am_game_events_test_OBJECTS)
+am__DEPENDENCIES_1 =
+@HAVE_GTEST_TRUE@am__DEPENDENCIES_2 = $(top_builddir)/source/libs/triangul/libtriangul.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/ai/libai.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/libs/sdlmm/src/libSDLmm.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/sdl/libsdl.la \
+@HAVE_GTEST_TRUE@	$(am__DEPENDENCIES_1) \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/util/libutil.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/tasks/libtaskcore.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/tasks/libtasks.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/graphics/libgraphics.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/dialogs/libdialogs.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/dialogs/libgamedialogs.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/actions/libactions.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/libs/paragui/src/libparagui.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/widgets/libwidgets.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/sdl/libsdlsnd.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/network/libnetwork.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/video/libvideo.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/actions/libdirectunitactions.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/actions/libmapactions.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/lua/libluainterfacegame.la \
+@HAVE_GTEST_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+@HAVE_GTEST_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+@HAVE_GTEST_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+@HAVE_GTEST_TRUE@	$(am__DEPENDENCIES_1)
+@HAVE_GTEST_TRUE@game_events_test_DEPENDENCIES = libgtest.la \
+@HAVE_GTEST_TRUE@	libgtest_main.la $(am__DEPENDENCIES_2)
+game_events_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+	$(AM_CXXFLAGS) $(CXXFLAGS) $(game_events_test_LDFLAGS) \
+	$(LDFLAGS) -o $@
 am__mcts_action_executor_test_SOURCES_DIST =  \
 	unit/mcts_action_executor_test.cpp
 @HAVE_GTEST_TRUE@am_mcts_action_executor_test_OBJECTS =  \
@@ -179,6 +220,40 @@ mcts_snapshot_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(AM_CXXFLAGS) $(CXXFLAGS) $(mcts_snapshot_test_LDFLAGS) \
 	$(LDFLAGS) -o $@
+am__stream_encoding_test_SOURCES_DIST = unit/stream_encoding_test.cpp \
+	$(top_srcdir)/source/basestrm.cpp \
+	$(top_srcdir)/source/simplestream.cpp \
+	$(top_srcdir)/source/sgstream.cpp
+@HAVE_GTEST_TRUE@am_stream_encoding_test_OBJECTS =  \
+@HAVE_GTEST_TRUE@	stream_encoding_test.$(OBJEXT) \
+@HAVE_GTEST_TRUE@	basestrm.$(OBJEXT) simplestream.$(OBJEXT) \
+@HAVE_GTEST_TRUE@	sgstream.$(OBJEXT)
+stream_encoding_test_OBJECTS = $(am_stream_encoding_test_OBJECTS)
+@HAVE_GTEST_TRUE@stream_encoding_test_DEPENDENCIES = libgtest.la \
+@HAVE_GTEST_TRUE@	libgtest_main.la $(am__DEPENDENCIES_2)
+stream_encoding_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+	$(AM_CXXFLAGS) $(CXXFLAGS) $(stream_encoding_test_LDFLAGS) \
+	$(LDFLAGS) -o $@
+am__version_identifier_test_SOURCES_DIST =  \
+	unit/version_identifier_test.cpp \
+	$(top_srcdir)/source/versionidentifier.cpp \
+	$(top_srcdir)/source/ascstring.cpp \
+	$(top_srcdir)/source/basestrm.cpp \
+	$(top_srcdir)/source/simplestream.cpp
+@HAVE_GTEST_TRUE@am_version_identifier_test_OBJECTS =  \
+@HAVE_GTEST_TRUE@	version_identifier_test.$(OBJEXT) \
+@HAVE_GTEST_TRUE@	versionidentifier.$(OBJEXT) \
+@HAVE_GTEST_TRUE@	ascstring.$(OBJEXT) basestrm.$(OBJEXT) \
+@HAVE_GTEST_TRUE@	simplestream.$(OBJEXT)
+version_identifier_test_OBJECTS =  \
+	$(am_version_identifier_test_OBJECTS)
+@HAVE_GTEST_TRUE@version_identifier_test_DEPENDENCIES = libgtest.la \
+@HAVE_GTEST_TRUE@	libgtest_main.la $(am__DEPENDENCIES_2)
+version_identifier_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+	$(AM_CXXFLAGS) $(CXXFLAGS) $(version_identifier_test_LDFLAGS) \
+	$(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -194,12 +269,17 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/example_test.Po \
+am__depfiles_remade = ./$(DEPDIR)/ascstring.Po ./$(DEPDIR)/basestrm.Po \
+	./$(DEPDIR)/example_test.Po ./$(DEPDIR)/game_events_test.Po \
 	./$(DEPDIR)/libgtest_la-gtest-all.Plo \
 	./$(DEPDIR)/libgtest_main_la-gtest_main.Plo \
 	./$(DEPDIR)/mcts_action_executor_test.Po \
 	./$(DEPDIR)/mcts_evaluator_test.Po \
-	./$(DEPDIR)/mcts_snapshot_test.Po
+	./$(DEPDIR)/mcts_snapshot_test.Po ./$(DEPDIR)/sgstream.Po \
+	./$(DEPDIR)/simplestream.Po \
+	./$(DEPDIR)/stream_encoding_test.Po \
+	./$(DEPDIR)/version_identifier_test.Po \
+	./$(DEPDIR)/versionidentifier.Po
 am__mv = mv -f
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -220,14 +300,20 @@ am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
 SOURCES = $(libgtest_la_SOURCES) $(libgtest_main_la_SOURCES) \
-	$(example_test_SOURCES) $(mcts_action_executor_test_SOURCES) \
-	$(mcts_evaluator_test_SOURCES) $(mcts_snapshot_test_SOURCES)
+	$(example_test_SOURCES) $(game_events_test_SOURCES) \
+	$(mcts_action_executor_test_SOURCES) \
+	$(mcts_evaluator_test_SOURCES) $(mcts_snapshot_test_SOURCES) \
+	$(stream_encoding_test_SOURCES) \
+	$(version_identifier_test_SOURCES)
 DIST_SOURCES = $(am__libgtest_la_SOURCES_DIST) \
 	$(am__libgtest_main_la_SOURCES_DIST) \
 	$(am__example_test_SOURCES_DIST) \
+	$(am__game_events_test_SOURCES_DIST) \
 	$(am__mcts_action_executor_test_SOURCES_DIST) \
 	$(am__mcts_evaluator_test_SOURCES_DIST) \
-	$(am__mcts_snapshot_test_SOURCES_DIST)
+	$(am__mcts_snapshot_test_SOURCES_DIST) \
+	$(am__stream_encoding_test_SOURCES_DIST) \
+	$(am__version_identifier_test_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -740,6 +826,71 @@ zipfound = @zipfound@
 
 @HAVE_GTEST_TRUE@mcts_evaluator_test_LDFLAGS = -pthread
 
+# Phase 1: Legacy test migrations
+
+# Common libraries needed for Phase 1 tests (matching unittester dependencies)
+@HAVE_GTEST_TRUE@TEST_COMMON_LIBS = \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/libs/triangul/libtriangul.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/ai/libai.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/libs/sdlmm/src/libSDLmm.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/sdl/libsdl.la \
+@HAVE_GTEST_TRUE@	$(LOKI_LIBS) $(LUA_GAME_LIB) \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/util/libutil.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/tasks/libtaskcore.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/tasks/libtasks.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/graphics/libgraphics.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/dialogs/libdialogs.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/dialogs/libgamedialogs.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/actions/libactions.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/libs/paragui/src/libparagui.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/widgets/libwidgets.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/sdl/libsdlsnd.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/network/libnetwork.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/video/libvideo.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/actions/libdirectunitactions.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/actions/libmapactions.la \
+@HAVE_GTEST_TRUE@	$(top_builddir)/source/lua/libluainterfacegame.la \
+@HAVE_GTEST_TRUE@	$(BZIP2_LIBS) $(SIGC_LIBS) $(SDL_LIBS) $(FREETYPE_LIBS) $(BOOST_LIBS) $(SDL_SOUND_LIB) $(WX_LIBS)
+
+
+# Version Identifier test
+@HAVE_GTEST_TRUE@version_identifier_test_SOURCES = \
+@HAVE_GTEST_TRUE@	unit/version_identifier_test.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/versionidentifier.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/ascstring.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/basestrm.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/simplestream.cpp
+
+@HAVE_GTEST_TRUE@version_identifier_test_LDADD = \
+@HAVE_GTEST_TRUE@	libgtest.la \
+@HAVE_GTEST_TRUE@	libgtest_main.la \
+@HAVE_GTEST_TRUE@	$(TEST_COMMON_LIBS)
+
+@HAVE_GTEST_TRUE@version_identifier_test_LDFLAGS = -pthread
+
+# Stream Encoding test
+@HAVE_GTEST_TRUE@stream_encoding_test_SOURCES = \
+@HAVE_GTEST_TRUE@	unit/stream_encoding_test.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/basestrm.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/simplestream.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/sgstream.cpp
+
+@HAVE_GTEST_TRUE@stream_encoding_test_LDADD = \
+@HAVE_GTEST_TRUE@	libgtest.la \
+@HAVE_GTEST_TRUE@	libgtest_main.la \
+@HAVE_GTEST_TRUE@	$(TEST_COMMON_LIBS)
+
+@HAVE_GTEST_TRUE@stream_encoding_test_LDFLAGS = -pthread
+
+# Game Events test
+@HAVE_GTEST_TRUE@game_events_test_SOURCES = unit/game_events_test.cpp
+@HAVE_GTEST_TRUE@game_events_test_LDADD = \
+@HAVE_GTEST_TRUE@	libgtest.la \
+@HAVE_GTEST_TRUE@	libgtest_main.la \
+@HAVE_GTEST_TRUE@	$(TEST_COMMON_LIBS)
+
+@HAVE_GTEST_TRUE@game_events_test_LDFLAGS = -pthread
+
 # Always distribute test sources, even if Google Test is not available
 EXTRA_DIST = \
 	unit \
@@ -810,6 +961,10 @@ example_test$(EXEEXT): $(example_test_OBJECTS) $(example_test_DEPENDENCIES) $(EX
 	@rm -f example_test$(EXEEXT)
 	$(AM_V_CXXLD)$(example_test_LINK) $(example_test_OBJECTS) $(example_test_LDADD) $(LIBS)
 
+game_events_test$(EXEEXT): $(game_events_test_OBJECTS) $(game_events_test_DEPENDENCIES) $(EXTRA_game_events_test_DEPENDENCIES) 
+	@rm -f game_events_test$(EXEEXT)
+	$(AM_V_CXXLD)$(game_events_test_LINK) $(game_events_test_OBJECTS) $(game_events_test_LDADD) $(LIBS)
+
 mcts_action_executor_test$(EXEEXT): $(mcts_action_executor_test_OBJECTS) $(mcts_action_executor_test_DEPENDENCIES) $(EXTRA_mcts_action_executor_test_DEPENDENCIES) 
 	@rm -f mcts_action_executor_test$(EXEEXT)
 	$(AM_V_CXXLD)$(mcts_action_executor_test_LINK) $(mcts_action_executor_test_OBJECTS) $(mcts_action_executor_test_LDADD) $(LIBS)
@@ -822,18 +977,34 @@ mcts_snapshot_test$(EXEEXT): $(mcts_snapshot_test_OBJECTS) $(mcts_snapshot_test_
 	@rm -f mcts_snapshot_test$(EXEEXT)
 	$(AM_V_CXXLD)$(mcts_snapshot_test_LINK) $(mcts_snapshot_test_OBJECTS) $(mcts_snapshot_test_LDADD) $(LIBS)
 
+stream_encoding_test$(EXEEXT): $(stream_encoding_test_OBJECTS) $(stream_encoding_test_DEPENDENCIES) $(EXTRA_stream_encoding_test_DEPENDENCIES) 
+	@rm -f stream_encoding_test$(EXEEXT)
+	$(AM_V_CXXLD)$(stream_encoding_test_LINK) $(stream_encoding_test_OBJECTS) $(stream_encoding_test_LDADD) $(LIBS)
+
+version_identifier_test$(EXEEXT): $(version_identifier_test_OBJECTS) $(version_identifier_test_DEPENDENCIES) $(EXTRA_version_identifier_test_DEPENDENCIES) 
+	@rm -f version_identifier_test$(EXEEXT)
+	$(AM_V_CXXLD)$(version_identifier_test_LINK) $(version_identifier_test_OBJECTS) $(version_identifier_test_LDADD) $(LIBS)
+
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ascstring.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/basestrm.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/example_test.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/game_events_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgtest_la-gtest-all.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgtest_main_la-gtest_main.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcts_action_executor_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcts_evaluator_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcts_snapshot_test.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sgstream.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplestream.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stream_encoding_test.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/version_identifier_test.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/versionidentifier.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -890,6 +1061,20 @@ example_test.obj: unit/example_test.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o example_test.obj `if test -f 'unit/example_test.cpp'; then $(CYGPATH_W) 'unit/example_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/example_test.cpp'; fi`
 
+game_events_test.o: unit/game_events_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT game_events_test.o -MD -MP -MF $(DEPDIR)/game_events_test.Tpo -c -o game_events_test.o `test -f 'unit/game_events_test.cpp' || echo '$(srcdir)/'`unit/game_events_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/game_events_test.Tpo $(DEPDIR)/game_events_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/game_events_test.cpp' object='game_events_test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o game_events_test.o `test -f 'unit/game_events_test.cpp' || echo '$(srcdir)/'`unit/game_events_test.cpp
+
+game_events_test.obj: unit/game_events_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT game_events_test.obj -MD -MP -MF $(DEPDIR)/game_events_test.Tpo -c -o game_events_test.obj `if test -f 'unit/game_events_test.cpp'; then $(CYGPATH_W) 'unit/game_events_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/game_events_test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/game_events_test.Tpo $(DEPDIR)/game_events_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/game_events_test.cpp' object='game_events_test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o game_events_test.obj `if test -f 'unit/game_events_test.cpp'; then $(CYGPATH_W) 'unit/game_events_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/game_events_test.cpp'; fi`
+
 mcts_action_executor_test.o: unit/mcts_action_executor_test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mcts_action_executor_test.o -MD -MP -MF $(DEPDIR)/mcts_action_executor_test.Tpo -c -o mcts_action_executor_test.o `test -f 'unit/mcts_action_executor_test.cpp' || echo '$(srcdir)/'`unit/mcts_action_executor_test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mcts_action_executor_test.Tpo $(DEPDIR)/mcts_action_executor_test.Po
@@ -931,6 +1116,104 @@ mcts_snapshot_test.obj: unit/mcts_snapshot_test.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/mcts_snapshot_test.cpp' object='mcts_snapshot_test.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mcts_snapshot_test.obj `if test -f 'unit/mcts_snapshot_test.cpp'; then $(CYGPATH_W) 'unit/mcts_snapshot_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/mcts_snapshot_test.cpp'; fi`
+
+stream_encoding_test.o: unit/stream_encoding_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT stream_encoding_test.o -MD -MP -MF $(DEPDIR)/stream_encoding_test.Tpo -c -o stream_encoding_test.o `test -f 'unit/stream_encoding_test.cpp' || echo '$(srcdir)/'`unit/stream_encoding_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/stream_encoding_test.Tpo $(DEPDIR)/stream_encoding_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/stream_encoding_test.cpp' object='stream_encoding_test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stream_encoding_test.o `test -f 'unit/stream_encoding_test.cpp' || echo '$(srcdir)/'`unit/stream_encoding_test.cpp
+
+stream_encoding_test.obj: unit/stream_encoding_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT stream_encoding_test.obj -MD -MP -MF $(DEPDIR)/stream_encoding_test.Tpo -c -o stream_encoding_test.obj `if test -f 'unit/stream_encoding_test.cpp'; then $(CYGPATH_W) 'unit/stream_encoding_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/stream_encoding_test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/stream_encoding_test.Tpo $(DEPDIR)/stream_encoding_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/stream_encoding_test.cpp' object='stream_encoding_test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stream_encoding_test.obj `if test -f 'unit/stream_encoding_test.cpp'; then $(CYGPATH_W) 'unit/stream_encoding_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/stream_encoding_test.cpp'; fi`
+
+basestrm.o: $(top_srcdir)/source/basestrm.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT basestrm.o -MD -MP -MF $(DEPDIR)/basestrm.Tpo -c -o basestrm.o `test -f '$(top_srcdir)/source/basestrm.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/basestrm.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/basestrm.Tpo $(DEPDIR)/basestrm.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/basestrm.cpp' object='basestrm.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o basestrm.o `test -f '$(top_srcdir)/source/basestrm.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/basestrm.cpp
+
+basestrm.obj: $(top_srcdir)/source/basestrm.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT basestrm.obj -MD -MP -MF $(DEPDIR)/basestrm.Tpo -c -o basestrm.obj `if test -f '$(top_srcdir)/source/basestrm.cpp'; then $(CYGPATH_W) '$(top_srcdir)/source/basestrm.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/source/basestrm.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/basestrm.Tpo $(DEPDIR)/basestrm.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/basestrm.cpp' object='basestrm.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o basestrm.obj `if test -f '$(top_srcdir)/source/basestrm.cpp'; then $(CYGPATH_W) '$(top_srcdir)/source/basestrm.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/source/basestrm.cpp'; fi`
+
+simplestream.o: $(top_srcdir)/source/simplestream.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT simplestream.o -MD -MP -MF $(DEPDIR)/simplestream.Tpo -c -o simplestream.o `test -f '$(top_srcdir)/source/simplestream.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/simplestream.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplestream.Tpo $(DEPDIR)/simplestream.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/simplestream.cpp' object='simplestream.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o simplestream.o `test -f '$(top_srcdir)/source/simplestream.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/simplestream.cpp
+
+simplestream.obj: $(top_srcdir)/source/simplestream.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT simplestream.obj -MD -MP -MF $(DEPDIR)/simplestream.Tpo -c -o simplestream.obj `if test -f '$(top_srcdir)/source/simplestream.cpp'; then $(CYGPATH_W) '$(top_srcdir)/source/simplestream.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/source/simplestream.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simplestream.Tpo $(DEPDIR)/simplestream.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/simplestream.cpp' object='simplestream.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o simplestream.obj `if test -f '$(top_srcdir)/source/simplestream.cpp'; then $(CYGPATH_W) '$(top_srcdir)/source/simplestream.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/source/simplestream.cpp'; fi`
+
+sgstream.o: $(top_srcdir)/source/sgstream.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sgstream.o -MD -MP -MF $(DEPDIR)/sgstream.Tpo -c -o sgstream.o `test -f '$(top_srcdir)/source/sgstream.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/sgstream.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/sgstream.Tpo $(DEPDIR)/sgstream.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/sgstream.cpp' object='sgstream.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sgstream.o `test -f '$(top_srcdir)/source/sgstream.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/sgstream.cpp
+
+sgstream.obj: $(top_srcdir)/source/sgstream.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sgstream.obj -MD -MP -MF $(DEPDIR)/sgstream.Tpo -c -o sgstream.obj `if test -f '$(top_srcdir)/source/sgstream.cpp'; then $(CYGPATH_W) '$(top_srcdir)/source/sgstream.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/source/sgstream.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/sgstream.Tpo $(DEPDIR)/sgstream.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/sgstream.cpp' object='sgstream.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sgstream.obj `if test -f '$(top_srcdir)/source/sgstream.cpp'; then $(CYGPATH_W) '$(top_srcdir)/source/sgstream.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/source/sgstream.cpp'; fi`
+
+version_identifier_test.o: unit/version_identifier_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT version_identifier_test.o -MD -MP -MF $(DEPDIR)/version_identifier_test.Tpo -c -o version_identifier_test.o `test -f 'unit/version_identifier_test.cpp' || echo '$(srcdir)/'`unit/version_identifier_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/version_identifier_test.Tpo $(DEPDIR)/version_identifier_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/version_identifier_test.cpp' object='version_identifier_test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o version_identifier_test.o `test -f 'unit/version_identifier_test.cpp' || echo '$(srcdir)/'`unit/version_identifier_test.cpp
+
+version_identifier_test.obj: unit/version_identifier_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT version_identifier_test.obj -MD -MP -MF $(DEPDIR)/version_identifier_test.Tpo -c -o version_identifier_test.obj `if test -f 'unit/version_identifier_test.cpp'; then $(CYGPATH_W) 'unit/version_identifier_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/version_identifier_test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/version_identifier_test.Tpo $(DEPDIR)/version_identifier_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/version_identifier_test.cpp' object='version_identifier_test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o version_identifier_test.obj `if test -f 'unit/version_identifier_test.cpp'; then $(CYGPATH_W) 'unit/version_identifier_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/version_identifier_test.cpp'; fi`
+
+versionidentifier.o: $(top_srcdir)/source/versionidentifier.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT versionidentifier.o -MD -MP -MF $(DEPDIR)/versionidentifier.Tpo -c -o versionidentifier.o `test -f '$(top_srcdir)/source/versionidentifier.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/versionidentifier.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/versionidentifier.Tpo $(DEPDIR)/versionidentifier.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/versionidentifier.cpp' object='versionidentifier.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o versionidentifier.o `test -f '$(top_srcdir)/source/versionidentifier.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/versionidentifier.cpp
+
+versionidentifier.obj: $(top_srcdir)/source/versionidentifier.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT versionidentifier.obj -MD -MP -MF $(DEPDIR)/versionidentifier.Tpo -c -o versionidentifier.obj `if test -f '$(top_srcdir)/source/versionidentifier.cpp'; then $(CYGPATH_W) '$(top_srcdir)/source/versionidentifier.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/source/versionidentifier.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/versionidentifier.Tpo $(DEPDIR)/versionidentifier.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/versionidentifier.cpp' object='versionidentifier.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o versionidentifier.obj `if test -f '$(top_srcdir)/source/versionidentifier.cpp'; then $(CYGPATH_W) '$(top_srcdir)/source/versionidentifier.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/source/versionidentifier.cpp'; fi`
+
+ascstring.o: $(top_srcdir)/source/ascstring.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ascstring.o -MD -MP -MF $(DEPDIR)/ascstring.Tpo -c -o ascstring.o `test -f '$(top_srcdir)/source/ascstring.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/ascstring.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/ascstring.Tpo $(DEPDIR)/ascstring.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/ascstring.cpp' object='ascstring.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ascstring.o `test -f '$(top_srcdir)/source/ascstring.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/ascstring.cpp
+
+ascstring.obj: $(top_srcdir)/source/ascstring.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ascstring.obj -MD -MP -MF $(DEPDIR)/ascstring.Tpo -c -o ascstring.obj `if test -f '$(top_srcdir)/source/ascstring.cpp'; then $(CYGPATH_W) '$(top_srcdir)/source/ascstring.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/source/ascstring.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/ascstring.Tpo $(DEPDIR)/ascstring.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/ascstring.cpp' object='ascstring.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ascstring.obj `if test -f '$(top_srcdir)/source/ascstring.cpp'; then $(CYGPATH_W) '$(top_srcdir)/source/ascstring.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/source/ascstring.cpp'; fi`
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -1180,6 +1463,27 @@ mcts_evaluator_test.log: mcts_evaluator_test$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
+version_identifier_test.log: version_identifier_test$(EXEEXT)
+	@p='version_identifier_test$(EXEEXT)'; \
+	b='version_identifier_test'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+stream_encoding_test.log: stream_encoding_test$(EXEEXT)
+	@p='stream_encoding_test$(EXEEXT)'; \
+	b='stream_encoding_test'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+game_events_test.log: game_events_test$(EXEEXT)
+	@p='game_events_test$(EXEEXT)'; \
+	b='game_events_test'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 .test.log:
 	@p='$<'; \
 	$(am__set_b); \
@@ -1272,12 +1576,20 @@ clean-am: clean-checkPROGRAMS clean-generic clean-libtool \
 	clean-noinstLTLIBRARIES mostlyclean-am
 
 distclean: distclean-am
-		-rm -f ./$(DEPDIR)/example_test.Po
+		-rm -f ./$(DEPDIR)/ascstring.Po
+	-rm -f ./$(DEPDIR)/basestrm.Po
+	-rm -f ./$(DEPDIR)/example_test.Po
+	-rm -f ./$(DEPDIR)/game_events_test.Po
 	-rm -f ./$(DEPDIR)/libgtest_la-gtest-all.Plo
 	-rm -f ./$(DEPDIR)/libgtest_main_la-gtest_main.Plo
 	-rm -f ./$(DEPDIR)/mcts_action_executor_test.Po
 	-rm -f ./$(DEPDIR)/mcts_evaluator_test.Po
 	-rm -f ./$(DEPDIR)/mcts_snapshot_test.Po
+	-rm -f ./$(DEPDIR)/sgstream.Po
+	-rm -f ./$(DEPDIR)/simplestream.Po
+	-rm -f ./$(DEPDIR)/stream_encoding_test.Po
+	-rm -f ./$(DEPDIR)/version_identifier_test.Po
+	-rm -f ./$(DEPDIR)/versionidentifier.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -1323,12 +1635,20 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-		-rm -f ./$(DEPDIR)/example_test.Po
+		-rm -f ./$(DEPDIR)/ascstring.Po
+	-rm -f ./$(DEPDIR)/basestrm.Po
+	-rm -f ./$(DEPDIR)/example_test.Po
+	-rm -f ./$(DEPDIR)/game_events_test.Po
 	-rm -f ./$(DEPDIR)/libgtest_la-gtest-all.Plo
 	-rm -f ./$(DEPDIR)/libgtest_main_la-gtest_main.Plo
 	-rm -f ./$(DEPDIR)/mcts_action_executor_test.Po
 	-rm -f ./$(DEPDIR)/mcts_evaluator_test.Po
 	-rm -f ./$(DEPDIR)/mcts_snapshot_test.Po
+	-rm -f ./$(DEPDIR)/sgstream.Po
+	-rm -f ./$(DEPDIR)/simplestream.Po
+	-rm -f ./$(DEPDIR)/stream_encoding_test.Po
+	-rm -f ./$(DEPDIR)/version_identifier_test.Po
+	-rm -f ./$(DEPDIR)/versionidentifier.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

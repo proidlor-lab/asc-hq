@@ -36,12 +36,16 @@ TESTS = example_test \
 	mcts_snapshot_test \
 	mcts_action_executor_test \
 	mcts_evaluator_test
+# 	version_identifier_test \
+# 	stream_encoding_test \
+# 	game_events_test
 
 check_PROGRAMS = $(TESTS)
 
 # Common flags for all tests
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/source \
+	-I$(top_srcdir)/source/unittests \
 	-I$(top_srcdir)/source/ai \
 	-I$(top_srcdir)/source/ai/mcts \
 	-I$(top_srcdir)/source/ai/mcts/domain \
@@ -90,6 +94,65 @@ mcts_evaluator_test_LDADD = \
 	$(top_builddir)/source/ai/mcts/libmcts.la \
 	-lpng -lbz2
 mcts_evaluator_test_LDFLAGS = -pthread
+
+# Phase 1: Legacy test migrations
+
+# Common libraries needed for Phase 1 tests (matching unittester dependencies)
+TEST_COMMON_LIBS = \
+	$(top_builddir)/source/libs/triangul/libtriangul.la \
+	$(top_builddir)/source/ai/libai.la \
+	$(top_builddir)/source/libs/sdlmm/src/libSDLmm.la \
+	$(top_builddir)/source/sdl/libsdl.la \
+	$(LOKI_LIBS) $(LUA_GAME_LIB) \
+	$(top_builddir)/source/util/libutil.la \
+	$(top_builddir)/source/tasks/libtaskcore.la \
+	$(top_builddir)/source/tasks/libtasks.la \
+	$(top_builddir)/source/graphics/libgraphics.la \
+	$(top_builddir)/source/dialogs/libdialogs.la \
+	$(top_builddir)/source/dialogs/libgamedialogs.la \
+	$(top_builddir)/source/actions/libactions.la \
+	$(top_builddir)/source/libs/paragui/src/libparagui.la \
+	$(top_builddir)/source/widgets/libwidgets.la \
+	$(top_builddir)/source/sdl/libsdlsnd.la \
+	$(top_builddir)/source/network/libnetwork.la \
+	$(top_builddir)/source/video/libvideo.la \
+	$(top_builddir)/source/actions/libdirectunitactions.la \
+	$(top_builddir)/source/actions/libmapactions.la \
+	$(top_builddir)/source/lua/libluainterfacegame.la \
+	$(BZIP2_LIBS) $(SIGC_LIBS) $(SDL_LIBS) $(FREETYPE_LIBS) $(BOOST_LIBS) $(SDL_SOUND_LIB) $(WX_LIBS)
+
+# Version Identifier test
+version_identifier_test_SOURCES = \
+	unit/version_identifier_test.cpp \
+	$(top_srcdir)/source/versionidentifier.cpp \
+	$(top_srcdir)/source/ascstring.cpp \
+	$(top_srcdir)/source/basestrm.cpp \
+	$(top_srcdir)/source/simplestream.cpp
+version_identifier_test_LDADD = \
+	libgtest.la \
+	libgtest_main.la \
+	$(TEST_COMMON_LIBS)
+version_identifier_test_LDFLAGS = -pthread
+
+# Stream Encoding test
+stream_encoding_test_SOURCES = \
+	unit/stream_encoding_test.cpp \
+	$(top_srcdir)/source/basestrm.cpp \
+	$(top_srcdir)/source/simplestream.cpp \
+	$(top_srcdir)/source/sgstream.cpp
+stream_encoding_test_LDADD = \
+	libgtest.la \
+	libgtest_main.la \
+	$(TEST_COMMON_LIBS)
+stream_encoding_test_LDFLAGS = -pthread
+
+# Game Events test
+game_events_test_SOURCES = unit/game_events_test.cpp
+game_events_test_LDADD = \
+	libgtest.la \
+	libgtest_main.la \
+	$(TEST_COMMON_LIBS)
+game_events_test_LDFLAGS = -pthread
 
 endif # HAVE_GTEST
 
