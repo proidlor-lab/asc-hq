@@ -69,6 +69,22 @@ source/ai/mcts/snapshot_test
 source/ai/mcts/action_executor_test
 source/ai/mcts/evaluator_test
 
+# Google Test executables and artifacts in tests/
+tests/example_test
+tests/mcts_snapshot_test
+tests/mcts_action_executor_test
+tests/mcts_evaluator_test
+tests/*.log
+tests/*.trs
+tests/test-suite.log
+
+# Google Test build artifacts
+tests/.libs/
+tests/.deps/
+tests/*.o
+tests/gtest-all.o
+tests/gtest_main.o
+
 # IDE files
 .idea/
 
