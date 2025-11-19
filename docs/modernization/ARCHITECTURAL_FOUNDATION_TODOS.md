@@ -280,7 +280,7 @@ Break down God classes into maintainable modules.
 - [ ] Unreachable code (static analysis will help)
 - [ ] Dead functions (never called)
 
-**Process**:
+**Process**:e
 1. [ ] Run static analysis to find unused code
 2. [ ] Search for commented code blocks
 3. [ ] Remove with confidence (have CI/CD + tests as safety)

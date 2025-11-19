@@ -35,10 +35,10 @@ libgtest_main_la_LDFLAGS = -pthread
 TESTS = example_test \
 	mcts_snapshot_test \
 	mcts_action_executor_test \
-	mcts_evaluator_test
-# 	version_identifier_test \
-# 	stream_encoding_test \
-# 	game_events_test
+	mcts_evaluator_test \
+	version_identifier_test \
+	stream_encoding_test \
+	game_events_test
 
 check_PROGRAMS = $(TESTS)
 
@@ -127,7 +127,8 @@ version_identifier_test_SOURCES = \
 	$(top_srcdir)/source/versionidentifier.cpp \
 	$(top_srcdir)/source/ascstring.cpp \
 	$(top_srcdir)/source/basestrm.cpp \
-	$(top_srcdir)/source/simplestream.cpp
+	$(top_srcdir)/source/simplestream.cpp \
+	$(top_srcdir)/source/misc.cpp
 version_identifier_test_LDADD = \
 	libgtest.la \
 	libgtest_main.la \
@@ -139,7 +140,8 @@ stream_encoding_test_SOURCES = \
 	unit/stream_encoding_test.cpp \
 	$(top_srcdir)/source/basestrm.cpp \
 	$(top_srcdir)/source/simplestream.cpp \
-	$(top_srcdir)/source/sgstream.cpp
+	$(top_srcdir)/source/misc.cpp \
+	$(top_srcdir)/source/ascstring.cpp
 stream_encoding_test_LDADD = \
 	libgtest.la \
 	libgtest_main.la \

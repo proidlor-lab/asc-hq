@@ -74,6 +74,9 @@ tests/example_test
 tests/mcts_snapshot_test
 tests/mcts_action_executor_test
 tests/mcts_evaluator_test
+tests/version_identifier_test
+tests/stream_encoding_test
+tests/game_events_test
 tests/*.log
 tests/*.trs
 tests/test-suite.log
