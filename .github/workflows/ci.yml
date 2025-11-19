@@ -440,6 +440,11 @@ jobs:
         cd build-gtest
         ../configure
 
+    - name: Build Google Test dependencies
+      run: |
+        cd build-gtest
+        make -j2 source/ai/mcts/libmcts.la
+
     - name: Build Google Test suite
       run: |
         cd build-gtest/tests
