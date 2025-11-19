@@ -443,7 +443,8 @@ jobs:
     - name: Build Google Test dependencies
       run: |
         cd build-gtest
-        make -j2 source/ai/mcts/libmcts.la
+        # Build all source libraries that tests depend on
+        make -j2 -C source/ai/mcts
 
     - name: Build Google Test suite
       run: |
