@@ -93,7 +93,6 @@ build_triplet = @build@
 host_triplet = @host@
 @HAVE_GTEST_TRUE@TESTS = example_test$(EXEEXT) \
 @HAVE_GTEST_TRUE@	mcts_snapshot_test$(EXEEXT) \
-@HAVE_GTEST_TRUE@	mcts_action_executor_test$(EXEEXT) \
 @HAVE_GTEST_TRUE@	mcts_evaluator_test$(EXEEXT) \
 @HAVE_GTEST_TRUE@	version_identifier_test$(EXEEXT) \
 @HAVE_GTEST_TRUE@	stream_encoding_test$(EXEEXT) \
@@ -114,20 +113,231 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 @HAVE_GTEST_TRUE@am__EXEEXT_1 = example_test$(EXEEXT) \
 @HAVE_GTEST_TRUE@	mcts_snapshot_test$(EXEEXT) \
-@HAVE_GTEST_TRUE@	mcts_action_executor_test$(EXEEXT) \
 @HAVE_GTEST_TRUE@	mcts_evaluator_test$(EXEEXT) \
 @HAVE_GTEST_TRUE@	version_identifier_test$(EXEEXT) \
 @HAVE_GTEST_TRUE@	stream_encoding_test$(EXEEXT) \
 @HAVE_GTEST_TRUE@	game_events_test$(EXEEXT)
 LTLIBRARIES = $(noinst_LTLIBRARIES)
-libgtest_la_LIBADD =
-am__libgtest_la_SOURCES_DIST = $(GTEST_DIR)/src/gtest-all.cc
-@HAVE_GTEST_TRUE@am_libgtest_la_OBJECTS = libgtest_la-gtest-all.lo
-libgtest_la_OBJECTS = $(am_libgtest_la_OBJECTS)
+libcommon_la_LIBADD =
+am__libcommon_la_SOURCES_DIST = $(top_srcdir)/source/soundList.cpp \
+	$(top_srcdir)/source/typen.cpp \
+	$(top_srcdir)/source/applicationstarter.cpp \
+	$(top_srcdir)/source/strtmesg.cpp \
+	$(top_srcdir)/source/stack.cpp $(top_srcdir)/source/spfst.cpp \
+	$(top_srcdir)/source/sgstream.cpp \
+	$(top_srcdir)/source/palette.cpp \
+	$(top_srcdir)/source/newfont.cpp $(top_srcdir)/source/misc.cpp \
+	$(top_srcdir)/source/loadpcxc.cpp \
+	$(top_srcdir)/source/loaders.cpp $(top_srcdir)/source/tos.cpp \
+	$(top_srcdir)/source/loadbi3.cpp \
+	$(top_srcdir)/source/gamedlg.cpp \
+	$(top_srcdir)/source/dlg_box.cpp \
+	$(top_srcdir)/source/dialog.cpp \
+	$(top_srcdir)/source/controls.cpp \
+	$(top_srcdir)/source/basestrm.cpp \
+	$(top_srcdir)/source/basegfx.cpp \
+	$(top_srcdir)/source/attack.cpp \
+	$(top_srcdir)/source/replaymapdisplay.cpp \
+	$(top_srcdir)/source/memory-measurement.cpp \
+	$(top_srcdir)/source/gameoptions.cpp \
+	$(top_srcdir)/source/astar2.cpp \
+	$(top_srcdir)/source/vehicletype.cpp \
+	$(top_srcdir)/source/objects.cpp \
+	$(top_srcdir)/source/stdio-errorhandler.cpp \
+	$(top_srcdir)/source/buildingtype.cpp \
+	$(top_srcdir)/source/containerbase.cpp \
+	$(top_srcdir)/source/mapalgorithms.cpp \
+	$(top_srcdir)/source/viewcalculation.cpp \
+	$(top_srcdir)/source/gamemap.cpp \
+	$(top_srcdir)/source/password.cpp \
+	$(top_srcdir)/source/replay.cpp \
+	$(top_srcdir)/source/research.cpp \
+	$(top_srcdir)/source/fieldimageloader.cpp \
+	$(top_srcdir)/source/mapdisplay.cpp \
+	$(top_srcdir)/source/resourcenet.cpp \
+	$(top_srcdir)/source/ascstring.cpp \
+	$(top_srcdir)/source/graphicset.cpp \
+	$(top_srcdir)/source/vehicle.cpp \
+	$(top_srcdir)/source/buildings.cpp \
+	$(top_srcdir)/source/networkinterface.cpp \
+	$(top_srcdir)/source/textfileparser.cpp \
+	$(top_srcdir)/source/terraintype.cpp \
+	$(top_srcdir)/source/objecttype.cpp \
+	$(top_srcdir)/source/textfiletags.cpp \
+	$(top_srcdir)/source/itemrepository.cpp \
+	$(top_srcdir)/source/stringtokenizer.cpp \
+	$(top_srcdir)/source/music.cpp \
+	$(top_srcdir)/source/messages.cpp \
+	$(top_srcdir)/source/paradialog.cpp \
+	$(top_srcdir)/source/textfile_evaluation.cpp \
+	$(top_srcdir)/source/containerbasetype.cpp \
+	$(top_srcdir)/source/messagedlg.cpp \
+	$(top_srcdir)/source/simplestream.cpp \
+	$(top_srcdir)/source/mappolygons.cpp \
+	$(top_srcdir)/source/prehistoricevents.cpp \
+	$(top_srcdir)/source/gameevents.cpp \
+	$(top_srcdir)/source/gameeventsystem.cpp \
+	$(top_srcdir)/source/gameevent_dialogs.cpp \
+	$(top_srcdir)/source/statisticdialog.cpp \
+	$(top_srcdir)/source/clipboard.cpp \
+	$(top_srcdir)/source/geometry.cpp \
+	$(top_srcdir)/source/guidimension.cpp \
+	$(top_srcdir)/source/guiiconhandler.cpp \
+	$(top_srcdir)/source/guifunctions.cpp \
+	$(top_srcdir)/source/iconrepository.cpp \
+	$(top_srcdir)/source/overviewmapimage.cpp \
+	$(top_srcdir)/source/mapfield.cpp \
+	$(top_srcdir)/source/overviewmappanel.cpp \
+	$(top_srcdir)/source/dashboard.cpp \
+	$(top_srcdir)/source/asc-mainscreen.cpp \
+	$(top_srcdir)/source/explosivemines.cpp \
+	$(top_srcdir)/source/mainscreenwidget.cpp \
+	$(top_srcdir)/source/networksupervisor.cpp \
+	$(top_srcdir)/source/statistics.cpp \
+	$(top_srcdir)/source/legacynetworkloaders.cpp \
+	$(top_srcdir)/source/player.cpp \
+	$(top_srcdir)/source/cannedmessages.cpp \
+	$(top_srcdir)/source/reactionfire.cpp \
+	$(top_srcdir)/source/mapimageexport.cpp \
+	$(top_srcdir)/source/containercontrols.cpp \
+	$(top_srcdir)/source/containerbase-functions.cpp \
+	$(top_srcdir)/source/windowing.cpp \
+	$(top_srcdir)/source/turncontrol.cpp \
+	$(top_srcdir)/source/unitset.cpp \
+	$(top_srcdir)/source/playercolor.cpp \
+	$(top_srcdir)/source/pg_mapdisplay.cpp \
+	$(top_srcdir)/source/autotraining.cpp \
+	$(top_srcdir)/source/researchexecution.cpp \
+	$(top_srcdir)/source/luacommandwriter.cpp \
+	$(top_srcdir)/source/campaignactionrecorder.cpp \
+	$(top_srcdir)/source/loggingoutput.cpp \
+	$(top_srcdir)/source/versionidentifier.cpp \
+	$(top_srcdir)/source/package.cpp \
+	$(top_srcdir)/source/packagemanager.cpp \
+	$(top_srcdir)/source/packagerepository.cpp \
+	$(top_srcdir)/source/dataversioncheck.cpp \
+	$(top_srcdir)/source/i18n.cpp \
+	$(top_srcdir)/source/accessconstraints-game.cpp \
+	$(top_srcdir)/source/contextutils.cpp \
+	$(top_srcdir)/source/unitcostcalculator-standard.cpp \
+	$(top_srcdir)/source/weaponrangelayer.cpp \
+	$(top_srcdir)/source/unitcostcalculator-pbp.cpp
+@HAVE_GTEST_TRUE@am_libcommon_la_OBJECTS = libcommon_la-soundList.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-typen.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-applicationstarter.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-strtmesg.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-stack.lo libcommon_la-spfst.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-sgstream.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-palette.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-newfont.lo libcommon_la-misc.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-loadpcxc.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-loaders.lo libcommon_la-tos.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-loadbi3.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-gamedlg.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-dlg_box.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-dialog.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-controls.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-basestrm.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-basegfx.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-attack.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-replaymapdisplay.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-memory-measurement.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-gameoptions.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-astar2.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-vehicletype.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-objects.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-stdio-errorhandler.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-buildingtype.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-containerbase.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-mapalgorithms.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-viewcalculation.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-gamemap.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-password.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-replay.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-research.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-fieldimageloader.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-mapdisplay.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-resourcenet.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-ascstring.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-graphicset.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-vehicle.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-buildings.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-networkinterface.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-textfileparser.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-terraintype.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-objecttype.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-textfiletags.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-itemrepository.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-stringtokenizer.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-music.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-messages.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-paradialog.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-textfile_evaluation.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-containerbasetype.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-messagedlg.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-simplestream.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-mappolygons.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-prehistoricevents.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-gameevents.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-gameeventsystem.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-gameevent_dialogs.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-statisticdialog.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-clipboard.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-geometry.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-guidimension.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-guiiconhandler.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-guifunctions.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-iconrepository.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-overviewmapimage.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-mapfield.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-overviewmappanel.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-dashboard.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-asc-mainscreen.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-explosivemines.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-mainscreenwidget.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-networksupervisor.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-statistics.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-legacynetworkloaders.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-player.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-cannedmessages.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-reactionfire.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-mapimageexport.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-containercontrols.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-containerbase-functions.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-windowing.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-turncontrol.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-unitset.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-playercolor.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-pg_mapdisplay.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-autotraining.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-researchexecution.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-luacommandwriter.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-campaignactionrecorder.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-loggingoutput.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-versionidentifier.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-package.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-packagemanager.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-packagerepository.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-dataversioncheck.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-i18n.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-accessconstraints-game.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-contextutils.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-unitcostcalculator-standard.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-weaponrangelayer.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-unitcostcalculator-pbp.lo
+libcommon_la_OBJECTS = $(am_libcommon_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+libcommon_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(libcommon_la_LDFLAGS) $(LDFLAGS) -o $@
+@HAVE_GTEST_TRUE@am_libcommon_la_rpath =
+libgtest_la_LIBADD =
+am__libgtest_la_SOURCES_DIST = $(GTEST_DIR)/src/gtest-all.cc
+@HAVE_GTEST_TRUE@am_libgtest_la_OBJECTS = libgtest_la-gtest-all.lo
+libgtest_la_OBJECTS = $(am_libgtest_la_OBJECTS)
 libgtest_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(libgtest_la_LDFLAGS) $(LDFLAGS) -o $@
@@ -185,19 +395,6 @@ game_events_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(AM_CXXFLAGS) $(CXXFLAGS) $(game_events_test_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__mcts_action_executor_test_SOURCES_DIST =  \
-	unit/mcts_action_executor_test.cpp
-@HAVE_GTEST_TRUE@am_mcts_action_executor_test_OBJECTS =  \
-@HAVE_GTEST_TRUE@	mcts_action_executor_test.$(OBJEXT)
-mcts_action_executor_test_OBJECTS =  \
-	$(am_mcts_action_executor_test_OBJECTS)
-@HAVE_GTEST_TRUE@mcts_action_executor_test_DEPENDENCIES = libgtest.la \
-@HAVE_GTEST_TRUE@	libgtest_main.la \
-@HAVE_GTEST_TRUE@	$(top_builddir)/source/ai/mcts/libmcts.la
-mcts_action_executor_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
-	$(AM_CXXFLAGS) $(CXXFLAGS) \
-	$(mcts_action_executor_test_LDFLAGS) $(LDFLAGS) -o $@
 am__mcts_evaluator_test_SOURCES_DIST = unit/mcts_evaluator_test.cpp
 @HAVE_GTEST_TRUE@am_mcts_evaluator_test_OBJECTS =  \
 @HAVE_GTEST_TRUE@	mcts_evaluator_test.$(OBJEXT)
@@ -273,9 +470,114 @@ depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ./$(DEPDIR)/ascstring.Po ./$(DEPDIR)/basestrm.Po \
 	./$(DEPDIR)/example_test.Po ./$(DEPDIR)/game_events_test.Po \
+	./$(DEPDIR)/libcommon_la-accessconstraints-game.Plo \
+	./$(DEPDIR)/libcommon_la-applicationstarter.Plo \
+	./$(DEPDIR)/libcommon_la-asc-mainscreen.Plo \
+	./$(DEPDIR)/libcommon_la-ascstring.Plo \
+	./$(DEPDIR)/libcommon_la-astar2.Plo \
+	./$(DEPDIR)/libcommon_la-attack.Plo \
+	./$(DEPDIR)/libcommon_la-autotraining.Plo \
+	./$(DEPDIR)/libcommon_la-basegfx.Plo \
+	./$(DEPDIR)/libcommon_la-basestrm.Plo \
+	./$(DEPDIR)/libcommon_la-buildings.Plo \
+	./$(DEPDIR)/libcommon_la-buildingtype.Plo \
+	./$(DEPDIR)/libcommon_la-campaignactionrecorder.Plo \
+	./$(DEPDIR)/libcommon_la-cannedmessages.Plo \
+	./$(DEPDIR)/libcommon_la-clipboard.Plo \
+	./$(DEPDIR)/libcommon_la-containerbase-functions.Plo \
+	./$(DEPDIR)/libcommon_la-containerbase.Plo \
+	./$(DEPDIR)/libcommon_la-containerbasetype.Plo \
+	./$(DEPDIR)/libcommon_la-containercontrols.Plo \
+	./$(DEPDIR)/libcommon_la-contextutils.Plo \
+	./$(DEPDIR)/libcommon_la-controls.Plo \
+	./$(DEPDIR)/libcommon_la-dashboard.Plo \
+	./$(DEPDIR)/libcommon_la-dataversioncheck.Plo \
+	./$(DEPDIR)/libcommon_la-dialog.Plo \
+	./$(DEPDIR)/libcommon_la-dlg_box.Plo \
+	./$(DEPDIR)/libcommon_la-explosivemines.Plo \
+	./$(DEPDIR)/libcommon_la-fieldimageloader.Plo \
+	./$(DEPDIR)/libcommon_la-gamedlg.Plo \
+	./$(DEPDIR)/libcommon_la-gameevent_dialogs.Plo \
+	./$(DEPDIR)/libcommon_la-gameevents.Plo \
+	./$(DEPDIR)/libcommon_la-gameeventsystem.Plo \
+	./$(DEPDIR)/libcommon_la-gamemap.Plo \
+	./$(DEPDIR)/libcommon_la-gameoptions.Plo \
+	./$(DEPDIR)/libcommon_la-geometry.Plo \
+	./$(DEPDIR)/libcommon_la-graphicset.Plo \
+	./$(DEPDIR)/libcommon_la-guidimension.Plo \
+	./$(DEPDIR)/libcommon_la-guifunctions.Plo \
+	./$(DEPDIR)/libcommon_la-guiiconhandler.Plo \
+	./$(DEPDIR)/libcommon_la-i18n.Plo \
+	./$(DEPDIR)/libcommon_la-iconrepository.Plo \
+	./$(DEPDIR)/libcommon_la-itemrepository.Plo \
+	./$(DEPDIR)/libcommon_la-legacynetworkloaders.Plo \
+	./$(DEPDIR)/libcommon_la-loadbi3.Plo \
+	./$(DEPDIR)/libcommon_la-loaders.Plo \
+	./$(DEPDIR)/libcommon_la-loadpcxc.Plo \
+	./$(DEPDIR)/libcommon_la-loggingoutput.Plo \
+	./$(DEPDIR)/libcommon_la-luacommandwriter.Plo \
+	./$(DEPDIR)/libcommon_la-mainscreenwidget.Plo \
+	./$(DEPDIR)/libcommon_la-mapalgorithms.Plo \
+	./$(DEPDIR)/libcommon_la-mapdisplay.Plo \
+	./$(DEPDIR)/libcommon_la-mapfield.Plo \
+	./$(DEPDIR)/libcommon_la-mapimageexport.Plo \
+	./$(DEPDIR)/libcommon_la-mappolygons.Plo \
+	./$(DEPDIR)/libcommon_la-memory-measurement.Plo \
+	./$(DEPDIR)/libcommon_la-messagedlg.Plo \
+	./$(DEPDIR)/libcommon_la-messages.Plo \
+	./$(DEPDIR)/libcommon_la-misc.Plo \
+	./$(DEPDIR)/libcommon_la-music.Plo \
+	./$(DEPDIR)/libcommon_la-networkinterface.Plo \
+	./$(DEPDIR)/libcommon_la-networksupervisor.Plo \
+	./$(DEPDIR)/libcommon_la-newfont.Plo \
+	./$(DEPDIR)/libcommon_la-objects.Plo \
+	./$(DEPDIR)/libcommon_la-objecttype.Plo \
+	./$(DEPDIR)/libcommon_la-overviewmapimage.Plo \
+	./$(DEPDIR)/libcommon_la-overviewmappanel.Plo \
+	./$(DEPDIR)/libcommon_la-package.Plo \
+	./$(DEPDIR)/libcommon_la-packagemanager.Plo \
+	./$(DEPDIR)/libcommon_la-packagerepository.Plo \
+	./$(DEPDIR)/libcommon_la-palette.Plo \
+	./$(DEPDIR)/libcommon_la-paradialog.Plo \
+	./$(DEPDIR)/libcommon_la-password.Plo \
+	./$(DEPDIR)/libcommon_la-pg_mapdisplay.Plo \
+	./$(DEPDIR)/libcommon_la-player.Plo \
+	./$(DEPDIR)/libcommon_la-playercolor.Plo \
+	./$(DEPDIR)/libcommon_la-prehistoricevents.Plo \
+	./$(DEPDIR)/libcommon_la-reactionfire.Plo \
+	./$(DEPDIR)/libcommon_la-replay.Plo \
+	./$(DEPDIR)/libcommon_la-replaymapdisplay.Plo \
+	./$(DEPDIR)/libcommon_la-research.Plo \
+	./$(DEPDIR)/libcommon_la-researchexecution.Plo \
+	./$(DEPDIR)/libcommon_la-resourcenet.Plo \
+	./$(DEPDIR)/libcommon_la-sgstream.Plo \
+	./$(DEPDIR)/libcommon_la-simplestream.Plo \
+	./$(DEPDIR)/libcommon_la-soundList.Plo \
+	./$(DEPDIR)/libcommon_la-spfst.Plo \
+	./$(DEPDIR)/libcommon_la-stack.Plo \
+	./$(DEPDIR)/libcommon_la-statisticdialog.Plo \
+	./$(DEPDIR)/libcommon_la-statistics.Plo \
+	./$(DEPDIR)/libcommon_la-stdio-errorhandler.Plo \
+	./$(DEPDIR)/libcommon_la-stringtokenizer.Plo \
+	./$(DEPDIR)/libcommon_la-strtmesg.Plo \
+	./$(DEPDIR)/libcommon_la-terraintype.Plo \
+	./$(DEPDIR)/libcommon_la-textfile_evaluation.Plo \
+	./$(DEPDIR)/libcommon_la-textfileparser.Plo \
+	./$(DEPDIR)/libcommon_la-textfiletags.Plo \
+	./$(DEPDIR)/libcommon_la-tos.Plo \
+	./$(DEPDIR)/libcommon_la-turncontrol.Plo \
+	./$(DEPDIR)/libcommon_la-typen.Plo \
+	./$(DEPDIR)/libcommon_la-unitcostcalculator-pbp.Plo \
+	./$(DEPDIR)/libcommon_la-unitcostcalculator-standard.Plo \
+	./$(DEPDIR)/libcommon_la-unitset.Plo \
+	./$(DEPDIR)/libcommon_la-vehicle.Plo \
+	./$(DEPDIR)/libcommon_la-vehicletype.Plo \
+	./$(DEPDIR)/libcommon_la-versionidentifier.Plo \
+	./$(DEPDIR)/libcommon_la-viewcalculation.Plo \
+	./$(DEPDIR)/libcommon_la-weaponrangelayer.Plo \
+	./$(DEPDIR)/libcommon_la-windowing.Plo \
 	./$(DEPDIR)/libgtest_la-gtest-all.Plo \
 	./$(DEPDIR)/libgtest_main_la-gtest_main.Plo \
-	./$(DEPDIR)/mcts_action_executor_test.Po \
 	./$(DEPDIR)/mcts_evaluator_test.Po \
 	./$(DEPDIR)/mcts_snapshot_test.Po ./$(DEPDIR)/misc.Po \
 	./$(DEPDIR)/simplestream.Po \
@@ -301,17 +603,16 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(libgtest_la_SOURCES) $(libgtest_main_la_SOURCES) \
-	$(example_test_SOURCES) $(game_events_test_SOURCES) \
-	$(mcts_action_executor_test_SOURCES) \
-	$(mcts_evaluator_test_SOURCES) $(mcts_snapshot_test_SOURCES) \
-	$(stream_encoding_test_SOURCES) \
+SOURCES = $(libcommon_la_SOURCES) $(libgtest_la_SOURCES) \
+	$(libgtest_main_la_SOURCES) $(example_test_SOURCES) \
+	$(game_events_test_SOURCES) $(mcts_evaluator_test_SOURCES) \
+	$(mcts_snapshot_test_SOURCES) $(stream_encoding_test_SOURCES) \
 	$(version_identifier_test_SOURCES)
-DIST_SOURCES = $(am__libgtest_la_SOURCES_DIST) \
+DIST_SOURCES = $(am__libcommon_la_SOURCES_DIST) \
+	$(am__libgtest_la_SOURCES_DIST) \
 	$(am__libgtest_main_la_SOURCES_DIST) \
 	$(am__example_test_SOURCES_DIST) \
 	$(am__game_events_test_SOURCES_DIST) \
-	$(am__mcts_action_executor_test_SOURCES_DIST) \
 	$(am__mcts_evaluator_test_SOURCES_DIST) \
 	$(am__mcts_snapshot_test_SOURCES_DIST) \
 	$(am__stream_encoding_test_SOURCES_DIST) \
@@ -751,7 +1052,8 @@ zipfound = @zipfound@
 @HAVE_GTEST_TRUE@GMOCK_DIR = $(top_srcdir)/third_party/googletest/googlemock
 
 # Build Google Test as a convenience library
-@HAVE_GTEST_TRUE@noinst_LTLIBRARIES = libgtest.la libgtest_main.la
+# Build common game sources as a convenience library for Phase 2 tests
+@HAVE_GTEST_TRUE@noinst_LTLIBRARIES = libgtest.la libgtest_main.la libcommon.la
 @HAVE_GTEST_TRUE@libgtest_la_SOURCES = \
 @HAVE_GTEST_TRUE@	$(GTEST_DIR)/src/gtest-all.cc
 
@@ -771,6 +1073,118 @@ zipfound = @zipfound@
 
 @HAVE_GTEST_TRUE@libgtest_main_la_LIBADD = libgtest.la
 @HAVE_GTEST_TRUE@libgtest_main_la_LDFLAGS = -pthread
+
+# Common game source files (Phase 2 tests need these)
+@HAVE_GTEST_TRUE@libcommon_la_SOURCES = \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/soundList.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/typen.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/applicationstarter.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/strtmesg.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/stack.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/spfst.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/sgstream.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/palette.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/newfont.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/misc.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/loadpcxc.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/loaders.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/tos.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/loadbi3.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/gamedlg.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/dlg_box.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/dialog.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/controls.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/basestrm.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/basegfx.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/attack.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/replaymapdisplay.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/memory-measurement.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/gameoptions.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/astar2.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/vehicletype.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/objects.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/stdio-errorhandler.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/buildingtype.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/containerbase.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/mapalgorithms.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/viewcalculation.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/gamemap.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/password.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/replay.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/research.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/fieldimageloader.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/mapdisplay.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/resourcenet.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/ascstring.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/graphicset.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/vehicle.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/buildings.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/networkinterface.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/textfileparser.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/terraintype.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/objecttype.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/textfiletags.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/itemrepository.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/stringtokenizer.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/music.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/messages.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/paradialog.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/textfile_evaluation.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/containerbasetype.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/messagedlg.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/simplestream.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/mappolygons.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/prehistoricevents.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/gameevents.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/gameeventsystem.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/gameevent_dialogs.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/statisticdialog.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/clipboard.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/geometry.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/guidimension.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/guiiconhandler.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/guifunctions.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/iconrepository.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/overviewmapimage.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/mapfield.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/overviewmappanel.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/dashboard.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/asc-mainscreen.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/explosivemines.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/mainscreenwidget.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/networksupervisor.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/statistics.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/legacynetworkloaders.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/player.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/cannedmessages.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/reactionfire.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/mapimageexport.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/containercontrols.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/containerbase-functions.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/windowing.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/turncontrol.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/unitset.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/playercolor.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/pg_mapdisplay.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/autotraining.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/researchexecution.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/luacommandwriter.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/campaignactionrecorder.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/loggingoutput.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/versionidentifier.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/package.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/packagemanager.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/packagerepository.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/dataversioncheck.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/i18n.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/accessconstraints-game.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/contextutils.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/unitcostcalculator-standard.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/weaponrangelayer.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/unitcostcalculator-pbp.cpp
+
+@HAVE_GTEST_TRUE@libcommon_la_CPPFLAGS = $(AM_CPPFLAGS)
+@HAVE_GTEST_TRUE@libcommon_la_LDFLAGS = -pthread
 
 # Common flags for all tests
 @HAVE_GTEST_TRUE@AM_CPPFLAGS = \
@@ -896,6 +1310,19 @@ zipfound = @zipfound@
 
 @HAVE_GTEST_TRUE@game_events_test_LDFLAGS = -pthread
 
+# Action Container test
+@HAVE_GTEST_TRUE@action_container_test_SOURCES = \
+@HAVE_GTEST_TRUE@	unit/action_container_test.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/unittests/unittestutil.cpp
+
+@HAVE_GTEST_TRUE@action_container_test_LDADD = \
+@HAVE_GTEST_TRUE@	libgtest.la \
+@HAVE_GTEST_TRUE@	libgtest_main.la \
+@HAVE_GTEST_TRUE@	$(TEST_COMMON_LIBS) \
+@HAVE_GTEST_TRUE@	libcommon.la
+
+@HAVE_GTEST_TRUE@action_container_test_LDFLAGS = -pthread
+
 # Always distribute test sources, even if Google Test is not available
 EXTRA_DIST = \
 	unit \
@@ -956,6 +1383,9 @@ clean-noinstLTLIBRARIES:
 	  rm -f $${locs}; \
 	}
 
+libcommon.la: $(libcommon_la_OBJECTS) $(libcommon_la_DEPENDENCIES) $(EXTRA_libcommon_la_DEPENDENCIES) 
+	$(AM_V_CXXLD)$(libcommon_la_LINK) $(am_libcommon_la_rpath) $(libcommon_la_OBJECTS) $(libcommon_la_LIBADD) $(LIBS)
+
 libgtest.la: $(libgtest_la_OBJECTS) $(libgtest_la_DEPENDENCIES) $(EXTRA_libgtest_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(libgtest_la_LINK) $(am_libgtest_la_rpath) $(libgtest_la_OBJECTS) $(libgtest_la_LIBADD) $(LIBS)
 
@@ -969,10 +1399,6 @@ example_test$(EXEEXT): $(example_test_OBJECTS) $(example_test_DEPENDENCIES) $(EX
 game_events_test$(EXEEXT): $(game_events_test_OBJECTS) $(game_events_test_DEPENDENCIES) $(EXTRA_game_events_test_DEPENDENCIES) 
 	@rm -f game_events_test$(EXEEXT)
 	$(AM_V_CXXLD)$(game_events_test_LINK) $(game_events_test_OBJECTS) $(game_events_test_LDADD) $(LIBS)
-
-mcts_action_executor_test$(EXEEXT): $(mcts_action_executor_test_OBJECTS) $(mcts_action_executor_test_DEPENDENCIES) $(EXTRA_mcts_action_executor_test_DEPENDENCIES) 
-	@rm -f mcts_action_executor_test$(EXEEXT)
-	$(AM_V_CXXLD)$(mcts_action_executor_test_LINK) $(mcts_action_executor_test_OBJECTS) $(mcts_action_executor_test_LDADD) $(LIBS)
 
 mcts_evaluator_test$(EXEEXT): $(mcts_evaluator_test_OBJECTS) $(mcts_evaluator_test_DEPENDENCIES) $(EXTRA_mcts_evaluator_test_DEPENDENCIES) 
 	@rm -f mcts_evaluator_test$(EXEEXT)
@@ -1000,9 +1426,114 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/basestrm.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/example_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/game_events_test.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-accessconstraints-game.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-applicationstarter.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-asc-mainscreen.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-ascstring.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-astar2.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-attack.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-autotraining.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-basegfx.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-basestrm.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-buildings.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-buildingtype.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-campaignactionrecorder.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-cannedmessages.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-clipboard.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-containerbase-functions.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-containerbase.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-containerbasetype.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-containercontrols.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-contextutils.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-controls.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-dashboard.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-dataversioncheck.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-dialog.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-dlg_box.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-explosivemines.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-fieldimageloader.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-gamedlg.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-gameevent_dialogs.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-gameevents.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-gameeventsystem.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-gamemap.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-gameoptions.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-geometry.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-graphicset.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-guidimension.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-guifunctions.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-guiiconhandler.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-i18n.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-iconrepository.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-itemrepository.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-legacynetworkloaders.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-loadbi3.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-loaders.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-loadpcxc.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-loggingoutput.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-luacommandwriter.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-mainscreenwidget.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-mapalgorithms.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-mapdisplay.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-mapfield.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-mapimageexport.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-mappolygons.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-memory-measurement.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-messagedlg.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-messages.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-misc.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-music.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-networkinterface.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-networksupervisor.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-newfont.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-objects.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-objecttype.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-overviewmapimage.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-overviewmappanel.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-package.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-packagemanager.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-packagerepository.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-palette.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-paradialog.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-password.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-pg_mapdisplay.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-player.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-playercolor.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-prehistoricevents.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-reactionfire.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-replay.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-replaymapdisplay.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-research.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-researchexecution.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-resourcenet.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-sgstream.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-simplestream.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-soundList.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-spfst.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-stack.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-statisticdialog.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-statistics.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-stdio-errorhandler.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-stringtokenizer.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-strtmesg.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-terraintype.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-textfile_evaluation.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-textfileparser.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-textfiletags.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-tos.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-turncontrol.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-typen.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-unitcostcalculator-pbp.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-unitcostcalculator-standard.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-unitset.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-vehicle.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-vehicletype.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-versionidentifier.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-viewcalculation.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-weaponrangelayer.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-windowing.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgtest_la-gtest-all.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgtest_main_la-gtest_main.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcts_action_executor_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcts_evaluator_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcts_snapshot_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/misc.Po@am__quote@ # am--include-marker
@@ -1037,6 +1568,748 @@ am--depfiles: $(am__depfiles_remade)
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LTCXXCOMPILE) -c -o $@ $<
+
+libcommon_la-soundList.lo: $(top_srcdir)/source/soundList.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-soundList.lo -MD -MP -MF $(DEPDIR)/libcommon_la-soundList.Tpo -c -o libcommon_la-soundList.lo `test -f '$(top_srcdir)/source/soundList.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/soundList.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-soundList.Tpo $(DEPDIR)/libcommon_la-soundList.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/soundList.cpp' object='libcommon_la-soundList.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-soundList.lo `test -f '$(top_srcdir)/source/soundList.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/soundList.cpp
+
+libcommon_la-typen.lo: $(top_srcdir)/source/typen.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-typen.lo -MD -MP -MF $(DEPDIR)/libcommon_la-typen.Tpo -c -o libcommon_la-typen.lo `test -f '$(top_srcdir)/source/typen.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/typen.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-typen.Tpo $(DEPDIR)/libcommon_la-typen.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/typen.cpp' object='libcommon_la-typen.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-typen.lo `test -f '$(top_srcdir)/source/typen.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/typen.cpp
+
+libcommon_la-applicationstarter.lo: $(top_srcdir)/source/applicationstarter.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-applicationstarter.lo -MD -MP -MF $(DEPDIR)/libcommon_la-applicationstarter.Tpo -c -o libcommon_la-applicationstarter.lo `test -f '$(top_srcdir)/source/applicationstarter.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/applicationstarter.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-applicationstarter.Tpo $(DEPDIR)/libcommon_la-applicationstarter.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/applicationstarter.cpp' object='libcommon_la-applicationstarter.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-applicationstarter.lo `test -f '$(top_srcdir)/source/applicationstarter.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/applicationstarter.cpp
+
+libcommon_la-strtmesg.lo: $(top_srcdir)/source/strtmesg.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-strtmesg.lo -MD -MP -MF $(DEPDIR)/libcommon_la-strtmesg.Tpo -c -o libcommon_la-strtmesg.lo `test -f '$(top_srcdir)/source/strtmesg.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/strtmesg.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-strtmesg.Tpo $(DEPDIR)/libcommon_la-strtmesg.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/strtmesg.cpp' object='libcommon_la-strtmesg.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-strtmesg.lo `test -f '$(top_srcdir)/source/strtmesg.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/strtmesg.cpp
+
+libcommon_la-stack.lo: $(top_srcdir)/source/stack.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-stack.lo -MD -MP -MF $(DEPDIR)/libcommon_la-stack.Tpo -c -o libcommon_la-stack.lo `test -f '$(top_srcdir)/source/stack.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/stack.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-stack.Tpo $(DEPDIR)/libcommon_la-stack.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/stack.cpp' object='libcommon_la-stack.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-stack.lo `test -f '$(top_srcdir)/source/stack.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/stack.cpp
+
+libcommon_la-spfst.lo: $(top_srcdir)/source/spfst.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-spfst.lo -MD -MP -MF $(DEPDIR)/libcommon_la-spfst.Tpo -c -o libcommon_la-spfst.lo `test -f '$(top_srcdir)/source/spfst.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/spfst.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-spfst.Tpo $(DEPDIR)/libcommon_la-spfst.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/spfst.cpp' object='libcommon_la-spfst.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-spfst.lo `test -f '$(top_srcdir)/source/spfst.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/spfst.cpp
+
+libcommon_la-sgstream.lo: $(top_srcdir)/source/sgstream.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-sgstream.lo -MD -MP -MF $(DEPDIR)/libcommon_la-sgstream.Tpo -c -o libcommon_la-sgstream.lo `test -f '$(top_srcdir)/source/sgstream.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/sgstream.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-sgstream.Tpo $(DEPDIR)/libcommon_la-sgstream.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/sgstream.cpp' object='libcommon_la-sgstream.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-sgstream.lo `test -f '$(top_srcdir)/source/sgstream.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/sgstream.cpp
+
+libcommon_la-palette.lo: $(top_srcdir)/source/palette.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-palette.lo -MD -MP -MF $(DEPDIR)/libcommon_la-palette.Tpo -c -o libcommon_la-palette.lo `test -f '$(top_srcdir)/source/palette.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/palette.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-palette.Tpo $(DEPDIR)/libcommon_la-palette.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/palette.cpp' object='libcommon_la-palette.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-palette.lo `test -f '$(top_srcdir)/source/palette.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/palette.cpp
+
+libcommon_la-newfont.lo: $(top_srcdir)/source/newfont.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-newfont.lo -MD -MP -MF $(DEPDIR)/libcommon_la-newfont.Tpo -c -o libcommon_la-newfont.lo `test -f '$(top_srcdir)/source/newfont.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/newfont.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-newfont.Tpo $(DEPDIR)/libcommon_la-newfont.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/newfont.cpp' object='libcommon_la-newfont.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-newfont.lo `test -f '$(top_srcdir)/source/newfont.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/newfont.cpp
+
+libcommon_la-misc.lo: $(top_srcdir)/source/misc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-misc.lo -MD -MP -MF $(DEPDIR)/libcommon_la-misc.Tpo -c -o libcommon_la-misc.lo `test -f '$(top_srcdir)/source/misc.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/misc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-misc.Tpo $(DEPDIR)/libcommon_la-misc.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/misc.cpp' object='libcommon_la-misc.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-misc.lo `test -f '$(top_srcdir)/source/misc.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/misc.cpp
+
+libcommon_la-loadpcxc.lo: $(top_srcdir)/source/loadpcxc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-loadpcxc.lo -MD -MP -MF $(DEPDIR)/libcommon_la-loadpcxc.Tpo -c -o libcommon_la-loadpcxc.lo `test -f '$(top_srcdir)/source/loadpcxc.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/loadpcxc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-loadpcxc.Tpo $(DEPDIR)/libcommon_la-loadpcxc.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/loadpcxc.cpp' object='libcommon_la-loadpcxc.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-loadpcxc.lo `test -f '$(top_srcdir)/source/loadpcxc.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/loadpcxc.cpp
+
+libcommon_la-loaders.lo: $(top_srcdir)/source/loaders.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-loaders.lo -MD -MP -MF $(DEPDIR)/libcommon_la-loaders.Tpo -c -o libcommon_la-loaders.lo `test -f '$(top_srcdir)/source/loaders.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/loaders.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-loaders.Tpo $(DEPDIR)/libcommon_la-loaders.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/loaders.cpp' object='libcommon_la-loaders.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-loaders.lo `test -f '$(top_srcdir)/source/loaders.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/loaders.cpp
+
+libcommon_la-tos.lo: $(top_srcdir)/source/tos.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-tos.lo -MD -MP -MF $(DEPDIR)/libcommon_la-tos.Tpo -c -o libcommon_la-tos.lo `test -f '$(top_srcdir)/source/tos.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/tos.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-tos.Tpo $(DEPDIR)/libcommon_la-tos.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/tos.cpp' object='libcommon_la-tos.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-tos.lo `test -f '$(top_srcdir)/source/tos.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/tos.cpp
+
+libcommon_la-loadbi3.lo: $(top_srcdir)/source/loadbi3.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-loadbi3.lo -MD -MP -MF $(DEPDIR)/libcommon_la-loadbi3.Tpo -c -o libcommon_la-loadbi3.lo `test -f '$(top_srcdir)/source/loadbi3.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/loadbi3.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-loadbi3.Tpo $(DEPDIR)/libcommon_la-loadbi3.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/loadbi3.cpp' object='libcommon_la-loadbi3.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-loadbi3.lo `test -f '$(top_srcdir)/source/loadbi3.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/loadbi3.cpp
+
+libcommon_la-gamedlg.lo: $(top_srcdir)/source/gamedlg.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-gamedlg.lo -MD -MP -MF $(DEPDIR)/libcommon_la-gamedlg.Tpo -c -o libcommon_la-gamedlg.lo `test -f '$(top_srcdir)/source/gamedlg.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/gamedlg.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-gamedlg.Tpo $(DEPDIR)/libcommon_la-gamedlg.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/gamedlg.cpp' object='libcommon_la-gamedlg.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-gamedlg.lo `test -f '$(top_srcdir)/source/gamedlg.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/gamedlg.cpp
+
+libcommon_la-dlg_box.lo: $(top_srcdir)/source/dlg_box.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-dlg_box.lo -MD -MP -MF $(DEPDIR)/libcommon_la-dlg_box.Tpo -c -o libcommon_la-dlg_box.lo `test -f '$(top_srcdir)/source/dlg_box.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/dlg_box.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-dlg_box.Tpo $(DEPDIR)/libcommon_la-dlg_box.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/dlg_box.cpp' object='libcommon_la-dlg_box.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-dlg_box.lo `test -f '$(top_srcdir)/source/dlg_box.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/dlg_box.cpp
+
+libcommon_la-dialog.lo: $(top_srcdir)/source/dialog.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-dialog.lo -MD -MP -MF $(DEPDIR)/libcommon_la-dialog.Tpo -c -o libcommon_la-dialog.lo `test -f '$(top_srcdir)/source/dialog.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/dialog.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-dialog.Tpo $(DEPDIR)/libcommon_la-dialog.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/dialog.cpp' object='libcommon_la-dialog.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-dialog.lo `test -f '$(top_srcdir)/source/dialog.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/dialog.cpp
+
+libcommon_la-controls.lo: $(top_srcdir)/source/controls.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-controls.lo -MD -MP -MF $(DEPDIR)/libcommon_la-controls.Tpo -c -o libcommon_la-controls.lo `test -f '$(top_srcdir)/source/controls.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/controls.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-controls.Tpo $(DEPDIR)/libcommon_la-controls.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/controls.cpp' object='libcommon_la-controls.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-controls.lo `test -f '$(top_srcdir)/source/controls.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/controls.cpp
+
+libcommon_la-basestrm.lo: $(top_srcdir)/source/basestrm.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-basestrm.lo -MD -MP -MF $(DEPDIR)/libcommon_la-basestrm.Tpo -c -o libcommon_la-basestrm.lo `test -f '$(top_srcdir)/source/basestrm.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/basestrm.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-basestrm.Tpo $(DEPDIR)/libcommon_la-basestrm.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/basestrm.cpp' object='libcommon_la-basestrm.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-basestrm.lo `test -f '$(top_srcdir)/source/basestrm.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/basestrm.cpp
+
+libcommon_la-basegfx.lo: $(top_srcdir)/source/basegfx.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-basegfx.lo -MD -MP -MF $(DEPDIR)/libcommon_la-basegfx.Tpo -c -o libcommon_la-basegfx.lo `test -f '$(top_srcdir)/source/basegfx.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/basegfx.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-basegfx.Tpo $(DEPDIR)/libcommon_la-basegfx.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/basegfx.cpp' object='libcommon_la-basegfx.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-basegfx.lo `test -f '$(top_srcdir)/source/basegfx.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/basegfx.cpp
+
+libcommon_la-attack.lo: $(top_srcdir)/source/attack.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-attack.lo -MD -MP -MF $(DEPDIR)/libcommon_la-attack.Tpo -c -o libcommon_la-attack.lo `test -f '$(top_srcdir)/source/attack.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/attack.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-attack.Tpo $(DEPDIR)/libcommon_la-attack.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/attack.cpp' object='libcommon_la-attack.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-attack.lo `test -f '$(top_srcdir)/source/attack.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/attack.cpp
+
+libcommon_la-replaymapdisplay.lo: $(top_srcdir)/source/replaymapdisplay.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-replaymapdisplay.lo -MD -MP -MF $(DEPDIR)/libcommon_la-replaymapdisplay.Tpo -c -o libcommon_la-replaymapdisplay.lo `test -f '$(top_srcdir)/source/replaymapdisplay.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/replaymapdisplay.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-replaymapdisplay.Tpo $(DEPDIR)/libcommon_la-replaymapdisplay.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/replaymapdisplay.cpp' object='libcommon_la-replaymapdisplay.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-replaymapdisplay.lo `test -f '$(top_srcdir)/source/replaymapdisplay.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/replaymapdisplay.cpp
+
+libcommon_la-memory-measurement.lo: $(top_srcdir)/source/memory-measurement.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-memory-measurement.lo -MD -MP -MF $(DEPDIR)/libcommon_la-memory-measurement.Tpo -c -o libcommon_la-memory-measurement.lo `test -f '$(top_srcdir)/source/memory-measurement.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/memory-measurement.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-memory-measurement.Tpo $(DEPDIR)/libcommon_la-memory-measurement.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/memory-measurement.cpp' object='libcommon_la-memory-measurement.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-memory-measurement.lo `test -f '$(top_srcdir)/source/memory-measurement.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/memory-measurement.cpp
+
+libcommon_la-gameoptions.lo: $(top_srcdir)/source/gameoptions.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-gameoptions.lo -MD -MP -MF $(DEPDIR)/libcommon_la-gameoptions.Tpo -c -o libcommon_la-gameoptions.lo `test -f '$(top_srcdir)/source/gameoptions.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/gameoptions.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-gameoptions.Tpo $(DEPDIR)/libcommon_la-gameoptions.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/gameoptions.cpp' object='libcommon_la-gameoptions.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-gameoptions.lo `test -f '$(top_srcdir)/source/gameoptions.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/gameoptions.cpp
+
+libcommon_la-astar2.lo: $(top_srcdir)/source/astar2.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-astar2.lo -MD -MP -MF $(DEPDIR)/libcommon_la-astar2.Tpo -c -o libcommon_la-astar2.lo `test -f '$(top_srcdir)/source/astar2.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/astar2.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-astar2.Tpo $(DEPDIR)/libcommon_la-astar2.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/astar2.cpp' object='libcommon_la-astar2.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-astar2.lo `test -f '$(top_srcdir)/source/astar2.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/astar2.cpp
+
+libcommon_la-vehicletype.lo: $(top_srcdir)/source/vehicletype.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-vehicletype.lo -MD -MP -MF $(DEPDIR)/libcommon_la-vehicletype.Tpo -c -o libcommon_la-vehicletype.lo `test -f '$(top_srcdir)/source/vehicletype.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/vehicletype.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-vehicletype.Tpo $(DEPDIR)/libcommon_la-vehicletype.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/vehicletype.cpp' object='libcommon_la-vehicletype.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-vehicletype.lo `test -f '$(top_srcdir)/source/vehicletype.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/vehicletype.cpp
+
+libcommon_la-objects.lo: $(top_srcdir)/source/objects.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-objects.lo -MD -MP -MF $(DEPDIR)/libcommon_la-objects.Tpo -c -o libcommon_la-objects.lo `test -f '$(top_srcdir)/source/objects.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/objects.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-objects.Tpo $(DEPDIR)/libcommon_la-objects.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/objects.cpp' object='libcommon_la-objects.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-objects.lo `test -f '$(top_srcdir)/source/objects.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/objects.cpp
+
+libcommon_la-stdio-errorhandler.lo: $(top_srcdir)/source/stdio-errorhandler.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-stdio-errorhandler.lo -MD -MP -MF $(DEPDIR)/libcommon_la-stdio-errorhandler.Tpo -c -o libcommon_la-stdio-errorhandler.lo `test -f '$(top_srcdir)/source/stdio-errorhandler.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/stdio-errorhandler.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-stdio-errorhandler.Tpo $(DEPDIR)/libcommon_la-stdio-errorhandler.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/stdio-errorhandler.cpp' object='libcommon_la-stdio-errorhandler.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-stdio-errorhandler.lo `test -f '$(top_srcdir)/source/stdio-errorhandler.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/stdio-errorhandler.cpp
+
+libcommon_la-buildingtype.lo: $(top_srcdir)/source/buildingtype.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-buildingtype.lo -MD -MP -MF $(DEPDIR)/libcommon_la-buildingtype.Tpo -c -o libcommon_la-buildingtype.lo `test -f '$(top_srcdir)/source/buildingtype.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/buildingtype.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-buildingtype.Tpo $(DEPDIR)/libcommon_la-buildingtype.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/buildingtype.cpp' object='libcommon_la-buildingtype.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-buildingtype.lo `test -f '$(top_srcdir)/source/buildingtype.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/buildingtype.cpp
+
+libcommon_la-containerbase.lo: $(top_srcdir)/source/containerbase.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-containerbase.lo -MD -MP -MF $(DEPDIR)/libcommon_la-containerbase.Tpo -c -o libcommon_la-containerbase.lo `test -f '$(top_srcdir)/source/containerbase.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/containerbase.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-containerbase.Tpo $(DEPDIR)/libcommon_la-containerbase.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/containerbase.cpp' object='libcommon_la-containerbase.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-containerbase.lo `test -f '$(top_srcdir)/source/containerbase.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/containerbase.cpp
+
+libcommon_la-mapalgorithms.lo: $(top_srcdir)/source/mapalgorithms.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-mapalgorithms.lo -MD -MP -MF $(DEPDIR)/libcommon_la-mapalgorithms.Tpo -c -o libcommon_la-mapalgorithms.lo `test -f '$(top_srcdir)/source/mapalgorithms.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/mapalgorithms.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-mapalgorithms.Tpo $(DEPDIR)/libcommon_la-mapalgorithms.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/mapalgorithms.cpp' object='libcommon_la-mapalgorithms.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-mapalgorithms.lo `test -f '$(top_srcdir)/source/mapalgorithms.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/mapalgorithms.cpp
+
+libcommon_la-viewcalculation.lo: $(top_srcdir)/source/viewcalculation.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-viewcalculation.lo -MD -MP -MF $(DEPDIR)/libcommon_la-viewcalculation.Tpo -c -o libcommon_la-viewcalculation.lo `test -f '$(top_srcdir)/source/viewcalculation.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/viewcalculation.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-viewcalculation.Tpo $(DEPDIR)/libcommon_la-viewcalculation.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/viewcalculation.cpp' object='libcommon_la-viewcalculation.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-viewcalculation.lo `test -f '$(top_srcdir)/source/viewcalculation.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/viewcalculation.cpp
+
+libcommon_la-gamemap.lo: $(top_srcdir)/source/gamemap.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-gamemap.lo -MD -MP -MF $(DEPDIR)/libcommon_la-gamemap.Tpo -c -o libcommon_la-gamemap.lo `test -f '$(top_srcdir)/source/gamemap.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/gamemap.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-gamemap.Tpo $(DEPDIR)/libcommon_la-gamemap.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/gamemap.cpp' object='libcommon_la-gamemap.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-gamemap.lo `test -f '$(top_srcdir)/source/gamemap.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/gamemap.cpp
+
+libcommon_la-password.lo: $(top_srcdir)/source/password.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-password.lo -MD -MP -MF $(DEPDIR)/libcommon_la-password.Tpo -c -o libcommon_la-password.lo `test -f '$(top_srcdir)/source/password.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/password.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-password.Tpo $(DEPDIR)/libcommon_la-password.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/password.cpp' object='libcommon_la-password.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-password.lo `test -f '$(top_srcdir)/source/password.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/password.cpp
+
+libcommon_la-replay.lo: $(top_srcdir)/source/replay.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-replay.lo -MD -MP -MF $(DEPDIR)/libcommon_la-replay.Tpo -c -o libcommon_la-replay.lo `test -f '$(top_srcdir)/source/replay.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/replay.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-replay.Tpo $(DEPDIR)/libcommon_la-replay.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/replay.cpp' object='libcommon_la-replay.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-replay.lo `test -f '$(top_srcdir)/source/replay.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/replay.cpp
+
+libcommon_la-research.lo: $(top_srcdir)/source/research.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-research.lo -MD -MP -MF $(DEPDIR)/libcommon_la-research.Tpo -c -o libcommon_la-research.lo `test -f '$(top_srcdir)/source/research.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/research.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-research.Tpo $(DEPDIR)/libcommon_la-research.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/research.cpp' object='libcommon_la-research.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-research.lo `test -f '$(top_srcdir)/source/research.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/research.cpp
+
+libcommon_la-fieldimageloader.lo: $(top_srcdir)/source/fieldimageloader.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-fieldimageloader.lo -MD -MP -MF $(DEPDIR)/libcommon_la-fieldimageloader.Tpo -c -o libcommon_la-fieldimageloader.lo `test -f '$(top_srcdir)/source/fieldimageloader.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/fieldimageloader.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-fieldimageloader.Tpo $(DEPDIR)/libcommon_la-fieldimageloader.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/fieldimageloader.cpp' object='libcommon_la-fieldimageloader.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-fieldimageloader.lo `test -f '$(top_srcdir)/source/fieldimageloader.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/fieldimageloader.cpp
+
+libcommon_la-mapdisplay.lo: $(top_srcdir)/source/mapdisplay.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-mapdisplay.lo -MD -MP -MF $(DEPDIR)/libcommon_la-mapdisplay.Tpo -c -o libcommon_la-mapdisplay.lo `test -f '$(top_srcdir)/source/mapdisplay.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/mapdisplay.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-mapdisplay.Tpo $(DEPDIR)/libcommon_la-mapdisplay.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/mapdisplay.cpp' object='libcommon_la-mapdisplay.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-mapdisplay.lo `test -f '$(top_srcdir)/source/mapdisplay.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/mapdisplay.cpp
+
+libcommon_la-resourcenet.lo: $(top_srcdir)/source/resourcenet.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-resourcenet.lo -MD -MP -MF $(DEPDIR)/libcommon_la-resourcenet.Tpo -c -o libcommon_la-resourcenet.lo `test -f '$(top_srcdir)/source/resourcenet.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/resourcenet.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-resourcenet.Tpo $(DEPDIR)/libcommon_la-resourcenet.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/resourcenet.cpp' object='libcommon_la-resourcenet.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-resourcenet.lo `test -f '$(top_srcdir)/source/resourcenet.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/resourcenet.cpp
+
+libcommon_la-ascstring.lo: $(top_srcdir)/source/ascstring.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-ascstring.lo -MD -MP -MF $(DEPDIR)/libcommon_la-ascstring.Tpo -c -o libcommon_la-ascstring.lo `test -f '$(top_srcdir)/source/ascstring.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/ascstring.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-ascstring.Tpo $(DEPDIR)/libcommon_la-ascstring.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/ascstring.cpp' object='libcommon_la-ascstring.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-ascstring.lo `test -f '$(top_srcdir)/source/ascstring.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/ascstring.cpp
+
+libcommon_la-graphicset.lo: $(top_srcdir)/source/graphicset.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-graphicset.lo -MD -MP -MF $(DEPDIR)/libcommon_la-graphicset.Tpo -c -o libcommon_la-graphicset.lo `test -f '$(top_srcdir)/source/graphicset.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/graphicset.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-graphicset.Tpo $(DEPDIR)/libcommon_la-graphicset.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/graphicset.cpp' object='libcommon_la-graphicset.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-graphicset.lo `test -f '$(top_srcdir)/source/graphicset.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/graphicset.cpp
+
+libcommon_la-vehicle.lo: $(top_srcdir)/source/vehicle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-vehicle.lo -MD -MP -MF $(DEPDIR)/libcommon_la-vehicle.Tpo -c -o libcommon_la-vehicle.lo `test -f '$(top_srcdir)/source/vehicle.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/vehicle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-vehicle.Tpo $(DEPDIR)/libcommon_la-vehicle.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/vehicle.cpp' object='libcommon_la-vehicle.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-vehicle.lo `test -f '$(top_srcdir)/source/vehicle.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/vehicle.cpp
+
+libcommon_la-buildings.lo: $(top_srcdir)/source/buildings.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-buildings.lo -MD -MP -MF $(DEPDIR)/libcommon_la-buildings.Tpo -c -o libcommon_la-buildings.lo `test -f '$(top_srcdir)/source/buildings.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/buildings.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-buildings.Tpo $(DEPDIR)/libcommon_la-buildings.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/buildings.cpp' object='libcommon_la-buildings.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-buildings.lo `test -f '$(top_srcdir)/source/buildings.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/buildings.cpp
+
+libcommon_la-networkinterface.lo: $(top_srcdir)/source/networkinterface.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-networkinterface.lo -MD -MP -MF $(DEPDIR)/libcommon_la-networkinterface.Tpo -c -o libcommon_la-networkinterface.lo `test -f '$(top_srcdir)/source/networkinterface.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/networkinterface.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-networkinterface.Tpo $(DEPDIR)/libcommon_la-networkinterface.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/networkinterface.cpp' object='libcommon_la-networkinterface.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-networkinterface.lo `test -f '$(top_srcdir)/source/networkinterface.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/networkinterface.cpp
+
+libcommon_la-textfileparser.lo: $(top_srcdir)/source/textfileparser.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-textfileparser.lo -MD -MP -MF $(DEPDIR)/libcommon_la-textfileparser.Tpo -c -o libcommon_la-textfileparser.lo `test -f '$(top_srcdir)/source/textfileparser.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/textfileparser.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-textfileparser.Tpo $(DEPDIR)/libcommon_la-textfileparser.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/textfileparser.cpp' object='libcommon_la-textfileparser.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-textfileparser.lo `test -f '$(top_srcdir)/source/textfileparser.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/textfileparser.cpp
+
+libcommon_la-terraintype.lo: $(top_srcdir)/source/terraintype.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-terraintype.lo -MD -MP -MF $(DEPDIR)/libcommon_la-terraintype.Tpo -c -o libcommon_la-terraintype.lo `test -f '$(top_srcdir)/source/terraintype.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/terraintype.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-terraintype.Tpo $(DEPDIR)/libcommon_la-terraintype.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/terraintype.cpp' object='libcommon_la-terraintype.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-terraintype.lo `test -f '$(top_srcdir)/source/terraintype.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/terraintype.cpp
+
+libcommon_la-objecttype.lo: $(top_srcdir)/source/objecttype.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-objecttype.lo -MD -MP -MF $(DEPDIR)/libcommon_la-objecttype.Tpo -c -o libcommon_la-objecttype.lo `test -f '$(top_srcdir)/source/objecttype.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/objecttype.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-objecttype.Tpo $(DEPDIR)/libcommon_la-objecttype.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/objecttype.cpp' object='libcommon_la-objecttype.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-objecttype.lo `test -f '$(top_srcdir)/source/objecttype.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/objecttype.cpp
+
+libcommon_la-textfiletags.lo: $(top_srcdir)/source/textfiletags.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-textfiletags.lo -MD -MP -MF $(DEPDIR)/libcommon_la-textfiletags.Tpo -c -o libcommon_la-textfiletags.lo `test -f '$(top_srcdir)/source/textfiletags.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/textfiletags.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-textfiletags.Tpo $(DEPDIR)/libcommon_la-textfiletags.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/textfiletags.cpp' object='libcommon_la-textfiletags.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-textfiletags.lo `test -f '$(top_srcdir)/source/textfiletags.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/textfiletags.cpp
+
+libcommon_la-itemrepository.lo: $(top_srcdir)/source/itemrepository.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-itemrepository.lo -MD -MP -MF $(DEPDIR)/libcommon_la-itemrepository.Tpo -c -o libcommon_la-itemrepository.lo `test -f '$(top_srcdir)/source/itemrepository.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/itemrepository.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-itemrepository.Tpo $(DEPDIR)/libcommon_la-itemrepository.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/itemrepository.cpp' object='libcommon_la-itemrepository.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-itemrepository.lo `test -f '$(top_srcdir)/source/itemrepository.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/itemrepository.cpp
+
+libcommon_la-stringtokenizer.lo: $(top_srcdir)/source/stringtokenizer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-stringtokenizer.lo -MD -MP -MF $(DEPDIR)/libcommon_la-stringtokenizer.Tpo -c -o libcommon_la-stringtokenizer.lo `test -f '$(top_srcdir)/source/stringtokenizer.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/stringtokenizer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-stringtokenizer.Tpo $(DEPDIR)/libcommon_la-stringtokenizer.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/stringtokenizer.cpp' object='libcommon_la-stringtokenizer.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-stringtokenizer.lo `test -f '$(top_srcdir)/source/stringtokenizer.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/stringtokenizer.cpp
+
+libcommon_la-music.lo: $(top_srcdir)/source/music.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-music.lo -MD -MP -MF $(DEPDIR)/libcommon_la-music.Tpo -c -o libcommon_la-music.lo `test -f '$(top_srcdir)/source/music.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/music.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-music.Tpo $(DEPDIR)/libcommon_la-music.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/music.cpp' object='libcommon_la-music.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-music.lo `test -f '$(top_srcdir)/source/music.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/music.cpp
+
+libcommon_la-messages.lo: $(top_srcdir)/source/messages.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-messages.lo -MD -MP -MF $(DEPDIR)/libcommon_la-messages.Tpo -c -o libcommon_la-messages.lo `test -f '$(top_srcdir)/source/messages.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/messages.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-messages.Tpo $(DEPDIR)/libcommon_la-messages.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/messages.cpp' object='libcommon_la-messages.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-messages.lo `test -f '$(top_srcdir)/source/messages.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/messages.cpp
+
+libcommon_la-paradialog.lo: $(top_srcdir)/source/paradialog.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-paradialog.lo -MD -MP -MF $(DEPDIR)/libcommon_la-paradialog.Tpo -c -o libcommon_la-paradialog.lo `test -f '$(top_srcdir)/source/paradialog.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/paradialog.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-paradialog.Tpo $(DEPDIR)/libcommon_la-paradialog.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/paradialog.cpp' object='libcommon_la-paradialog.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-paradialog.lo `test -f '$(top_srcdir)/source/paradialog.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/paradialog.cpp
+
+libcommon_la-textfile_evaluation.lo: $(top_srcdir)/source/textfile_evaluation.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-textfile_evaluation.lo -MD -MP -MF $(DEPDIR)/libcommon_la-textfile_evaluation.Tpo -c -o libcommon_la-textfile_evaluation.lo `test -f '$(top_srcdir)/source/textfile_evaluation.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/textfile_evaluation.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-textfile_evaluation.Tpo $(DEPDIR)/libcommon_la-textfile_evaluation.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/textfile_evaluation.cpp' object='libcommon_la-textfile_evaluation.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-textfile_evaluation.lo `test -f '$(top_srcdir)/source/textfile_evaluation.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/textfile_evaluation.cpp
+
+libcommon_la-containerbasetype.lo: $(top_srcdir)/source/containerbasetype.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-containerbasetype.lo -MD -MP -MF $(DEPDIR)/libcommon_la-containerbasetype.Tpo -c -o libcommon_la-containerbasetype.lo `test -f '$(top_srcdir)/source/containerbasetype.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/containerbasetype.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-containerbasetype.Tpo $(DEPDIR)/libcommon_la-containerbasetype.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/containerbasetype.cpp' object='libcommon_la-containerbasetype.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-containerbasetype.lo `test -f '$(top_srcdir)/source/containerbasetype.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/containerbasetype.cpp
+
+libcommon_la-messagedlg.lo: $(top_srcdir)/source/messagedlg.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-messagedlg.lo -MD -MP -MF $(DEPDIR)/libcommon_la-messagedlg.Tpo -c -o libcommon_la-messagedlg.lo `test -f '$(top_srcdir)/source/messagedlg.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/messagedlg.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-messagedlg.Tpo $(DEPDIR)/libcommon_la-messagedlg.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/messagedlg.cpp' object='libcommon_la-messagedlg.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-messagedlg.lo `test -f '$(top_srcdir)/source/messagedlg.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/messagedlg.cpp
+
+libcommon_la-simplestream.lo: $(top_srcdir)/source/simplestream.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-simplestream.lo -MD -MP -MF $(DEPDIR)/libcommon_la-simplestream.Tpo -c -o libcommon_la-simplestream.lo `test -f '$(top_srcdir)/source/simplestream.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/simplestream.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-simplestream.Tpo $(DEPDIR)/libcommon_la-simplestream.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/simplestream.cpp' object='libcommon_la-simplestream.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-simplestream.lo `test -f '$(top_srcdir)/source/simplestream.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/simplestream.cpp
+
+libcommon_la-mappolygons.lo: $(top_srcdir)/source/mappolygons.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-mappolygons.lo -MD -MP -MF $(DEPDIR)/libcommon_la-mappolygons.Tpo -c -o libcommon_la-mappolygons.lo `test -f '$(top_srcdir)/source/mappolygons.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/mappolygons.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-mappolygons.Tpo $(DEPDIR)/libcommon_la-mappolygons.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/mappolygons.cpp' object='libcommon_la-mappolygons.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-mappolygons.lo `test -f '$(top_srcdir)/source/mappolygons.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/mappolygons.cpp
+
+libcommon_la-prehistoricevents.lo: $(top_srcdir)/source/prehistoricevents.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-prehistoricevents.lo -MD -MP -MF $(DEPDIR)/libcommon_la-prehistoricevents.Tpo -c -o libcommon_la-prehistoricevents.lo `test -f '$(top_srcdir)/source/prehistoricevents.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/prehistoricevents.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-prehistoricevents.Tpo $(DEPDIR)/libcommon_la-prehistoricevents.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/prehistoricevents.cpp' object='libcommon_la-prehistoricevents.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-prehistoricevents.lo `test -f '$(top_srcdir)/source/prehistoricevents.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/prehistoricevents.cpp
+
+libcommon_la-gameevents.lo: $(top_srcdir)/source/gameevents.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-gameevents.lo -MD -MP -MF $(DEPDIR)/libcommon_la-gameevents.Tpo -c -o libcommon_la-gameevents.lo `test -f '$(top_srcdir)/source/gameevents.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/gameevents.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-gameevents.Tpo $(DEPDIR)/libcommon_la-gameevents.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/gameevents.cpp' object='libcommon_la-gameevents.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-gameevents.lo `test -f '$(top_srcdir)/source/gameevents.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/gameevents.cpp
+
+libcommon_la-gameeventsystem.lo: $(top_srcdir)/source/gameeventsystem.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-gameeventsystem.lo -MD -MP -MF $(DEPDIR)/libcommon_la-gameeventsystem.Tpo -c -o libcommon_la-gameeventsystem.lo `test -f '$(top_srcdir)/source/gameeventsystem.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/gameeventsystem.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-gameeventsystem.Tpo $(DEPDIR)/libcommon_la-gameeventsystem.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/gameeventsystem.cpp' object='libcommon_la-gameeventsystem.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-gameeventsystem.lo `test -f '$(top_srcdir)/source/gameeventsystem.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/gameeventsystem.cpp
+
+libcommon_la-gameevent_dialogs.lo: $(top_srcdir)/source/gameevent_dialogs.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-gameevent_dialogs.lo -MD -MP -MF $(DEPDIR)/libcommon_la-gameevent_dialogs.Tpo -c -o libcommon_la-gameevent_dialogs.lo `test -f '$(top_srcdir)/source/gameevent_dialogs.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/gameevent_dialogs.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-gameevent_dialogs.Tpo $(DEPDIR)/libcommon_la-gameevent_dialogs.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/gameevent_dialogs.cpp' object='libcommon_la-gameevent_dialogs.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-gameevent_dialogs.lo `test -f '$(top_srcdir)/source/gameevent_dialogs.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/gameevent_dialogs.cpp
+
+libcommon_la-statisticdialog.lo: $(top_srcdir)/source/statisticdialog.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-statisticdialog.lo -MD -MP -MF $(DEPDIR)/libcommon_la-statisticdialog.Tpo -c -o libcommon_la-statisticdialog.lo `test -f '$(top_srcdir)/source/statisticdialog.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/statisticdialog.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-statisticdialog.Tpo $(DEPDIR)/libcommon_la-statisticdialog.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/statisticdialog.cpp' object='libcommon_la-statisticdialog.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-statisticdialog.lo `test -f '$(top_srcdir)/source/statisticdialog.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/statisticdialog.cpp
+
+libcommon_la-clipboard.lo: $(top_srcdir)/source/clipboard.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-clipboard.lo -MD -MP -MF $(DEPDIR)/libcommon_la-clipboard.Tpo -c -o libcommon_la-clipboard.lo `test -f '$(top_srcdir)/source/clipboard.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/clipboard.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-clipboard.Tpo $(DEPDIR)/libcommon_la-clipboard.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/clipboard.cpp' object='libcommon_la-clipboard.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-clipboard.lo `test -f '$(top_srcdir)/source/clipboard.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/clipboard.cpp
+
+libcommon_la-geometry.lo: $(top_srcdir)/source/geometry.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-geometry.lo -MD -MP -MF $(DEPDIR)/libcommon_la-geometry.Tpo -c -o libcommon_la-geometry.lo `test -f '$(top_srcdir)/source/geometry.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/geometry.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-geometry.Tpo $(DEPDIR)/libcommon_la-geometry.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/geometry.cpp' object='libcommon_la-geometry.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-geometry.lo `test -f '$(top_srcdir)/source/geometry.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/geometry.cpp
+
+libcommon_la-guidimension.lo: $(top_srcdir)/source/guidimension.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-guidimension.lo -MD -MP -MF $(DEPDIR)/libcommon_la-guidimension.Tpo -c -o libcommon_la-guidimension.lo `test -f '$(top_srcdir)/source/guidimension.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/guidimension.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-guidimension.Tpo $(DEPDIR)/libcommon_la-guidimension.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/guidimension.cpp' object='libcommon_la-guidimension.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-guidimension.lo `test -f '$(top_srcdir)/source/guidimension.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/guidimension.cpp
+
+libcommon_la-guiiconhandler.lo: $(top_srcdir)/source/guiiconhandler.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-guiiconhandler.lo -MD -MP -MF $(DEPDIR)/libcommon_la-guiiconhandler.Tpo -c -o libcommon_la-guiiconhandler.lo `test -f '$(top_srcdir)/source/guiiconhandler.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/guiiconhandler.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-guiiconhandler.Tpo $(DEPDIR)/libcommon_la-guiiconhandler.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/guiiconhandler.cpp' object='libcommon_la-guiiconhandler.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-guiiconhandler.lo `test -f '$(top_srcdir)/source/guiiconhandler.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/guiiconhandler.cpp
+
+libcommon_la-guifunctions.lo: $(top_srcdir)/source/guifunctions.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-guifunctions.lo -MD -MP -MF $(DEPDIR)/libcommon_la-guifunctions.Tpo -c -o libcommon_la-guifunctions.lo `test -f '$(top_srcdir)/source/guifunctions.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/guifunctions.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-guifunctions.Tpo $(DEPDIR)/libcommon_la-guifunctions.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/guifunctions.cpp' object='libcommon_la-guifunctions.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-guifunctions.lo `test -f '$(top_srcdir)/source/guifunctions.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/guifunctions.cpp
+
+libcommon_la-iconrepository.lo: $(top_srcdir)/source/iconrepository.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-iconrepository.lo -MD -MP -MF $(DEPDIR)/libcommon_la-iconrepository.Tpo -c -o libcommon_la-iconrepository.lo `test -f '$(top_srcdir)/source/iconrepository.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/iconrepository.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-iconrepository.Tpo $(DEPDIR)/libcommon_la-iconrepository.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/iconrepository.cpp' object='libcommon_la-iconrepository.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-iconrepository.lo `test -f '$(top_srcdir)/source/iconrepository.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/iconrepository.cpp
+
+libcommon_la-overviewmapimage.lo: $(top_srcdir)/source/overviewmapimage.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-overviewmapimage.lo -MD -MP -MF $(DEPDIR)/libcommon_la-overviewmapimage.Tpo -c -o libcommon_la-overviewmapimage.lo `test -f '$(top_srcdir)/source/overviewmapimage.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/overviewmapimage.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-overviewmapimage.Tpo $(DEPDIR)/libcommon_la-overviewmapimage.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/overviewmapimage.cpp' object='libcommon_la-overviewmapimage.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-overviewmapimage.lo `test -f '$(top_srcdir)/source/overviewmapimage.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/overviewmapimage.cpp
+
+libcommon_la-mapfield.lo: $(top_srcdir)/source/mapfield.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-mapfield.lo -MD -MP -MF $(DEPDIR)/libcommon_la-mapfield.Tpo -c -o libcommon_la-mapfield.lo `test -f '$(top_srcdir)/source/mapfield.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/mapfield.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-mapfield.Tpo $(DEPDIR)/libcommon_la-mapfield.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/mapfield.cpp' object='libcommon_la-mapfield.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-mapfield.lo `test -f '$(top_srcdir)/source/mapfield.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/mapfield.cpp
+
+libcommon_la-overviewmappanel.lo: $(top_srcdir)/source/overviewmappanel.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-overviewmappanel.lo -MD -MP -MF $(DEPDIR)/libcommon_la-overviewmappanel.Tpo -c -o libcommon_la-overviewmappanel.lo `test -f '$(top_srcdir)/source/overviewmappanel.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/overviewmappanel.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-overviewmappanel.Tpo $(DEPDIR)/libcommon_la-overviewmappanel.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/overviewmappanel.cpp' object='libcommon_la-overviewmappanel.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-overviewmappanel.lo `test -f '$(top_srcdir)/source/overviewmappanel.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/overviewmappanel.cpp
+
+libcommon_la-dashboard.lo: $(top_srcdir)/source/dashboard.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-dashboard.lo -MD -MP -MF $(DEPDIR)/libcommon_la-dashboard.Tpo -c -o libcommon_la-dashboard.lo `test -f '$(top_srcdir)/source/dashboard.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/dashboard.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-dashboard.Tpo $(DEPDIR)/libcommon_la-dashboard.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/dashboard.cpp' object='libcommon_la-dashboard.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-dashboard.lo `test -f '$(top_srcdir)/source/dashboard.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/dashboard.cpp
+
+libcommon_la-asc-mainscreen.lo: $(top_srcdir)/source/asc-mainscreen.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-asc-mainscreen.lo -MD -MP -MF $(DEPDIR)/libcommon_la-asc-mainscreen.Tpo -c -o libcommon_la-asc-mainscreen.lo `test -f '$(top_srcdir)/source/asc-mainscreen.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/asc-mainscreen.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-asc-mainscreen.Tpo $(DEPDIR)/libcommon_la-asc-mainscreen.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/asc-mainscreen.cpp' object='libcommon_la-asc-mainscreen.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-asc-mainscreen.lo `test -f '$(top_srcdir)/source/asc-mainscreen.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/asc-mainscreen.cpp
+
+libcommon_la-explosivemines.lo: $(top_srcdir)/source/explosivemines.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-explosivemines.lo -MD -MP -MF $(DEPDIR)/libcommon_la-explosivemines.Tpo -c -o libcommon_la-explosivemines.lo `test -f '$(top_srcdir)/source/explosivemines.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/explosivemines.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-explosivemines.Tpo $(DEPDIR)/libcommon_la-explosivemines.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/explosivemines.cpp' object='libcommon_la-explosivemines.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-explosivemines.lo `test -f '$(top_srcdir)/source/explosivemines.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/explosivemines.cpp
+
+libcommon_la-mainscreenwidget.lo: $(top_srcdir)/source/mainscreenwidget.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-mainscreenwidget.lo -MD -MP -MF $(DEPDIR)/libcommon_la-mainscreenwidget.Tpo -c -o libcommon_la-mainscreenwidget.lo `test -f '$(top_srcdir)/source/mainscreenwidget.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/mainscreenwidget.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-mainscreenwidget.Tpo $(DEPDIR)/libcommon_la-mainscreenwidget.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/mainscreenwidget.cpp' object='libcommon_la-mainscreenwidget.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-mainscreenwidget.lo `test -f '$(top_srcdir)/source/mainscreenwidget.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/mainscreenwidget.cpp
+
+libcommon_la-networksupervisor.lo: $(top_srcdir)/source/networksupervisor.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-networksupervisor.lo -MD -MP -MF $(DEPDIR)/libcommon_la-networksupervisor.Tpo -c -o libcommon_la-networksupervisor.lo `test -f '$(top_srcdir)/source/networksupervisor.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/networksupervisor.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-networksupervisor.Tpo $(DEPDIR)/libcommon_la-networksupervisor.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/networksupervisor.cpp' object='libcommon_la-networksupervisor.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-networksupervisor.lo `test -f '$(top_srcdir)/source/networksupervisor.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/networksupervisor.cpp
+
+libcommon_la-statistics.lo: $(top_srcdir)/source/statistics.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-statistics.lo -MD -MP -MF $(DEPDIR)/libcommon_la-statistics.Tpo -c -o libcommon_la-statistics.lo `test -f '$(top_srcdir)/source/statistics.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/statistics.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-statistics.Tpo $(DEPDIR)/libcommon_la-statistics.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/statistics.cpp' object='libcommon_la-statistics.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-statistics.lo `test -f '$(top_srcdir)/source/statistics.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/statistics.cpp
+
+libcommon_la-legacynetworkloaders.lo: $(top_srcdir)/source/legacynetworkloaders.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-legacynetworkloaders.lo -MD -MP -MF $(DEPDIR)/libcommon_la-legacynetworkloaders.Tpo -c -o libcommon_la-legacynetworkloaders.lo `test -f '$(top_srcdir)/source/legacynetworkloaders.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/legacynetworkloaders.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-legacynetworkloaders.Tpo $(DEPDIR)/libcommon_la-legacynetworkloaders.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/legacynetworkloaders.cpp' object='libcommon_la-legacynetworkloaders.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-legacynetworkloaders.lo `test -f '$(top_srcdir)/source/legacynetworkloaders.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/legacynetworkloaders.cpp
+
+libcommon_la-player.lo: $(top_srcdir)/source/player.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-player.lo -MD -MP -MF $(DEPDIR)/libcommon_la-player.Tpo -c -o libcommon_la-player.lo `test -f '$(top_srcdir)/source/player.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/player.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-player.Tpo $(DEPDIR)/libcommon_la-player.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/player.cpp' object='libcommon_la-player.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-player.lo `test -f '$(top_srcdir)/source/player.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/player.cpp
+
+libcommon_la-cannedmessages.lo: $(top_srcdir)/source/cannedmessages.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-cannedmessages.lo -MD -MP -MF $(DEPDIR)/libcommon_la-cannedmessages.Tpo -c -o libcommon_la-cannedmessages.lo `test -f '$(top_srcdir)/source/cannedmessages.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/cannedmessages.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-cannedmessages.Tpo $(DEPDIR)/libcommon_la-cannedmessages.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/cannedmessages.cpp' object='libcommon_la-cannedmessages.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-cannedmessages.lo `test -f '$(top_srcdir)/source/cannedmessages.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/cannedmessages.cpp
+
+libcommon_la-reactionfire.lo: $(top_srcdir)/source/reactionfire.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-reactionfire.lo -MD -MP -MF $(DEPDIR)/libcommon_la-reactionfire.Tpo -c -o libcommon_la-reactionfire.lo `test -f '$(top_srcdir)/source/reactionfire.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/reactionfire.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-reactionfire.Tpo $(DEPDIR)/libcommon_la-reactionfire.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/reactionfire.cpp' object='libcommon_la-reactionfire.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-reactionfire.lo `test -f '$(top_srcdir)/source/reactionfire.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/reactionfire.cpp
+
+libcommon_la-mapimageexport.lo: $(top_srcdir)/source/mapimageexport.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-mapimageexport.lo -MD -MP -MF $(DEPDIR)/libcommon_la-mapimageexport.Tpo -c -o libcommon_la-mapimageexport.lo `test -f '$(top_srcdir)/source/mapimageexport.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/mapimageexport.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-mapimageexport.Tpo $(DEPDIR)/libcommon_la-mapimageexport.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/mapimageexport.cpp' object='libcommon_la-mapimageexport.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-mapimageexport.lo `test -f '$(top_srcdir)/source/mapimageexport.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/mapimageexport.cpp
+
+libcommon_la-containercontrols.lo: $(top_srcdir)/source/containercontrols.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-containercontrols.lo -MD -MP -MF $(DEPDIR)/libcommon_la-containercontrols.Tpo -c -o libcommon_la-containercontrols.lo `test -f '$(top_srcdir)/source/containercontrols.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/containercontrols.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-containercontrols.Tpo $(DEPDIR)/libcommon_la-containercontrols.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/containercontrols.cpp' object='libcommon_la-containercontrols.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-containercontrols.lo `test -f '$(top_srcdir)/source/containercontrols.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/containercontrols.cpp
+
+libcommon_la-containerbase-functions.lo: $(top_srcdir)/source/containerbase-functions.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-containerbase-functions.lo -MD -MP -MF $(DEPDIR)/libcommon_la-containerbase-functions.Tpo -c -o libcommon_la-containerbase-functions.lo `test -f '$(top_srcdir)/source/containerbase-functions.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/containerbase-functions.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-containerbase-functions.Tpo $(DEPDIR)/libcommon_la-containerbase-functions.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/containerbase-functions.cpp' object='libcommon_la-containerbase-functions.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-containerbase-functions.lo `test -f '$(top_srcdir)/source/containerbase-functions.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/containerbase-functions.cpp
+
+libcommon_la-windowing.lo: $(top_srcdir)/source/windowing.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-windowing.lo -MD -MP -MF $(DEPDIR)/libcommon_la-windowing.Tpo -c -o libcommon_la-windowing.lo `test -f '$(top_srcdir)/source/windowing.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/windowing.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-windowing.Tpo $(DEPDIR)/libcommon_la-windowing.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/windowing.cpp' object='libcommon_la-windowing.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-windowing.lo `test -f '$(top_srcdir)/source/windowing.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/windowing.cpp
+
+libcommon_la-turncontrol.lo: $(top_srcdir)/source/turncontrol.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-turncontrol.lo -MD -MP -MF $(DEPDIR)/libcommon_la-turncontrol.Tpo -c -o libcommon_la-turncontrol.lo `test -f '$(top_srcdir)/source/turncontrol.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/turncontrol.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-turncontrol.Tpo $(DEPDIR)/libcommon_la-turncontrol.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/turncontrol.cpp' object='libcommon_la-turncontrol.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-turncontrol.lo `test -f '$(top_srcdir)/source/turncontrol.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/turncontrol.cpp
+
+libcommon_la-unitset.lo: $(top_srcdir)/source/unitset.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-unitset.lo -MD -MP -MF $(DEPDIR)/libcommon_la-unitset.Tpo -c -o libcommon_la-unitset.lo `test -f '$(top_srcdir)/source/unitset.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/unitset.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-unitset.Tpo $(DEPDIR)/libcommon_la-unitset.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/unitset.cpp' object='libcommon_la-unitset.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-unitset.lo `test -f '$(top_srcdir)/source/unitset.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/unitset.cpp
+
+libcommon_la-playercolor.lo: $(top_srcdir)/source/playercolor.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-playercolor.lo -MD -MP -MF $(DEPDIR)/libcommon_la-playercolor.Tpo -c -o libcommon_la-playercolor.lo `test -f '$(top_srcdir)/source/playercolor.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/playercolor.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-playercolor.Tpo $(DEPDIR)/libcommon_la-playercolor.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/playercolor.cpp' object='libcommon_la-playercolor.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-playercolor.lo `test -f '$(top_srcdir)/source/playercolor.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/playercolor.cpp
+
+libcommon_la-pg_mapdisplay.lo: $(top_srcdir)/source/pg_mapdisplay.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-pg_mapdisplay.lo -MD -MP -MF $(DEPDIR)/libcommon_la-pg_mapdisplay.Tpo -c -o libcommon_la-pg_mapdisplay.lo `test -f '$(top_srcdir)/source/pg_mapdisplay.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/pg_mapdisplay.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-pg_mapdisplay.Tpo $(DEPDIR)/libcommon_la-pg_mapdisplay.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/pg_mapdisplay.cpp' object='libcommon_la-pg_mapdisplay.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-pg_mapdisplay.lo `test -f '$(top_srcdir)/source/pg_mapdisplay.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/pg_mapdisplay.cpp
+
+libcommon_la-autotraining.lo: $(top_srcdir)/source/autotraining.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-autotraining.lo -MD -MP -MF $(DEPDIR)/libcommon_la-autotraining.Tpo -c -o libcommon_la-autotraining.lo `test -f '$(top_srcdir)/source/autotraining.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/autotraining.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-autotraining.Tpo $(DEPDIR)/libcommon_la-autotraining.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/autotraining.cpp' object='libcommon_la-autotraining.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-autotraining.lo `test -f '$(top_srcdir)/source/autotraining.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/autotraining.cpp
+
+libcommon_la-researchexecution.lo: $(top_srcdir)/source/researchexecution.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-researchexecution.lo -MD -MP -MF $(DEPDIR)/libcommon_la-researchexecution.Tpo -c -o libcommon_la-researchexecution.lo `test -f '$(top_srcdir)/source/researchexecution.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/researchexecution.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-researchexecution.Tpo $(DEPDIR)/libcommon_la-researchexecution.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/researchexecution.cpp' object='libcommon_la-researchexecution.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-researchexecution.lo `test -f '$(top_srcdir)/source/researchexecution.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/researchexecution.cpp
+
+libcommon_la-luacommandwriter.lo: $(top_srcdir)/source/luacommandwriter.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-luacommandwriter.lo -MD -MP -MF $(DEPDIR)/libcommon_la-luacommandwriter.Tpo -c -o libcommon_la-luacommandwriter.lo `test -f '$(top_srcdir)/source/luacommandwriter.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/luacommandwriter.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-luacommandwriter.Tpo $(DEPDIR)/libcommon_la-luacommandwriter.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/luacommandwriter.cpp' object='libcommon_la-luacommandwriter.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-luacommandwriter.lo `test -f '$(top_srcdir)/source/luacommandwriter.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/luacommandwriter.cpp
+
+libcommon_la-campaignactionrecorder.lo: $(top_srcdir)/source/campaignactionrecorder.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-campaignactionrecorder.lo -MD -MP -MF $(DEPDIR)/libcommon_la-campaignactionrecorder.Tpo -c -o libcommon_la-campaignactionrecorder.lo `test -f '$(top_srcdir)/source/campaignactionrecorder.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/campaignactionrecorder.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-campaignactionrecorder.Tpo $(DEPDIR)/libcommon_la-campaignactionrecorder.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/campaignactionrecorder.cpp' object='libcommon_la-campaignactionrecorder.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-campaignactionrecorder.lo `test -f '$(top_srcdir)/source/campaignactionrecorder.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/campaignactionrecorder.cpp
+
+libcommon_la-loggingoutput.lo: $(top_srcdir)/source/loggingoutput.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-loggingoutput.lo -MD -MP -MF $(DEPDIR)/libcommon_la-loggingoutput.Tpo -c -o libcommon_la-loggingoutput.lo `test -f '$(top_srcdir)/source/loggingoutput.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/loggingoutput.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-loggingoutput.Tpo $(DEPDIR)/libcommon_la-loggingoutput.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/loggingoutput.cpp' object='libcommon_la-loggingoutput.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-loggingoutput.lo `test -f '$(top_srcdir)/source/loggingoutput.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/loggingoutput.cpp
+
+libcommon_la-versionidentifier.lo: $(top_srcdir)/source/versionidentifier.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-versionidentifier.lo -MD -MP -MF $(DEPDIR)/libcommon_la-versionidentifier.Tpo -c -o libcommon_la-versionidentifier.lo `test -f '$(top_srcdir)/source/versionidentifier.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/versionidentifier.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-versionidentifier.Tpo $(DEPDIR)/libcommon_la-versionidentifier.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/versionidentifier.cpp' object='libcommon_la-versionidentifier.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-versionidentifier.lo `test -f '$(top_srcdir)/source/versionidentifier.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/versionidentifier.cpp
+
+libcommon_la-package.lo: $(top_srcdir)/source/package.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-package.lo -MD -MP -MF $(DEPDIR)/libcommon_la-package.Tpo -c -o libcommon_la-package.lo `test -f '$(top_srcdir)/source/package.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/package.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-package.Tpo $(DEPDIR)/libcommon_la-package.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/package.cpp' object='libcommon_la-package.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-package.lo `test -f '$(top_srcdir)/source/package.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/package.cpp
+
+libcommon_la-packagemanager.lo: $(top_srcdir)/source/packagemanager.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-packagemanager.lo -MD -MP -MF $(DEPDIR)/libcommon_la-packagemanager.Tpo -c -o libcommon_la-packagemanager.lo `test -f '$(top_srcdir)/source/packagemanager.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/packagemanager.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-packagemanager.Tpo $(DEPDIR)/libcommon_la-packagemanager.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/packagemanager.cpp' object='libcommon_la-packagemanager.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-packagemanager.lo `test -f '$(top_srcdir)/source/packagemanager.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/packagemanager.cpp
+
+libcommon_la-packagerepository.lo: $(top_srcdir)/source/packagerepository.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-packagerepository.lo -MD -MP -MF $(DEPDIR)/libcommon_la-packagerepository.Tpo -c -o libcommon_la-packagerepository.lo `test -f '$(top_srcdir)/source/packagerepository.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/packagerepository.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-packagerepository.Tpo $(DEPDIR)/libcommon_la-packagerepository.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/packagerepository.cpp' object='libcommon_la-packagerepository.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-packagerepository.lo `test -f '$(top_srcdir)/source/packagerepository.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/packagerepository.cpp
+
+libcommon_la-dataversioncheck.lo: $(top_srcdir)/source/dataversioncheck.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-dataversioncheck.lo -MD -MP -MF $(DEPDIR)/libcommon_la-dataversioncheck.Tpo -c -o libcommon_la-dataversioncheck.lo `test -f '$(top_srcdir)/source/dataversioncheck.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/dataversioncheck.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-dataversioncheck.Tpo $(DEPDIR)/libcommon_la-dataversioncheck.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/dataversioncheck.cpp' object='libcommon_la-dataversioncheck.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-dataversioncheck.lo `test -f '$(top_srcdir)/source/dataversioncheck.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/dataversioncheck.cpp
+
+libcommon_la-i18n.lo: $(top_srcdir)/source/i18n.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-i18n.lo -MD -MP -MF $(DEPDIR)/libcommon_la-i18n.Tpo -c -o libcommon_la-i18n.lo `test -f '$(top_srcdir)/source/i18n.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/i18n.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-i18n.Tpo $(DEPDIR)/libcommon_la-i18n.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/i18n.cpp' object='libcommon_la-i18n.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-i18n.lo `test -f '$(top_srcdir)/source/i18n.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/i18n.cpp
+
+libcommon_la-accessconstraints-game.lo: $(top_srcdir)/source/accessconstraints-game.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-accessconstraints-game.lo -MD -MP -MF $(DEPDIR)/libcommon_la-accessconstraints-game.Tpo -c -o libcommon_la-accessconstraints-game.lo `test -f '$(top_srcdir)/source/accessconstraints-game.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/accessconstraints-game.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-accessconstraints-game.Tpo $(DEPDIR)/libcommon_la-accessconstraints-game.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/accessconstraints-game.cpp' object='libcommon_la-accessconstraints-game.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-accessconstraints-game.lo `test -f '$(top_srcdir)/source/accessconstraints-game.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/accessconstraints-game.cpp
+
+libcommon_la-contextutils.lo: $(top_srcdir)/source/contextutils.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-contextutils.lo -MD -MP -MF $(DEPDIR)/libcommon_la-contextutils.Tpo -c -o libcommon_la-contextutils.lo `test -f '$(top_srcdir)/source/contextutils.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/contextutils.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-contextutils.Tpo $(DEPDIR)/libcommon_la-contextutils.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/contextutils.cpp' object='libcommon_la-contextutils.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-contextutils.lo `test -f '$(top_srcdir)/source/contextutils.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/contextutils.cpp
+
+libcommon_la-unitcostcalculator-standard.lo: $(top_srcdir)/source/unitcostcalculator-standard.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-unitcostcalculator-standard.lo -MD -MP -MF $(DEPDIR)/libcommon_la-unitcostcalculator-standard.Tpo -c -o libcommon_la-unitcostcalculator-standard.lo `test -f '$(top_srcdir)/source/unitcostcalculator-standard.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/unitcostcalculator-standard.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-unitcostcalculator-standard.Tpo $(DEPDIR)/libcommon_la-unitcostcalculator-standard.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/unitcostcalculator-standard.cpp' object='libcommon_la-unitcostcalculator-standard.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-unitcostcalculator-standard.lo `test -f '$(top_srcdir)/source/unitcostcalculator-standard.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/unitcostcalculator-standard.cpp
+
+libcommon_la-weaponrangelayer.lo: $(top_srcdir)/source/weaponrangelayer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-weaponrangelayer.lo -MD -MP -MF $(DEPDIR)/libcommon_la-weaponrangelayer.Tpo -c -o libcommon_la-weaponrangelayer.lo `test -f '$(top_srcdir)/source/weaponrangelayer.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/weaponrangelayer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-weaponrangelayer.Tpo $(DEPDIR)/libcommon_la-weaponrangelayer.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/weaponrangelayer.cpp' object='libcommon_la-weaponrangelayer.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-weaponrangelayer.lo `test -f '$(top_srcdir)/source/weaponrangelayer.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/weaponrangelayer.cpp
+
+libcommon_la-unitcostcalculator-pbp.lo: $(top_srcdir)/source/unitcostcalculator-pbp.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-unitcostcalculator-pbp.lo -MD -MP -MF $(DEPDIR)/libcommon_la-unitcostcalculator-pbp.Tpo -c -o libcommon_la-unitcostcalculator-pbp.lo `test -f '$(top_srcdir)/source/unitcostcalculator-pbp.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/unitcostcalculator-pbp.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-unitcostcalculator-pbp.Tpo $(DEPDIR)/libcommon_la-unitcostcalculator-pbp.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/unitcostcalculator-pbp.cpp' object='libcommon_la-unitcostcalculator-pbp.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-unitcostcalculator-pbp.lo `test -f '$(top_srcdir)/source/unitcostcalculator-pbp.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/unitcostcalculator-pbp.cpp
 
 libgtest_la-gtest-all.lo: $(GTEST_DIR)/src/gtest-all.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgtest_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libgtest_la-gtest-all.lo -MD -MP -MF $(DEPDIR)/libgtest_la-gtest-all.Tpo -c -o libgtest_la-gtest-all.lo `test -f '$(GTEST_DIR)/src/gtest-all.cc' || echo '$(srcdir)/'`$(GTEST_DIR)/src/gtest-all.cc
@@ -1079,20 +2352,6 @@ game_events_test.obj: unit/game_events_test.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/game_events_test.cpp' object='game_events_test.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o game_events_test.obj `if test -f 'unit/game_events_test.cpp'; then $(CYGPATH_W) 'unit/game_events_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/game_events_test.cpp'; fi`
-
-mcts_action_executor_test.o: unit/mcts_action_executor_test.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mcts_action_executor_test.o -MD -MP -MF $(DEPDIR)/mcts_action_executor_test.Tpo -c -o mcts_action_executor_test.o `test -f 'unit/mcts_action_executor_test.cpp' || echo '$(srcdir)/'`unit/mcts_action_executor_test.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mcts_action_executor_test.Tpo $(DEPDIR)/mcts_action_executor_test.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/mcts_action_executor_test.cpp' object='mcts_action_executor_test.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mcts_action_executor_test.o `test -f 'unit/mcts_action_executor_test.cpp' || echo '$(srcdir)/'`unit/mcts_action_executor_test.cpp
-
-mcts_action_executor_test.obj: unit/mcts_action_executor_test.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mcts_action_executor_test.obj -MD -MP -MF $(DEPDIR)/mcts_action_executor_test.Tpo -c -o mcts_action_executor_test.obj `if test -f 'unit/mcts_action_executor_test.cpp'; then $(CYGPATH_W) 'unit/mcts_action_executor_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/mcts_action_executor_test.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mcts_action_executor_test.Tpo $(DEPDIR)/mcts_action_executor_test.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/mcts_action_executor_test.cpp' object='mcts_action_executor_test.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mcts_action_executor_test.obj `if test -f 'unit/mcts_action_executor_test.cpp'; then $(CYGPATH_W) 'unit/mcts_action_executor_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/mcts_action_executor_test.cpp'; fi`
 
 mcts_evaluator_test.o: unit/mcts_evaluator_test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mcts_evaluator_test.o -MD -MP -MF $(DEPDIR)/mcts_evaluator_test.Tpo -c -o mcts_evaluator_test.o `test -f 'unit/mcts_evaluator_test.cpp' || echo '$(srcdir)/'`unit/mcts_evaluator_test.cpp
@@ -1454,13 +2713,6 @@ mcts_snapshot_test.log: mcts_snapshot_test$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-mcts_action_executor_test.log: mcts_action_executor_test$(EXEEXT)
-	@p='mcts_action_executor_test$(EXEEXT)'; \
-	b='mcts_action_executor_test'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
 mcts_evaluator_test.log: mcts_evaluator_test$(EXEEXT)
 	@p='mcts_evaluator_test$(EXEEXT)'; \
 	b='mcts_evaluator_test'; \
@@ -1585,9 +2837,114 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/basestrm.Po
 	-rm -f ./$(DEPDIR)/example_test.Po
 	-rm -f ./$(DEPDIR)/game_events_test.Po
+	-rm -f ./$(DEPDIR)/libcommon_la-accessconstraints-game.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-applicationstarter.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-asc-mainscreen.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-ascstring.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-astar2.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-attack.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-autotraining.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-basegfx.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-basestrm.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-buildings.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-buildingtype.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-campaignactionrecorder.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-cannedmessages.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-clipboard.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-containerbase-functions.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-containerbase.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-containerbasetype.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-containercontrols.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-contextutils.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-controls.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-dashboard.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-dataversioncheck.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-dialog.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-dlg_box.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-explosivemines.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-fieldimageloader.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-gamedlg.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-gameevent_dialogs.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-gameevents.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-gameeventsystem.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-gamemap.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-gameoptions.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-geometry.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-graphicset.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-guidimension.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-guifunctions.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-guiiconhandler.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-i18n.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-iconrepository.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-itemrepository.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-legacynetworkloaders.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-loadbi3.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-loaders.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-loadpcxc.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-loggingoutput.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-luacommandwriter.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-mainscreenwidget.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-mapalgorithms.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-mapdisplay.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-mapfield.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-mapimageexport.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-mappolygons.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-memory-measurement.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-messagedlg.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-messages.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-misc.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-music.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-networkinterface.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-networksupervisor.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-newfont.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-objects.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-objecttype.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-overviewmapimage.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-overviewmappanel.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-package.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-packagemanager.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-packagerepository.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-palette.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-paradialog.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-password.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-pg_mapdisplay.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-player.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-playercolor.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-prehistoricevents.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-reactionfire.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-replay.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-replaymapdisplay.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-research.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-researchexecution.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-resourcenet.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-sgstream.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-simplestream.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-soundList.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-spfst.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-stack.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-statisticdialog.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-statistics.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-stdio-errorhandler.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-stringtokenizer.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-strtmesg.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-terraintype.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-textfile_evaluation.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-textfileparser.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-textfiletags.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-tos.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-turncontrol.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-typen.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-unitcostcalculator-pbp.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-unitcostcalculator-standard.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-unitset.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-vehicle.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-vehicletype.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-versionidentifier.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-viewcalculation.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-weaponrangelayer.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-windowing.Plo
 	-rm -f ./$(DEPDIR)/libgtest_la-gtest-all.Plo
 	-rm -f ./$(DEPDIR)/libgtest_main_la-gtest_main.Plo
-	-rm -f ./$(DEPDIR)/mcts_action_executor_test.Po
 	-rm -f ./$(DEPDIR)/mcts_evaluator_test.Po
 	-rm -f ./$(DEPDIR)/mcts_snapshot_test.Po
 	-rm -f ./$(DEPDIR)/misc.Po
@@ -1644,9 +3001,114 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/basestrm.Po
 	-rm -f ./$(DEPDIR)/example_test.Po
 	-rm -f ./$(DEPDIR)/game_events_test.Po
+	-rm -f ./$(DEPDIR)/libcommon_la-accessconstraints-game.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-applicationstarter.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-asc-mainscreen.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-ascstring.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-astar2.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-attack.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-autotraining.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-basegfx.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-basestrm.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-buildings.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-buildingtype.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-campaignactionrecorder.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-cannedmessages.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-clipboard.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-containerbase-functions.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-containerbase.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-containerbasetype.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-containercontrols.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-contextutils.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-controls.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-dashboard.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-dataversioncheck.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-dialog.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-dlg_box.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-explosivemines.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-fieldimageloader.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-gamedlg.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-gameevent_dialogs.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-gameevents.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-gameeventsystem.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-gamemap.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-gameoptions.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-geometry.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-graphicset.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-guidimension.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-guifunctions.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-guiiconhandler.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-i18n.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-iconrepository.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-itemrepository.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-legacynetworkloaders.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-loadbi3.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-loaders.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-loadpcxc.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-loggingoutput.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-luacommandwriter.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-mainscreenwidget.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-mapalgorithms.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-mapdisplay.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-mapfield.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-mapimageexport.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-mappolygons.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-memory-measurement.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-messagedlg.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-messages.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-misc.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-music.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-networkinterface.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-networksupervisor.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-newfont.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-objects.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-objecttype.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-overviewmapimage.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-overviewmappanel.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-package.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-packagemanager.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-packagerepository.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-palette.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-paradialog.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-password.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-pg_mapdisplay.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-player.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-playercolor.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-prehistoricevents.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-reactionfire.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-replay.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-replaymapdisplay.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-research.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-researchexecution.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-resourcenet.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-sgstream.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-simplestream.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-soundList.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-spfst.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-stack.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-statisticdialog.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-statistics.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-stdio-errorhandler.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-stringtokenizer.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-strtmesg.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-terraintype.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-textfile_evaluation.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-textfileparser.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-textfiletags.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-tos.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-turncontrol.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-typen.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-unitcostcalculator-pbp.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-unitcostcalculator-standard.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-unitset.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-vehicle.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-vehicletype.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-versionidentifier.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-viewcalculation.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-weaponrangelayer.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-windowing.Plo
 	-rm -f ./$(DEPDIR)/libgtest_la-gtest-all.Plo
 	-rm -f ./$(DEPDIR)/libgtest_main_la-gtest_main.Plo
-	-rm -f ./$(DEPDIR)/mcts_action_executor_test.Po
 	-rm -f ./$(DEPDIR)/mcts_evaluator_test.Po
 	-rm -f ./$(DEPDIR)/mcts_snapshot_test.Po
 	-rm -f ./$(DEPDIR)/misc.Po

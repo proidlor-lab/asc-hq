@@ -77,6 +77,7 @@ tests/mcts_evaluator_test
 tests/version_identifier_test
 tests/stream_encoding_test
 tests/game_events_test
+tests/action_container_test
 tests/*.log
 tests/*.trs
 tests/test-suite.log
