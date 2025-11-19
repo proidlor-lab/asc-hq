@@ -440,10 +440,16 @@ jobs:
         cd build-gtest
         ../configure
 
+    - name: Build dependencies for Google Test suite
+      run: |
+        cd build-gtest
+        # Build all libraries in source tree that tests depend on
+        make -j2 -k || true
+      continue-on-error: true
+
     - name: Build and run Google Test suite
       run: |
         cd build-gtest/tests
-        # Build tests (this will also build required dependencies)
         make check
 
     - name: Display test results
