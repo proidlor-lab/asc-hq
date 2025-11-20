@@ -3,8 +3,8 @@
 **Purpose**: Documentation for the ASC modernization effort to transform the codebase into a production-ready game server.
 
 **Created**: 2025-11-16
-**Last Updated**: 2025-11-17
-**Status**: Tier 1 Complete - In Progress
+**Last Updated**: 2025-11-19
+**Status**: Tier 1 Complete + Phase 1 Test Migration Complete - Ready for Tier 2
 
 ---
 
@@ -47,7 +47,11 @@ Transform this GPL repository into a **game server** that exposes game logic via
 - ✅ Code formatting applied (1,051+ files)
 - ✅ Static analysis baseline (1,650 issues identified)
 - ✅ Test framework Phase 1 complete (Google Test integrated)
-- ✅ Automated testing on every commit
+- ✅ Phase 1 test migration complete (6 tests, 22 assertions, 100% pass rate)
+- ✅ MCTS tests migrated to Google Test (2/3 - one pre-existing failure disabled)
+- ✅ Legacy unit tests migrated (version_identifier, stream_encoding, game_events)
+- ✅ Automated testing on every commit with 100% pass rate
+- ✅ All CI jobs green (build, tests, static analysis)
 
 **See [STATUS.md](./STATUS.md) for detailed progress and next actions.**
 
@@ -181,11 +185,14 @@ When in doubt: "How would this be done in MCTS?"
 
 **Location**: `tests/` directory
 
-**Current Status**:
+**Current Status** (2025-11-19):
 - ✅ Google Test integrated (Phase 1 complete)
-- ✅ 13 tests running in CI/CD
+- ✅ Phase 1 test migration complete (6 tests, 22 assertions, 100% pass rate)
+- ✅ MCTS tests migrated (mcts_snapshot_test, mcts_evaluator_test)
+- ✅ Legacy unit tests migrated (version_identifier, stream_encoding, game_events)
 - ✅ Automated execution on every commit
 - ✅ Test results visible in GitHub Actions
+- ✅ All CI jobs green
 
 **Quick Start**:
 ```bash
@@ -210,10 +217,14 @@ make check
 **Documentation**:
 - [Google Test Quick Reference](./GOOGLE_TEST_QUICK_REFERENCE.md) - **Start here!**
 - [Test Framework Migration Plan](./TEST_FRAMEWORK_MIGRATION.md) - Complete migration guide
-- [Test Getting Started Guide](../../tests/README.md) - Developer guide
+- [Phase 2 Test Blockers](./PHASE_2_TEST_BLOCKERS.md) - GameMap GUI coupling analysis
+- [Legacy Test Migration Plan](./LEGACY_TEST_MIGRATION_PLAN.md) - Detailed migration strategy
 - See MCTS module (`source/ai/mcts/`) for test examples
 
-**Next Phase**: Migrate MCTS tests to Google Test framework
+**Next Phase**:
+- ⏸️ Phase 2b test migration blocked by GameMap GUI coupling
+- 🎯 Ready to begin Tier 2 (Memory Leak Audit & Security Audit)
+- 📋 Continue incremental test migration during Tier 2 work
 
 ---
 
