@@ -116,7 +116,8 @@ nodist_asc_mapedit_OBJECTS = edgen.$(OBJEXT) edglobal.$(OBJEXT) \
 	buildingtype.$(OBJEXT) vehicletype.$(OBJEXT) \
 	containerbase.$(OBJEXT) ed_mapcomponent.$(OBJEXT) \
 	mapalgorithms.$(OBJEXT) viewcalculation.$(OBJEXT) \
-	gamemap.$(OBJEXT) password.$(OBJEXT) research.$(OBJEXT) \
+	gamemap.$(OBJEXT) game_event_dispatcher.$(OBJEXT) \
+	password.$(OBJEXT) research.$(OBJEXT) \
 	mapdisplay.$(OBJEXT) ascstring.$(OBJEXT) graphicset.$(OBJEXT) \
 	vehicle.$(OBJEXT) buildings.$(OBJEXT) \
 	networkinterface.$(OBJEXT) resourcenet.$(OBJEXT) \
@@ -200,6 +201,7 @@ am__depfiles_remade = ./$(DEPDIR)/accessconstraints-editor.Po \
 	./$(DEPDIR)/fieldimageloader.Po \
 	./$(DEPDIR)/gameevent_dialogs.Po ./$(DEPDIR)/gameevents.Po \
 	./$(DEPDIR)/gameeventsystem.Po ./$(DEPDIR)/gamemap.Po \
+	./$(DEPDIR)/game_event_dispatcher.Po \
 	./$(DEPDIR)/gameoptions.Po ./$(DEPDIR)/geometry.Po \
 	./$(DEPDIR)/graphicset.Po ./$(DEPDIR)/guidimension.Po \
 	./$(DEPDIR)/i18n.Po ./$(DEPDIR)/iconrepository.Po \
