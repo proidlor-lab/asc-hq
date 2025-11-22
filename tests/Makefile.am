@@ -139,7 +139,8 @@ libcommon_la_SOURCES = \
 	$(top_srcdir)/source/contextutils.cpp \
 	$(top_srcdir)/source/unitcostcalculator-standard.cpp \
 	$(top_srcdir)/source/weaponrangelayer.cpp \
-	$(top_srcdir)/source/unitcostcalculator-pbp.cpp
+	$(top_srcdir)/source/unitcostcalculator-pbp.cpp \
+	$(top_srcdir)/source/util/messaginghub.cpp
 
 libcommon_la_CPPFLAGS = $(AM_CPPFLAGS)
 libcommon_la_LDFLAGS = -pthread
@@ -150,7 +151,8 @@ TESTS = example_test \
 	mcts_evaluator_test \
 	version_identifier_test \
 	stream_encoding_test \
-	game_events_test
+	game_events_test \
+	gamemap_characterization_test
 #	mcts_action_executor_test  # TODO: Failing ActionGeneration test (pre-existing issue)
 #	action_container_test  # TODO: Blocked by GameMap GUI coupling - see PHASE_2_TEST_BLOCKERS.md
 
@@ -280,6 +282,15 @@ action_container_test_LDADD = \
 	$(TEST_COMMON_LIBS) \
 	libcommon.la
 action_container_test_LDFLAGS = -pthread
+
+# GameMap Characterization test (Phase 0)
+gamemap_characterization_test_SOURCES = unit/gamemap_characterization_test.cpp
+gamemap_characterization_test_LDADD = \
+	libgtest.la \
+	libgtest_main.la \
+	libcommon.la \
+	$(TEST_COMMON_LIBS)
+gamemap_characterization_test_LDFLAGS = -pthread
 
 endif # HAVE_GTEST
 

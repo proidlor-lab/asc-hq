@@ -96,7 +96,8 @@ host_triplet = @host@
 @HAVE_GTEST_TRUE@	mcts_evaluator_test$(EXEEXT) \
 @HAVE_GTEST_TRUE@	version_identifier_test$(EXEEXT) \
 @HAVE_GTEST_TRUE@	stream_encoding_test$(EXEEXT) \
-@HAVE_GTEST_TRUE@	game_events_test$(EXEEXT)
+@HAVE_GTEST_TRUE@	game_events_test$(EXEEXT) \
+@HAVE_GTEST_TRUE@	gamemap_characterization_test$(EXEEXT)
 @HAVE_GTEST_TRUE@check_PROGRAMS = $(am__EXEEXT_1)
 subdir = tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -116,7 +117,8 @@ CONFIG_CLEAN_VPATH_FILES =
 @HAVE_GTEST_TRUE@	mcts_evaluator_test$(EXEEXT) \
 @HAVE_GTEST_TRUE@	version_identifier_test$(EXEEXT) \
 @HAVE_GTEST_TRUE@	stream_encoding_test$(EXEEXT) \
-@HAVE_GTEST_TRUE@	game_events_test$(EXEEXT)
+@HAVE_GTEST_TRUE@	game_events_test$(EXEEXT) \
+@HAVE_GTEST_TRUE@	gamemap_characterization_test$(EXEEXT)
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libcommon_la_LIBADD =
 am__libcommon_la_SOURCES_DIST = $(top_srcdir)/source/soundList.cpp \
@@ -395,6 +397,19 @@ game_events_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(AM_CXXFLAGS) $(CXXFLAGS) $(game_events_test_LDFLAGS) \
 	$(LDFLAGS) -o $@
+am__gamemap_characterization_test_SOURCES_DIST =  \
+	unit/gamemap_characterization_test.cpp
+@HAVE_GTEST_TRUE@am_gamemap_characterization_test_OBJECTS =  \
+@HAVE_GTEST_TRUE@	gamemap_characterization_test.$(OBJEXT)
+gamemap_characterization_test_OBJECTS =  \
+	$(am_gamemap_characterization_test_OBJECTS)
+@HAVE_GTEST_TRUE@gamemap_characterization_test_DEPENDENCIES =  \
+@HAVE_GTEST_TRUE@	libgtest.la libgtest_main.la \
+@HAVE_GTEST_TRUE@	$(am__DEPENDENCIES_2) libcommon.la
+gamemap_characterization_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+	$(AM_CXXFLAGS) $(CXXFLAGS) \
+	$(gamemap_characterization_test_LDFLAGS) $(LDFLAGS) -o $@
 am__mcts_evaluator_test_SOURCES_DIST = unit/mcts_evaluator_test.cpp
 @HAVE_GTEST_TRUE@am_mcts_evaluator_test_OBJECTS =  \
 @HAVE_GTEST_TRUE@	mcts_evaluator_test.$(OBJEXT)
@@ -470,6 +485,7 @@ depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ./$(DEPDIR)/ascstring.Po ./$(DEPDIR)/basestrm.Po \
 	./$(DEPDIR)/example_test.Po ./$(DEPDIR)/game_events_test.Po \
+	./$(DEPDIR)/gamemap_characterization_test.Po \
 	./$(DEPDIR)/libcommon_la-accessconstraints-game.Plo \
 	./$(DEPDIR)/libcommon_la-applicationstarter.Plo \
 	./$(DEPDIR)/libcommon_la-asc-mainscreen.Plo \
@@ -605,14 +621,17 @@ am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
 SOURCES = $(libcommon_la_SOURCES) $(libgtest_la_SOURCES) \
 	$(libgtest_main_la_SOURCES) $(example_test_SOURCES) \
-	$(game_events_test_SOURCES) $(mcts_evaluator_test_SOURCES) \
-	$(mcts_snapshot_test_SOURCES) $(stream_encoding_test_SOURCES) \
+	$(game_events_test_SOURCES) \
+	$(gamemap_characterization_test_SOURCES) \
+	$(mcts_evaluator_test_SOURCES) $(mcts_snapshot_test_SOURCES) \
+	$(stream_encoding_test_SOURCES) \
 	$(version_identifier_test_SOURCES)
 DIST_SOURCES = $(am__libcommon_la_SOURCES_DIST) \
 	$(am__libgtest_la_SOURCES_DIST) \
 	$(am__libgtest_main_la_SOURCES_DIST) \
 	$(am__example_test_SOURCES_DIST) \
 	$(am__game_events_test_SOURCES_DIST) \
+	$(am__gamemap_characterization_test_SOURCES_DIST) \
 	$(am__mcts_evaluator_test_SOURCES_DIST) \
 	$(am__mcts_snapshot_test_SOURCES_DIST) \
 	$(am__stream_encoding_test_SOURCES_DIST) \
@@ -1323,6 +1342,16 @@ zipfound = @zipfound@
 
 @HAVE_GTEST_TRUE@action_container_test_LDFLAGS = -pthread
 
+# GameMap Characterization test (Phase 0)
+@HAVE_GTEST_TRUE@gamemap_characterization_test_SOURCES = unit/gamemap_characterization_test.cpp
+@HAVE_GTEST_TRUE@gamemap_characterization_test_LDADD = \
+@HAVE_GTEST_TRUE@	libgtest.la \
+@HAVE_GTEST_TRUE@	libgtest_main.la \
+@HAVE_GTEST_TRUE@	$(TEST_COMMON_LIBS) \
+@HAVE_GTEST_TRUE@	libcommon.la
+
+@HAVE_GTEST_TRUE@gamemap_characterization_test_LDFLAGS = -pthread
+
 # Always distribute test sources, even if Google Test is not available
 EXTRA_DIST = \
 	unit \
@@ -1400,6 +1429,10 @@ game_events_test$(EXEEXT): $(game_events_test_OBJECTS) $(game_events_test_DEPEND
 	@rm -f game_events_test$(EXEEXT)
 	$(AM_V_CXXLD)$(game_events_test_LINK) $(game_events_test_OBJECTS) $(game_events_test_LDADD) $(LIBS)
 
+gamemap_characterization_test$(EXEEXT): $(gamemap_characterization_test_OBJECTS) $(gamemap_characterization_test_DEPENDENCIES) $(EXTRA_gamemap_characterization_test_DEPENDENCIES) 
+	@rm -f gamemap_characterization_test$(EXEEXT)
+	$(AM_V_CXXLD)$(gamemap_characterization_test_LINK) $(gamemap_characterization_test_OBJECTS) $(gamemap_characterization_test_LDADD) $(LIBS)
+
 mcts_evaluator_test$(EXEEXT): $(mcts_evaluator_test_OBJECTS) $(mcts_evaluator_test_DEPENDENCIES) $(EXTRA_mcts_evaluator_test_DEPENDENCIES) 
 	@rm -f mcts_evaluator_test$(EXEEXT)
 	$(AM_V_CXXLD)$(mcts_evaluator_test_LINK) $(mcts_evaluator_test_OBJECTS) $(mcts_evaluator_test_LDADD) $(LIBS)
@@ -1426,6 +1459,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/basestrm.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/example_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/game_events_test.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gamemap_characterization_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-accessconstraints-game.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-applicationstarter.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-asc-mainscreen.Plo@am__quote@ # am--include-marker
@@ -2353,6 +2387,20 @@ game_events_test.obj: unit/game_events_test.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o game_events_test.obj `if test -f 'unit/game_events_test.cpp'; then $(CYGPATH_W) 'unit/game_events_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/game_events_test.cpp'; fi`
 
+gamemap_characterization_test.o: unit/gamemap_characterization_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gamemap_characterization_test.o -MD -MP -MF $(DEPDIR)/gamemap_characterization_test.Tpo -c -o gamemap_characterization_test.o `test -f 'unit/gamemap_characterization_test.cpp' || echo '$(srcdir)/'`unit/gamemap_characterization_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gamemap_characterization_test.Tpo $(DEPDIR)/gamemap_characterization_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/gamemap_characterization_test.cpp' object='gamemap_characterization_test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gamemap_characterization_test.o `test -f 'unit/gamemap_characterization_test.cpp' || echo '$(srcdir)/'`unit/gamemap_characterization_test.cpp
+
+gamemap_characterization_test.obj: unit/gamemap_characterization_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gamemap_characterization_test.obj -MD -MP -MF $(DEPDIR)/gamemap_characterization_test.Tpo -c -o gamemap_characterization_test.obj `if test -f 'unit/gamemap_characterization_test.cpp'; then $(CYGPATH_W) 'unit/gamemap_characterization_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/gamemap_characterization_test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gamemap_characterization_test.Tpo $(DEPDIR)/gamemap_characterization_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/gamemap_characterization_test.cpp' object='gamemap_characterization_test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gamemap_characterization_test.obj `if test -f 'unit/gamemap_characterization_test.cpp'; then $(CYGPATH_W) 'unit/gamemap_characterization_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/gamemap_characterization_test.cpp'; fi`
+
 mcts_evaluator_test.o: unit/mcts_evaluator_test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mcts_evaluator_test.o -MD -MP -MF $(DEPDIR)/mcts_evaluator_test.Tpo -c -o mcts_evaluator_test.o `test -f 'unit/mcts_evaluator_test.cpp' || echo '$(srcdir)/'`unit/mcts_evaluator_test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mcts_evaluator_test.Tpo $(DEPDIR)/mcts_evaluator_test.Po
@@ -2741,6 +2789,13 @@ game_events_test.log: game_events_test$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
+gamemap_characterization_test.log: gamemap_characterization_test$(EXEEXT)
+	@p='gamemap_characterization_test$(EXEEXT)'; \
+	b='gamemap_characterization_test'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 .test.log:
 	@p='$<'; \
 	$(am__set_b); \
@@ -2837,6 +2892,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/basestrm.Po
 	-rm -f ./$(DEPDIR)/example_test.Po
 	-rm -f ./$(DEPDIR)/game_events_test.Po
+	-rm -f ./$(DEPDIR)/gamemap_characterization_test.Po
 	-rm -f ./$(DEPDIR)/libcommon_la-accessconstraints-game.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-applicationstarter.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-asc-mainscreen.Plo
@@ -3001,6 +3057,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/basestrm.Po
 	-rm -f ./$(DEPDIR)/example_test.Po
 	-rm -f ./$(DEPDIR)/game_events_test.Po
+	-rm -f ./$(DEPDIR)/gamemap_characterization_test.Po
 	-rm -f ./$(DEPDIR)/libcommon_la-accessconstraints-game.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-applicationstarter.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-asc-mainscreen.Plo

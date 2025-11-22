@@ -117,7 +117,8 @@ am__objects_1 = soundList.$(OBJEXT) typen.$(OBJEXT) \
 	astar2.$(OBJEXT) vehicletype.$(OBJEXT) objects.$(OBJEXT) \
 	stdio-errorhandler.$(OBJEXT) buildingtype.$(OBJEXT) \
 	containerbase.$(OBJEXT) mapalgorithms.$(OBJEXT) \
-	viewcalculation.$(OBJEXT) gamemap.$(OBJEXT) password.$(OBJEXT) \
+	viewcalculation.$(OBJEXT) gamemap.$(OBJEXT) \
+	game_event_dispatcher.$(OBJEXT) password.$(OBJEXT) \
 	replay.$(OBJEXT) research.$(OBJEXT) fieldimageloader.$(OBJEXT) \
 	mapdisplay.$(OBJEXT) resourcenet.$(OBJEXT) ascstring.$(OBJEXT) \
 	graphicset.$(OBJEXT) vehicle.$(OBJEXT) buildings.$(OBJEXT) \
@@ -222,7 +223,8 @@ am__depfiles_remade = ./$(DEPDIR)/accessconstraints-game.Po \
 	./$(DEPDIR)/controls.Po ./$(DEPDIR)/dashboard.Po \
 	./$(DEPDIR)/dataversioncheck.Po ./$(DEPDIR)/dialog.Po \
 	./$(DEPDIR)/dlg_box.Po ./$(DEPDIR)/explosivemines.Po \
-	./$(DEPDIR)/fieldimageloader.Po ./$(DEPDIR)/gamedialog.Po \
+	./$(DEPDIR)/fieldimageloader.Po \
+	./$(DEPDIR)/game_event_dispatcher.Po ./$(DEPDIR)/gamedialog.Po \
 	./$(DEPDIR)/gamedlg.Po ./$(DEPDIR)/gameevent_dialogs.Po \
 	./$(DEPDIR)/gameevents.Po ./$(DEPDIR)/gameeventsystem.Po \
 	./$(DEPDIR)/gamemap.Po ./$(DEPDIR)/gameoptions.Po \
@@ -520,7 +522,7 @@ loadbi3.cpp gamedlg.cpp dlg_box.cpp dialog.cpp controls.cpp \
 basestrm.cpp basegfx.cpp attack.cpp replaymapdisplay.cpp memory-measurement.cpp \
 gameoptions.cpp astar2.cpp vehicletype.cpp objects.cpp stdio-errorhandler.cpp \
 buildingtype.cpp containerbase.cpp mapalgorithms.cpp viewcalculation.cpp \
-gamemap.cpp password.cpp replay.cpp research.cpp fieldimageloader.cpp \
+gamemap.cpp game_event_dispatcher.cpp password.cpp replay.cpp research.cpp fieldimageloader.cpp \
 mapdisplay.cpp resourcenet.cpp ascstring.cpp graphicset.cpp \
 vehicle.cpp buildings.cpp networkinterface.cpp textfileparser.cpp terraintype.cpp \
 objecttype.cpp textfiletags.cpp itemrepository.cpp stringtokenizer.cpp music.cpp \
@@ -690,6 +692,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dlg_box.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/explosivemines.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fieldimageloader.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/game_event_dispatcher.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gamedialog.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gamedlg.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gameevent_dialogs.Po@am__quote@ # am--include-marker
@@ -960,6 +963,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/dlg_box.Po
 	-rm -f ./$(DEPDIR)/explosivemines.Po
 	-rm -f ./$(DEPDIR)/fieldimageloader.Po
+	-rm -f ./$(DEPDIR)/game_event_dispatcher.Po
 	-rm -f ./$(DEPDIR)/gamedialog.Po
 	-rm -f ./$(DEPDIR)/gamedlg.Po
 	-rm -f ./$(DEPDIR)/gameevent_dialogs.Po
@@ -1113,6 +1117,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/dlg_box.Po
 	-rm -f ./$(DEPDIR)/explosivemines.Po
 	-rm -f ./$(DEPDIR)/fieldimageloader.Po
+	-rm -f ./$(DEPDIR)/game_event_dispatcher.Po
 	-rm -f ./$(DEPDIR)/gamedialog.Po
 	-rm -f ./$(DEPDIR)/gamedlg.Po
 	-rm -f ./$(DEPDIR)/gameevent_dialogs.Po
@@ -1232,7 +1237,7 @@ uninstall-am: uninstall-binPROGRAMS
 
 .PRECIOUS: Makefile
 
-vpath %.cpp $(srcdir)/../.. $(srcdir)/../../unittests 
+vpath %.cpp $(srcdir)/../.. $(srcdir)/../../unittests $(srcdir)/../../core/events 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

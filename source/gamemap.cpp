@@ -260,6 +260,10 @@ GameMap ::GameMap(void)
    nativeMessageLanguage = "en_US";
 
    sigMapCreation(*this);
+
+   // Phase 1: Parallel event dispatch (keeping old signal for compatibility)
+   eventDispatcher.dispatch(std::make_unique<asc::core::events::MapLifecycleEvent>(
+      asc::core::events::GameEventType::MapCreated, this));
 }
 
 GameMap::Campaign::Campaign() {
@@ -1186,8 +1190,13 @@ void GameMap::beginTurn() {
         i != player[actplayer].vehicleList.end(); i++)
       (*i)->beginTurn();
 
-   if (player[actplayer].exist() && player[actplayer].stat != Player::off)
+   if (player[actplayer].exist() && player[actplayer].stat != Player::off) {
       sigPlayerTurnBegins(player[actplayer]);
+
+      // Phase 1: Parallel event dispatch (keeping old signal for compatibility)
+      eventDispatcher.dispatch(std::make_unique<asc::core::events::PlayerEvent>(
+         asc::core::events::GameEventType::PlayerTurnBegins, actplayer));
+   }
 }
 
 void GameMap::endTurn() {
@@ -1199,6 +1208,10 @@ void GameMap::endTurn() {
 
    sigPlayerTurnEnds(player[actplayer]);
    sigPlayerTurnEndsStatic(this, player[actplayer]);
+
+   // Phase 1: Parallel event dispatch (keeping old signal for compatibility)
+   eventDispatcher.dispatch(std::make_unique<asc::core::events::PlayerEvent>(
+      asc::core::events::GameEventType::PlayerTurnEnds, actplayer));
 
    actions.breakUndo();  // commits all actions to the replay log
 
@@ -1262,6 +1275,10 @@ void GameMap::endTurn() {
    processJournal();
 
    sigPlayerTurnHasEnded(player[actplayer]);
+
+   // Phase 1: Parallel event dispatch (keeping old signal for compatibility)
+   eventDispatcher.dispatch(std::make_unique<asc::core::events::PlayerEvent>(
+      asc::core::events::GameEventType::PlayerTurnHasEnded, actplayer));
 }
 
 void GameMap::endRound() {
@@ -1399,6 +1416,11 @@ sigc::signal<void, GameMap*, Player&> GameMap::sigPlayerTurnEndsStatic;
 
 GameMap ::~GameMap() {
    sigMapDeletion(*this);
+
+   // Phase 1: Parallel event dispatch (keeping old signal for compatibility)
+   eventDispatcher.dispatch(std::make_unique<asc::core::events::MapLifecycleEvent>(
+      asc::core::events::GameEventType::MapDestroyed, this));
+
    state = Destruction;
 
    if (field)
@@ -1678,8 +1700,12 @@ int GameMap::resize(int top, int bottom, int left, int right)  // positive: larg
 
    overviewMapHolder.resetSize();
 
-   if (left || top)
+   if (left || top) {
       sigCoordinateShift(MapCoodinateVector(left, top));
+
+      // Phase 1: Parallel event dispatch (keeping old signal for compatibility)
+      eventDispatcher.dispatch(std::make_unique<asc::core::events::CoordinateShiftEvent>());
+   }
 
    return 0;
 }
@@ -1818,6 +1844,10 @@ void GameMap ::startGame() {
 
    // calling signal
    newRound();
+
+   // Phase 1: Parallel event dispatch (keeping old signal for compatibility)
+   eventDispatcher.dispatch(std::make_unique<asc::core::events::GameEvent>(
+      asc::core::events::GameEventType::RoundStarts));
 }
 
 bool GameMap::UnitProduction::check(int id) {

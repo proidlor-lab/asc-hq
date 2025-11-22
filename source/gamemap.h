@@ -42,6 +42,7 @@
 #include "player.h"
 
 #include "actions/actioncontainer.h"
+#include "game_event_dispatcher.h"
 
 class AbstractTaskContainer;
 
@@ -479,6 +480,10 @@ class GameMap {
 
    //! called when a new round starts (after switching from player 7 to player 0 )
    sigc::signal<void> newRound;
+
+   //! New event system (Phase 1 - Event System Extraction)
+   //! Replaces sigc::signals with a cleaner abstraction
+   asc::core::events::GameEventDispatcher eventDispatcher;
 
    //! if a player has won a singleplayer map, but wants to continue playing without any enemies,
    //! this will be set to 1
