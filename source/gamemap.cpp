@@ -198,13 +198,20 @@ void OverviewMapHolder::clear(bool allImages) {
 }
 
 void OverviewMapHolder::clearmap(GameMap* actmap) {
-   if (actmap)
-      actmap->overviewMapHolder.clear();
+   if (actmap) {
+      // Phase 2: Use new interface if available, otherwise use legacy
+      if (actmap->getOverviewMapGenerator()) {
+         actmap->getOverviewMapGenerator()->clear();
+      } else {
+         actmap->overviewMapHolder.clear();
+      }
+   }
 }
 
 GameMap ::GameMap(void)
    : actions(this),
      actionRecorder(NULL),
+     overviewMapGenerator(nullptr), // Phase 2: Optional UI component (null for headless)
      overviewMapHolder(*this),
      network(NULL),
      packageData(NULL) {
@@ -273,6 +280,10 @@ GameMap::Campaign::Campaign() {
 }
 
 void GameMap ::guiHooked() {
+   // Phase 2: Connect overview map generator if present
+   if (overviewMapGenerator) {
+      overviewMapGenerator->connect();
+   }
    overviewMapHolder.connect();
    dialogsHooked = true;
 }
@@ -949,6 +960,10 @@ void GameMap ::allocateFields(int x, int y, TerrainType::Weather* terrain) {
    temp2 = new char[x * y]();
    temp3 = new int[x * y]();
    temp4 = new int[x * y]();
+   // Phase 2: Connect overview map generator if present
+   if (overviewMapGenerator) {
+      overviewMapGenerator->connect();
+   }
    overviewMapHolder.connect();
 }
 
@@ -1698,6 +1713,10 @@ int GameMap::resize(int top, int bottom, int left, int right)  // positive: larg
       ypos = ysize - idisplaymap.getscreenysize() ;
     */
 
+   // Phase 2: Reset overview map generator if present
+   if (overviewMapGenerator) {
+      overviewMapGenerator->resetSize();
+   }
    overviewMapHolder.resetSize();
 
    if (left || top) {

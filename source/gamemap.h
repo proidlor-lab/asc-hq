@@ -43,6 +43,7 @@
 
 #include "actions/actioncontainer.h"
 #include "game_event_dispatcher.h"
+#include "core/ui_interfaces/overview_map_generator.h"
 
 class AbstractTaskContainer;
 
@@ -503,6 +504,31 @@ class GameMap {
    void read(tnstream& stream);
    void write(tnstream& stream);
 
+   // Phase 2 Refactoring: Overview map generation abstraction
+   // The overview map generator is optional (can be nullptr for headless mode)
+  private:
+   asc::core::ui_interfaces::IOverviewMapGenerator* overviewMapGenerator;
+
+  public:
+   /**
+    * @brief Set the overview map generator (UI component)
+    * @param generator Pointer to the generator, or nullptr for headless mode
+    */
+   void setOverviewMapGenerator(asc::core::ui_interfaces::IOverviewMapGenerator* generator) {
+      overviewMapGenerator = generator;
+   }
+
+   /**
+    * @brief Get the overview map generator
+    * @return Pointer to the generator, or nullptr if not set (headless mode)
+    */
+   asc::core::ui_interfaces::IOverviewMapGenerator* getOverviewMapGenerator() const {
+      return overviewMapGenerator;
+   }
+
+   // DEPRECATED: Legacy overview map holder (Phase 2 - to be removed)
+   // This member is kept temporarily for backward compatibility
+   // New code should use getOverviewMapGenerator() instead
    OverviewMapHolder overviewMapHolder;
 
    /** @name Access to item types

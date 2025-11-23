@@ -223,7 +223,8 @@ am__libcommon_la_SOURCES_DIST = $(top_srcdir)/source/soundList.cpp \
 	$(top_srcdir)/source/contextutils.cpp \
 	$(top_srcdir)/source/unitcostcalculator-standard.cpp \
 	$(top_srcdir)/source/weaponrangelayer.cpp \
-	$(top_srcdir)/source/unitcostcalculator-pbp.cpp
+	$(top_srcdir)/source/unitcostcalculator-pbp.cpp \
+	$(top_srcdir)/source/util/messaginghub.cpp
 @HAVE_GTEST_TRUE@am_libcommon_la_OBJECTS = libcommon_la-soundList.lo \
 @HAVE_GTEST_TRUE@	libcommon_la-typen.lo \
 @HAVE_GTEST_TRUE@	libcommon_la-applicationstarter.lo \
@@ -326,7 +327,8 @@ am__libcommon_la_SOURCES_DIST = $(top_srcdir)/source/soundList.cpp \
 @HAVE_GTEST_TRUE@	libcommon_la-contextutils.lo \
 @HAVE_GTEST_TRUE@	libcommon_la-unitcostcalculator-standard.lo \
 @HAVE_GTEST_TRUE@	libcommon_la-weaponrangelayer.lo \
-@HAVE_GTEST_TRUE@	libcommon_la-unitcostcalculator-pbp.lo
+@HAVE_GTEST_TRUE@	libcommon_la-unitcostcalculator-pbp.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-messaginghub.lo
 libcommon_la_OBJECTS = $(am_libcommon_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -404,8 +406,8 @@ am__gamemap_characterization_test_SOURCES_DIST =  \
 gamemap_characterization_test_OBJECTS =  \
 	$(am_gamemap_characterization_test_OBJECTS)
 @HAVE_GTEST_TRUE@gamemap_characterization_test_DEPENDENCIES =  \
-@HAVE_GTEST_TRUE@	libgtest.la libgtest_main.la \
-@HAVE_GTEST_TRUE@	$(am__DEPENDENCIES_2) libcommon.la
+@HAVE_GTEST_TRUE@	libgtest.la libgtest_main.la libcommon.la \
+@HAVE_GTEST_TRUE@	$(am__DEPENDENCIES_2)
 gamemap_characterization_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(AM_CXXFLAGS) $(CXXFLAGS) \
@@ -541,6 +543,7 @@ am__depfiles_remade = ./$(DEPDIR)/ascstring.Po ./$(DEPDIR)/basestrm.Po \
 	./$(DEPDIR)/libcommon_la-memory-measurement.Plo \
 	./$(DEPDIR)/libcommon_la-messagedlg.Plo \
 	./$(DEPDIR)/libcommon_la-messages.Plo \
+	./$(DEPDIR)/libcommon_la-messaginghub.Plo \
 	./$(DEPDIR)/libcommon_la-misc.Plo \
 	./$(DEPDIR)/libcommon_la-music.Plo \
 	./$(DEPDIR)/libcommon_la-networkinterface.Plo \
@@ -1200,7 +1203,8 @@ zipfound = @zipfound@
 @HAVE_GTEST_TRUE@	$(top_srcdir)/source/contextutils.cpp \
 @HAVE_GTEST_TRUE@	$(top_srcdir)/source/unitcostcalculator-standard.cpp \
 @HAVE_GTEST_TRUE@	$(top_srcdir)/source/weaponrangelayer.cpp \
-@HAVE_GTEST_TRUE@	$(top_srcdir)/source/unitcostcalculator-pbp.cpp
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/unitcostcalculator-pbp.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/util/messaginghub.cpp
 
 @HAVE_GTEST_TRUE@libcommon_la_CPPFLAGS = $(AM_CPPFLAGS)
 @HAVE_GTEST_TRUE@libcommon_la_LDFLAGS = -pthread
@@ -1347,8 +1351,8 @@ zipfound = @zipfound@
 @HAVE_GTEST_TRUE@gamemap_characterization_test_LDADD = \
 @HAVE_GTEST_TRUE@	libgtest.la \
 @HAVE_GTEST_TRUE@	libgtest_main.la \
-@HAVE_GTEST_TRUE@	$(TEST_COMMON_LIBS) \
-@HAVE_GTEST_TRUE@	libcommon.la
+@HAVE_GTEST_TRUE@	libcommon.la \
+@HAVE_GTEST_TRUE@	$(TEST_COMMON_LIBS)
 
 @HAVE_GTEST_TRUE@gamemap_characterization_test_LDFLAGS = -pthread
 
@@ -1515,6 +1519,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-memory-measurement.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-messagedlg.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-messages.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-messaginghub.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-misc.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-music.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-networkinterface.Plo@am__quote@ # am--include-marker
@@ -2345,6 +2350,13 @@ libcommon_la-unitcostcalculator-pbp.lo: $(top_srcdir)/source/unitcostcalculator-
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-unitcostcalculator-pbp.lo `test -f '$(top_srcdir)/source/unitcostcalculator-pbp.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/unitcostcalculator-pbp.cpp
 
+libcommon_la-messaginghub.lo: $(top_srcdir)/source/util/messaginghub.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-messaginghub.lo -MD -MP -MF $(DEPDIR)/libcommon_la-messaginghub.Tpo -c -o libcommon_la-messaginghub.lo `test -f '$(top_srcdir)/source/util/messaginghub.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/util/messaginghub.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-messaginghub.Tpo $(DEPDIR)/libcommon_la-messaginghub.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/util/messaginghub.cpp' object='libcommon_la-messaginghub.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-messaginghub.lo `test -f '$(top_srcdir)/source/util/messaginghub.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/util/messaginghub.cpp
+
 libgtest_la-gtest-all.lo: $(GTEST_DIR)/src/gtest-all.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgtest_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libgtest_la-gtest-all.lo -MD -MP -MF $(DEPDIR)/libgtest_la-gtest-all.Tpo -c -o libgtest_la-gtest-all.lo `test -f '$(GTEST_DIR)/src/gtest-all.cc' || echo '$(srcdir)/'`$(GTEST_DIR)/src/gtest-all.cc
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgtest_la-gtest-all.Tpo $(DEPDIR)/libgtest_la-gtest-all.Plo
@@ -2948,6 +2960,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/libcommon_la-memory-measurement.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-messagedlg.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-messages.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-messaginghub.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-misc.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-music.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-networkinterface.Plo
@@ -3113,6 +3126,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/libcommon_la-memory-measurement.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-messagedlg.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-messages.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-messaginghub.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-misc.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-music.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-networkinterface.Plo

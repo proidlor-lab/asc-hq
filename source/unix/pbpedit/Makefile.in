@@ -117,9 +117,9 @@ nodist_asc_pbpedit_OBJECTS = edgen.$(OBJEXT) edglobal.$(OBJEXT) \
 	containerbase.$(OBJEXT) ed_mapcomponent.$(OBJEXT) \
 	mapalgorithms.$(OBJEXT) viewcalculation.$(OBJEXT) \
 	gamemap.$(OBJEXT) game_event_dispatcher.$(OBJEXT) \
-	password.$(OBJEXT) research.$(OBJEXT) \
-	mapdisplay.$(OBJEXT) ascstring.$(OBJEXT) graphicset.$(OBJEXT) \
-	vehicle.$(OBJEXT) buildings.$(OBJEXT) \
+	overview_map_generator_service.$(OBJEXT) password.$(OBJEXT) \
+	research.$(OBJEXT) mapdisplay.$(OBJEXT) ascstring.$(OBJEXT) \
+	graphicset.$(OBJEXT) vehicle.$(OBJEXT) buildings.$(OBJEXT) \
 	networkinterface.$(OBJEXT) resourcenet.$(OBJEXT) \
 	textfileparser.$(OBJEXT) terraintype.$(OBJEXT) \
 	objecttype.$(OBJEXT) textfiletags.$(OBJEXT) \
@@ -200,9 +200,9 @@ am__depfiles_remade = ./$(DEPDIR)/accessconstraints-editor.Po \
 	./$(DEPDIR)/edmain.Po ./$(DEPDIR)/edmisc.Po \
 	./$(DEPDIR)/edselfnt.Po ./$(DEPDIR)/explosivemines.Po \
 	./$(DEPDIR)/fieldimageloader.Po \
+	./$(DEPDIR)/game_event_dispatcher.Po \
 	./$(DEPDIR)/gameevent_dialogs.Po ./$(DEPDIR)/gameevents.Po \
 	./$(DEPDIR)/gameeventsystem.Po ./$(DEPDIR)/gamemap.Po \
-	./$(DEPDIR)/game_event_dispatcher.Po \
 	./$(DEPDIR)/gameoptions.Po ./$(DEPDIR)/geometry.Po \
 	./$(DEPDIR)/graphicset.Po ./$(DEPDIR)/guidimension.Po \
 	./$(DEPDIR)/i18n.Po ./$(DEPDIR)/iconrepository.Po \
@@ -217,6 +217,7 @@ am__depfiles_remade = ./$(DEPDIR)/accessconstraints-editor.Po \
 	./$(DEPDIR)/misc.Po ./$(DEPDIR)/music.Po \
 	./$(DEPDIR)/networkinterface.Po ./$(DEPDIR)/newfont.Po \
 	./$(DEPDIR)/objects.Po ./$(DEPDIR)/objecttype.Po \
+	./$(DEPDIR)/overview_map_generator_service.Po \
 	./$(DEPDIR)/overviewmapimage.Po \
 	./$(DEPDIR)/overviewmappanel.Po ./$(DEPDIR)/package.Po \
 	./$(DEPDIR)/packagemanager.Po ./$(DEPDIR)/packagerepository.Po \
@@ -491,7 +492,7 @@ spfst.cpp sgstream.cpp palette.cpp newfont.cpp misc.cpp loadpcxc.cpp \
 loaders.cpp loadbi3.cpp dlg_box.cpp dialog.cpp basestrm.cpp basegfx.cpp \
 attack.cpp gameoptions.cpp maped-mainscreen.cpp stdio-errorhandler.cpp\
 buildingtype.cpp vehicletype.cpp containerbase.cpp ed_mapcomponent.cpp \
-mapalgorithms.cpp viewcalculation.cpp gamemap.cpp game_event_dispatcher.cpp password.cpp \
+mapalgorithms.cpp viewcalculation.cpp gamemap.cpp game_event_dispatcher.cpp overview_map_generator_service.cpp password.cpp \
 research.cpp mapdisplay.cpp ascstring.cpp graphicset.cpp \
 vehicle.cpp buildings.cpp networkinterface.cpp resourcenet.cpp textfileparser.cpp \
 terraintype.cpp objecttype.cpp textfiletags.cpp itemrepository.cpp \
@@ -639,6 +640,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/edselfnt.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/explosivemines.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fieldimageloader.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/game_event_dispatcher.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gameevent_dialogs.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gameevents.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gameeventsystem.Po@am__quote@ # am--include-marker
@@ -669,6 +671,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/newfont.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/objects.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/objecttype.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overview_map_generator_service.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overviewmapimage.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overviewmappanel.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/package.Po@am__quote@ # am--include-marker
@@ -890,6 +893,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/edselfnt.Po
 	-rm -f ./$(DEPDIR)/explosivemines.Po
 	-rm -f ./$(DEPDIR)/fieldimageloader.Po
+	-rm -f ./$(DEPDIR)/game_event_dispatcher.Po
 	-rm -f ./$(DEPDIR)/gameevent_dialogs.Po
 	-rm -f ./$(DEPDIR)/gameevents.Po
 	-rm -f ./$(DEPDIR)/gameeventsystem.Po
@@ -920,6 +924,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/newfont.Po
 	-rm -f ./$(DEPDIR)/objects.Po
 	-rm -f ./$(DEPDIR)/objecttype.Po
+	-rm -f ./$(DEPDIR)/overview_map_generator_service.Po
 	-rm -f ./$(DEPDIR)/overviewmapimage.Po
 	-rm -f ./$(DEPDIR)/overviewmappanel.Po
 	-rm -f ./$(DEPDIR)/package.Po
@@ -1025,6 +1030,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/edselfnt.Po
 	-rm -f ./$(DEPDIR)/explosivemines.Po
 	-rm -f ./$(DEPDIR)/fieldimageloader.Po
+	-rm -f ./$(DEPDIR)/game_event_dispatcher.Po
 	-rm -f ./$(DEPDIR)/gameevent_dialogs.Po
 	-rm -f ./$(DEPDIR)/gameevents.Po
 	-rm -f ./$(DEPDIR)/gameeventsystem.Po
@@ -1055,6 +1061,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/newfont.Po
 	-rm -f ./$(DEPDIR)/objects.Po
 	-rm -f ./$(DEPDIR)/objecttype.Po
+	-rm -f ./$(DEPDIR)/overview_map_generator_service.Po
 	-rm -f ./$(DEPDIR)/overviewmapimage.Po
 	-rm -f ./$(DEPDIR)/overviewmappanel.Po
 	-rm -f ./$(DEPDIR)/package.Po
@@ -1128,7 +1135,7 @@ uninstall-am: uninstall-binPROGRAMS
 
 .PRECIOUS: Makefile
 
-vpath %.cpp $(srcdir)/../..
+vpath %.cpp $(srcdir)/../.. $(srcdir)/../../ui
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

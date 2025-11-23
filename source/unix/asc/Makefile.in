@@ -118,7 +118,8 @@ am__objects_1 = soundList.$(OBJEXT) typen.$(OBJEXT) \
 	stdio-errorhandler.$(OBJEXT) buildingtype.$(OBJEXT) \
 	containerbase.$(OBJEXT) mapalgorithms.$(OBJEXT) \
 	viewcalculation.$(OBJEXT) gamemap.$(OBJEXT) \
-	game_event_dispatcher.$(OBJEXT) password.$(OBJEXT) \
+	game_event_dispatcher.$(OBJEXT) \
+	overview_map_generator_service.$(OBJEXT) password.$(OBJEXT) \
 	replay.$(OBJEXT) research.$(OBJEXT) fieldimageloader.$(OBJEXT) \
 	mapdisplay.$(OBJEXT) resourcenet.$(OBJEXT) ascstring.$(OBJEXT) \
 	graphicset.$(OBJEXT) vehicle.$(OBJEXT) buildings.$(OBJEXT) \
@@ -243,6 +244,7 @@ am__depfiles_remade = ./$(DEPDIR)/accessconstraints-game.Po \
 	./$(DEPDIR)/music.Po ./$(DEPDIR)/networkinterface.Po \
 	./$(DEPDIR)/networksupervisor.Po ./$(DEPDIR)/newfont.Po \
 	./$(DEPDIR)/objects.Po ./$(DEPDIR)/objecttype.Po \
+	./$(DEPDIR)/overview_map_generator_service.Po \
 	./$(DEPDIR)/overviewmapimage.Po \
 	./$(DEPDIR)/overviewmappanel.Po ./$(DEPDIR)/package.Po \
 	./$(DEPDIR)/packagemanager.Po ./$(DEPDIR)/packagerepository.Po \
@@ -522,7 +524,7 @@ loadbi3.cpp gamedlg.cpp dlg_box.cpp dialog.cpp controls.cpp \
 basestrm.cpp basegfx.cpp attack.cpp replaymapdisplay.cpp memory-measurement.cpp \
 gameoptions.cpp astar2.cpp vehicletype.cpp objects.cpp stdio-errorhandler.cpp \
 buildingtype.cpp containerbase.cpp mapalgorithms.cpp viewcalculation.cpp \
-gamemap.cpp game_event_dispatcher.cpp password.cpp replay.cpp research.cpp fieldimageloader.cpp \
+gamemap.cpp game_event_dispatcher.cpp overview_map_generator_service.cpp password.cpp replay.cpp research.cpp fieldimageloader.cpp \
 mapdisplay.cpp resourcenet.cpp ascstring.cpp graphicset.cpp \
 vehicle.cpp buildings.cpp networkinterface.cpp textfileparser.cpp terraintype.cpp \
 objecttype.cpp textfiletags.cpp itemrepository.cpp stringtokenizer.cpp music.cpp \
@@ -730,6 +732,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/newfont.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/objects.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/objecttype.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overview_map_generator_service.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overviewmapimage.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overviewmappanel.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/package.Po@am__quote@ # am--include-marker
@@ -1001,6 +1004,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/newfont.Po
 	-rm -f ./$(DEPDIR)/objects.Po
 	-rm -f ./$(DEPDIR)/objecttype.Po
+	-rm -f ./$(DEPDIR)/overview_map_generator_service.Po
 	-rm -f ./$(DEPDIR)/overviewmapimage.Po
 	-rm -f ./$(DEPDIR)/overviewmappanel.Po
 	-rm -f ./$(DEPDIR)/package.Po
@@ -1155,6 +1159,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/newfont.Po
 	-rm -f ./$(DEPDIR)/objects.Po
 	-rm -f ./$(DEPDIR)/objecttype.Po
+	-rm -f ./$(DEPDIR)/overview_map_generator_service.Po
 	-rm -f ./$(DEPDIR)/overviewmapimage.Po
 	-rm -f ./$(DEPDIR)/overviewmappanel.Po
 	-rm -f ./$(DEPDIR)/package.Po
@@ -1237,7 +1242,7 @@ uninstall-am: uninstall-binPROGRAMS
 
 .PRECIOUS: Makefile
 
-vpath %.cpp $(srcdir)/../.. $(srcdir)/../../unittests $(srcdir)/../../core/events 
+vpath %.cpp $(srcdir)/../.. $(srcdir)/../../unittests $(srcdir)/../../ui 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

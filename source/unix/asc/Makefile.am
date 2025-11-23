@@ -1,4 +1,4 @@
-vpath %.cpp $(srcdir)/../.. $(srcdir)/../../unittests 
+vpath %.cpp $(srcdir)/../.. $(srcdir)/../../unittests $(srcdir)/../../ui 
 
 MAINTAINERCLEANFILES	= Makefile.in
 
@@ -19,7 +19,7 @@ loadbi3.cpp gamedlg.cpp dlg_box.cpp dialog.cpp controls.cpp \
 basestrm.cpp basegfx.cpp attack.cpp replaymapdisplay.cpp memory-measurement.cpp \
 gameoptions.cpp astar2.cpp vehicletype.cpp objects.cpp stdio-errorhandler.cpp \
 buildingtype.cpp containerbase.cpp mapalgorithms.cpp viewcalculation.cpp \
-gamemap.cpp game_event_dispatcher.cpp password.cpp replay.cpp research.cpp fieldimageloader.cpp \
+gamemap.cpp game_event_dispatcher.cpp overview_map_generator_service.cpp password.cpp replay.cpp research.cpp fieldimageloader.cpp \
 mapdisplay.cpp resourcenet.cpp ascstring.cpp graphicset.cpp \
 vehicle.cpp buildings.cpp networkinterface.cpp textfileparser.cpp terraintype.cpp \
 objecttype.cpp textfiletags.cpp itemrepository.cpp stringtokenizer.cpp music.cpp \
