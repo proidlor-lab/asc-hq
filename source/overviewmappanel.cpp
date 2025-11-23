@@ -61,8 +61,8 @@ class ColorMerger_Invert {
 
 void OverviewMapPanel::painter(const PG_Rect& src, const ASCString& name, const PG_Rect& dst) {
    Surface screen = Surface::Wrap(PG_Application::GetScreen());
-   if (name == "overviewmap" && actmap && !locked) {
-      Surface s = actmap->overviewMapHolder.getOverviewMap(false);
+   if (name == "overviewmap" && actmap && actmap->overviewMapHolder && !locked) {
+      Surface s = actmap->overviewMapHolder->getOverviewMap(false);
 
       MegaBlitter<gamemapPixelSize, gamemapPixelSize, ColorTransform_None,
                   ColorMerger_AlphaOverwrite, SourcePixelSelector_DirectZoom,

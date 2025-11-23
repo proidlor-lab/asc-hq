@@ -805,7 +805,11 @@ void tspfldloaders::readfields(void) {
       l++;
    } while (l < cnt1);
 
-   spfld->overviewMapHolder.connect();
+   // Phase 2: Allocate legacy OverviewMapHolder on-demand
+   if (!spfld->overviewMapHolder) {
+      spfld->overviewMapHolder = new OverviewMapHolder(*spfld);
+   }
+   spfld->overviewMapHolder->connect();
 }
 
 /**************************************************************/

@@ -202,8 +202,8 @@ void OverviewMapHolder::clearmap(GameMap* actmap) {
       // Phase 2: Use new interface if available, otherwise use legacy
       if (actmap->getOverviewMapGenerator()) {
          actmap->getOverviewMapGenerator()->clear();
-      } else {
-         actmap->overviewMapHolder.clear();
+      } else if (actmap->overviewMapHolder) {
+         actmap->overviewMapHolder->clear();
       }
    }
 }
@@ -212,7 +212,7 @@ GameMap ::GameMap(void)
    : actions(this),
      actionRecorder(NULL),
      overviewMapGenerator(nullptr), // Phase 2: Optional UI component (null for headless)
-     overviewMapHolder(*this),
+     overviewMapHolder(nullptr),    // Phase 2: Optional for headless mode (allocated in guiHooked)
      network(NULL),
      packageData(NULL) {
    serverMapID = 0;
@@ -284,7 +284,11 @@ void GameMap ::guiHooked() {
    if (overviewMapGenerator) {
       overviewMapGenerator->connect();
    }
-   overviewMapHolder.connect();
+   // Phase 2: Allocate legacy OverviewMapHolder on-demand when GUI is hooked
+   if (!overviewMapHolder) {
+      overviewMapHolder = new OverviewMapHolder(*this);
+   }
+   overviewMapHolder->connect();
    dialogsHooked = true;
 }
 
@@ -964,7 +968,11 @@ void GameMap ::allocateFields(int x, int y, TerrainType::Weather* terrain) {
    if (overviewMapGenerator) {
       overviewMapGenerator->connect();
    }
-   overviewMapHolder.connect();
+   // Phase 2: Allocate legacy OverviewMapHolder on-demand
+   if (!overviewMapHolder) {
+      overviewMapHolder = new OverviewMapHolder(*this);
+   }
+   overviewMapHolder->connect();
 }
 
 void GameMap ::calculateAllObjects(void) {
@@ -1436,6 +1444,10 @@ GameMap ::~GameMap() {
    eventDispatcher.dispatch(std::make_unique<asc::core::events::MapLifecycleEvent>(
       asc::core::events::GameEventType::MapDestroyed, this));
 
+   // Phase 2: Clean up optional UI components
+   delete overviewMapHolder;
+   overviewMapHolder = nullptr;
+
    state = Destruction;
 
    if (field)
@@ -1717,7 +1729,9 @@ int GameMap::resize(int top, int bottom, int left, int right)  // positive: larg
    if (overviewMapGenerator) {
       overviewMapGenerator->resetSize();
    }
-   overviewMapHolder.resetSize();
+   if (overviewMapHolder) {
+      overviewMapHolder->resetSize();
+   }
 
    if (left || top) {
       sigCoordinateShift(MapCoodinateVector(left, top));

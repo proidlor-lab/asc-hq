@@ -529,7 +529,8 @@ class GameMap {
    // DEPRECATED: Legacy overview map holder (Phase 2 - to be removed)
    // This member is kept temporarily for backward compatibility
    // New code should use getOverviewMapGenerator() instead
-   OverviewMapHolder overviewMapHolder;
+   // Made optional (pointer) to allow headless GameMap instantiation
+   OverviewMapHolder* overviewMapHolder;
 
    /** @name Access to item types
     *

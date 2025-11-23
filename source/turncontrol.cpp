@@ -88,9 +88,10 @@ bool authenticateUser(GameMap* actmap, bool allowCancel = true, bool lockView = 
          infoMessage("next player is " + actmap->player[actmap->actplayer].getName());
          actmap->setPlayerView(actmap->actplayer);
       }
-      actmap->overviewMapHolder.clear(true);
-   } else
-      actmap->overviewMapHolder.clear(true);
+      if (actmap->overviewMapHolder)
+         actmap->overviewMapHolder->clear(true);
+   } else if (actmap->overviewMapHolder)
+      actmap->overviewMapHolder->clear(true);
 
    actmap->setPlayerView(actmap->actplayer);
 
@@ -278,7 +279,8 @@ void next_turn(GameMap* gamemap, const NextTurnStrategy& nextTurnStrategy,
 
    gamemap->beginTurn();
    gamemap->setPlayerView(gamemap->actplayer);
-   gamemap->overviewMapHolder.clear();
+   if (gamemap->overviewMapHolder)
+      gamemap->overviewMapHolder->clear();
 
    gamemap->sigPlayerUserInteractionBegins(gamemap->player[gamemap->actplayer]);
 

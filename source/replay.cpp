@@ -2081,7 +2081,8 @@ int trunreplay ::run(int player, int viewingplayer, bool performEndTurnOperation
       status = 11;
 
    // force completion of overview map rendering
-   actmap->overviewMapHolder.getOverviewMap();
+   if (actmap->overviewMapHolder)
+      actmap->overviewMapHolder->getOverviewMap();
 
    computeview(actmap);
    displaymap();

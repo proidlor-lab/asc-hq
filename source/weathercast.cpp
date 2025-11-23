@@ -260,9 +260,11 @@ Weathercast::Weathercast(const WeatherSystem& ws)
      mapYPos(30),
      mapXPos(30) {
    mapDisplayWidget = (MapDisplayPG*) (getPGApplication().GetWidgetById(ASC_PG_App::mapDisplayID));
-   actmap->overviewMapHolder.clear();
-   s = actmap->overviewMapHolder.getOverviewMap();
-   s.strech(MAPXSIZE, MAPYSIZE);
+   if (actmap->overviewMapHolder) {
+      actmap->overviewMapHolder->clear();
+      s = actmap->overviewMapHolder->getOverviewMap();
+      s.strech(MAPXSIZE, MAPYSIZE);
+   }
 
    weatherPanel = new WeatherPanel(this, PG_Rect(350, 30, 150, 300), "weatherPanel", false);
    sdw = new SpecialDisplayWidget(this, PG_Rect(mapXPos, mapYPos, 350, 250));
@@ -316,9 +318,9 @@ bool Weathercast::mouseButtonDown(const SDL_MouseButtonEvent* button) {
 
 void Weathercast::painter(const PG_Rect& src, const ASCString& name, const PG_Rect& dst) {
    Surface screen = Surface::Wrap(PG_Application::GetScreen());
-   if (actmap) {
-      actmap->overviewMapHolder.clear();
-      s = actmap->overviewMapHolder.getOverviewMap(true);
+   if (actmap && actmap->overviewMapHolder) {
+      actmap->overviewMapHolder->clear();
+      s = actmap->overviewMapHolder->getOverviewMap(true);
 
       MegaBlitter<gamemapPixelSize, gamemapPixelSize, ColorTransform_None,
                   ColorMerger_AlphaOverwrite, SourcePixelSelector_DirectZoom>
