@@ -97,7 +97,13 @@ host_triplet = @host@
 @HAVE_GTEST_TRUE@	version_identifier_test$(EXEEXT) \
 @HAVE_GTEST_TRUE@	stream_encoding_test$(EXEEXT) \
 @HAVE_GTEST_TRUE@	game_events_test$(EXEEXT) \
-@HAVE_GTEST_TRUE@	gamemap_characterization_test$(EXEEXT)
+@HAVE_GTEST_TRUE@	gamemap_characterization_test$(EXEEXT) \
+@HAVE_GTEST_TRUE@	action_container_test$(EXEEXT) \
+@HAVE_GTEST_TRUE@	repair_test$(EXEEXT) research_test$(EXEEXT) \
+@HAVE_GTEST_TRUE@	transfer_control_test$(EXEEXT) \
+@HAVE_GTEST_TRUE@	object_construction_test$(EXEEXT) \
+@HAVE_GTEST_TRUE@	view_test$(EXEEXT) jump_test$(EXEEXT) \
+@HAVE_GTEST_TRUE@	diplomacy_test$(EXEEXT)
 @HAVE_GTEST_TRUE@check_PROGRAMS = $(am__EXEEXT_1)
 subdir = tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -118,7 +124,13 @@ CONFIG_CLEAN_VPATH_FILES =
 @HAVE_GTEST_TRUE@	version_identifier_test$(EXEEXT) \
 @HAVE_GTEST_TRUE@	stream_encoding_test$(EXEEXT) \
 @HAVE_GTEST_TRUE@	game_events_test$(EXEEXT) \
-@HAVE_GTEST_TRUE@	gamemap_characterization_test$(EXEEXT)
+@HAVE_GTEST_TRUE@	gamemap_characterization_test$(EXEEXT) \
+@HAVE_GTEST_TRUE@	action_container_test$(EXEEXT) \
+@HAVE_GTEST_TRUE@	repair_test$(EXEEXT) research_test$(EXEEXT) \
+@HAVE_GTEST_TRUE@	transfer_control_test$(EXEEXT) \
+@HAVE_GTEST_TRUE@	object_construction_test$(EXEEXT) \
+@HAVE_GTEST_TRUE@	view_test$(EXEEXT) jump_test$(EXEEXT) \
+@HAVE_GTEST_TRUE@	diplomacy_test$(EXEEXT)
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libcommon_la_LIBADD =
 am__libcommon_la_SOURCES_DIST = $(top_srcdir)/source/soundList.cpp \
@@ -356,18 +368,13 @@ libgtest_main_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_CXXFLAGS) $(CXXFLAGS) $(libgtest_main_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 @HAVE_GTEST_TRUE@am_libgtest_main_la_rpath =
-am__example_test_SOURCES_DIST = unit/example_test.cpp
-@HAVE_GTEST_TRUE@am_example_test_OBJECTS = example_test.$(OBJEXT)
-example_test_OBJECTS = $(am_example_test_OBJECTS)
-@HAVE_GTEST_TRUE@example_test_DEPENDENCIES = libgtest.la \
-@HAVE_GTEST_TRUE@	libgtest_main.la
-example_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(example_test_LDFLAGS) $(LDFLAGS) -o $@
-am__game_events_test_SOURCES_DIST = unit/game_events_test.cpp
-@HAVE_GTEST_TRUE@am_game_events_test_OBJECTS =  \
-@HAVE_GTEST_TRUE@	game_events_test.$(OBJEXT)
-game_events_test_OBJECTS = $(am_game_events_test_OBJECTS)
+am__action_container_test_SOURCES_DIST =  \
+	unit/action_container_test.cpp \
+	$(top_srcdir)/source/unittests/unittestutil.cpp
+@HAVE_GTEST_TRUE@am_action_container_test_OBJECTS =  \
+@HAVE_GTEST_TRUE@	action_container_test.$(OBJEXT) \
+@HAVE_GTEST_TRUE@	unittestutil.$(OBJEXT)
+action_container_test_OBJECTS = $(am_action_container_test_OBJECTS)
 am__DEPENDENCIES_1 =
 @HAVE_GTEST_TRUE@am__DEPENDENCIES_2 = $(top_builddir)/source/libs/triangul/libtriangul.la \
 @HAVE_GTEST_TRUE@	$(top_builddir)/source/ai/libai.la \
@@ -393,6 +400,37 @@ am__DEPENDENCIES_1 =
 @HAVE_GTEST_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 @HAVE_GTEST_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 @HAVE_GTEST_TRUE@	$(am__DEPENDENCIES_1)
+@HAVE_GTEST_TRUE@action_container_test_DEPENDENCIES = libgtest.la \
+@HAVE_GTEST_TRUE@	libgtest_main.la $(am__DEPENDENCIES_2) \
+@HAVE_GTEST_TRUE@	libcommon.la
+action_container_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+	$(AM_CXXFLAGS) $(CXXFLAGS) $(action_container_test_LDFLAGS) \
+	$(LDFLAGS) -o $@
+am__diplomacy_test_SOURCES_DIST = unit/diplomacy_test.cpp \
+	$(top_srcdir)/source/unittests/unittestutil.cpp
+@HAVE_GTEST_TRUE@am_diplomacy_test_OBJECTS = diplomacy_test.$(OBJEXT) \
+@HAVE_GTEST_TRUE@	unittestutil.$(OBJEXT)
+diplomacy_test_OBJECTS = $(am_diplomacy_test_OBJECTS)
+@HAVE_GTEST_TRUE@diplomacy_test_DEPENDENCIES = libgtest.la \
+@HAVE_GTEST_TRUE@	libgtest_main.la libcommon.la \
+@HAVE_GTEST_TRUE@	$(am__DEPENDENCIES_2)
+diplomacy_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+	$(AM_CXXFLAGS) $(CXXFLAGS) $(diplomacy_test_LDFLAGS) \
+	$(LDFLAGS) -o $@
+am__example_test_SOURCES_DIST = unit/example_test.cpp
+@HAVE_GTEST_TRUE@am_example_test_OBJECTS = example_test.$(OBJEXT)
+example_test_OBJECTS = $(am_example_test_OBJECTS)
+@HAVE_GTEST_TRUE@example_test_DEPENDENCIES = libgtest.la \
+@HAVE_GTEST_TRUE@	libgtest_main.la
+example_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(example_test_LDFLAGS) $(LDFLAGS) -o $@
+am__game_events_test_SOURCES_DIST = unit/game_events_test.cpp
+@HAVE_GTEST_TRUE@am_game_events_test_OBJECTS =  \
+@HAVE_GTEST_TRUE@	game_events_test.$(OBJEXT)
+game_events_test_OBJECTS = $(am_game_events_test_OBJECTS)
 @HAVE_GTEST_TRUE@game_events_test_DEPENDENCIES = libgtest.la \
 @HAVE_GTEST_TRUE@	libgtest_main.la $(am__DEPENDENCIES_2)
 game_events_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
@@ -412,6 +450,16 @@ gamemap_characterization_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(gamemap_characterization_test_LDFLAGS) $(LDFLAGS) -o $@
+am__jump_test_SOURCES_DIST = unit/jump_test.cpp \
+	$(top_srcdir)/source/unittests/unittestutil.cpp
+@HAVE_GTEST_TRUE@am_jump_test_OBJECTS = jump_test.$(OBJEXT) \
+@HAVE_GTEST_TRUE@	unittestutil.$(OBJEXT)
+jump_test_OBJECTS = $(am_jump_test_OBJECTS)
+@HAVE_GTEST_TRUE@jump_test_DEPENDENCIES = libgtest.la libgtest_main.la \
+@HAVE_GTEST_TRUE@	libcommon.la $(am__DEPENDENCIES_2)
+jump_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(jump_test_LDFLAGS) $(LDFLAGS) -o $@
 am__mcts_evaluator_test_SOURCES_DIST = unit/mcts_evaluator_test.cpp
 @HAVE_GTEST_TRUE@am_mcts_evaluator_test_OBJECTS =  \
 @HAVE_GTEST_TRUE@	mcts_evaluator_test.$(OBJEXT)
@@ -434,6 +482,44 @@ mcts_snapshot_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(AM_CXXFLAGS) $(CXXFLAGS) $(mcts_snapshot_test_LDFLAGS) \
 	$(LDFLAGS) -o $@
+am__object_construction_test_SOURCES_DIST =  \
+	unit/object_construction_test.cpp \
+	$(top_srcdir)/source/unittests/unittestutil.cpp
+@HAVE_GTEST_TRUE@am_object_construction_test_OBJECTS =  \
+@HAVE_GTEST_TRUE@	object_construction_test.$(OBJEXT) \
+@HAVE_GTEST_TRUE@	unittestutil.$(OBJEXT)
+object_construction_test_OBJECTS =  \
+	$(am_object_construction_test_OBJECTS)
+@HAVE_GTEST_TRUE@object_construction_test_DEPENDENCIES = libgtest.la \
+@HAVE_GTEST_TRUE@	libgtest_main.la libcommon.la \
+@HAVE_GTEST_TRUE@	$(am__DEPENDENCIES_2)
+object_construction_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+	$(AM_CXXFLAGS) $(CXXFLAGS) $(object_construction_test_LDFLAGS) \
+	$(LDFLAGS) -o $@
+am__repair_test_SOURCES_DIST = unit/repair_test.cpp \
+	$(top_srcdir)/source/unittests/unittestutil.cpp
+@HAVE_GTEST_TRUE@am_repair_test_OBJECTS = repair_test.$(OBJEXT) \
+@HAVE_GTEST_TRUE@	unittestutil.$(OBJEXT)
+repair_test_OBJECTS = $(am_repair_test_OBJECTS)
+@HAVE_GTEST_TRUE@repair_test_DEPENDENCIES = libgtest.la \
+@HAVE_GTEST_TRUE@	libgtest_main.la libcommon.la \
+@HAVE_GTEST_TRUE@	$(am__DEPENDENCIES_2)
+repair_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(repair_test_LDFLAGS) $(LDFLAGS) -o $@
+am__research_test_SOURCES_DIST = unit/research_test.cpp \
+	$(top_srcdir)/source/unittests/unittestutil.cpp
+@HAVE_GTEST_TRUE@am_research_test_OBJECTS = research_test.$(OBJEXT) \
+@HAVE_GTEST_TRUE@	unittestutil.$(OBJEXT)
+research_test_OBJECTS = $(am_research_test_OBJECTS)
+@HAVE_GTEST_TRUE@research_test_DEPENDENCIES = libgtest.la \
+@HAVE_GTEST_TRUE@	libgtest_main.la libcommon.la \
+@HAVE_GTEST_TRUE@	$(am__DEPENDENCIES_2)
+research_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+	$(AM_CXXFLAGS) $(CXXFLAGS) $(research_test_LDFLAGS) $(LDFLAGS) \
+	-o $@
 am__stream_encoding_test_SOURCES_DIST = unit/stream_encoding_test.cpp \
 	$(top_srcdir)/source/basestrm.cpp \
 	$(top_srcdir)/source/simplestream.cpp \
@@ -449,6 +535,20 @@ stream_encoding_test_OBJECTS = $(am_stream_encoding_test_OBJECTS)
 stream_encoding_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(AM_CXXFLAGS) $(CXXFLAGS) $(stream_encoding_test_LDFLAGS) \
+	$(LDFLAGS) -o $@
+am__transfer_control_test_SOURCES_DIST =  \
+	unit/transfer_control_test.cpp \
+	$(top_srcdir)/source/unittests/unittestutil.cpp
+@HAVE_GTEST_TRUE@am_transfer_control_test_OBJECTS =  \
+@HAVE_GTEST_TRUE@	transfer_control_test.$(OBJEXT) \
+@HAVE_GTEST_TRUE@	unittestutil.$(OBJEXT)
+transfer_control_test_OBJECTS = $(am_transfer_control_test_OBJECTS)
+@HAVE_GTEST_TRUE@transfer_control_test_DEPENDENCIES = libgtest.la \
+@HAVE_GTEST_TRUE@	libgtest_main.la libcommon.la \
+@HAVE_GTEST_TRUE@	$(am__DEPENDENCIES_2)
+transfer_control_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+	$(AM_CXXFLAGS) $(CXXFLAGS) $(transfer_control_test_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am__version_identifier_test_SOURCES_DIST =  \
 	unit/version_identifier_test.cpp \
@@ -470,6 +570,16 @@ version_identifier_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(AM_CXXFLAGS) $(CXXFLAGS) $(version_identifier_test_LDFLAGS) \
 	$(LDFLAGS) -o $@
+am__view_test_SOURCES_DIST = unit/view_test.cpp \
+	$(top_srcdir)/source/unittests/unittestutil.cpp
+@HAVE_GTEST_TRUE@am_view_test_OBJECTS = view_test.$(OBJEXT) \
+@HAVE_GTEST_TRUE@	unittestutil.$(OBJEXT)
+view_test_OBJECTS = $(am_view_test_OBJECTS)
+@HAVE_GTEST_TRUE@view_test_DEPENDENCIES = libgtest.la libgtest_main.la \
+@HAVE_GTEST_TRUE@	libcommon.la $(am__DEPENDENCIES_2)
+view_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(view_test_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -485,9 +595,12 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/ascstring.Po ./$(DEPDIR)/basestrm.Po \
-	./$(DEPDIR)/example_test.Po ./$(DEPDIR)/game_events_test.Po \
+am__depfiles_remade = ./$(DEPDIR)/action_container_test.Po \
+	./$(DEPDIR)/ascstring.Po ./$(DEPDIR)/basestrm.Po \
+	./$(DEPDIR)/diplomacy_test.Po ./$(DEPDIR)/example_test.Po \
+	./$(DEPDIR)/game_events_test.Po \
 	./$(DEPDIR)/gamemap_characterization_test.Po \
+	./$(DEPDIR)/jump_test.Po \
 	./$(DEPDIR)/libcommon_la-accessconstraints-game.Plo \
 	./$(DEPDIR)/libcommon_la-applicationstarter.Plo \
 	./$(DEPDIR)/libcommon_la-asc-mainscreen.Plo \
@@ -599,10 +712,14 @@ am__depfiles_remade = ./$(DEPDIR)/ascstring.Po ./$(DEPDIR)/basestrm.Po \
 	./$(DEPDIR)/libgtest_main_la-gtest_main.Plo \
 	./$(DEPDIR)/mcts_evaluator_test.Po \
 	./$(DEPDIR)/mcts_snapshot_test.Po ./$(DEPDIR)/misc.Po \
+	./$(DEPDIR)/object_construction_test.Po \
+	./$(DEPDIR)/repair_test.Po ./$(DEPDIR)/research_test.Po \
 	./$(DEPDIR)/simplestream.Po \
 	./$(DEPDIR)/stream_encoding_test.Po \
+	./$(DEPDIR)/transfer_control_test.Po \
+	./$(DEPDIR)/unittestutil.Po \
 	./$(DEPDIR)/version_identifier_test.Po \
-	./$(DEPDIR)/versionidentifier.Po
+	./$(DEPDIR)/versionidentifier.Po ./$(DEPDIR)/view_test.Po
 am__mv = mv -f
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -623,22 +740,33 @@ am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
 SOURCES = $(libcommon_la_SOURCES) $(libgtest_la_SOURCES) \
-	$(libgtest_main_la_SOURCES) $(example_test_SOURCES) \
+	$(libgtest_main_la_SOURCES) $(action_container_test_SOURCES) \
+	$(diplomacy_test_SOURCES) $(example_test_SOURCES) \
 	$(game_events_test_SOURCES) \
-	$(gamemap_characterization_test_SOURCES) \
+	$(gamemap_characterization_test_SOURCES) $(jump_test_SOURCES) \
 	$(mcts_evaluator_test_SOURCES) $(mcts_snapshot_test_SOURCES) \
-	$(stream_encoding_test_SOURCES) \
-	$(version_identifier_test_SOURCES)
+	$(object_construction_test_SOURCES) $(repair_test_SOURCES) \
+	$(research_test_SOURCES) $(stream_encoding_test_SOURCES) \
+	$(transfer_control_test_SOURCES) \
+	$(version_identifier_test_SOURCES) $(view_test_SOURCES)
 DIST_SOURCES = $(am__libcommon_la_SOURCES_DIST) \
 	$(am__libgtest_la_SOURCES_DIST) \
 	$(am__libgtest_main_la_SOURCES_DIST) \
+	$(am__action_container_test_SOURCES_DIST) \
+	$(am__diplomacy_test_SOURCES_DIST) \
 	$(am__example_test_SOURCES_DIST) \
 	$(am__game_events_test_SOURCES_DIST) \
 	$(am__gamemap_characterization_test_SOURCES_DIST) \
+	$(am__jump_test_SOURCES_DIST) \
 	$(am__mcts_evaluator_test_SOURCES_DIST) \
 	$(am__mcts_snapshot_test_SOURCES_DIST) \
+	$(am__object_construction_test_SOURCES_DIST) \
+	$(am__repair_test_SOURCES_DIST) \
+	$(am__research_test_SOURCES_DIST) \
 	$(am__stream_encoding_test_SOURCES_DIST) \
-	$(am__version_identifier_test_SOURCES_DIST)
+	$(am__transfer_control_test_SOURCES_DIST) \
+	$(am__version_identifier_test_SOURCES_DIST) \
+	$(am__view_test_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -1356,6 +1484,99 @@ zipfound = @zipfound@
 
 @HAVE_GTEST_TRUE@gamemap_characterization_test_LDFLAGS = -pthread
 
+# Phase 2: Ported legacy unit tests
+
+# Repair test
+@HAVE_GTEST_TRUE@repair_test_SOURCES = \
+@HAVE_GTEST_TRUE@	unit/repair_test.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/unittests/unittestutil.cpp
+
+@HAVE_GTEST_TRUE@repair_test_LDADD = \
+@HAVE_GTEST_TRUE@	libgtest.la \
+@HAVE_GTEST_TRUE@	libgtest_main.la \
+@HAVE_GTEST_TRUE@	libcommon.la \
+@HAVE_GTEST_TRUE@	$(TEST_COMMON_LIBS)
+
+@HAVE_GTEST_TRUE@repair_test_LDFLAGS = -pthread
+
+# Research test
+@HAVE_GTEST_TRUE@research_test_SOURCES = \
+@HAVE_GTEST_TRUE@	unit/research_test.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/unittests/unittestutil.cpp
+
+@HAVE_GTEST_TRUE@research_test_LDADD = \
+@HAVE_GTEST_TRUE@	libgtest.la \
+@HAVE_GTEST_TRUE@	libgtest_main.la \
+@HAVE_GTEST_TRUE@	libcommon.la \
+@HAVE_GTEST_TRUE@	$(TEST_COMMON_LIBS)
+
+@HAVE_GTEST_TRUE@research_test_LDFLAGS = -pthread
+
+# Transfer Control test
+@HAVE_GTEST_TRUE@transfer_control_test_SOURCES = \
+@HAVE_GTEST_TRUE@	unit/transfer_control_test.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/unittests/unittestutil.cpp
+
+@HAVE_GTEST_TRUE@transfer_control_test_LDADD = \
+@HAVE_GTEST_TRUE@	libgtest.la \
+@HAVE_GTEST_TRUE@	libgtest_main.la \
+@HAVE_GTEST_TRUE@	libcommon.la \
+@HAVE_GTEST_TRUE@	$(TEST_COMMON_LIBS)
+
+@HAVE_GTEST_TRUE@transfer_control_test_LDFLAGS = -pthread
+
+# Object Construction test
+@HAVE_GTEST_TRUE@object_construction_test_SOURCES = \
+@HAVE_GTEST_TRUE@	unit/object_construction_test.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/unittests/unittestutil.cpp
+
+@HAVE_GTEST_TRUE@object_construction_test_LDADD = \
+@HAVE_GTEST_TRUE@	libgtest.la \
+@HAVE_GTEST_TRUE@	libgtest_main.la \
+@HAVE_GTEST_TRUE@	libcommon.la \
+@HAVE_GTEST_TRUE@	$(TEST_COMMON_LIBS)
+
+@HAVE_GTEST_TRUE@object_construction_test_LDFLAGS = -pthread
+
+# View test
+@HAVE_GTEST_TRUE@view_test_SOURCES = \
+@HAVE_GTEST_TRUE@	unit/view_test.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/unittests/unittestutil.cpp
+
+@HAVE_GTEST_TRUE@view_test_LDADD = \
+@HAVE_GTEST_TRUE@	libgtest.la \
+@HAVE_GTEST_TRUE@	libgtest_main.la \
+@HAVE_GTEST_TRUE@	libcommon.la \
+@HAVE_GTEST_TRUE@	$(TEST_COMMON_LIBS)
+
+@HAVE_GTEST_TRUE@view_test_LDFLAGS = -pthread
+
+# Jump test
+@HAVE_GTEST_TRUE@jump_test_SOURCES = \
+@HAVE_GTEST_TRUE@	unit/jump_test.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/unittests/unittestutil.cpp
+
+@HAVE_GTEST_TRUE@jump_test_LDADD = \
+@HAVE_GTEST_TRUE@	libgtest.la \
+@HAVE_GTEST_TRUE@	libgtest_main.la \
+@HAVE_GTEST_TRUE@	libcommon.la \
+@HAVE_GTEST_TRUE@	$(TEST_COMMON_LIBS)
+
+@HAVE_GTEST_TRUE@jump_test_LDFLAGS = -pthread
+
+# Diplomacy test
+@HAVE_GTEST_TRUE@diplomacy_test_SOURCES = \
+@HAVE_GTEST_TRUE@	unit/diplomacy_test.cpp \
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/unittests/unittestutil.cpp
+
+@HAVE_GTEST_TRUE@diplomacy_test_LDADD = \
+@HAVE_GTEST_TRUE@	libgtest.la \
+@HAVE_GTEST_TRUE@	libgtest_main.la \
+@HAVE_GTEST_TRUE@	libcommon.la \
+@HAVE_GTEST_TRUE@	$(TEST_COMMON_LIBS)
+
+@HAVE_GTEST_TRUE@diplomacy_test_LDFLAGS = -pthread
+
 # Always distribute test sources, even if Google Test is not available
 EXTRA_DIST = \
 	unit \
@@ -1425,6 +1646,14 @@ libgtest.la: $(libgtest_la_OBJECTS) $(libgtest_la_DEPENDENCIES) $(EXTRA_libgtest
 libgtest_main.la: $(libgtest_main_la_OBJECTS) $(libgtest_main_la_DEPENDENCIES) $(EXTRA_libgtest_main_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(libgtest_main_la_LINK) $(am_libgtest_main_la_rpath) $(libgtest_main_la_OBJECTS) $(libgtest_main_la_LIBADD) $(LIBS)
 
+action_container_test$(EXEEXT): $(action_container_test_OBJECTS) $(action_container_test_DEPENDENCIES) $(EXTRA_action_container_test_DEPENDENCIES) 
+	@rm -f action_container_test$(EXEEXT)
+	$(AM_V_CXXLD)$(action_container_test_LINK) $(action_container_test_OBJECTS) $(action_container_test_LDADD) $(LIBS)
+
+diplomacy_test$(EXEEXT): $(diplomacy_test_OBJECTS) $(diplomacy_test_DEPENDENCIES) $(EXTRA_diplomacy_test_DEPENDENCIES) 
+	@rm -f diplomacy_test$(EXEEXT)
+	$(AM_V_CXXLD)$(diplomacy_test_LINK) $(diplomacy_test_OBJECTS) $(diplomacy_test_LDADD) $(LIBS)
+
 example_test$(EXEEXT): $(example_test_OBJECTS) $(example_test_DEPENDENCIES) $(EXTRA_example_test_DEPENDENCIES) 
 	@rm -f example_test$(EXEEXT)
 	$(AM_V_CXXLD)$(example_test_LINK) $(example_test_OBJECTS) $(example_test_LDADD) $(LIBS)
@@ -1437,6 +1666,10 @@ gamemap_characterization_test$(EXEEXT): $(gamemap_characterization_test_OBJECTS)
 	@rm -f gamemap_characterization_test$(EXEEXT)
 	$(AM_V_CXXLD)$(gamemap_characterization_test_LINK) $(gamemap_characterization_test_OBJECTS) $(gamemap_characterization_test_LDADD) $(LIBS)
 
+jump_test$(EXEEXT): $(jump_test_OBJECTS) $(jump_test_DEPENDENCIES) $(EXTRA_jump_test_DEPENDENCIES) 
+	@rm -f jump_test$(EXEEXT)
+	$(AM_V_CXXLD)$(jump_test_LINK) $(jump_test_OBJECTS) $(jump_test_LDADD) $(LIBS)
+
 mcts_evaluator_test$(EXEEXT): $(mcts_evaluator_test_OBJECTS) $(mcts_evaluator_test_DEPENDENCIES) $(EXTRA_mcts_evaluator_test_DEPENDENCIES) 
 	@rm -f mcts_evaluator_test$(EXEEXT)
 	$(AM_V_CXXLD)$(mcts_evaluator_test_LINK) $(mcts_evaluator_test_OBJECTS) $(mcts_evaluator_test_LDADD) $(LIBS)
@@ -1445,13 +1678,33 @@ mcts_snapshot_test$(EXEEXT): $(mcts_snapshot_test_OBJECTS) $(mcts_snapshot_test_
 	@rm -f mcts_snapshot_test$(EXEEXT)
 	$(AM_V_CXXLD)$(mcts_snapshot_test_LINK) $(mcts_snapshot_test_OBJECTS) $(mcts_snapshot_test_LDADD) $(LIBS)
 
+object_construction_test$(EXEEXT): $(object_construction_test_OBJECTS) $(object_construction_test_DEPENDENCIES) $(EXTRA_object_construction_test_DEPENDENCIES) 
+	@rm -f object_construction_test$(EXEEXT)
+	$(AM_V_CXXLD)$(object_construction_test_LINK) $(object_construction_test_OBJECTS) $(object_construction_test_LDADD) $(LIBS)
+
+repair_test$(EXEEXT): $(repair_test_OBJECTS) $(repair_test_DEPENDENCIES) $(EXTRA_repair_test_DEPENDENCIES) 
+	@rm -f repair_test$(EXEEXT)
+	$(AM_V_CXXLD)$(repair_test_LINK) $(repair_test_OBJECTS) $(repair_test_LDADD) $(LIBS)
+
+research_test$(EXEEXT): $(research_test_OBJECTS) $(research_test_DEPENDENCIES) $(EXTRA_research_test_DEPENDENCIES) 
+	@rm -f research_test$(EXEEXT)
+	$(AM_V_CXXLD)$(research_test_LINK) $(research_test_OBJECTS) $(research_test_LDADD) $(LIBS)
+
 stream_encoding_test$(EXEEXT): $(stream_encoding_test_OBJECTS) $(stream_encoding_test_DEPENDENCIES) $(EXTRA_stream_encoding_test_DEPENDENCIES) 
 	@rm -f stream_encoding_test$(EXEEXT)
 	$(AM_V_CXXLD)$(stream_encoding_test_LINK) $(stream_encoding_test_OBJECTS) $(stream_encoding_test_LDADD) $(LIBS)
 
+transfer_control_test$(EXEEXT): $(transfer_control_test_OBJECTS) $(transfer_control_test_DEPENDENCIES) $(EXTRA_transfer_control_test_DEPENDENCIES) 
+	@rm -f transfer_control_test$(EXEEXT)
+	$(AM_V_CXXLD)$(transfer_control_test_LINK) $(transfer_control_test_OBJECTS) $(transfer_control_test_LDADD) $(LIBS)
+
 version_identifier_test$(EXEEXT): $(version_identifier_test_OBJECTS) $(version_identifier_test_DEPENDENCIES) $(EXTRA_version_identifier_test_DEPENDENCIES) 
 	@rm -f version_identifier_test$(EXEEXT)
 	$(AM_V_CXXLD)$(version_identifier_test_LINK) $(version_identifier_test_OBJECTS) $(version_identifier_test_LDADD) $(LIBS)
+
+view_test$(EXEEXT): $(view_test_OBJECTS) $(view_test_DEPENDENCIES) $(EXTRA_view_test_DEPENDENCIES) 
+	@rm -f view_test$(EXEEXT)
+	$(AM_V_CXXLD)$(view_test_LINK) $(view_test_OBJECTS) $(view_test_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -1459,11 +1712,14 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/action_container_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ascstring.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/basestrm.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/diplomacy_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/example_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/game_events_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gamemap_characterization_test.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jump_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-accessconstraints-game.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-applicationstarter.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-asc-mainscreen.Plo@am__quote@ # am--include-marker
@@ -1576,10 +1832,16 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcts_evaluator_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcts_snapshot_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/misc.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/object_construction_test.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/repair_test.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/research_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplestream.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stream_encoding_test.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/transfer_control_test.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittestutil.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/version_identifier_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/versionidentifier.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/view_test.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -2371,6 +2633,48 @@ libgtest_main_la-gtest_main.lo: $(GTEST_DIR)/src/gtest_main.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgtest_main_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libgtest_main_la-gtest_main.lo `test -f '$(GTEST_DIR)/src/gtest_main.cc' || echo '$(srcdir)/'`$(GTEST_DIR)/src/gtest_main.cc
 
+action_container_test.o: unit/action_container_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT action_container_test.o -MD -MP -MF $(DEPDIR)/action_container_test.Tpo -c -o action_container_test.o `test -f 'unit/action_container_test.cpp' || echo '$(srcdir)/'`unit/action_container_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/action_container_test.Tpo $(DEPDIR)/action_container_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/action_container_test.cpp' object='action_container_test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o action_container_test.o `test -f 'unit/action_container_test.cpp' || echo '$(srcdir)/'`unit/action_container_test.cpp
+
+action_container_test.obj: unit/action_container_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT action_container_test.obj -MD -MP -MF $(DEPDIR)/action_container_test.Tpo -c -o action_container_test.obj `if test -f 'unit/action_container_test.cpp'; then $(CYGPATH_W) 'unit/action_container_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/action_container_test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/action_container_test.Tpo $(DEPDIR)/action_container_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/action_container_test.cpp' object='action_container_test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o action_container_test.obj `if test -f 'unit/action_container_test.cpp'; then $(CYGPATH_W) 'unit/action_container_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/action_container_test.cpp'; fi`
+
+unittestutil.o: $(top_srcdir)/source/unittests/unittestutil.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittestutil.o -MD -MP -MF $(DEPDIR)/unittestutil.Tpo -c -o unittestutil.o `test -f '$(top_srcdir)/source/unittests/unittestutil.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/unittests/unittestutil.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unittestutil.Tpo $(DEPDIR)/unittestutil.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/unittests/unittestutil.cpp' object='unittestutil.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittestutil.o `test -f '$(top_srcdir)/source/unittests/unittestutil.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/unittests/unittestutil.cpp
+
+unittestutil.obj: $(top_srcdir)/source/unittests/unittestutil.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittestutil.obj -MD -MP -MF $(DEPDIR)/unittestutil.Tpo -c -o unittestutil.obj `if test -f '$(top_srcdir)/source/unittests/unittestutil.cpp'; then $(CYGPATH_W) '$(top_srcdir)/source/unittests/unittestutil.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/source/unittests/unittestutil.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unittestutil.Tpo $(DEPDIR)/unittestutil.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/unittests/unittestutil.cpp' object='unittestutil.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittestutil.obj `if test -f '$(top_srcdir)/source/unittests/unittestutil.cpp'; then $(CYGPATH_W) '$(top_srcdir)/source/unittests/unittestutil.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/source/unittests/unittestutil.cpp'; fi`
+
+diplomacy_test.o: unit/diplomacy_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT diplomacy_test.o -MD -MP -MF $(DEPDIR)/diplomacy_test.Tpo -c -o diplomacy_test.o `test -f 'unit/diplomacy_test.cpp' || echo '$(srcdir)/'`unit/diplomacy_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/diplomacy_test.Tpo $(DEPDIR)/diplomacy_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/diplomacy_test.cpp' object='diplomacy_test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o diplomacy_test.o `test -f 'unit/diplomacy_test.cpp' || echo '$(srcdir)/'`unit/diplomacy_test.cpp
+
+diplomacy_test.obj: unit/diplomacy_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT diplomacy_test.obj -MD -MP -MF $(DEPDIR)/diplomacy_test.Tpo -c -o diplomacy_test.obj `if test -f 'unit/diplomacy_test.cpp'; then $(CYGPATH_W) 'unit/diplomacy_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/diplomacy_test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/diplomacy_test.Tpo $(DEPDIR)/diplomacy_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/diplomacy_test.cpp' object='diplomacy_test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o diplomacy_test.obj `if test -f 'unit/diplomacy_test.cpp'; then $(CYGPATH_W) 'unit/diplomacy_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/diplomacy_test.cpp'; fi`
+
 example_test.o: unit/example_test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT example_test.o -MD -MP -MF $(DEPDIR)/example_test.Tpo -c -o example_test.o `test -f 'unit/example_test.cpp' || echo '$(srcdir)/'`unit/example_test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/example_test.Tpo $(DEPDIR)/example_test.Po
@@ -2413,6 +2717,20 @@ gamemap_characterization_test.obj: unit/gamemap_characterization_test.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gamemap_characterization_test.obj `if test -f 'unit/gamemap_characterization_test.cpp'; then $(CYGPATH_W) 'unit/gamemap_characterization_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/gamemap_characterization_test.cpp'; fi`
 
+jump_test.o: unit/jump_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT jump_test.o -MD -MP -MF $(DEPDIR)/jump_test.Tpo -c -o jump_test.o `test -f 'unit/jump_test.cpp' || echo '$(srcdir)/'`unit/jump_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/jump_test.Tpo $(DEPDIR)/jump_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/jump_test.cpp' object='jump_test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o jump_test.o `test -f 'unit/jump_test.cpp' || echo '$(srcdir)/'`unit/jump_test.cpp
+
+jump_test.obj: unit/jump_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT jump_test.obj -MD -MP -MF $(DEPDIR)/jump_test.Tpo -c -o jump_test.obj `if test -f 'unit/jump_test.cpp'; then $(CYGPATH_W) 'unit/jump_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/jump_test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/jump_test.Tpo $(DEPDIR)/jump_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/jump_test.cpp' object='jump_test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o jump_test.obj `if test -f 'unit/jump_test.cpp'; then $(CYGPATH_W) 'unit/jump_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/jump_test.cpp'; fi`
+
 mcts_evaluator_test.o: unit/mcts_evaluator_test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mcts_evaluator_test.o -MD -MP -MF $(DEPDIR)/mcts_evaluator_test.Tpo -c -o mcts_evaluator_test.o `test -f 'unit/mcts_evaluator_test.cpp' || echo '$(srcdir)/'`unit/mcts_evaluator_test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mcts_evaluator_test.Tpo $(DEPDIR)/mcts_evaluator_test.Po
@@ -2440,6 +2758,48 @@ mcts_snapshot_test.obj: unit/mcts_snapshot_test.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/mcts_snapshot_test.cpp' object='mcts_snapshot_test.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mcts_snapshot_test.obj `if test -f 'unit/mcts_snapshot_test.cpp'; then $(CYGPATH_W) 'unit/mcts_snapshot_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/mcts_snapshot_test.cpp'; fi`
+
+object_construction_test.o: unit/object_construction_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT object_construction_test.o -MD -MP -MF $(DEPDIR)/object_construction_test.Tpo -c -o object_construction_test.o `test -f 'unit/object_construction_test.cpp' || echo '$(srcdir)/'`unit/object_construction_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/object_construction_test.Tpo $(DEPDIR)/object_construction_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/object_construction_test.cpp' object='object_construction_test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o object_construction_test.o `test -f 'unit/object_construction_test.cpp' || echo '$(srcdir)/'`unit/object_construction_test.cpp
+
+object_construction_test.obj: unit/object_construction_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT object_construction_test.obj -MD -MP -MF $(DEPDIR)/object_construction_test.Tpo -c -o object_construction_test.obj `if test -f 'unit/object_construction_test.cpp'; then $(CYGPATH_W) 'unit/object_construction_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/object_construction_test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/object_construction_test.Tpo $(DEPDIR)/object_construction_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/object_construction_test.cpp' object='object_construction_test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o object_construction_test.obj `if test -f 'unit/object_construction_test.cpp'; then $(CYGPATH_W) 'unit/object_construction_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/object_construction_test.cpp'; fi`
+
+repair_test.o: unit/repair_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT repair_test.o -MD -MP -MF $(DEPDIR)/repair_test.Tpo -c -o repair_test.o `test -f 'unit/repair_test.cpp' || echo '$(srcdir)/'`unit/repair_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/repair_test.Tpo $(DEPDIR)/repair_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/repair_test.cpp' object='repair_test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o repair_test.o `test -f 'unit/repair_test.cpp' || echo '$(srcdir)/'`unit/repair_test.cpp
+
+repair_test.obj: unit/repair_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT repair_test.obj -MD -MP -MF $(DEPDIR)/repair_test.Tpo -c -o repair_test.obj `if test -f 'unit/repair_test.cpp'; then $(CYGPATH_W) 'unit/repair_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/repair_test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/repair_test.Tpo $(DEPDIR)/repair_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/repair_test.cpp' object='repair_test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o repair_test.obj `if test -f 'unit/repair_test.cpp'; then $(CYGPATH_W) 'unit/repair_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/repair_test.cpp'; fi`
+
+research_test.o: unit/research_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT research_test.o -MD -MP -MF $(DEPDIR)/research_test.Tpo -c -o research_test.o `test -f 'unit/research_test.cpp' || echo '$(srcdir)/'`unit/research_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/research_test.Tpo $(DEPDIR)/research_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/research_test.cpp' object='research_test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o research_test.o `test -f 'unit/research_test.cpp' || echo '$(srcdir)/'`unit/research_test.cpp
+
+research_test.obj: unit/research_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT research_test.obj -MD -MP -MF $(DEPDIR)/research_test.Tpo -c -o research_test.obj `if test -f 'unit/research_test.cpp'; then $(CYGPATH_W) 'unit/research_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/research_test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/research_test.Tpo $(DEPDIR)/research_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/research_test.cpp' object='research_test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o research_test.obj `if test -f 'unit/research_test.cpp'; then $(CYGPATH_W) 'unit/research_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/research_test.cpp'; fi`
 
 stream_encoding_test.o: unit/stream_encoding_test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT stream_encoding_test.o -MD -MP -MF $(DEPDIR)/stream_encoding_test.Tpo -c -o stream_encoding_test.o `test -f 'unit/stream_encoding_test.cpp' || echo '$(srcdir)/'`unit/stream_encoding_test.cpp
@@ -2511,6 +2871,20 @@ ascstring.obj: $(top_srcdir)/source/ascstring.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ascstring.obj `if test -f '$(top_srcdir)/source/ascstring.cpp'; then $(CYGPATH_W) '$(top_srcdir)/source/ascstring.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/source/ascstring.cpp'; fi`
 
+transfer_control_test.o: unit/transfer_control_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT transfer_control_test.o -MD -MP -MF $(DEPDIR)/transfer_control_test.Tpo -c -o transfer_control_test.o `test -f 'unit/transfer_control_test.cpp' || echo '$(srcdir)/'`unit/transfer_control_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/transfer_control_test.Tpo $(DEPDIR)/transfer_control_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/transfer_control_test.cpp' object='transfer_control_test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o transfer_control_test.o `test -f 'unit/transfer_control_test.cpp' || echo '$(srcdir)/'`unit/transfer_control_test.cpp
+
+transfer_control_test.obj: unit/transfer_control_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT transfer_control_test.obj -MD -MP -MF $(DEPDIR)/transfer_control_test.Tpo -c -o transfer_control_test.obj `if test -f 'unit/transfer_control_test.cpp'; then $(CYGPATH_W) 'unit/transfer_control_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/transfer_control_test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/transfer_control_test.Tpo $(DEPDIR)/transfer_control_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/transfer_control_test.cpp' object='transfer_control_test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o transfer_control_test.obj `if test -f 'unit/transfer_control_test.cpp'; then $(CYGPATH_W) 'unit/transfer_control_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/transfer_control_test.cpp'; fi`
+
 version_identifier_test.o: unit/version_identifier_test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT version_identifier_test.o -MD -MP -MF $(DEPDIR)/version_identifier_test.Tpo -c -o version_identifier_test.o `test -f 'unit/version_identifier_test.cpp' || echo '$(srcdir)/'`unit/version_identifier_test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/version_identifier_test.Tpo $(DEPDIR)/version_identifier_test.Po
@@ -2538,6 +2912,20 @@ versionidentifier.obj: $(top_srcdir)/source/versionidentifier.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/versionidentifier.cpp' object='versionidentifier.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o versionidentifier.obj `if test -f '$(top_srcdir)/source/versionidentifier.cpp'; then $(CYGPATH_W) '$(top_srcdir)/source/versionidentifier.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/source/versionidentifier.cpp'; fi`
+
+view_test.o: unit/view_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT view_test.o -MD -MP -MF $(DEPDIR)/view_test.Tpo -c -o view_test.o `test -f 'unit/view_test.cpp' || echo '$(srcdir)/'`unit/view_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/view_test.Tpo $(DEPDIR)/view_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/view_test.cpp' object='view_test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o view_test.o `test -f 'unit/view_test.cpp' || echo '$(srcdir)/'`unit/view_test.cpp
+
+view_test.obj: unit/view_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT view_test.obj -MD -MP -MF $(DEPDIR)/view_test.Tpo -c -o view_test.obj `if test -f 'unit/view_test.cpp'; then $(CYGPATH_W) 'unit/view_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/view_test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/view_test.Tpo $(DEPDIR)/view_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='unit/view_test.cpp' object='view_test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o view_test.obj `if test -f 'unit/view_test.cpp'; then $(CYGPATH_W) 'unit/view_test.cpp'; else $(CYGPATH_W) '$(srcdir)/unit/view_test.cpp'; fi`
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -2808,6 +3196,62 @@ gamemap_characterization_test.log: gamemap_characterization_test$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
+action_container_test.log: action_container_test$(EXEEXT)
+	@p='action_container_test$(EXEEXT)'; \
+	b='action_container_test'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+repair_test.log: repair_test$(EXEEXT)
+	@p='repair_test$(EXEEXT)'; \
+	b='repair_test'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+research_test.log: research_test$(EXEEXT)
+	@p='research_test$(EXEEXT)'; \
+	b='research_test'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+transfer_control_test.log: transfer_control_test$(EXEEXT)
+	@p='transfer_control_test$(EXEEXT)'; \
+	b='transfer_control_test'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+object_construction_test.log: object_construction_test$(EXEEXT)
+	@p='object_construction_test$(EXEEXT)'; \
+	b='object_construction_test'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+view_test.log: view_test$(EXEEXT)
+	@p='view_test$(EXEEXT)'; \
+	b='view_test'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+jump_test.log: jump_test$(EXEEXT)
+	@p='jump_test$(EXEEXT)'; \
+	b='jump_test'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+diplomacy_test.log: diplomacy_test$(EXEEXT)
+	@p='diplomacy_test$(EXEEXT)'; \
+	b='diplomacy_test'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 .test.log:
 	@p='$<'; \
 	$(am__set_b); \
@@ -2900,11 +3344,14 @@ clean-am: clean-checkPROGRAMS clean-generic clean-libtool \
 	clean-noinstLTLIBRARIES mostlyclean-am
 
 distclean: distclean-am
-		-rm -f ./$(DEPDIR)/ascstring.Po
+		-rm -f ./$(DEPDIR)/action_container_test.Po
+	-rm -f ./$(DEPDIR)/ascstring.Po
 	-rm -f ./$(DEPDIR)/basestrm.Po
+	-rm -f ./$(DEPDIR)/diplomacy_test.Po
 	-rm -f ./$(DEPDIR)/example_test.Po
 	-rm -f ./$(DEPDIR)/game_events_test.Po
 	-rm -f ./$(DEPDIR)/gamemap_characterization_test.Po
+	-rm -f ./$(DEPDIR)/jump_test.Po
 	-rm -f ./$(DEPDIR)/libcommon_la-accessconstraints-game.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-applicationstarter.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-asc-mainscreen.Plo
@@ -3017,10 +3464,16 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/mcts_evaluator_test.Po
 	-rm -f ./$(DEPDIR)/mcts_snapshot_test.Po
 	-rm -f ./$(DEPDIR)/misc.Po
+	-rm -f ./$(DEPDIR)/object_construction_test.Po
+	-rm -f ./$(DEPDIR)/repair_test.Po
+	-rm -f ./$(DEPDIR)/research_test.Po
 	-rm -f ./$(DEPDIR)/simplestream.Po
 	-rm -f ./$(DEPDIR)/stream_encoding_test.Po
+	-rm -f ./$(DEPDIR)/transfer_control_test.Po
+	-rm -f ./$(DEPDIR)/unittestutil.Po
 	-rm -f ./$(DEPDIR)/version_identifier_test.Po
 	-rm -f ./$(DEPDIR)/versionidentifier.Po
+	-rm -f ./$(DEPDIR)/view_test.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -3066,11 +3519,14 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-		-rm -f ./$(DEPDIR)/ascstring.Po
+		-rm -f ./$(DEPDIR)/action_container_test.Po
+	-rm -f ./$(DEPDIR)/ascstring.Po
 	-rm -f ./$(DEPDIR)/basestrm.Po
+	-rm -f ./$(DEPDIR)/diplomacy_test.Po
 	-rm -f ./$(DEPDIR)/example_test.Po
 	-rm -f ./$(DEPDIR)/game_events_test.Po
 	-rm -f ./$(DEPDIR)/gamemap_characterization_test.Po
+	-rm -f ./$(DEPDIR)/jump_test.Po
 	-rm -f ./$(DEPDIR)/libcommon_la-accessconstraints-game.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-applicationstarter.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-asc-mainscreen.Plo
@@ -3183,10 +3639,16 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/mcts_evaluator_test.Po
 	-rm -f ./$(DEPDIR)/mcts_snapshot_test.Po
 	-rm -f ./$(DEPDIR)/misc.Po
+	-rm -f ./$(DEPDIR)/object_construction_test.Po
+	-rm -f ./$(DEPDIR)/repair_test.Po
+	-rm -f ./$(DEPDIR)/research_test.Po
 	-rm -f ./$(DEPDIR)/simplestream.Po
 	-rm -f ./$(DEPDIR)/stream_encoding_test.Po
+	-rm -f ./$(DEPDIR)/transfer_control_test.Po
+	-rm -f ./$(DEPDIR)/unittestutil.Po
 	-rm -f ./$(DEPDIR)/version_identifier_test.Po
 	-rm -f ./$(DEPDIR)/versionidentifier.Po
+	-rm -f ./$(DEPDIR)/view_test.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

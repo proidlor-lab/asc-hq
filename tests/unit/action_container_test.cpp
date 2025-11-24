@@ -110,10 +110,3 @@ TEST_F(ActionContainerTest, EmptyContainerRerun) {
    EXPECT_TRUE(res.successful()) << "Empty action container should rerun successfully";
 }
 */
-
-// ========== Main ==========
-
-int main(int argc, char** argv) {
-   ::testing::InitGoogleTest(&argc, argv);
-   return RUN_ALL_TESTS();
-}

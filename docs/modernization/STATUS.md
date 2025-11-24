@@ -138,7 +138,7 @@ Tracking progress on ASC codebase modernization effort to prepare for client-ser
 
 ---
 
-### ✅ Task 4: Modern Test Framework (2025-11-16 to 2025-11-19)
+### ✅ Task 4: Modern Test Framework (2025-11-16 to 2025-11-24)
 
 **What was done**:
 - Evaluated Google Test vs Catch2
@@ -156,6 +156,11 @@ Tracking progress on ASC codebase modernization effort to prepare for client-ser
   - ✅ Established TEST_COMMON_LIBS pattern for shared dependencies
   - ✅ Disabled failing tests for clean CI (100% pass rate)
   - ✅ Documented Phase 2 blockers (GameMap GUI coupling)
+- **Completed Phase 2 Test Migration** (2025-11-24)
+  - ✅ Migrated 11 GameMap-dependent tests to Google Test
+  - ✅ All tests compile successfully with C++23
+  - ✅ Tests leverage headless GameMap capability (OverviewMapHolder decoupling)
+  - ⚠️ Linking blocked by pre-existing infrastructure gaps (event system, dialogs)
 
 **Files created**:
 - `docs/modernization/TEST_FRAMEWORK_MIGRATION.md`
@@ -168,7 +173,17 @@ Tracking progress on ASC codebase modernization effort to prepare for client-ser
 - `tests/unit/version_identifier_test.cpp` (17/17 passing)
 - `tests/unit/stream_encoding_test.cpp` (4/4 passing)
 - `tests/unit/game_events_test.cpp` (1/1 passing, placeholder)
-- `tests/unit/action_container_test.cpp` (created, blocked by GameMap)
+- `tests/unit/action_container_test.cpp` (ported from Phase 2)
+- `tests/unit/map_test.cpp` (Phase 2 - map loading & Lua)
+- `tests/unit/attack_test.cpp` (Phase 2 - attack mechanics, 4 test cases)
+- `tests/unit/recycling_test.cpp` (Phase 2 - unit recycling)
+- `tests/unit/repair_test.cpp` (Phase 2 - repair mechanics, 3 test cases)
+- `tests/unit/research_test.cpp` (Phase 2 - tech research, 2 test cases)
+- `tests/unit/transfer_control_test.cpp` (Phase 2 - ownership transfer)
+- `tests/unit/object_construction_test.cpp` (Phase 2 - object spawning, 2 test cases)
+- `tests/unit/view_test.cpp` (Phase 2 - visibility & radar, 3 test cases)
+- `tests/unit/jump_test.cpp` (Phase 2 - jump drive)
+- `tests/unit/diplomacy_test.cpp` (Phase 2 - diplomacy, 3 test cases)
 - Updated: `configure.ac`, `Makefile.am`, `.github/workflows/ci.yml`, `source/ai/mcts/CMakeLists.txt`
 
 **Benefits**:
@@ -194,10 +209,14 @@ Tracking progress on ASC codebase modernization effort to prepare for client-ser
 
 **Test Migration Progress**:
 - Phase 1 (Simple unit tests): ✅ 100% complete (3/3 tests)
-- Phase 2 (GameMap-dependent): ❌ Blocked - requires Tier 2 decoupling work
+- Phase 2 (GameMap-dependent): ✅ 92% complete (11/12 tests ported)
+  - ✅ action_container, map, attack, recycling tests
+  - ✅ repair, research, transfer_control tests
+  - ✅ object_construction, view, jump, diplomacy tests
+  - ⏸️ movement test deferred (most complex, 437 lines)
 - Phase 3 (AI tests): ⏸️ Not started
 
-**Next step**: Begin Tier 2 (Code Safety) - extract GameMap business logic to unblock Phase 2 tests
+**Next step**: Fix linking issues (add GameEventDispatcher, choice_dlg, tgameloaders implementations) to enable test execution
 
 ---
 
@@ -256,10 +275,13 @@ None - Tier 1 complete, ready to begin Tier 2
 - **Lines of code**: ~96,000
 - **Static analysis baseline**: 1,650 issues (cppcheck)
 - **Test coverage**: Unknown (need coverage tool)
-- **Google Test pass rate**: ✅ 100% (6/6 tests, 22 assertions)
+- **Google Test pass rate**: ⚠️ Linking issues (tests compile successfully)
+  - Phase 1: ✅ 3/3 tests passing (22 assertions)
+  - Phase 2: ⚠️ 11/11 tests compile, linking blocked
 - **MCTS test pass rate**: 100% (2/2 CMake tests - action_executor_test disabled)
 - **Legacy test pass rate**: 100% (18/18 tests - mcts_action_executor_test disabled)
 - **Code formatting**: ✅ Applied to entire codebase
+- **Tests ported to Google Test**: ✅ 14 tests total (3 Phase 1 + 11 Phase 2)
 
 ### Build Performance
 - **Full build time**: ~5-10 minutes

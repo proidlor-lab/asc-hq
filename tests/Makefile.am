@@ -152,9 +152,16 @@ TESTS = example_test \
 	version_identifier_test \
 	stream_encoding_test \
 	game_events_test \
-	gamemap_characterization_test
+	gamemap_characterization_test \
+	action_container_test \
+	repair_test \
+	research_test \
+	transfer_control_test \
+	object_construction_test \
+	view_test \
+	jump_test \
+	diplomacy_test
 #	mcts_action_executor_test  # TODO: Failing ActionGeneration test (pre-existing issue)
-#	action_container_test  # TODO: Blocked by GameMap GUI coupling - see PHASE_2_TEST_BLOCKERS.md
 
 check_PROGRAMS = $(TESTS)
 
@@ -291,6 +298,85 @@ gamemap_characterization_test_LDADD = \
 	libcommon.la \
 	$(TEST_COMMON_LIBS)
 gamemap_characterization_test_LDFLAGS = -pthread
+
+# Phase 2: Ported legacy unit tests
+
+# Repair test
+repair_test_SOURCES = \
+	unit/repair_test.cpp \
+	$(top_srcdir)/source/unittests/unittestutil.cpp
+repair_test_LDADD = \
+	libgtest.la \
+	libgtest_main.la \
+	libcommon.la \
+	$(TEST_COMMON_LIBS)
+repair_test_LDFLAGS = -pthread
+
+# Research test
+research_test_SOURCES = \
+	unit/research_test.cpp \
+	$(top_srcdir)/source/unittests/unittestutil.cpp
+research_test_LDADD = \
+	libgtest.la \
+	libgtest_main.la \
+	libcommon.la \
+	$(TEST_COMMON_LIBS)
+research_test_LDFLAGS = -pthread
+
+# Transfer Control test
+transfer_control_test_SOURCES = \
+	unit/transfer_control_test.cpp \
+	$(top_srcdir)/source/unittests/unittestutil.cpp
+transfer_control_test_LDADD = \
+	libgtest.la \
+	libgtest_main.la \
+	libcommon.la \
+	$(TEST_COMMON_LIBS)
+transfer_control_test_LDFLAGS = -pthread
+
+# Object Construction test
+object_construction_test_SOURCES = \
+	unit/object_construction_test.cpp \
+	$(top_srcdir)/source/unittests/unittestutil.cpp
+object_construction_test_LDADD = \
+	libgtest.la \
+	libgtest_main.la \
+	libcommon.la \
+	$(TEST_COMMON_LIBS)
+object_construction_test_LDFLAGS = -pthread
+
+# View test
+view_test_SOURCES = \
+	unit/view_test.cpp \
+	$(top_srcdir)/source/unittests/unittestutil.cpp
+view_test_LDADD = \
+	libgtest.la \
+	libgtest_main.la \
+	libcommon.la \
+	$(TEST_COMMON_LIBS)
+view_test_LDFLAGS = -pthread
+
+# Jump test
+jump_test_SOURCES = \
+	unit/jump_test.cpp \
+	$(top_srcdir)/source/unittests/unittestutil.cpp
+jump_test_LDADD = \
+	libgtest.la \
+	libgtest_main.la \
+	libcommon.la \
+	$(TEST_COMMON_LIBS)
+jump_test_LDFLAGS = -pthread
+
+# Diplomacy test
+diplomacy_test_SOURCES = \
+	unit/diplomacy_test.cpp \
+	$(top_srcdir)/source/unittests/unittestutil.cpp
+diplomacy_test_LDADD = \
+	libgtest.la \
+	libgtest_main.la \
+	libcommon.la \
+	$(TEST_COMMON_LIBS)
+diplomacy_test_LDFLAGS = -pthread
 
 endif # HAVE_GTEST
 
