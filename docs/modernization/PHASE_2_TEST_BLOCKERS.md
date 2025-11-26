@@ -1,9 +1,52 @@
 # Phase 2 Test Migration - Blockers and Analysis
 
-**Date**: 2025-11-19 (Initial), 2025-11-23 (Resolution), 2025-11-24 (Migration Complete)
-**Status**: ✅ **COMPLETE** - 11 out of 12 Phase 2 tests migrated to Google Test
+**Date**: 2025-11-19 (Initial), 2025-11-23 (Resolution), 2025-11-24 (Migration Complete), 2025-11-24 (Linking Fixes)
+**Status**: ⚠️ **PARTIAL PROGRESS** - Tests compile, linking partially resolved
 
-## Update 2025-11-24: MIGRATION COMPLETE
+## Update 2025-11-24 (Evening): LINKING FIXES IN PROGRESS
+
+Significant progress has been made on resolving the Google Test linking errors:
+
+**What Was Fixed**:
+1. ✅ Removed GUI-dependent files from `libcommon.la`:
+   - `pg_mapdisplay.cpp` (ParaGUI-specific map display implementation)
+   - `windowing.cpp` (GUI window management)
+
+2. ✅ Created headless stub implementations in `tests/helpers/test_stubs.cpp`:
+   - Event system: `ticker` variable, `releasetimeslice()`
+   - Sound system: `SoundList::getInstance()`, `SoundList::playSound()`, `Sound::play()`
+   - Animation system: `showAttackAnimation()`
+   - Reaction fire: `tsearchreactionfireingunits` class methods
+
+3. ✅ Build status: `libcommon.la` compiles successfully with stubs
+
+**Remaining Issues**:
+The stub approach successfully resolves the original linker errors, but additional GUI-coupled files remain in `libcommon.la`:
+- `dashboard.cpp` - Contains ParaGUI widgets (WeaponInfoPanel, Panel, etc.)
+- `contextutils.cpp` - References `getDefaultMapDisplay()`
+- Various other files with deep ParaGUI dependencies
+
+**Root Cause**:
+The linking failures reveal the architectural coupling documented earlier. Many "common" library files have embedded GUI dependencies (ParaGUI vtables, SDL surfaces) that cannot be resolved without either:
+1. Further reducing `libcommon.la` scope (remove dashboard, mainscreenwidget, etc.)
+2. Creating comprehensive ParaGUI stub implementations
+3. Performing the architectural refactoring to properly separate GUI from business logic
+
+**Files Modified**:
+- `tests/Makefile.am` - Removed `pg_mapdisplay.cpp` and `windowing.cpp` from libcommon sources
+- `tests/helpers/test_stubs.cpp` - Created (95 lines of stub implementations)
+
+**Validation**:
+- Stub implementations compile without errors
+- Original linking errors (ticker, releasetimeslice, showAttackAnimation, SoundList) are resolved
+- New linking errors are from files not yet addressed (dashboard, contextutils)
+
+**Next Steps**:
+- Option A: Continue removing GUI files from `libcommon.la` iteratively
+- Option B: Proceed with architectural refactoring (GameMap Phase 3 decoupling)
+- Option C: Use existing test infrastructure (legacy unittester) until refactoring complete
+
+## Update 2025-11-24 (Morning): MIGRATION COMPLETE
 
 Phase 2 test migration is **COMPLETE**. Following the GameMap decoupling work, all Phase 2 tests have been successfully ported to Google Test:
 

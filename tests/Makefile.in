@@ -215,11 +215,9 @@ am__libcommon_la_SOURCES_DIST = $(top_srcdir)/source/soundList.cpp \
 	$(top_srcdir)/source/mapimageexport.cpp \
 	$(top_srcdir)/source/containercontrols.cpp \
 	$(top_srcdir)/source/containerbase-functions.cpp \
-	$(top_srcdir)/source/windowing.cpp \
 	$(top_srcdir)/source/turncontrol.cpp \
 	$(top_srcdir)/source/unitset.cpp \
 	$(top_srcdir)/source/playercolor.cpp \
-	$(top_srcdir)/source/pg_mapdisplay.cpp \
 	$(top_srcdir)/source/autotraining.cpp \
 	$(top_srcdir)/source/researchexecution.cpp \
 	$(top_srcdir)/source/luacommandwriter.cpp \
@@ -236,7 +234,8 @@ am__libcommon_la_SOURCES_DIST = $(top_srcdir)/source/soundList.cpp \
 	$(top_srcdir)/source/unitcostcalculator-standard.cpp \
 	$(top_srcdir)/source/weaponrangelayer.cpp \
 	$(top_srcdir)/source/unitcostcalculator-pbp.cpp \
-	$(top_srcdir)/source/util/messaginghub.cpp
+	$(top_srcdir)/source/util/messaginghub.cpp \
+	helpers/test_stubs.cpp
 @HAVE_GTEST_TRUE@am_libcommon_la_OBJECTS = libcommon_la-soundList.lo \
 @HAVE_GTEST_TRUE@	libcommon_la-typen.lo \
 @HAVE_GTEST_TRUE@	libcommon_la-applicationstarter.lo \
@@ -319,11 +318,9 @@ am__libcommon_la_SOURCES_DIST = $(top_srcdir)/source/soundList.cpp \
 @HAVE_GTEST_TRUE@	libcommon_la-mapimageexport.lo \
 @HAVE_GTEST_TRUE@	libcommon_la-containercontrols.lo \
 @HAVE_GTEST_TRUE@	libcommon_la-containerbase-functions.lo \
-@HAVE_GTEST_TRUE@	libcommon_la-windowing.lo \
 @HAVE_GTEST_TRUE@	libcommon_la-turncontrol.lo \
 @HAVE_GTEST_TRUE@	libcommon_la-unitset.lo \
 @HAVE_GTEST_TRUE@	libcommon_la-playercolor.lo \
-@HAVE_GTEST_TRUE@	libcommon_la-pg_mapdisplay.lo \
 @HAVE_GTEST_TRUE@	libcommon_la-autotraining.lo \
 @HAVE_GTEST_TRUE@	libcommon_la-researchexecution.lo \
 @HAVE_GTEST_TRUE@	libcommon_la-luacommandwriter.lo \
@@ -340,7 +337,8 @@ am__libcommon_la_SOURCES_DIST = $(top_srcdir)/source/soundList.cpp \
 @HAVE_GTEST_TRUE@	libcommon_la-unitcostcalculator-standard.lo \
 @HAVE_GTEST_TRUE@	libcommon_la-weaponrangelayer.lo \
 @HAVE_GTEST_TRUE@	libcommon_la-unitcostcalculator-pbp.lo \
-@HAVE_GTEST_TRUE@	libcommon_la-messaginghub.lo
+@HAVE_GTEST_TRUE@	libcommon_la-messaginghub.lo \
+@HAVE_GTEST_TRUE@	libcommon_la-test_stubs.lo
 libcommon_la_OBJECTS = $(am_libcommon_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -672,7 +670,6 @@ am__depfiles_remade = ./$(DEPDIR)/action_container_test.Po \
 	./$(DEPDIR)/libcommon_la-palette.Plo \
 	./$(DEPDIR)/libcommon_la-paradialog.Plo \
 	./$(DEPDIR)/libcommon_la-password.Plo \
-	./$(DEPDIR)/libcommon_la-pg_mapdisplay.Plo \
 	./$(DEPDIR)/libcommon_la-player.Plo \
 	./$(DEPDIR)/libcommon_la-playercolor.Plo \
 	./$(DEPDIR)/libcommon_la-prehistoricevents.Plo \
@@ -693,6 +690,7 @@ am__depfiles_remade = ./$(DEPDIR)/action_container_test.Po \
 	./$(DEPDIR)/libcommon_la-stringtokenizer.Plo \
 	./$(DEPDIR)/libcommon_la-strtmesg.Plo \
 	./$(DEPDIR)/libcommon_la-terraintype.Plo \
+	./$(DEPDIR)/libcommon_la-test_stubs.Plo \
 	./$(DEPDIR)/libcommon_la-textfile_evaluation.Plo \
 	./$(DEPDIR)/libcommon_la-textfileparser.Plo \
 	./$(DEPDIR)/libcommon_la-textfiletags.Plo \
@@ -707,7 +705,6 @@ am__depfiles_remade = ./$(DEPDIR)/action_container_test.Po \
 	./$(DEPDIR)/libcommon_la-versionidentifier.Plo \
 	./$(DEPDIR)/libcommon_la-viewcalculation.Plo \
 	./$(DEPDIR)/libcommon_la-weaponrangelayer.Plo \
-	./$(DEPDIR)/libcommon_la-windowing.Plo \
 	./$(DEPDIR)/libgtest_la-gtest-all.Plo \
 	./$(DEPDIR)/libgtest_main_la-gtest_main.Plo \
 	./$(DEPDIR)/mcts_evaluator_test.Po \
@@ -1311,11 +1308,9 @@ zipfound = @zipfound@
 @HAVE_GTEST_TRUE@	$(top_srcdir)/source/mapimageexport.cpp \
 @HAVE_GTEST_TRUE@	$(top_srcdir)/source/containercontrols.cpp \
 @HAVE_GTEST_TRUE@	$(top_srcdir)/source/containerbase-functions.cpp \
-@HAVE_GTEST_TRUE@	$(top_srcdir)/source/windowing.cpp \
 @HAVE_GTEST_TRUE@	$(top_srcdir)/source/turncontrol.cpp \
 @HAVE_GTEST_TRUE@	$(top_srcdir)/source/unitset.cpp \
 @HAVE_GTEST_TRUE@	$(top_srcdir)/source/playercolor.cpp \
-@HAVE_GTEST_TRUE@	$(top_srcdir)/source/pg_mapdisplay.cpp \
 @HAVE_GTEST_TRUE@	$(top_srcdir)/source/autotraining.cpp \
 @HAVE_GTEST_TRUE@	$(top_srcdir)/source/researchexecution.cpp \
 @HAVE_GTEST_TRUE@	$(top_srcdir)/source/luacommandwriter.cpp \
@@ -1332,7 +1327,8 @@ zipfound = @zipfound@
 @HAVE_GTEST_TRUE@	$(top_srcdir)/source/unitcostcalculator-standard.cpp \
 @HAVE_GTEST_TRUE@	$(top_srcdir)/source/weaponrangelayer.cpp \
 @HAVE_GTEST_TRUE@	$(top_srcdir)/source/unitcostcalculator-pbp.cpp \
-@HAVE_GTEST_TRUE@	$(top_srcdir)/source/util/messaginghub.cpp
+@HAVE_GTEST_TRUE@	$(top_srcdir)/source/util/messaginghub.cpp \
+@HAVE_GTEST_TRUE@	helpers/test_stubs.cpp
 
 @HAVE_GTEST_TRUE@libcommon_la_CPPFLAGS = $(AM_CPPFLAGS)
 @HAVE_GTEST_TRUE@libcommon_la_LDFLAGS = -pthread
@@ -1791,7 +1787,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-palette.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-paradialog.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-password.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-pg_mapdisplay.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-player.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-playercolor.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-prehistoricevents.Plo@am__quote@ # am--include-marker
@@ -1812,6 +1807,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-stringtokenizer.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-strtmesg.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-terraintype.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-test_stubs.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-textfile_evaluation.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-textfileparser.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-textfiletags.Plo@am__quote@ # am--include-marker
@@ -1826,7 +1822,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-versionidentifier.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-viewcalculation.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-weaponrangelayer.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_la-windowing.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgtest_la-gtest-all.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgtest_main_la-gtest_main.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcts_evaluator_test.Po@am__quote@ # am--include-marker
@@ -2465,13 +2460,6 @@ libcommon_la-containerbase-functions.lo: $(top_srcdir)/source/containerbase-func
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-containerbase-functions.lo `test -f '$(top_srcdir)/source/containerbase-functions.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/containerbase-functions.cpp
 
-libcommon_la-windowing.lo: $(top_srcdir)/source/windowing.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-windowing.lo -MD -MP -MF $(DEPDIR)/libcommon_la-windowing.Tpo -c -o libcommon_la-windowing.lo `test -f '$(top_srcdir)/source/windowing.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/windowing.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-windowing.Tpo $(DEPDIR)/libcommon_la-windowing.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/windowing.cpp' object='libcommon_la-windowing.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-windowing.lo `test -f '$(top_srcdir)/source/windowing.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/windowing.cpp
-
 libcommon_la-turncontrol.lo: $(top_srcdir)/source/turncontrol.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-turncontrol.lo -MD -MP -MF $(DEPDIR)/libcommon_la-turncontrol.Tpo -c -o libcommon_la-turncontrol.lo `test -f '$(top_srcdir)/source/turncontrol.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/turncontrol.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-turncontrol.Tpo $(DEPDIR)/libcommon_la-turncontrol.Plo
@@ -2492,13 +2480,6 @@ libcommon_la-playercolor.lo: $(top_srcdir)/source/playercolor.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/playercolor.cpp' object='libcommon_la-playercolor.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-playercolor.lo `test -f '$(top_srcdir)/source/playercolor.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/playercolor.cpp
-
-libcommon_la-pg_mapdisplay.lo: $(top_srcdir)/source/pg_mapdisplay.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-pg_mapdisplay.lo -MD -MP -MF $(DEPDIR)/libcommon_la-pg_mapdisplay.Tpo -c -o libcommon_la-pg_mapdisplay.lo `test -f '$(top_srcdir)/source/pg_mapdisplay.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/pg_mapdisplay.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-pg_mapdisplay.Tpo $(DEPDIR)/libcommon_la-pg_mapdisplay.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/pg_mapdisplay.cpp' object='libcommon_la-pg_mapdisplay.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-pg_mapdisplay.lo `test -f '$(top_srcdir)/source/pg_mapdisplay.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/pg_mapdisplay.cpp
 
 libcommon_la-autotraining.lo: $(top_srcdir)/source/autotraining.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-autotraining.lo -MD -MP -MF $(DEPDIR)/libcommon_la-autotraining.Tpo -c -o libcommon_la-autotraining.lo `test -f '$(top_srcdir)/source/autotraining.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/autotraining.cpp
@@ -2618,6 +2599,13 @@ libcommon_la-messaginghub.lo: $(top_srcdir)/source/util/messaginghub.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_srcdir)/source/util/messaginghub.cpp' object='libcommon_la-messaginghub.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-messaginghub.lo `test -f '$(top_srcdir)/source/util/messaginghub.cpp' || echo '$(srcdir)/'`$(top_srcdir)/source/util/messaginghub.cpp
+
+libcommon_la-test_stubs.lo: helpers/test_stubs.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libcommon_la-test_stubs.lo -MD -MP -MF $(DEPDIR)/libcommon_la-test_stubs.Tpo -c -o libcommon_la-test_stubs.lo `test -f 'helpers/test_stubs.cpp' || echo '$(srcdir)/'`helpers/test_stubs.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libcommon_la-test_stubs.Tpo $(DEPDIR)/libcommon_la-test_stubs.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='helpers/test_stubs.cpp' object='libcommon_la-test_stubs.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcommon_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libcommon_la-test_stubs.lo `test -f 'helpers/test_stubs.cpp' || echo '$(srcdir)/'`helpers/test_stubs.cpp
 
 libgtest_la-gtest-all.lo: $(GTEST_DIR)/src/gtest-all.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgtest_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libgtest_la-gtest-all.lo -MD -MP -MF $(DEPDIR)/libgtest_la-gtest-all.Tpo -c -o libgtest_la-gtest-all.lo `test -f '$(GTEST_DIR)/src/gtest-all.cc' || echo '$(srcdir)/'`$(GTEST_DIR)/src/gtest-all.cc
@@ -3423,7 +3411,6 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/libcommon_la-palette.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-paradialog.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-password.Plo
-	-rm -f ./$(DEPDIR)/libcommon_la-pg_mapdisplay.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-player.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-playercolor.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-prehistoricevents.Plo
@@ -3444,6 +3431,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/libcommon_la-stringtokenizer.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-strtmesg.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-terraintype.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-test_stubs.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-textfile_evaluation.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-textfileparser.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-textfiletags.Plo
@@ -3458,7 +3446,6 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/libcommon_la-versionidentifier.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-viewcalculation.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-weaponrangelayer.Plo
-	-rm -f ./$(DEPDIR)/libcommon_la-windowing.Plo
 	-rm -f ./$(DEPDIR)/libgtest_la-gtest-all.Plo
 	-rm -f ./$(DEPDIR)/libgtest_main_la-gtest_main.Plo
 	-rm -f ./$(DEPDIR)/mcts_evaluator_test.Po
@@ -3598,7 +3585,6 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/libcommon_la-palette.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-paradialog.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-password.Plo
-	-rm -f ./$(DEPDIR)/libcommon_la-pg_mapdisplay.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-player.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-playercolor.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-prehistoricevents.Plo
@@ -3619,6 +3605,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/libcommon_la-stringtokenizer.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-strtmesg.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-terraintype.Plo
+	-rm -f ./$(DEPDIR)/libcommon_la-test_stubs.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-textfile_evaluation.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-textfileparser.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-textfiletags.Plo
@@ -3633,7 +3620,6 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/libcommon_la-versionidentifier.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-viewcalculation.Plo
 	-rm -f ./$(DEPDIR)/libcommon_la-weaponrangelayer.Plo
-	-rm -f ./$(DEPDIR)/libcommon_la-windowing.Plo
 	-rm -f ./$(DEPDIR)/libgtest_la-gtest-all.Plo
 	-rm -f ./$(DEPDIR)/libgtest_main_la-gtest_main.Plo
 	-rm -f ./$(DEPDIR)/mcts_evaluator_test.Po

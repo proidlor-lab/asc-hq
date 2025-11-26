@@ -119,11 +119,9 @@ libcommon_la_SOURCES = \
 	$(top_srcdir)/source/mapimageexport.cpp \
 	$(top_srcdir)/source/containercontrols.cpp \
 	$(top_srcdir)/source/containerbase-functions.cpp \
-	$(top_srcdir)/source/windowing.cpp \
 	$(top_srcdir)/source/turncontrol.cpp \
 	$(top_srcdir)/source/unitset.cpp \
 	$(top_srcdir)/source/playercolor.cpp \
-	$(top_srcdir)/source/pg_mapdisplay.cpp \
 	$(top_srcdir)/source/autotraining.cpp \
 	$(top_srcdir)/source/researchexecution.cpp \
 	$(top_srcdir)/source/luacommandwriter.cpp \
@@ -140,7 +138,8 @@ libcommon_la_SOURCES = \
 	$(top_srcdir)/source/unitcostcalculator-standard.cpp \
 	$(top_srcdir)/source/weaponrangelayer.cpp \
 	$(top_srcdir)/source/unitcostcalculator-pbp.cpp \
-	$(top_srcdir)/source/util/messaginghub.cpp
+	$(top_srcdir)/source/util/messaginghub.cpp \
+	helpers/test_stubs.cpp
 
 libcommon_la_CPPFLAGS = $(AM_CPPFLAGS)
 libcommon_la_LDFLAGS = -pthread

@@ -184,7 +184,8 @@ Tracking progress on ASC codebase modernization effort to prepare for client-ser
 - `tests/unit/view_test.cpp` (Phase 2 - visibility & radar, 3 test cases)
 - `tests/unit/jump_test.cpp` (Phase 2 - jump drive)
 - `tests/unit/diplomacy_test.cpp` (Phase 2 - diplomacy, 3 test cases)
-- Updated: `configure.ac`, `Makefile.am`, `.github/workflows/ci.yml`, `source/ai/mcts/CMakeLists.txt`
+- `tests/helpers/test_stubs.cpp` (Headless stub implementations - 95 lines)
+- Updated: `configure.ac`, `Makefile.am`, `.github/workflows/ci.yml`, `source/ai/mcts/CMakeLists.txt`, `tests/Makefile.am`
 
 **Benefits**:
 - ✅ Modern test framework fully integrated and operational
@@ -275,13 +276,16 @@ None - Tier 1 complete, ready to begin Tier 2
 - **Lines of code**: ~96,000
 - **Static analysis baseline**: 1,650 issues (cppcheck)
 - **Test coverage**: Unknown (need coverage tool)
-- **Google Test pass rate**: ⚠️ Linking issues (tests compile successfully)
+- **Google Test pass rate**: ⚠️ Linking partially resolved (2025-11-24)
   - Phase 1: ✅ 3/3 tests passing (22 assertions)
-  - Phase 2: ⚠️ 11/11 tests compile, linking blocked
+  - Phase 2: ⚠️ 11/11 tests compile, linking in progress (stub approach validated)
+  - Stub implementations: ✅ Created for ticker, SoundList, showAttackAnimation, reaction fire
+  - Remaining blockers: dashboard.cpp, contextutils.cpp (additional GUI dependencies)
 - **MCTS test pass rate**: 100% (2/2 CMake tests - action_executor_test disabled)
 - **Legacy test pass rate**: 100% (18/18 tests - mcts_action_executor_test disabled)
 - **Code formatting**: ✅ Applied to entire codebase
 - **Tests ported to Google Test**: ✅ 14 tests total (3 Phase 1 + 11 Phase 2)
+- **Test infrastructure**: ✅ Headless stub framework established (tests/helpers/test_stubs.cpp)
 
 ### Build Performance
 - **Full build time**: ~5-10 minutes
