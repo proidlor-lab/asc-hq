@@ -34,7 +34,6 @@ libgtest_main_la_LDFLAGS = -pthread
 
 # Common game source files (Phase 2 tests need these)
 libcommon_la_SOURCES = \
-	$(top_srcdir)/source/soundList.cpp \
 	$(top_srcdir)/source/typen.cpp \
 	$(top_srcdir)/source/applicationstarter.cpp \
 	$(top_srcdir)/source/strtmesg.cpp \
@@ -45,12 +44,10 @@ libcommon_la_SOURCES = \
 	$(top_srcdir)/source/newfont.cpp \
 	$(top_srcdir)/source/misc.cpp \
 	$(top_srcdir)/source/loadpcxc.cpp \
-	$(top_srcdir)/source/loaders.cpp \
 	$(top_srcdir)/source/tos.cpp \
 	$(top_srcdir)/source/loadbi3.cpp \
 	$(top_srcdir)/source/gamedlg.cpp \
 	$(top_srcdir)/source/dlg_box.cpp \
-	$(top_srcdir)/source/dialog.cpp \
 	$(top_srcdir)/source/controls.cpp \
 	$(top_srcdir)/source/basestrm.cpp \
 	$(top_srcdir)/source/basegfx.cpp \
@@ -86,7 +83,6 @@ libcommon_la_SOURCES = \
 	$(top_srcdir)/source/stringtokenizer.cpp \
 	$(top_srcdir)/source/music.cpp \
 	$(top_srcdir)/source/messages.cpp \
-	$(top_srcdir)/source/paradialog.cpp \
 	$(top_srcdir)/source/textfile_evaluation.cpp \
 	$(top_srcdir)/source/containerbasetype.cpp \
 	$(top_srcdir)/source/messagedlg.cpp \
@@ -95,8 +91,6 @@ libcommon_la_SOURCES = \
 	$(top_srcdir)/source/prehistoricevents.cpp \
 	$(top_srcdir)/source/gameevents.cpp \
 	$(top_srcdir)/source/gameeventsystem.cpp \
-	$(top_srcdir)/source/gameevent_dialogs.cpp \
-	$(top_srcdir)/source/statisticdialog.cpp \
 	$(top_srcdir)/source/clipboard.cpp \
 	$(top_srcdir)/source/geometry.cpp \
 	$(top_srcdir)/source/guidimension.cpp \
@@ -106,10 +100,7 @@ libcommon_la_SOURCES = \
 	$(top_srcdir)/source/overviewmapimage.cpp \
 	$(top_srcdir)/source/mapfield.cpp \
 	$(top_srcdir)/source/overviewmappanel.cpp \
-	$(top_srcdir)/source/dashboard.cpp \
-	$(top_srcdir)/source/asc-mainscreen.cpp \
 	$(top_srcdir)/source/explosivemines.cpp \
-	$(top_srcdir)/source/mainscreenwidget.cpp \
 	$(top_srcdir)/source/networksupervisor.cpp \
 	$(top_srcdir)/source/statistics.cpp \
 	$(top_srcdir)/source/legacynetworkloaders.cpp \
@@ -118,7 +109,6 @@ libcommon_la_SOURCES = \
 	$(top_srcdir)/source/reactionfire.cpp \
 	$(top_srcdir)/source/mapimageexport.cpp \
 	$(top_srcdir)/source/containercontrols.cpp \
-	$(top_srcdir)/source/containerbase-functions.cpp \
 	$(top_srcdir)/source/turncontrol.cpp \
 	$(top_srcdir)/source/unitset.cpp \
 	$(top_srcdir)/source/playercolor.cpp \
@@ -139,6 +129,7 @@ libcommon_la_SOURCES = \
 	$(top_srcdir)/source/weaponrangelayer.cpp \
 	$(top_srcdir)/source/unitcostcalculator-pbp.cpp \
 	$(top_srcdir)/source/util/messaginghub.cpp \
+	$(top_srcdir)/source/game_event_dispatcher.cpp \
 	helpers/test_stubs.cpp
 
 libcommon_la_CPPFLAGS = $(AM_CPPFLAGS)

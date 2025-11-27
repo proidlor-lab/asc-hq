@@ -1,7 +1,7 @@
 # Modernization Status
 
-**Last Updated**: 2025-11-19
-**Current Phase**: Tier 1 Complete + Phase 1 Test Migration Complete - Ready for Tier 2
+**Last Updated**: 2025-11-27
+**Current Phase**: Tier 1 Complete + Phase 1 Test Migration Complete - Architectural Refactoring Needed
 
 ---
 
@@ -217,13 +217,32 @@ Tracking progress on ASC codebase modernization effort to prepare for client-ser
   - ⏸️ movement test deferred (most complex, 437 lines)
 - Phase 3 (AI tests): ⏸️ Not started
 
-**Next step**: Fix linking issues (add GameEventDispatcher, choice_dlg, tgameloaders implementations) to enable test execution
+**Next step**: ~~Fix linking issues~~ **UPDATE 2025-11-27**: Stub patch experiment revealed fundamental architectural coupling. Proper refactoring required instead. See `STUB_PATCH_FINDINGS.md`.
+
+---
+
+## ⚠️ Stub Patch Experiment (2025-11-27)
+
+**Status**: ⏸️ PAUSED - Demonstrates need for architectural refactoring
+
+Attempted to resolve Phase 2 test linking issues via stub implementations:
+- ✅ Created 271 lines of stub code (ticker, SoundList, MapDisplay, loaders, PowerPlants)
+- ✅ Removed 10 GUI files from libcommon.la (soundList, paradialog, dashboard, etc.)
+- ✅ libcommon.la builds successfully
+- ⚠️ Test linking still blocked by multiple definition errors & ParaGUI dependencies
+- 📊 Identified ~9,000 lines of GUI code in "common" library
+
+**Key Finding**: Stubbing cannot solve the problem - the codebase requires proper dependency injection and interface extraction. Estimated 11-17 additional hours for complete stub approach vs. 30-40 hours for proper refactoring that reduces technical debt.
+
+**Recommendation**: Proceed with architectural refactoring (GameMap extraction) as documented in `GAMEMAP_REFACTORING_PLAN.md`.
+
+**Documentation**: See `docs/modernization/STUB_PATCH_FINDINGS.md` for detailed analysis.
 
 ---
 
 ## In Progress
 
-None - Tier 1 complete, ready to begin Tier 2
+None - Ready to begin Tier 2 (Architectural Refactoring)
 
 ---
 
