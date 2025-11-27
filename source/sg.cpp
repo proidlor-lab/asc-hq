@@ -287,7 +287,8 @@ void runPendingTasks(Player& player) {
 }
 
 void hookGuiToMap(GameMap* map) {
-   if (!map->getGuiHooked()) {
+   // Phase 3: Check if GUI is already hooked via interaction provider
+   if (!map->getInteractionProvider().isGuiAvailable()) {
       // Phase 3: Set GUI interaction provider for dependency injection
       static asc::core::interactions::GUIInteractionProvider guiProvider;
       map->setInteractionProvider(&guiProvider);
@@ -306,7 +307,7 @@ void hookGuiToMap(GameMap* map) {
       map->sigPlayerUserInteractionEnds.connect(sigc::ptr_fun(&runPendingTasks));
 
       map->sigPlayerTurnHasEnded.connect(sigc::ptr_fun(&viewOwnReplay));
-      map->guiHooked();
+      map->guiHooked(); // Phase 2: Still needed for OverviewMapHolder
    }
 }
 

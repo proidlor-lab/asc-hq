@@ -174,6 +174,7 @@ class PackageData;
 //! The map. THE central structure of ASC, which holds everything not globally available together
 class GameMap {
    void operator=(const GameMap& map);
+   // DEPRECATED (Phase 3): Replaced by interactionProvider->isGuiAvailable()
    bool dialogsHooked;
    int serverMapID;
 
@@ -585,6 +586,8 @@ class GameMap {
    //! generated a pseudo-random number with the map-internal seed
    int random(int max);
 
+   // DEPRECATED (Phase 3): Use getInteractionProvider().isGuiAvailable() instead
+   // These methods will be removed after Phase 2 OverviewMapHolder is fully migrated
    void guiHooked();
    bool getGuiHooked() { return dialogsHooked; };
 

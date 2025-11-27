@@ -9,9 +9,7 @@
 
 #include "gui_interaction_provider.h"
 #include "dialog.h"
-#include "dialogs/selectionwindow.h"
 #include "dialogs/messagedialog.h"
-#include "global.h"
 
 namespace asc {
 namespace core {
@@ -30,19 +28,10 @@ int GUIInteractionProvider::selectOption(const std::string& prompt, const std::v
       return (result == 1) ? 0 : 1;
    }
 
-   // For multiple options, use SelectionWindow
-   SelectionWidget selectionWidget;
-   for (const auto& option : options) {
-      selectionWidget.addItem(option);
-   }
-
-   SelectionWindow selectionWindow(nullptr, PG_Rect(100, 100, 400, 300), prompt.c_str());
-   selectionWindow.init(&selectionWidget);
-
-   if (selectionWindow.Show() == 1 && selectionWidget.getSelected() >= 0) {
-      return selectionWidget.getSelected();
-   }
-
+   // For more than 2 options, we don't have a simple dialog
+   // Show a message and return default for now
+   // TODO: Implement proper multi-choice dialog when needed
+   displaymessage2("%s (selecting default option %d)", prompt.c_str(), defaultOption);
    return defaultOption;
 }
 
