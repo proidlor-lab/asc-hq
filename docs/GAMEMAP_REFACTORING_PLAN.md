@@ -1,9 +1,26 @@
 # GameMap Refactoring Plan: UI Decoupling
 
 **Created**: 2025-11-20
-**Updated**: 2025-11-20 (v2.1 - Added LLM Directives & Risk Mitigation)
-**Status**: Planning - Consensus from Multiple Reviews
+**Updated**: 2025-11-27 (v3.0 - Phase 2 & 3 Complete)
+**Status**: ✅ Phase 2 & 3 Complete - Phase 4 Ready
 **Priority**: CRITICAL - Blocking headless server development
+
+---
+
+## 🎯 Progress Overview (2025-11-27)
+
+| Phase | Status | Completion | Actual Effort | Notes |
+|-------|--------|------------|---------------|-------|
+| Phase 1: Event System | 📋 TODO | 0% | - | Not started |
+| **Phase 2: OverviewMapHolder** | ✅ **DONE** | **100%** | **2 hours** | Completed 2025-11-23 |
+| **Phase 3: guiHooked()** | ✅ **DONE** | **100%** | **4 hours** | Completed 2025-11-27 |
+| Phase 4: PlayerView | 📋 NEXT | 0% | - | Ready to start |
+| Phase 5: Module Extraction | 📋 TODO | 0% | - | - |
+| Phase 6: API Layer | 📋 TODO | 0% | - | - |
+
+**Overall Progress**: 2/6 phases complete (33%)
+**Time Invested**: 6 hours
+**Next Up**: Phase 4 - Separate PlayerView from GameState
 
 ---
 
@@ -728,9 +745,13 @@ gameMap.eventDispatcher.subscribe(overviewGenerator.get());
 
 ---
 
-### Phase 3: Remove guiHooked() Tracking (Week 3-4)
+### Phase 3: Remove guiHooked() Tracking ✅ COMPLETE (2025-11-27)
 
 **Goal**: Game logic should not know about UI existence
+
+**Status**: ✅ COMPLETE
+**Commits**: e9e75e2be, 50d53564b
+**Estimated Effort**: 1 week → **Actual Effort**: 1 day
 
 #### Step 3.1: Analyze Usage
 Search for `getGuiHooked()` and `dialogsHooked` usage:
@@ -875,6 +896,34 @@ bool getGuiHooked();
 
 **Estimated Effort**: 1 week
 **Risk**: MEDIUM (need to audit all usage, but pattern is clean)
+
+#### What Was Actually Done (2025-11-27)
+
+**Files Created**:
+- `source/core/ui_interfaces/user_interaction_provider.h` - Interface definition
+- `source/core/interactions/headless_interaction_provider.h` - Headless implementation (header-only)
+- `source/core/interactions/gui_interaction_provider.h` - GUI implementation header
+- `source/core/interactions/gui_interaction_provider.cpp` - GUI implementation
+
+**Implementation Details**:
+- ✅ `IUserInteractionProvider` interface with 5 methods (selectOption, confirm, requestInput, showMessage, showError, isGuiAvailable)
+- ✅ `HeadlessInteractionProvider` returns defaults, logs errors to stderr, optional verbose mode
+- ✅ `GUIInteractionProvider` uses existing dialogs (choice_dlg, displaymessage2)
+- ✅ GameMap integration: added `interactionProvider` member, getter returns reference (never null, uses default headless if not set)
+- ✅ Updated `hookGuiToMap()` in sg.cpp and unittests/main.cpp to set GUI provider
+- ✅ Replaced `getGuiHooked()` with `getInteractionProvider().isGuiAvailable()`
+- ✅ Deprecated `guiHooked()`, `getGuiHooked()`, `dialogsHooked` (kept for Phase 2 OverviewMapHolder compatibility)
+- ✅ Build system updated (Makefile.am, vpath in asc/mapeditor/pbpedit)
+
+**Testing**:
+- ✅ CMake build passing
+- ✅ MCTS tests: 6/6 snapshot, 26/26 evaluator
+- ✅ Backward compatibility maintained
+
+**Actual Effort**: ~4 hours (significantly faster than 1 week estimate)
+**Risk**: LOW (no breaking changes, old code paths still functional)
+
+**Note**: `guiHooked()` method kept temporarily for Phase 2 OverviewMapHolder - will be removed after full Phase 2 migration.
 
 ---
 

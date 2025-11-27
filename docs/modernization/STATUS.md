@@ -1,7 +1,7 @@
 # Modernization Status
 
 **Last Updated**: 2025-11-27
-**Current Phase**: Tier 1 Complete + Phase 1 Test Migration Complete - Architectural Refactoring Needed
+**Current Phase**: Tier 1 Complete + GameMap Phase 2 & 3 Complete - Architectural Refactoring In Progress
 
 ---
 
@@ -240,9 +240,77 @@ Attempted to resolve Phase 2 test linking issues via stub implementations:
 
 ---
 
+## ✅ GameMap Architectural Refactoring (2025-11-23 to 2025-11-27)
+
+**Status**: ✅ Phase 2 & 3 COMPLETE - Following GAMEMAP_REFACTORING_PLAN.md
+
+This is the architectural refactoring recommended by the stub patch experiment. Following the phased approach documented in `docs/GAMEMAP_REFACTORING_PLAN.md`.
+
+### Phase 2: Extract OverviewMapHolder ✅ COMPLETE (2025-11-23)
+
+**Goal**: Move UI rendering out of GameMap
+
+**What was done**:
+- ✅ Created `IOverviewMapGenerator` interface (source/core/ui_interfaces/)
+- ✅ Implemented `OverviewMapGeneratorService` (source/ui/)
+- ✅ Made `OverviewMapHolder` optional (pointer-based, allocated on-demand in guiHooked())
+- ✅ GameMap can now be instantiated without SDL Surface dependencies
+- ✅ All executables build successfully (asc: 152MB, mapeditor: 99MB, pbpedit: 99MB)
+- ✅ MCTS tests passing (snapshot: 6/6, evaluator: 26/26)
+
+**Benefits**:
+- Headless GameMap now possible (no mandatory GUI components)
+- Dependency inversion pattern established
+- Phase 2 test migration unblocked
+
+**Files modified**: 7 files (gamemap.h, gamemap.cpp, turncontrol.cpp, overviewmappanel.cpp, loaders.cpp, replay.cpp, weathercast.cpp)
+
+---
+
+### Phase 3: Remove guiHooked() Tracking ✅ COMPLETE (2025-11-27)
+
+**Goal**: Replace guiHooked() pattern with dependency injection
+
+**What was done**:
+- ✅ Created `IUserInteractionProvider` interface (source/core/ui_interfaces/)
+- ✅ Implemented `HeadlessInteractionProvider` (returns defaults, headless mode)
+- ✅ Implemented `GUIInteractionProvider` (shows dialogs via existing dialog system)
+- ✅ Injected provider into GameMap (setter/getter methods)
+- ✅ Updated `hookGuiToMap()` to set GUI provider
+- ✅ Replaced `getGuiHooked()` calls with `getInteractionProvider().isGuiAvailable()`
+- ✅ Deprecated legacy methods (`guiHooked()`, `getGuiHooked()`, `dialogsHooked`)
+
+**Benefits**:
+- ✅ Game logic no longer knows about UI existence
+- ✅ Cleaner separation via dependency injection
+- ✅ Headless mode works naturally (uses defaults)
+- ✅ Easy to test (mock interaction provider)
+- ✅ Can implement different UIs (CLI, GUI, web)
+
+**Files created**:
+- `source/core/ui_interfaces/user_interaction_provider.h`
+- `source/core/interactions/headless_interaction_provider.h`
+- `source/core/interactions/gui_interaction_provider.h`
+- `source/core/interactions/gui_interaction_provider.cpp`
+
+**Files modified**:
+- `source/gamemap.h` (added interactionProvider member, deprecated old methods)
+- `source/gamemap.cpp` (getter/setter implementation)
+- `source/sg.cpp` (hookGuiToMap updated)
+- `source/unittests/main.cpp` (hookGuiToMap updated)
+- Build system: all Makefile.am files updated with new source file
+
+**Commits**:
+- e9e75e2be: Pattern implementation
+- 50d53564b: Usage migration & deprecation
+
+**Status**: ✅ Phase 3 Complete - Ready for Phase 4
+
+---
+
 ## In Progress
 
-None - Ready to begin Tier 2 (Architectural Refactoring)
+**GameMap Refactoring - Phase 4**: Separate PlayerView from GameState (Next)
 
 ---
 
