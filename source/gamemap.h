@@ -44,6 +44,7 @@
 #include "actions/actioncontainer.h"
 #include "game_event_dispatcher.h"
 #include "core/ui_interfaces/overview_map_generator.h"
+#include "core/ui_interfaces/user_interaction_provider.h"
 
 class AbstractTaskContainer;
 
@@ -509,6 +510,10 @@ class GameMap {
   private:
    asc::core::ui_interfaces::IOverviewMapGenerator* overviewMapGenerator;
 
+   // Phase 3 Refactoring: User interaction provider for dependency injection
+   // The interaction provider is never null (uses default headless provider if not set)
+   asc::core::ui_interfaces::IUserInteractionProvider* interactionProvider;
+
   public:
    /**
     * @brief Set the overview map generator (UI component)
@@ -531,6 +536,18 @@ class GameMap {
    // New code should use getOverviewMapGenerator() instead
    // Made optional (pointer) to allow headless GameMap instantiation
    OverviewMapHolder* overviewMapHolder;
+
+   /**
+    * @brief Set the user interaction provider (Phase 3)
+    * @param provider Pointer to the provider, or nullptr for default headless provider
+    */
+   void setInteractionProvider(asc::core::ui_interfaces::IUserInteractionProvider* provider);
+
+   /**
+    * @brief Get the user interaction provider
+    * @return Reference to the interaction provider (never null, uses default if not set)
+    */
+   asc::core::ui_interfaces::IUserInteractionProvider& getInteractionProvider();
 
    /** @name Access to item types
     *

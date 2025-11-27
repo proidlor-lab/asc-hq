@@ -105,6 +105,7 @@
 #include "dialog.h"
 #include "strtmesg.h"
 #include "gamedlg.h"
+#include "core/interactions/gui_interaction_provider.h"
 #include "sg.h"
 #include "gameoptions.h"
 #include "loadimage.h"
@@ -287,6 +288,10 @@ void runPendingTasks(Player& player) {
 
 void hookGuiToMap(GameMap* map) {
    if (!map->getGuiHooked()) {
+      // Phase 3: Set GUI interaction provider for dependency injection
+      static asc::core::interactions::GUIInteractionProvider guiProvider;
+      map->setInteractionProvider(&guiProvider);
+
       map->sigPlayerUserInteractionBegins.connect(sigc::ptr_fun(&viewcomp));
       map->sigPlayerUserInteractionBegins.connect(sigc::hide(repaintMap.make_slot()));
 

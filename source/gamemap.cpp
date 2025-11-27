@@ -37,6 +37,7 @@
 #include "gameeventsystem.h"
 #include "spfst.h"
 #include "campaignactionrecorder.h"
+#include "core/interactions/headless_interaction_provider.h"
 
 #include "packagemanager.h"
 #include "tasks/abstracttaskcontainer.h"
@@ -211,8 +212,9 @@ void OverviewMapHolder::clearmap(GameMap* actmap) {
 GameMap ::GameMap(void)
    : actions(this),
      actionRecorder(NULL),
-     overviewMapGenerator(nullptr), // Phase 2: Optional UI component (null for headless)
-     overviewMapHolder(nullptr),    // Phase 2: Optional for headless mode (allocated in guiHooked)
+     overviewMapGenerator(nullptr),  // Phase 2: Optional UI component (null for headless)
+     interactionProvider(nullptr),   // Phase 3: Will use default headless provider if not set
+     overviewMapHolder(nullptr),     // Phase 2: Optional for headless mode (allocated in guiHooked)
      network(NULL),
      packageData(NULL) {
    serverMapID = 0;
@@ -290,6 +292,24 @@ void GameMap ::guiHooked() {
    }
    overviewMapHolder->connect();
    dialogsHooked = true;
+}
+
+// Phase 3: User interaction provider methods
+namespace {
+// Static default headless provider (used when no provider is explicitly set)
+asc::core::interactions::HeadlessInteractionProvider defaultHeadlessProvider(false); // Non-verbose
+} // namespace
+
+void GameMap::setInteractionProvider(asc::core::ui_interfaces::IUserInteractionProvider* provider) {
+   interactionProvider = provider;
+}
+
+asc::core::ui_interfaces::IUserInteractionProvider& GameMap::getInteractionProvider() {
+   // Return the set provider, or default headless provider if none set
+   if (interactionProvider) {
+      return *interactionProvider;
+   }
+   return defaultHeadlessProvider;
 }
 
 const int tmapversion = 34;

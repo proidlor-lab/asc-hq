@@ -119,7 +119,8 @@ am__objects_1 = soundList.$(OBJEXT) typen.$(OBJEXT) \
 	containerbase.$(OBJEXT) mapalgorithms.$(OBJEXT) \
 	viewcalculation.$(OBJEXT) gamemap.$(OBJEXT) \
 	game_event_dispatcher.$(OBJEXT) \
-	overview_map_generator_service.$(OBJEXT) password.$(OBJEXT) \
+	overview_map_generator_service.$(OBJEXT) \
+	gui_interaction_provider.$(OBJEXT) password.$(OBJEXT) \
 	replay.$(OBJEXT) research.$(OBJEXT) fieldimageloader.$(OBJEXT) \
 	mapdisplay.$(OBJEXT) resourcenet.$(OBJEXT) ascstring.$(OBJEXT) \
 	graphicset.$(OBJEXT) vehicle.$(OBJEXT) buildings.$(OBJEXT) \
@@ -230,6 +231,7 @@ am__depfiles_remade = ./$(DEPDIR)/accessconstraints-game.Po \
 	./$(DEPDIR)/gameevents.Po ./$(DEPDIR)/gameeventsystem.Po \
 	./$(DEPDIR)/gamemap.Po ./$(DEPDIR)/gameoptions.Po \
 	./$(DEPDIR)/geometry.Po ./$(DEPDIR)/graphicset.Po \
+	./$(DEPDIR)/gui_interaction_provider.Po \
 	./$(DEPDIR)/guidimension.Po ./$(DEPDIR)/guifunctions.Po \
 	./$(DEPDIR)/guiiconhandler.Po ./$(DEPDIR)/i18n.Po \
 	./$(DEPDIR)/iconrepository.Po ./$(DEPDIR)/itemrepository.Po \
@@ -524,7 +526,7 @@ loadbi3.cpp gamedlg.cpp dlg_box.cpp dialog.cpp controls.cpp \
 basestrm.cpp basegfx.cpp attack.cpp replaymapdisplay.cpp memory-measurement.cpp \
 gameoptions.cpp astar2.cpp vehicletype.cpp objects.cpp stdio-errorhandler.cpp \
 buildingtype.cpp containerbase.cpp mapalgorithms.cpp viewcalculation.cpp \
-gamemap.cpp game_event_dispatcher.cpp overview_map_generator_service.cpp password.cpp replay.cpp research.cpp fieldimageloader.cpp \
+gamemap.cpp game_event_dispatcher.cpp overview_map_generator_service.cpp gui_interaction_provider.cpp password.cpp replay.cpp research.cpp fieldimageloader.cpp \
 mapdisplay.cpp resourcenet.cpp ascstring.cpp graphicset.cpp \
 vehicle.cpp buildings.cpp networkinterface.cpp textfileparser.cpp terraintype.cpp \
 objecttype.cpp textfiletags.cpp itemrepository.cpp stringtokenizer.cpp music.cpp \
@@ -704,6 +706,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gameoptions.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/geometry.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/graphicset.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gui_interaction_provider.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/guidimension.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/guifunctions.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/guiiconhandler.Po@am__quote@ # am--include-marker
@@ -976,6 +979,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/gameoptions.Po
 	-rm -f ./$(DEPDIR)/geometry.Po
 	-rm -f ./$(DEPDIR)/graphicset.Po
+	-rm -f ./$(DEPDIR)/gui_interaction_provider.Po
 	-rm -f ./$(DEPDIR)/guidimension.Po
 	-rm -f ./$(DEPDIR)/guifunctions.Po
 	-rm -f ./$(DEPDIR)/guiiconhandler.Po
@@ -1131,6 +1135,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/gameoptions.Po
 	-rm -f ./$(DEPDIR)/geometry.Po
 	-rm -f ./$(DEPDIR)/graphicset.Po
+	-rm -f ./$(DEPDIR)/gui_interaction_provider.Po
 	-rm -f ./$(DEPDIR)/guidimension.Po
 	-rm -f ./$(DEPDIR)/guifunctions.Po
 	-rm -f ./$(DEPDIR)/guiiconhandler.Po
@@ -1242,7 +1247,7 @@ uninstall-am: uninstall-binPROGRAMS
 
 .PRECIOUS: Makefile
 
-vpath %.cpp $(srcdir)/../.. $(srcdir)/../../unittests $(srcdir)/../../ui 
+vpath %.cpp $(srcdir)/../.. $(srcdir)/../../unittests $(srcdir)/../../ui $(srcdir)/../../core/interactions 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

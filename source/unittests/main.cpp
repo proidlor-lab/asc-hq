@@ -9,6 +9,7 @@
 #include "viewcalculation.h"
 #include "replay.h"
 #include "messagedlg.h"
+#include "core/interactions/gui_interaction_provider.h"
 
 #include "researchexecution.h"
 #include "resourcenet.h"
@@ -47,6 +48,10 @@ void viewcomp(Player& player) {
 
 void hookGuiToMap(GameMap* map) {
    if (!map->getGuiHooked()) {
+      // Phase 3: Set GUI interaction provider for dependency injection
+      static asc::core::interactions::GUIInteractionProvider guiProvider;
+      map->setInteractionProvider(&guiProvider);
+
       map->sigPlayerUserInteractionBegins.connect(sigc::ptr_fun(&viewcomp));
       map->sigPlayerUserInteractionBegins.connect(sigc::hide(repaintMap.make_slot()));
 

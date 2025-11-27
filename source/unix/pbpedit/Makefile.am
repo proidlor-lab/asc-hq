@@ -1,4 +1,4 @@
-vpath %.cpp $(srcdir)/../.. $(srcdir)/../../ui
+vpath %.cpp $(srcdir)/../.. $(srcdir)/../../ui $(srcdir)/../../core/interactions
 
 MAINTAINERCLEANFILES	= Makefile.in
 
@@ -14,7 +14,7 @@ spfst.cpp sgstream.cpp palette.cpp newfont.cpp misc.cpp loadpcxc.cpp \
 loaders.cpp loadbi3.cpp dlg_box.cpp dialog.cpp basestrm.cpp basegfx.cpp \
 attack.cpp gameoptions.cpp maped-mainscreen.cpp stdio-errorhandler.cpp\
 buildingtype.cpp vehicletype.cpp containerbase.cpp ed_mapcomponent.cpp \
-mapalgorithms.cpp viewcalculation.cpp gamemap.cpp game_event_dispatcher.cpp overview_map_generator_service.cpp password.cpp \
+mapalgorithms.cpp viewcalculation.cpp gamemap.cpp game_event_dispatcher.cpp overview_map_generator_service.cpp gui_interaction_provider.cpp password.cpp \
 research.cpp mapdisplay.cpp ascstring.cpp graphicset.cpp \
 vehicle.cpp buildings.cpp networkinterface.cpp resourcenet.cpp textfileparser.cpp \
 terraintype.cpp objecttype.cpp textfiletags.cpp itemrepository.cpp \
